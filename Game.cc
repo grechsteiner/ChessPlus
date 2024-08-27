@@ -205,11 +205,11 @@ void Game::runGame() {
                     if (std::get<2>(getPlayerWithTurn(currentTurn)) != nullptr) {
                         outputError("The current player is not a human, don't specify move details for computer player");
                     } else {
-                        std::string from = tokens[1];
-                        std::string to = tokens[2];
-                        std::string promotion = tokens.size() == 3 ? "" : tokens[3];
-                        if (Move::isValidMoveSyntax(from, to, promotion) && board.isMoveLegal(Move(from, to, promotion))) {
-                            board.makeMove(Move(from, to, promotion));
+                        std::string fromSquare = tokens[1];
+                        std::string toSquare = tokens[2];
+                        std::string promotionPiece = tokens.size() == 3 ? "" : tokens[3];
+                        if (Move::isValidMoveSyntax(fromSquare, toSquare, promotionPiece) && board.isMoveLegal(Move(fromSquare, toSquare, promotionPiece))) {
+                            board.makeMove(Move(fromSquare, toSquare, promotionPiece));
                             incrementTurn();
                             moveMade = true;
                         } else {

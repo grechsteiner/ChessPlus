@@ -26,6 +26,7 @@ private:
 
     std::vector<std::vector<std::unique_ptr<Piece>>> grid;
     std::vector<CompletedMove> completedMoves;
+    std::vector<CompletedMove> redoMoves;   // TODO
 
     void initializeBoard();
 
