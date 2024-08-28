@@ -12,8 +12,8 @@
 
 class BasicComputerPlayer : public ComputerPlayer {
 private:
-    FullMove getMoveImplementation(Board &board, Color color) const override;
-    virtual std::vector<FullMove> getPossibleMoves(Board &board, Color color) const = 0;
+    FullMove getMoveImplementation(BoardComputerInterface &board, Color color) const override;
+    virtual std::vector<FullMove> getPossibleMoves(BoardComputerInterface &board, Color color) const = 0;
 public:
     BasicComputerPlayer();
     virtual ~BasicComputerPlayer() = default;

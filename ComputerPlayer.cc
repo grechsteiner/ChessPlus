@@ -4,9 +4,10 @@
 #include "ComputerPlayer.h"
 #include "FullMove.h"
 #include "Board.h"
+#include "BoardComputerInterface.h"
 
 ComputerPlayer::ComputerPlayer() {}
 
-FullMove ComputerPlayer::getMove(Board &board, Color color) const {
+FullMove ComputerPlayer::getMove(BoardComputerInterface &board, Color color) const {
     return getMoveImplementation(board, color);
 }

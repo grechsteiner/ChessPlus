@@ -9,11 +9,11 @@
 #include "MoveShuffler.h"
 
 
-FullMove AdvancedComputerPlayer::getMoveImplementation(Board &board, Color color) const {
+FullMove AdvancedComputerPlayer::getMoveImplementation(BoardComputerInterface &board, Color color) const {
     return std::get<1>(alphaBetaSearch(board, depth, color, 1000, -1000));
 }
 
-std::tuple<int, FullMove> AdvancedComputerPlayer::alphaBetaSearch(Board &board, int currentDepth, Color color, int beta, int alpha) const {
+std::tuple<int, FullMove> AdvancedComputerPlayer::alphaBetaSearch(BoardComputerInterface &board, int currentDepth, Color color, int beta, int alpha) const {
 
     if (currentDepth == 0) {
         if (board.isInStaleMate(color)) {
@@ -77,13 +77,13 @@ struct ScoredMove {
     ScoredMove(const FullMove& m, int s) : move(m), score(s) {}
 };
 
-std::vector<FullMove> AdvancedComputerPlayer::rank_moves(Board& board, const std::vector<FullMove>& moves) const {
+std::vector<FullMove> AdvancedComputerPlayer::rank_moves(BoardComputerInterface& board, const std::vector<FullMove>& moves) const {
     std::vector<ScoredMove> scored_moves;
 
     // Assign values to each move
     for (const auto& move : moves) {
         int score = 0;
-        score += board.BoardPieceInterface::getPieceAt(move.getCaptureRow(), move.getCaptureCol()).getPieceScore();
+        score += board.getPieceAt(move.getCaptureRow(), move.getCaptureCol()).getPieceScore();
         scored_moves.emplace_back(move, score);
     }
 

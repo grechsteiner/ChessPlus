@@ -23,8 +23,12 @@
 #include "FullMove.h"
 #include "UserEnteredMove.h"
 
+#include "BoardDisplayInterface.h"
 
-Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
+#include "Board.h"
+
+Game::Game(BoardGameInterface &board, std::istream &in, std::ostream &out, std::ostream &errorOut) : 
+    board(board),
     input(std::make_unique<CommandLineInput>(in)), 
     errorReporter(std::make_unique<CommandLineErrorReporter>(errorOut)),
     out(out)
@@ -76,12 +80,12 @@ const std::tuple<PlayerTuple, PlayerTuple>& Game::getMainMenuState() const {
     return players;
 }
 
-std::tuple<const Board&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
-    return std::make_tuple(std::cref(board), std::cref(players), currentTurn);
+std::tuple<const BoardDisplayInterface&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
+    return std::make_tuple(std::ref(board.getContext().getDisplayInterface()), std::cref(players), currentTurn);
 }
 
-std::tuple<const Board&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
-    return std::make_tuple(std::cref(board), std::cref(players), currentTurn, showingStandardOpenings);
+std::tuple<const BoardDisplayInterface&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
+    return std::make_tuple(std::ref(board.getContext().getDisplayInterface()), std::cref(players), currentTurn, showingStandardOpenings);
 }
 
 void Game::resetComputerPlayers() {
@@ -198,7 +202,7 @@ void Game::runGame() {
                         outputError("The current player is not a computer, specify move details for human player");
                     } else {
                         // Gauranteed to get valid move
-                        FullMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(board, std::get<0>(getPlayerWithTurn(currentTurn)));
+                        FullMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(board.getContext().getComputerInterface(), std::get<0>(getPlayerWithTurn(currentTurn)));
                         board.makeMove(compMove);
                         incrementTurn();
                         moveMade = true;
@@ -426,9 +430,9 @@ void Game::runGame() {
             } else if (tokens.size() > 3) {
                 outputError("Too many input tokens on line");
             } else {
-                if (!isInt(tokens[1]) || std::stoi(tokens[1]) < 8 || std::stoi(tokens[1]) > board.maxRows) {
+                if (!isInt(tokens[1]) || std::stoi(tokens[1]) < 8 || std::stoi(tokens[1]) > 26) {
                     outputError("Rows must be between 8 and 26 inclusive");
-                } else if (!isInt(tokens[2]) || std::stoi(tokens[2]) < 8 || std::stoi(tokens[2]) > board.maxCols) {
+                } else if (!isInt(tokens[2]) || std::stoi(tokens[2]) < 8 || std::stoi(tokens[2]) > 26) {
                     outputError("Cols must be between 8 and 26 inclusive");
                 } else {
                     board.setBoardSize(std::stoi(tokens[1]), std::stoi(tokens[2]));

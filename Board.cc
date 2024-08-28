@@ -15,6 +15,58 @@
 #include "Square.h"
 
 
+#pragma mark - Board Game Interface
+
+
+bool Board::isInStaleMateImpl() const { return isInStaleMate(); }
+bool Board::hasGameFinishedImpl() const { return hasGameFinished(); }
+bool Board::isBoardInValidStateImpl() const { return isBoardInValidState(); }
+
+void Board::setPositionImpl(int row, char col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) { setPosition(row, col, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore); }
+bool Board::clearPositionImpl(int row, char col) { return clearPosition(row, col); }
+void Board::clearBoardImpl() { clearBoard(); }
+
+bool Board::isSquareOnBoardImpl(int row, char col) const { return isSquareOnBoard(row, col); }
+bool Board::setBoardSizeImpl(int newNumRows, int newNumCols) { return setBoardSize(newNumRows, newNumCols); }
+void Board::applyStandardSetupImpl() { applyStandardSetup(); }
+
+std::unique_ptr<FullMove> Board::generateFullMoveImpl(UserEnteredMove const &userEnteredMove) const { return generateFullMove(userEnteredMove); }
+//void makeMoveImpl(FullMove const &move) override;                    
+//bool undoMoveImpl() override;            
+bool Board::redoMoveImpl() { return redoMove(); }
+
+
+#pragma mark - Board Display Interface
+
+int Board::getNumRowsImpl() const { return grid.size(); }
+int Board::getNumColsImpl() const { return grid[0].size(); }
+
+// Piece const& Board::getPieceAtImpl(int row, int col) const = 0;
+std::vector<std::pair<std::string, std::string>> Board::getMatchingOpeningsImpl() const { return getMatchingOpenings(); }
+
+bool Board::isInCheckImpl(Color color) const { return isInCheck(color); }
+bool Board::isInCheckMateImpl(Color color) const { return isInCheckMate(color); }
+//bool Board::isInStaleMateImpl(Color color) const { return isInStaleMate(color); }
+
+
+#pragma mark - Board Computer Interface
+
+std::vector<FullMove> Board::getLegalMovesImpl(Color color) const { return getLegalMoves(color); }
+std::vector<FullMove> Board::getCapturingMovesImpl(Color color) const { return getCapturingMoves(color); }
+std::vector<FullMove> Board::getCheckApplyingMovesImpl(Color color) const { return getCheckApplyingMoves(color); }
+std::vector<FullMove> Board::getCaptureAvoidingMovesImpl(Color color) const { getCaptureAvoidingMoves(color); }
+
+Color Board::getColorOneImpl() const { return getColorOne(); }
+Color Board::getColorTwoImpl() const  { return getColorTwo(); }
+Color Board::oppositeColorImpl(Color color) const { return oppositeColor(color); }
+
+void Board::makeMoveImpl(FullMove const &move) { makeMove(move); }
+bool Board::undoMoveImpl() { return undoMove(); }
+
+// Piece const& Board::getPieceAtImpl(int row, int col) const;
+bool Board::isInStaleMateImpl(Color color) const { return isInStaleMate(color); }
+int Board::getAlphaBetaBoardScoreImpl(Color color) const { return getAlphaBetaBoardScore(color); }
+
 #pragma mark - Board Move Interface
 
 void Board::setPositionImpl(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
@@ -37,7 +89,7 @@ void Board::setHasMovedImpl(int row, int col, bool hasMoved) {
 #pragma mark - Basic Board
 
 Board::Board() 
-    : grid(8) {
+    : grid(8), context(std::make_unique<Context>(*this)) {
     for (auto& row : grid) {
         row.resize(8);
     }

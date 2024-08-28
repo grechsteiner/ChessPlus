@@ -20,13 +20,13 @@ void GraphicObserver::notifyImplementation() {
         window.drawString(50, 50, "Main Menu"); // Center the "Main Menu" text
     } else if (gameState == GameState::SETUP) {
         auto state = game->getSetupState();
-        const Board& board = std::get<0>(state);
+        const BoardDisplayInterface& board = std::get<0>(state);
 
         window.fillRectangle(0, 0, 600, 600, 0); // Clear the window with white color
         printBoard(board, std::get<2>(state));
     } else {
         auto state = game->getActiveGameState();
-        const Board& board = std::get<0>(state);
+        const BoardDisplayInterface& board = std::get<0>(state);
 
         window.fillRectangle(0, 0, 600, 600, 0); // Clear the window with white color
         printBoard(board, std::get<2>(state));
@@ -39,7 +39,7 @@ void GraphicObserver::printPiece(const std::string& str, Color color, int x, int
     window.drawString(x, y, str, pieceColor);
 }
 
-void GraphicObserver::printBoard(const Board& board, int turn) {
+void GraphicObserver::printBoard(const BoardDisplayInterface& board, int turn) {
     int numRows = board.getNumRows();
     int numCols = board.getNumCols();
     int windowWidth = 600;  // Width of the window
@@ -55,7 +55,7 @@ void GraphicObserver::printBoard(const Board& board, int turn) {
             window.fillRectangle(x, y, squareSize, squareSize, color);
 
 
-            printPiece(board.BoardPieceInterface::getPieceAt(row, col).getDisplay(), board.BoardPieceInterface::getPieceAt(row, col).getPieceColor(), x + squareSize / 2, y + squareSize / 2);
+            printPiece(board.getPieceAt(row, col).getDisplay(), board.getPieceAt(row, col).getPieceColor(), x + squareSize / 2, y + squareSize / 2);
             
         }
     }

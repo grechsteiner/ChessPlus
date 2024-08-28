@@ -10,7 +10,7 @@
 
 class LevelThreeComputer : public BasicComputerPlayer {
 private:
-    std::vector<FullMove> getPossibleMoves(Board &board, Color color) const override;
+    std::vector<FullMove> getPossibleMoves(BoardComputerInterface &board, Color color) const override;
 public:
     LevelThreeComputer();
 };

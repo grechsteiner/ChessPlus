@@ -10,7 +10,7 @@
 
 LevelTwoComputer::LevelTwoComputer() : BasicComputerPlayer() {}
 
-std::vector<FullMove> LevelTwoComputer::getPossibleMoves(Board &board, Color color) const {
+std::vector<FullMove> LevelTwoComputer::getPossibleMoves(BoardComputerInterface &board, Color color) const {
     std::vector<FullMove> allMoves;
     std::vector<FullMove> capturingMoves = board.getCapturingMoves(color);
     std::vector<FullMove> checkApplyingMoves = board.getCheckApplyingMoves(color);

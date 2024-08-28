@@ -8,9 +8,11 @@
 
 #include "Game.h"
 #include "Observer.h"
+#include "Board.h"
 
 class GameWrapper {
 private:
+    Board board;
     Game game;                                                  // Subject    
     std::vector<std::unique_ptr<Observer>> observers;           // Observers  
 

@@ -8,7 +8,7 @@
 #include "GraphicObserver.h"
 
 GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    game(in, out, errorOut), 
+    game(board, in, out, errorOut), 
     observers() 
     {
         observers.push_back(std::make_unique<TextObserver>(out, &game));

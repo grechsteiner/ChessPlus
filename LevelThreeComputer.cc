@@ -11,7 +11,7 @@
 
 LevelThreeComputer::LevelThreeComputer() : BasicComputerPlayer() {}
 
-std::vector<FullMove> LevelThreeComputer::getPossibleMoves(Board &board, Color color) const {
+std::vector<FullMove> LevelThreeComputer::getPossibleMoves(BoardComputerInterface &board, Color color) const {
 
     std::vector<FullMove> captureAvoidingMoves = board.getCaptureAvoidingMoves(color);
     if (!captureAvoidingMoves.empty()) {

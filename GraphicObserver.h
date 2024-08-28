@@ -7,13 +7,15 @@
 #include "Game.h"
 #include "Window.h"
 
+#include "BoardDisplayInterface.h"
+
 class GraphicObserver : public Observer {
 private:
     Game *game;
     Xwindow window;
     void notifyImplementation() override;
     void printPiece(const std::string& str, Color color, int x, int y);
-    void printBoard(const Board& board, int turn);
+    void printBoard(const BoardDisplayInterface& board, int turn);
 
 public:
     GraphicObserver(Game *game);

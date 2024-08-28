@@ -14,6 +14,8 @@
 #include "Input.h"
 #include "ErrorReporter.h"
 #include "ComputerPlayer.h"
+#include "BoardDisplayInterface.h"
+#include "BoardGameInterface.h"
 
 // (Color, totalScore, ComputerPlayer)
 using PlayerTuple = std::tuple<Color, double, std::unique_ptr<ComputerPlayer>>;
@@ -25,7 +27,7 @@ private:
     std::ostream &out;
 
     GameState gameState = GameState::MAIN_MENU;
-    Board board;
+    BoardGameInterface &board;
 
     bool showingStandardOpenings = false;
 
@@ -51,15 +53,15 @@ private:
     bool isGameActive() const;
 
 public:
-    Game(std::istream &in, std::ostream &out, std::ostream &errorOut);
+    Game(BoardGameInterface &board, std::istream &in, std::ostream &out, std::ostream &errorOut);
     void runGame();
 
 
     // Get state (observer pattern)
     GameState getGameState() const;
     const std::tuple<PlayerTuple, PlayerTuple>& getMainMenuState() const;
-    std::tuple<const Board&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
-    std::tuple<const Board&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
+    std::tuple<const BoardDisplayInterface&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
+    std::tuple<const BoardDisplayInterface&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
 };
 
 #endif /* Game_h */

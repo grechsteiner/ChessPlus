@@ -22,9 +22,9 @@ void TextObserver::notifyImplementation() {
         out << "|Main Menu|" << std::endl;
         out << "+---------+" << std::endl;
     } else if (gameState == GameState::SETUP) {
-        std::tuple<const Board&, const std::tuple<PlayerTuple, PlayerTuple>&, int> state = game->getSetupState();
+        std::tuple<const BoardDisplayInterface&, const std::tuple<PlayerTuple, PlayerTuple>&, int> state = game->getSetupState();
 
-        const Board& board = std::get<0>(state);
+        const BoardDisplayInterface& board = std::get<0>(state);
 
 
         out << "+";
@@ -49,10 +49,10 @@ void TextObserver::notifyImplementation() {
         out << "-----+" << std::endl;
 
     } else {
-        std::tuple<const Board&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> state = game->getActiveGameState();
+        std::tuple<const BoardDisplayInterface&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> state = game->getActiveGameState();
         
 
-        const Board& board = std::get<0>(state);
+        const BoardDisplayInterface& board = std::get<0>(state);
 
         out << "+";
         for (int col = 0; col < board.getNumCols(); ++col) {
@@ -114,7 +114,7 @@ void TextObserver::printPiece(const std::string& str, Color color) {
     }
 }
 
-void TextObserver::printBoard(Board const& board, int turn) {
+void TextObserver::printBoard(BoardDisplayInterface const& board, int turn) {
     // Top line
     out << "|  ╔";
     for (int col = 0; col < board.getNumCols(); ++col) {
@@ -129,7 +129,7 @@ void TextObserver::printBoard(Board const& board, int turn) {
         }
         out << "║";
         for (int col = 0; col < board.getNumCols(); ++col) {
-            printPiece(board.BoardPieceInterface::getPieceAt(row, col).getImage(), board.BoardPieceInterface::getPieceAt(row, col).getPieceColor());
+            printPiece(board.getPieceAt(row, col).getImage(), board.getPieceAt(row, col).getPieceColor());
         }
         out << "║ |" << std::endl;
     }

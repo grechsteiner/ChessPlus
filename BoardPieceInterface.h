@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include "FullMove.h"
 
+class Context;
 
 class BoardPieceInterface {
 
@@ -25,6 +26,8 @@ private:
     virtual int getNumRowsImplementation() const = 0;
     virtual int getNumColsImplementation() const = 0;
 
+    virtual Context& getContextImpl() = 0;
+
 public:
     Piece const& getPieceAt(int row, int col) const;
     bool isEmptySquareOnBoard(int row, int col) const;
@@ -39,6 +42,8 @@ public:
     int getNumCols() const;
 
     virtual ~BoardPieceInterface() = default;
+
+    Context& getContext() { return getContextImpl(); }
 };
 
 
