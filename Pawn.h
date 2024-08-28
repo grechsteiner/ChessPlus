@@ -7,14 +7,14 @@
 
 #include "Constants.h"
 #include "Piece.h"
-#include "Move.h"
+#include "FullMove.h"
 
 class BoardPieceInterface;
 
 class Pawn : public Piece {
 private:
-    std::vector<Move> getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
-    std::vector<Move> getPromotionMoves(BoardPieceInterface const &board, Move const &move) const;
+    std::vector<FullMove> getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
+    std::vector<FullMove> getPromotionMoves(BoardPieceInterface const &board, FullMove const &move) const;
 public:
     Pawn(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 1);
 };

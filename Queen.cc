@@ -23,14 +23,14 @@ std::vector<std::pair<int, int>> const Queen::queenDirections = {
 Queen::Queen(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::QUEEN, pieceDirection, hasMoved, "♛", "Q", pieceScore) {}
 
-std::vector<Move> Queen::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<Move> moves;
+std::vector<FullMove> Queen::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<FullMove> moves;
 
     for (std::pair<int, int> const &queenDirection : queenDirections) {
         int newRow = pieceRow + queenDirection.first;
         int newCol = pieceCol + queenDirection.second;
         while (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(Move(board.getNumRows(), pieceRow, pieceCol, newRow, newCol));
+            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
             if (board.isOpposingColorOnBoard(newRow, newCol, pieceColor)) {

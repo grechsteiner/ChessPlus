@@ -7,7 +7,8 @@
 #include <unordered_map>
 
 #include "StandardOpeningTrie.h"
-#include "Move.h"
+#include "UserEnteredMove.h"
+#include "FullMove.h"
 
 using std::string;
 using std::vector;
@@ -19,11 +20,11 @@ using std::unique_ptr;
 const StandardOpeningTrie StandardOpeningTrie::Hardcoded = [] {
     StandardOpeningTrie trie;
 
-    trie.insert({Move("e2", "e4"), Move("e7", "e5"), Move("g1", "f3"), Move("b8", "c6"), Move("f1", "b5")}, "Ruy López");
-    trie.insert({Move("e2", "e4"), Move("e7", "e6")}, "French Defense");
-    trie.insert({Move("e2", "e4"), Move("e7", "e5"), Move("g1", "f3"), Move("b8", "c6"), Move("f1", "c4")}, "Italian Game");
-    trie.insert({Move("d2", "d4"), Move("d6", "d5"), Move("c2", "c4")}, "Queen's Gambit");
-    trie.insert({Move("d2", "d4"), Move("g8", "f6"), Move("c2", "c4"), Move("g7", "g6")}, "King's Indian Defense");
+    trie.insert({UserEnteredMove("e2", "e4"), UserEnteredMove("e7", "e5"), UserEnteredMove("g1", "f3"), UserEnteredMove("b8", "c6"), UserEnteredMove("f1", "b5")}, "Ruy López");
+    trie.insert({UserEnteredMove("e2", "e4"), UserEnteredMove("e7", "e6")}, "French Defense");
+    trie.insert({UserEnteredMove("e2", "e4"), UserEnteredMove("e7", "e5"), UserEnteredMove("g1", "f3"), UserEnteredMove("b8", "c6"), UserEnteredMove("f1", "c4")}, "Italian Game");
+    trie.insert({UserEnteredMove("d2", "d4"), UserEnteredMove("d6", "d5"), UserEnteredMove("c2", "c4")}, "Queen's Gambit");
+    trie.insert({UserEnteredMove("d2", "d4"), UserEnteredMove("g8", "f6"), UserEnteredMove("c2", "c4"), UserEnteredMove("g7", "g6")}, "King's Indian Defense");
 
     return trie;
 }();
@@ -38,18 +39,18 @@ void StandardOpeningTrie::collectNextMoves(StandardOpeningTrieNode const *standa
     }
 }
 
-void StandardOpeningTrie::insert(const vector<Move>& moves, const string& openingName) {
+void StandardOpeningTrie::insert(const vector<UserEnteredMove>& userEnteredMoves, const string& openingName) {
     StandardOpeningTrieNode* standardOpeningTrieNode = root.get();
-    for (const auto& move : moves) {
-        if (standardOpeningTrieNode->children.find(move.toString()) == standardOpeningTrieNode->children.end()) {
-            standardOpeningTrieNode->children[move.toString()] = std::make_unique<StandardOpeningTrieNode>();
+    for (const auto& userEnteredMove : userEnteredMoves) {
+        if (standardOpeningTrieNode->children.find(userEnteredMove.toString()) == standardOpeningTrieNode->children.end()) {
+            standardOpeningTrieNode->children[userEnteredMove.toString()] = std::make_unique<StandardOpeningTrieNode>();
         }
-        standardOpeningTrieNode = standardOpeningTrieNode->children[move.toString()].get();
+        standardOpeningTrieNode = standardOpeningTrieNode->children[userEnteredMove.toString()].get();
         standardOpeningTrieNode->openings.push_back(openingName);
     }
 }
 
-vector<pair<string, string>> StandardOpeningTrie::getMatchingOpenings(const vector<CompletedMove>& completedMoves) const {
+vector<pair<string, string>> StandardOpeningTrie::getMatchingOpenings(const vector<FullMove>& completedMoves) const {
     vector<pair<string, string>> results;
     const StandardOpeningTrieNode* standardOpeningTrieNode = root.get();
     if (!standardOpeningTrieNode) return results; // Ensure root is not null

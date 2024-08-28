@@ -19,13 +19,13 @@ std::vector<std::pair<int, int>> const Bishop::bishopDirections = {
 Bishop::Bishop(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::BISHOP, pieceDirection, hasMoved, "♝", "B", pieceScore) {}
 
-std::vector<Move> Bishop::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<Move> moves;
+std::vector<FullMove> Bishop::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<FullMove> moves;
     for (std::pair<int, int> const &bishopDirection : bishopDirections) {
         int newRow = pieceRow + bishopDirection.first;
         int newCol = pieceCol + bishopDirection.second;
         while (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(Move(board.getNumRows(), pieceRow, pieceCol, newRow, newCol));
+            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
             if (board.isOpposingColorOnBoard(newRow, newCol, pieceColor)) {

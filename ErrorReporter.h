@@ -11,6 +11,7 @@ private:
     virtual void outputError(std::string const &errorMessage) = 0;
 public:
     ErrorReporter() = default;
+    virtual ~ErrorReporter() = default;
     void reportError(std::string const &errorMessage);
 };
 

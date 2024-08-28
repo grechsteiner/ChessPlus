@@ -4,32 +4,34 @@
 #define FullMove_h
 
 #include "Constants.h"
-#include "BoardMoveInterface.h"
+#include "UserEnteredMove.h"
 
+
+class BoardMoveInterface;
 
 
 class FullMove {
 
 private:
-    int const fromRow, toRow, captureRow;     // 0: top row
-    int const fromCol, toCol, captureCol;     // 0: leftmost col
+    int fromRow, toRow, captureRow;     // 0: top row
+    int fromCol, toCol, captureCol;     // 0: leftmost col
 
     // General Info
-    bool const hasMoved;
-    PieceType const promotionPieceType;
-    MoveType const moveType;
-    bool const isAttackingMove;
+    MoveType moveType;
+    bool isAttackingMove;
+    PieceType promotionPieceType;
 
     // Moved Piece Info (needed for undoing promotion of non pawn)
-    PieceType const pieceType;
-    int const pieceScore;
+    bool hasMoved;
+    PieceType pieceType;
+    int pieceScore;
 
     // Captured Piece Info
-    Color const capturedColor;
-    PieceType const capturedPieceType;
-    PieceDirection const capturedPieceDirection;
-    bool const capturedHasMoved;
-    int const capturedPieceScore;
+    Color capturedColor;
+    PieceType capturedPieceType;
+    PieceDirection capturedPieceDirection;
+    bool capturedHasMoved;
+    int capturedPieceScore;
 
     // Logic is exact same for move & undo except for setting hasMoved
     void performRookCastle(BoardMoveInterface &board, bool isUndo) const;
@@ -37,23 +39,29 @@ private:
 public:
 
     FullMove(int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
-            bool hasMoved, PieceType promotionPieceType, MoveType moveType, bool isAttackingMove,
-            PieceType pieceType, int pieceScore,
+            MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
+            bool hasMoved, PieceType pieceType, int pieceScore,
             Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
-
+    
     // captureRow/captureCol default set to toRow/toCol
+    /*
     FullMove(int fromRow, int fromCol, int toRow, int toCol,
             bool hasMoved, PieceType promotionPieceType, MoveType moveType, bool isAttackingMove,
             PieceType pieceType, int pieceScore,
             Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
+    */
 
-    FullMove(FullMove const &other);
-    FullMove(FullMove &&other);
-    FullMove& operator=(const FullMove& other) = delete;
-    FullMove& operator=(FullMove&& other) = delete;
+   static const FullMove DEFAULT;
+
+    FullMove(FullMove const &other) = default;
+    FullMove(FullMove &&other) = default;
+    FullMove& operator=(const FullMove& other) = default;
+    FullMove& operator=(FullMove&& other) = default;
     ~FullMove() = default;
+
+    bool operator==(FullMove const &other) const;
         
-    std::string const& toString() const;
+    std::string toString() const;
 
     // Commands
     void makeMove(BoardMoveInterface &board) const;
@@ -72,12 +80,12 @@ public:
     int getCaptureCol() const;
 
     // General Info
-    bool getHasMoved() const;
-    PieceType getPromotionPieceType() const;
     MoveType getMoveType() const;
     bool getIsAttackingMove() const;
+    PieceType getPromotionPieceType() const;
 
     // Moved Piece Info
+    bool getHasMoved() const;
     PieceType getPieceType() const;
     int getPieceScore() const;
 
@@ -88,6 +96,12 @@ public:
     bool getCapturedHasMoved() const;
     int getCapturedPieceScore() const;
 };
+
+
+// TODO: Put somewhere else 
+// Same as toString == toString
+bool isUserEqualToFull(FullMove const &fullMove, UserEnteredMove const &userEnteredMove, int numRows, int numCols);
+
 
 
 #endif /* FullMove_h */

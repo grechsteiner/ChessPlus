@@ -20,6 +20,9 @@
 #include "ComputerPlayerFactory.h"
 #include "ComputerPlayer.h"
 
+#include "FullMove.h"
+#include "UserEnteredMove.h"
+
 
 Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
     input(std::make_unique<CommandLineInput>(in)), 
@@ -195,7 +198,7 @@ void Game::runGame() {
                         outputError("The current player is not a computer, specify move details for human player");
                     } else {
                         // Gauranteed to get valid move
-                        Move compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(board, std::get<0>(getPlayerWithTurn(currentTurn)));
+                        FullMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(board, std::get<0>(getPlayerWithTurn(currentTurn)));
                         board.makeMove(compMove);
                         incrementTurn();
                         moveMade = true;
@@ -208,10 +211,15 @@ void Game::runGame() {
                         std::string fromSquare = tokens[1];
                         std::string toSquare = tokens[2];
                         std::string promotionPiece = tokens.size() == 3 ? "" : tokens[3];
-                        if (Move::isValidMoveSyntax(fromSquare, toSquare, promotionPiece) && board.isMoveLegal(Move(fromSquare, toSquare, promotionPiece))) {
-                            board.makeMove(Move(fromSquare, toSquare, promotionPiece));
-                            incrementTurn();
-                            moveMade = true;
+                        if (UserEnteredMove::isValidSyntax(fromSquare, toSquare, promotionPiece)) {
+                            std::unique_ptr<FullMove> fullMove = board.generateFullMove(UserEnteredMove(fromSquare, toSquare, promotionPiece));
+                            // Nullptr if invalid move
+                            if (fullMove != nullptr) {
+                                board.makeMove(*fullMove);
+                                incrementTurn();
+                                moveMade = true;
+                            }
+                            
                         } else {
                             outputError("Invalid move, try again");
                         }

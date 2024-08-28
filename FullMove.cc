@@ -8,19 +8,28 @@
 #include "Constants.h"
 #include "BoardMoveInterface.h"
 #include "Piece.h"
+#include "Square.h"
 
+
+// Static
+const FullMove FullMove::DEFAULT = 
+    FullMove(0, 0, 0, 0, 0, 0,
+            MoveType::STANDARD, false, PieceType::EMPTY, 
+            false, PieceType::EMPTY, 0, 
+            Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);
 
 FullMove::FullMove( int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
-                    bool hasMoved, PieceType promotionPieceType, MoveType moveType, bool isAttackingMove,
-                    PieceType pieceType, int pieceScore,
+                    MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
+                    bool hasMoved, PieceType pieceType, int pieceScore,
                     Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore) :
 
     fromRow(fromRow), fromCol(fromCol), toRow(toRow), toCol(toCol), captureRow(captureRow), captureCol(captureCol),
-    hasMoved(hasMoved), promotionPieceType(promotionPieceType), moveType(moveType), isAttackingMove(isAttackingMove),
-    pieceType(pieceType), pieceScore(pieceScore),
+    moveType(moveType), isAttackingMove(isAttackingMove), promotionPieceType(promotionPieceType),
+    hasMoved(hasMoved), pieceType(pieceType), pieceScore(pieceScore),
     capturedColor(capturedColor), capturedPieceType(capturedPieceType), capturedPieceDirection(capturedPieceDirection), capturedHasMoved(capturedHasMoved), capturedPieceScore(capturedPieceScore) 
 {}
 
+/*
 FullMove::FullMove( int fromRow, int fromCol, int toRow, int toCol,
                     bool hasMoved, PieceType promotionPieceType, MoveType moveType, bool isAttackingMove,
                     PieceType pieceType, int pieceScore,
@@ -30,25 +39,31 @@ FullMove::FullMove( int fromRow, int fromCol, int toRow, int toCol,
             pieceType, pieceScore,
             capturedColor, capturedPieceType, capturedPieceDirection, capturedHasMoved, capturedPieceScore) 
 {}
+*/
 
-// Copy ctor
-FullMove::FullMove(FullMove const &other) : 
-    fromRow(other.fromRow), toRow(other.toRow), captureRow(other.captureRow), fromCol(other.fromCol), toCol(other.toCol), captureCol(other.captureCol),
-    hasMoved(other.hasMoved), promotionPieceType(other.promotionPieceType), moveType(other.moveType), isAttackingMove(other.isAttackingMove), 
-    pieceType(other.pieceType), pieceScore(other.pieceScore),
-    capturedColor(other.capturedColor), capturedPieceType(other.capturedPieceType), capturedPieceDirection(other.capturedPieceDirection), capturedHasMoved(other.capturedHasMoved), capturedPieceScore(other.capturedPieceScore) 
-{}
+bool FullMove::operator==(FullMove const &other) const {
+    return 
+        fromRow == other.fromRow &&
+        toRow == other.toRow &&
+        captureRow == other.captureRow &&
+        fromCol == other.fromCol &&
+        toCol == other.toCol &&
+        captureCol == other.captureCol &&
+        moveType == other.moveType &&
+        isAttackingMove == other.isAttackingMove &&
+        promotionPieceType == other.promotionPieceType &&
+        hasMoved == other.hasMoved &&
+        pieceType == other.pieceType &&
+        pieceScore == other.pieceScore &&
+        capturedColor == other.capturedColor &&
+        capturedPieceType == other.capturedPieceType &&
+        capturedPieceDirection == other.capturedPieceDirection &&
+        capturedHasMoved == other.capturedHasMoved &&
+        capturedPieceScore == other.capturedPieceScore;
+}
 
-// Move ctor
-FullMove::FullMove(FullMove &&other) : 
-    fromRow(other.fromRow), toRow(other.toRow), captureRow(other.captureRow), fromCol(other.fromCol), toCol(other.toCol), captureCol(other.captureCol),
-    hasMoved(other.hasMoved), promotionPieceType(other.promotionPieceType), moveType(other.moveType), isAttackingMove(other.isAttackingMove), 
-    pieceType(other.pieceType), pieceScore(other.pieceScore),
-    capturedColor(other.capturedColor), capturedPieceType(other.capturedPieceType), capturedPieceDirection(other.capturedPieceDirection), capturedHasMoved(other.capturedHasMoved), capturedPieceScore(other.capturedPieceScore)
-{}
 
-
-std::string const& FullMove::toString() const {
+std::string FullMove::toString() const {
     std::string moveString = std::to_string(fromCol) + std::to_string(fromRow) + " " + std::to_string(toCol) + std::to_string(toRow);
     if (promotionPieceType != PieceType::EMPTY) {
         moveString += " " + pieceTypeToString(promotionPieceType);
@@ -145,12 +160,12 @@ int FullMove::getToCol() const { return toCol; }
 int FullMove::getCaptureCol() const { return captureCol; }
 
 // General Info
-bool FullMove::getHasMoved() const { return hasMoved; }
-PieceType FullMove::getPromotionPieceType() const { return promotionPieceType; }
 MoveType FullMove::getMoveType() const { return moveType; }
 bool FullMove::getIsAttackingMove() const { return isAttackingMove; }
+PieceType FullMove::getPromotionPieceType() const { return promotionPieceType; }
 
 // Moved Piece Info
+bool FullMove::getHasMoved() const { return hasMoved; }
 PieceType FullMove::getPieceType() const { return pieceType; }
 int FullMove::getPieceScore() const { return pieceScore; }
 
@@ -160,3 +175,20 @@ PieceType FullMove::getCapturedPieceType() const { return capturedPieceType; }
 PieceDirection FullMove::getCapturedPieceDirection() const { return capturedPieceDirection; }
 bool FullMove::getCapturedHasMoved() const { return capturedHasMoved; }
 int FullMove::getCapturedPieceScore() const { return capturedPieceScore; }
+
+
+bool isUserEqualToFull(FullMove const &fullMove, UserEnteredMove const &userEnteredMove, int numRows, int numCols) {
+    int userFromRow = Square::getGridRow(userEnteredMove.getFromRow(), numRows);
+    int userFromCol = Square::getGridCol(userEnteredMove.getFromCol(), numCols);
+    int userToRow = Square::getGridRow(userEnteredMove.getToRow(), numRows);
+    int userToCol = Square::getGridCol(userEnteredMove.getToCol(), numCols);
+    PieceType promotionPieceType = stringToPieceType(userEnteredMove.getPromotionPiece());
+    
+    return 
+        userFromRow == fullMove.getFromRow() &&
+        userFromCol == fullMove.getFromCol() &&
+        userToRow == fullMove.getToRow() &&
+        userToCol == fullMove.getToCol() &&
+        promotionPieceType == fullMove.getPromotionPieceType();
+}
+

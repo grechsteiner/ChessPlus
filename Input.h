@@ -12,6 +12,7 @@ private:
     virtual bool isInputAvailableImplementation() const = 0;
 public:
     Input() = default;
+    virtual ~Input() = default;
     std::string getInput();
     bool isInputAvailable() const;
 };

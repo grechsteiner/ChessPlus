@@ -8,47 +8,58 @@
 #include <utility>
 #include <set>
 
+#include "BoardMoveInterface.h"
 #include "BoardPieceInterface.h"
 #include "Constants.h"
 #include "Piece.h"
 #include "Move.h"
 #include "StandardOpeningTrie.h"
+#include "FullMove.h"
+#include "UserEnteredMove.h"
 
 
-class Board : public BoardPieceInterface {
+class Board : public BoardPieceInterface, public BoardMoveInterface {
 
 private:
+    // TODO: Change when 3+ colours
     Color colorOne = Color::WHITE;
     Color colorTwo = Color::BLACK;
 
-    // TODO: Read in from file
+    // TODO: Read in from file, separate from board class
     StandardOpeningTrie const &standardOpeningTrie = StandardOpeningTrie::Hardcoded;
 
     std::vector<std::vector<std::unique_ptr<Piece>>> grid;
-    std::vector<CompletedMove> completedMoves;
-    std::vector<CompletedMove> redoMoves;   // TODO
+
+    std::vector<FullMove> completedMoves;
+    std::vector<FullMove> redoMoves;
 
     void initializeBoard();
 
-    std::vector<Move> getPseudoLegalMoves(Color color) const;   
-    std::vector<Move> getAllPseudoLegalAttackingMoves(Color color) const;
+    std::vector<FullMove> getPseudoLegalMoves(Color color) const;   
+    std::vector<FullMove> getAllPseudoLegalAttackingMoves(Color color) const;
 
-    bool doesMoveApplyCheck(Move const &move) const;
-    bool doesMoveCapturePiece(Move const &move) const;
-    bool doesMoveHavePieceAttackedAfter(Move const &move) const;
+    bool doesMoveApplyCheck(FullMove const &fullMove) const;
+    bool doesMoveCapturePiece(FullMove const &fullMove) const;
+    bool doesMoveHavePieceAttackedAfter(FullMove const &fullMove) const;
     bool canMakeMove(Color color) const;
-    bool isInCheckAfterMove(Move const &move) const;                 
+    bool isInCheckAfterMove(FullMove const &fullMove) const;                 
 
     // BoardPieceInterface
-    const std::unique_ptr<Piece>& getPieceAtImplementation(int row, int col) const override;
+    Piece const& getPieceAtImpl(int row, int col) const override;
     bool isEmptySquareOnBoardImplementation(int row, int col) const override;
     bool isOpposingColorOnBoardImplementation(int row, int col, Color color) const override;
     bool isEmptySquareOrOpposingColorOnBoardImplementation(int row, int col, Color color) const override;
     bool isSquareCheckAttackedImplementation(int attackedRow, int attackedCol, Color color) const override;
-    bool lastMoveImplementation() const override;
-    const CompletedMove& getLastMoveImplementation() const override;
+    bool hasMoveBeenMadeImplementation() const override;
+    FullMove const& getLastMoveImplementation() const override;
     int getNumRowsImplementation() const override;
     int getNumColsImplementation() const override;
+
+    // BoardMoveInterface (getPieceAtImpl done above)
+    void setPositionImpl(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
+    void clearPositionImpl(int row, int col) override;
+    void swapPositionsImpl(int rowOne, int colOne, int rowTwo, int colTwo) override;
+    void setHasMovedImpl(int row, int col, bool hasMoved) override;
 
 public:
     Board();
@@ -58,6 +69,7 @@ public:
     Color getColorTwo() const;
 
     // Max number of letters in alphabet
+    // TODO: Remove max once graphic logic is updated
     static int const maxRows = 26;
     static int const maxCols = 26;
 
@@ -71,18 +83,19 @@ public:
     bool isSquareOnBoard(int row, char col) const;
     bool isSquareOnBoard(int row, int col) const;
 
-    std::vector<Move> getLegalMoves(Color color) const; 
-    std::vector<Move> getCapturingMoves(Color color) const;
-    std::vector<Move> getCheckApplyingMoves(Color color) const;
-    std::vector<Move> getCaptureAvoidingMoves(Color color) const;    
+    std::vector<FullMove> getLegalMoves(Color color) const; 
+    std::vector<FullMove> getCapturingMoves(Color color) const;
+    std::vector<FullMove> getCheckApplyingMoves(Color color) const;
+    std::vector<FullMove> getCaptureAvoidingMoves(Color color) const;    
     
 
     bool isInCheck(Color color) const;
     bool isInCheckMate(Color color) const;
 
-    bool isMoveLegal(Move const &move) const;                 
-    void makeMove(Move const &move);                    
-    bool undoMove();                                   
+    std::unique_ptr<FullMove> generateFullMove(UserEnteredMove const &userEnteredMove) const;                 
+    void makeMove(FullMove const &move);                    
+    bool undoMove();            
+    bool redoMove();                       
     bool hasGameFinished() const;
     bool isInStaleMate(Color colour) const;
     bool isInStaleMate() const;

@@ -5,9 +5,10 @@
 #include "BoardPieceInterface.h"
 #include "Constants.h"
 #include "Piece.h"
+#include "FullMove.h"
 
-const std::unique_ptr<Piece>& BoardPieceInterface::getPieceAt(int row, int col) const {
-    return getPieceAtImplementation(row, col);
+Piece const& BoardPieceInterface::getPieceAt(int row, int col) const {
+    return getPieceAtImpl(row, col);
 }
 
 bool BoardPieceInterface::isEmptySquareOnBoard(int row, int col) const {
@@ -26,11 +27,11 @@ bool BoardPieceInterface::isSquareCheckAttacked(int attackedRow, int attackedCol
     return isSquareCheckAttackedImplementation(attackedRow, attackedCol, color);
 }
 
-bool BoardPieceInterface::lastMove() const {
-    return lastMoveImplementation();
+bool BoardPieceInterface::hasMoveBeenMade() const {
+    return hasMoveBeenMadeImplementation();
 }
 
-const CompletedMove& BoardPieceInterface::getLastMove() const {
+FullMove const& BoardPieceInterface::getLastMove() const {
     return getLastMoveImplementation();
 }
 

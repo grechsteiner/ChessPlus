@@ -13,6 +13,10 @@ void BoardMoveInterface::setPosition(int row, int col, Color pieceColor, PieceTy
     setPositionImpl(row, col, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 
+void BoardMoveInterface::clearPosition(int row, int col) {
+    clearPositionImpl(row, col);
+}
+
 void BoardMoveInterface::swapPositions(int rowOne, int colOne, int rowTwo, int colTwo) {
     swapPositionsImpl(rowOne, colOne, rowTwo, colTwo);
 }

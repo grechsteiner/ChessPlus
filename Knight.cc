@@ -7,7 +7,7 @@
 #include "Knight.h"
 #include "BoardPieceInterface.h"
 #include "Piece.h"
-#include "Move.h"
+#include "FullMove.h"
 
 std::vector<std::pair<int, int>> const Knight::knightDirections = { 
     {-1, -2}, 
@@ -23,13 +23,13 @@ std::vector<std::pair<int, int>> const Knight::knightDirections = {
 Knight::Knight(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::KNIGHT, pieceDirection, hasMoved, "♞", "N", pieceScore) {}
 
-std::vector<Move> Knight::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<Move> moves;
+std::vector<FullMove> Knight::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<FullMove> moves;
     for (std::pair<int, int> const &knightDirection : knightDirections) {
         int newRow = pieceRow + knightDirection.first;
         int newCol = pieceCol + knightDirection.second;
         if (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(Move(board.getNumRows(), pieceRow, pieceCol, newRow, newCol));
+            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
         }
     }
     return moves;

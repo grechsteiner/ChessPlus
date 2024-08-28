@@ -24,6 +24,39 @@ UserEnteredMove::UserEnteredMove(UserEnteredMove &&other) :
     fromRow(other.fromRow), toRow(other.toRow), fromCol(std::move(other.fromCol)), toCol(std::move(other.toCol)), promotionPiece(std::move(other.promotionPiece)) 
 {}
 
+// Copy Assignment
+UserEnteredMove& UserEnteredMove::operator=(UserEnteredMove const &other) {
+    if (this != &other) {
+        fromRow = other.fromRow;
+        toRow = other.toRow;
+        fromCol = other.fromCol;
+        toCol = other.toCol;
+        promotionPiece = other.promotionPiece;
+    }
+    return *this;
+}
+
+// Move Assignment
+UserEnteredMove& UserEnteredMove::operator=(UserEnteredMove &&other) {
+    if (this != &other) {
+        // Transfer data from the other object
+        fromRow = other.fromRow;
+        toRow = other.toRow;
+        fromCol = std::move(other.fromCol);
+        toCol = std::move(other.toCol);
+        promotionPiece = std::move(other.promotionPiece);
+
+        // Optionally, reset the source object
+        other.fromRow = 0;
+        other.toRow = 0;
+        other.fromCol.clear();
+        other.toCol.clear();
+        other.promotionPiece.clear();
+    }
+
+    return *this;
+}
+
 // Static
 bool UserEnteredMove::isValidSyntax(std::string const &fromSquare, std::string const &toSquare, std::string const &promotionPiece) {
     return Square::isValidSquare(fromSquare) && Square::isValidSquare(toSquare);

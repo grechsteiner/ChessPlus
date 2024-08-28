@@ -9,8 +9,8 @@
 
 BasicComputerPlayer::BasicComputerPlayer() : ComputerPlayer() {}
 
-Move BasicComputerPlayer::getMoveImplementation(Board &board, Color color) const {
-    std::vector<Move> possibleMoves = getPossibleMoves(board, color);
+FullMove BasicComputerPlayer::getMoveImplementation(Board &board, Color color) const {
+    std::vector<FullMove> possibleMoves = getPossibleMoves(board, color);
     MoveShuffler::shuffle(possibleMoves);
     return possibleMoves[0];
 }

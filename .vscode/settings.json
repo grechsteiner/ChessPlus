@@ -63,6 +63,31 @@
         "system_error": "cpp",
         "type_traits": "cpp",
         "utility": "cpp",
-        "cinttypes": "cpp"
-    }
+        "cinttypes": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "unordered_set": "cpp"
+    },
+    "files.exclude": {
+    "**/*.d": true,
+    "**/*.slo": true,
+    "**/*.lo": true,
+    "**/*.o": true,
+    "**/*.obj": true,
+    "**/*.gch": true,
+    "**/*.pch": true,
+    "**/*.so": true,
+    "**/*.dylib": true,
+    "**/*.dll": true,
+    "**/*.mod": true,
+    "**/*.smod": true,
+    "**/*.lai": true,
+    "**/*.la": true,
+    "**/*.a": true,
+    "**/*.lib": true,
+    "**/*.exe": true,
+    "**/*.out": true,
+    "**/*.app": true
+}
 }

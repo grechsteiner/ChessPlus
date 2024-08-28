@@ -5,12 +5,12 @@
 
 #include <vector>
 
-#include "Move.h"
+#include "FullMove.h"
 
 
 class MoveShuffler {
 public:
-    static void shuffle(std::vector<Move> &moves);
+    static void shuffle(std::vector<FullMove> &moves);
 };
 
 

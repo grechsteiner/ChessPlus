@@ -47,3 +47,40 @@ std::string Square::getCol(std::string const &squareStr) {
         assert(false);
     }
 }
+
+// Static
+std::pair<int, int> Square::getGridRowAndCol(std::string const &squareStr, int numRows, int numCols) {
+    std::smatch match;
+    if (std::regex_match(squareStr, match, regexPattern)) {
+        std::string squareCol = match[1];
+        int squareRow = std::stoi(match[2]);
+
+        int gridCol = 0;
+        gridCol += (squareCol[0] - 'a'); 
+        for (int i = 1; i < squareCol.size(); ++i) {
+            gridCol += (squareCol[i] - 'a' + 1);
+        }
+
+        int gridRow = numRows - squareRow;
+
+        return std::make_pair(gridRow, gridCol);
+    } else {
+        assert(false);
+    }
+
+}
+
+// Static
+int Square::getGridRow(int squareRow, int numRows) {
+    return numRows - squareRow;
+}
+
+// Static
+int Square::getGridCol(std::string const &squareCol, int numCols) {
+    int gridCol = 0;
+    gridCol += (squareCol[0] - 'a'); 
+    for (int i = 1; i < squareCol.size(); ++i) {
+        gridCol += (squareCol[i] - 'a' + 1);
+    }
+    return gridCol;
+}

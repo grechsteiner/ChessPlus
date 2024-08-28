@@ -13,11 +13,11 @@
 
 class AdvancedComputerPlayer : public ComputerPlayer {
 private:
-    std::vector<Move> rank_moves(Board& board, const std::vector<Move>& moves) const;
-    Move getMoveImplementation(Board &board, Color color) const override;
+    std::vector<FullMove> rank_moves(Board& board, const std::vector<FullMove>& moves) const;
+    FullMove getMoveImplementation(Board &board, Color color) const override;
     int depth = 4;
 
-    std::tuple<int, Move> alphaBetaSearch(Board &board, int currentDepth, Color color, int beta, int alpha) const;
+    std::tuple<int, FullMove> alphaBetaSearch(Board &board, int currentDepth, Color color, int beta, int alpha) const;
 public:
     AdvancedComputerPlayer() = default;
 };

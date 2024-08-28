@@ -14,7 +14,7 @@ class BoardPieceInterface;
 
 class Empty : public Piece {
 private:
-    std::vector<Move> getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
+    std::vector<FullMove> getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
 public:
     Empty(Color pieceColor = Color::NONE, PieceDirection pieceDirection = PieceDirection::BLANK, bool hasMoved = false, int pieceScore = 0);
 };

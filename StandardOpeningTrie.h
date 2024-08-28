@@ -9,8 +9,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "Move.h"
-#include "CompletedMove.h"
+#include "UserEnteredMove.h"
+#include "FullMove.h"
 
 
 class StandardOpeningTrie {
@@ -27,8 +27,8 @@ private:
 
 public:
     StandardOpeningTrie();
-    void insert(std::vector<Move> const &moves, std::string const &openingName);
-    std::vector<std::pair<std::string, std::string>> getMatchingOpenings(std::vector<CompletedMove> const &completedMoves) const;
+    void insert(std::vector<UserEnteredMove> const &userEnteredMoves, std::string const &openingName);
+    std::vector<std::pair<std::string, std::string>> getMatchingOpenings(std::vector<FullMove> const &completedMoves) const;
 
     // TODO: Ideally read in from text file
     static const StandardOpeningTrie Hardcoded;

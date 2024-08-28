@@ -5,15 +5,15 @@
 
 #include "Constants.h"
 #include "Board.h"
-#include "Move.h"
+#include "FullMove.h"
 
 
 class ComputerPlayer {
 
 private:
-    virtual Move getMoveImplementation(Board &board, Color color) const = 0;
+    virtual FullMove getMoveImplementation(Board &board, Color color) const = 0;
 public:
-    Move getMove(Board &board, Color color) const;
+    FullMove getMove(Board &board, Color color) const;
     ComputerPlayer();
     virtual ~ComputerPlayer() = default;
 };

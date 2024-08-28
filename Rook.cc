@@ -7,7 +7,7 @@
 #include "Rook.h"
 #include "BoardPieceInterface.h"
 #include "Piece.h"
-#include "Move.h"
+#include "FullMove.h"
 
 std::vector<std::pair<int, int>> const Rook::rookDirections = { 
     {-1, 0}, 
@@ -19,14 +19,14 @@ std::vector<std::pair<int, int>> const Rook::rookDirections = {
 Rook::Rook(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::ROOK, pieceDirection, hasMoved, "♜", "R", pieceScore) {}
 
-std::vector<Move> Rook::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<Move> moves;
+std::vector<FullMove> Rook::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<FullMove> moves;
 
     for (std::pair<int, int> const &rookDirection : rookDirections) {
         int newRow = pieceRow + rookDirection.first;
         int newCol = pieceCol + rookDirection.second;
         while (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(Move(board.getNumRows(), pieceRow, pieceCol, newRow, newCol));
+            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
             if (board.isOpposingColorOnBoard(newRow, newCol, pieceColor)) {

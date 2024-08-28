@@ -5,12 +5,12 @@
 
 #include <vector>
 
-#include "Move.h"
+#include "FullMove.h"
 #include "BasicComputerPlayer.h"
 
 class LevelOneComputer : public BasicComputerPlayer {
 private:
-    std::vector<Move> getPossibleMoves(Board &board, Color color) const override;
+    std::vector<FullMove> getPossibleMoves(Board &board, Color color) const override;
 public:
     LevelOneComputer();
 };
