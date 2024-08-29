@@ -1,11 +1,11 @@
-// Square.cc
+// UserSquare.cc
 
 #include <string>
 #include <regex>
 #include <utility>
 #include <cassert>
 
-#include "Square.h"
+#include "UserSquare.h"
 
 // Static
 std::regex const UserSquare::regexPattern("([a-zA-Z]+)([1-9]\\d*)");

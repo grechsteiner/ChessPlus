@@ -6,7 +6,7 @@
 #include <string>
 
 #include "Constants.h"
-#include "Square.h"
+#include "UserSquare.h"
 
 
 class UserMove {

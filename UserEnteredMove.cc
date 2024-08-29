@@ -4,7 +4,7 @@
 
 #include "UserEnteredMove.h"
 #include "Constants.h"
-#include "Square.h"
+#include "UserSquare.h"
 
 // ctor
 UserMove::UserMove(UserSquare const &fromSquare, UserSquare const &toSquare, PieceType promotionPieceType) :

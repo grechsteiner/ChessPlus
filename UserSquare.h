@@ -1,7 +1,7 @@
-// Square.h
+// UserSquare.h
 
-#ifndef Square_h
-#define Square_h
+#ifndef UserSquare_h
+#define UserSquare_h
 
 #include <string>
 #include <regex>

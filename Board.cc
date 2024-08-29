@@ -12,7 +12,7 @@
 #include "Piece.h"
 #include "ChessPieceFactory.h"
 #include "FullMove.h"
-#include "Square.h"
+#include "UserSquare.h"
 
 
 #pragma mark - Internal Utility

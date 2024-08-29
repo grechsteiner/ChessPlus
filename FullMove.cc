@@ -8,7 +8,7 @@
 #include "Constants.h"
 #include "ChessBoard.h"
 #include "Piece.h"
-#include "Square.h"
+#include "UserSquare.h"
 
 
 // Static
