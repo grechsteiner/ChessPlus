@@ -83,7 +83,7 @@ std::vector<BoardMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, con
     // Assign values to each move
     for (const auto& move : moves) {
         int score = 0;
-        score += board.getPieceAt(move.getCaptureRow(), move.getCaptureCol()).getPieceScore();
+        score += board.getPieceInfoAt(move.getCaptureSquare()).getPieceScore();
         scored_moves.emplace_back(move, score);
     }
 

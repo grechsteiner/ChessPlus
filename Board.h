@@ -11,10 +11,12 @@
 #include "ChessBoard.h"
 #include "Constants.h"
 #include "Piece.h"
-#include "Move.h"
+
 #include "StandardOpeningTrie.h"
 #include "BoardMove.h"
 #include "UserMove.h"
+#include "BoardSquare.h"
+#include "PieceInfo.h"
 
 
 class Context;
@@ -49,21 +51,21 @@ private:
 
 
     /* ChessBoard Interface */
-    Piece const& getPieceAtImpl(int row, int col) const override;
+    PieceInfo getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
 
-    bool isEmptySquareOnBoardImpl(int row, int col) const override;
-    bool isOpposingColorOnBoardImpl(int row, int col, Color color) const override;
-    bool isEmptySquareOrOpposingColorOnBoardImpl(int row, int col, Color color) const override;
-    bool isSquareCheckAttackedImpl(int attackedRow, int attackedCol, Color color) const override;
+    bool isEmptySquareOnBoardImpl(BoardSquare const &boardSquare) const override;
+    bool isOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const override;
+    bool isEmptySquareOrOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const override;
+    bool isSquareCheckAttackedImpl(BoardSquare const &boardSquare, Color color) const override;
     
     bool isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const override;
     void setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
-    void setPositionImpl(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
+    void setPositionImpl(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
     bool clearPositionImpl(UserSquare const &userSquare) override;
-    bool clearPositionImpl(int row, int col) override;
+    bool clearPositionImpl(BoardSquare const &boardSquare) override;
     void clearBoardImpl() override;
-    void swapPositionsImpl(int rowOne, int colOne, int rowTwo, int colTwo) override;
-    void setHasMovedImpl(int row, int col, bool hasMoved) override;
+    void swapPositionsImpl(BoardSquare const &boardSquareOne, BoardSquare const &boardSquareTwo) override;
+    void setHasMovedImpl(BoardSquare const &boardSquare, bool hasMoved) override;
     bool setBoardSizeImpl(int newNumRows, int newNumCols) override; // Set board to have provided coordinates, returning true if coordinates are valid, false otherwise, Does not change the state of any pieces on the board
     void applyStandardSetupImpl() override;
 

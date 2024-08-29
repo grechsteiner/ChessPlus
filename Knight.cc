@@ -23,13 +23,13 @@ std::vector<std::pair<int, int>> const Knight::knightDirections = {
 Knight::Knight(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::KNIGHT, pieceDirection, hasMoved, "♞", "N", pieceScore) {}
 
-std::vector<BoardMove> Knight::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+std::vector<BoardMove> Knight::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const {
     std::vector<BoardMove> moves;
     for (std::pair<int, int> const &knightDirection : knightDirections) {
-        int newRow = pieceRow + knightDirection.first;
-        int newCol = pieceCol + knightDirection.second;
-        if (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
+        int newRow = boardSquare.getBoardRow() + knightDirection.first;
+        int newCol = boardSquare.getBoardCol() + knightDirection.second;
+        if (board.isEmptySquareOrOpposingColorOnBoard(BoardSquare(newRow, newCol), pieceInfo.getPieceColor())) {
+            moves.emplace_back(createBoardMove(board, boardSquare, BoardSquare(newRow, newCol), BoardSquare(newRow, newCol), MoveType::STANDARD, true));
         }
     }
     return moves;

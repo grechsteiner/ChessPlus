@@ -34,7 +34,7 @@ UserMove& UserMove::operator=(UserMove &&other) {
         // Transfer data from the other object
         fromSquare = std::move(other.fromSquare);
         toSquare = std::move(other.toSquare);
-        promotionPieceType = promotionPieceType;
+        promotionPieceType = other.promotionPieceType;
     }
     return *this;
 }

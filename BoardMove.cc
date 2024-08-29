@@ -7,23 +7,24 @@
 #include "BoardMove.h"
 #include "Constants.h"
 #include "ChessBoard.h"
-#include "Piece.h"
+#include "PieceInfo.h"
 #include "UserSquare.h"
+#include "BoardSquare.h"
 
 
 // Static
 const BoardMove BoardMove::DEFAULT = 
-    BoardMove(0, 0, 0, 0, 0, 0,
+    BoardMove(BoardSquare(0, 0), BoardSquare(0, 0), BoardSquare(0, 0),
             MoveType::STANDARD, false, PieceType::EMPTY, 
             false, PieceType::EMPTY, 0, 
             Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);
 
-BoardMove::BoardMove( int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
+BoardMove::BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare,
                     MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
                     bool hasMoved, PieceType pieceType, int pieceScore,
                     Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore) :
 
-    fromRow(fromRow), fromCol(fromCol), toRow(toRow), toCol(toCol), captureRow(captureRow), captureCol(captureCol),
+    fromSquare(fromSquare), toSquare(toSquare), captureSquare(captureSquare),
     moveType(moveType), isAttackingMove(isAttackingMove), promotionPieceType(promotionPieceType),
     hasMoved(hasMoved), pieceType(pieceType), pieceScore(pieceScore),
     capturedColor(capturedColor), capturedPieceType(capturedPieceType), capturedPieceDirection(capturedPieceDirection), capturedHasMoved(capturedHasMoved), capturedPieceScore(capturedPieceScore) 
@@ -31,12 +32,9 @@ BoardMove::BoardMove( int fromRow, int fromCol, int toRow, int toCol, int captur
 
 bool BoardMove::operator==(BoardMove const &other) const {
     return 
-        fromRow == other.fromRow &&
-        toRow == other.toRow &&
-        captureRow == other.captureRow &&
-        fromCol == other.fromCol &&
-        toCol == other.toCol &&
-        captureCol == other.captureCol &&
+        fromSquare == other.fromSquare &&
+        toSquare == other.toSquare &&
+        captureSquare == other.captureSquare &&
         moveType == other.moveType &&
         isAttackingMove == other.isAttackingMove &&
         promotionPieceType == other.promotionPieceType &&
@@ -52,7 +50,7 @@ bool BoardMove::operator==(BoardMove const &other) const {
 
 
 std::string BoardMove::toString() const {
-    std::string moveString = std::to_string(fromCol) + std::to_string(fromRow) + " " + std::to_string(toCol) + std::to_string(toRow);
+    std::string moveString = fromSquare.toString() + " " + toSquare.toString();
     if (promotionPieceType != PieceType::EMPTY) {
         moveString += " " + pieceTypeToString(promotionPieceType);
     }
@@ -62,7 +60,12 @@ std::string BoardMove::toString() const {
 #pragma mark - Commands
 
 void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
-    bool newHasRookMoved = isUndo ? false : true;
+    bool hasRookMoved = isUndo ? false : true;
+
+    int fromRow = fromSquare.getBoardRow();
+    int fromCol = fromSquare.getBoardCol();
+    int toRow = toSquare.getBoardRow();
+    int toCol = toSquare.getBoardCol();
     if (abs(fromCol - toCol) == 2) {
             // Horizontal castle
             int rookFromCol;
@@ -76,8 +79,8 @@ void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
                 rookFromCol = toCol + 1;
                 rookToCol = toCol - 1;
             }
-            board.swapPositions(toRow, rookFromCol, toRow, rookToCol);
-            board.setHasMoved(toRow, rookToCol, newHasRookMoved);
+            board.swapPositions(BoardSquare(toRow, rookFromCol), BoardSquare(toRow, rookToCol));
+            board.setHasMoved(BoardSquare(toRow, rookToCol), hasRookMoved);
         } else if (abs(fromRow - toRow) == 2) {
             // Vertical castle
             int rookFromRow;
@@ -91,8 +94,8 @@ void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
                 rookFromRow = toRow + 1;
                 rookToRow = toRow - 1;
             }
-            board.swapPositions(rookFromRow, toCol, rookToRow, toCol);
-            board.setHasMoved(rookToRow, toCol, newHasRookMoved);
+            board.swapPositions(BoardSquare(rookFromRow, toCol), BoardSquare(rookToRow, toCol));
+            board.setHasMoved(BoardSquare(rookToRow, toCol), hasRookMoved);
         } else {
             assert(false);
         }
@@ -101,14 +104,14 @@ void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
 void BoardMove::makeMove(ChessBoard &board) const {
 
     // Basic Stuff
-    board.setPosition(captureRow, captureCol, Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);      // Set captured piece to blank
-    board.swapPositions(fromRow, fromCol, toRow, toCol);                                                            // Move piece (if this is capturing move, captured piece will already be set to empty)
-    board.setHasMoved(toRow, toCol, true);                                                                          // Set has moved to true
+    board.setPosition(captureSquare, Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);      // Set captured piece to blank
+    board.swapPositions(fromSquare, toSquare);                                                            // Move piece (if this is capturing move, captured piece will already be set to empty)
+    board.setHasMoved(toSquare, true);                                                                          // Set has moved to true
 
     // Apply Promotion
     if (promotionPieceType != PieceType::EMPTY) {
-        Piece const& unPromotedPiece = board.getPieceAt(toRow, toCol);                                                                      // Piece already moved
-        board.setPosition(toRow, toCol, unPromotedPiece.getPieceColor(), promotionPieceType, unPromotedPiece.getPieceDirection(), true);    // Default piece score for promoted piece
+        PieceInfo unPromotedPieceInfo = board.getPieceInfoAt(toSquare);                                                                      // Piece already moved
+        board.setPosition(toSquare, unPromotedPieceInfo.getPieceColor(), promotionPieceType, unPromotedPieceInfo.getPieceDirection(), true);    // Default piece score for promoted piece
     }
 
     // Apply Castle (rook part)
@@ -120,14 +123,14 @@ void BoardMove::makeMove(ChessBoard &board) const {
 void BoardMove::undoMove(ChessBoard &board) const {
 
     // Basic Stuff
-    board.swapPositions(fromRow, fromCol, toRow, toCol);                                                                                        // Undo moving the piece
-    board.setHasMoved(fromRow, fromCol, hasMoved);                                                                                              // Set hasMoved field to what it was before
-    board.setPosition(captureRow, captureCol, capturedColor, capturedPieceType, capturedPieceDirection, capturedHasMoved, capturedPieceScore);  // Place captured piece back
+    board.swapPositions(fromSquare, toSquare);                                                                                        // Undo moving the piece
+    board.setHasMoved(fromSquare, hasMoved);                                                                                              // Set hasMoved field to what it was before
+    board.setPosition(captureSquare, capturedColor, capturedPieceType, capturedPieceDirection, capturedHasMoved, capturedPieceScore);  // Place captured piece back
 
     // Undo promotion
     if (promotionPieceType != PieceType::EMPTY) {
-        Piece const& promotedPiece = board.getPieceAt(fromRow, fromCol);                                                                        // Piece already moved back
-        board.setPosition(fromRow, fromCol, promotedPiece.getPieceColor(), pieceType, promotedPiece.getPieceDirection(), hasMoved, pieceScore); // Get piece type & score prior to promotion
+        PieceInfo promotedPieceInfo = board.getPieceInfoAt(fromSquare);                                                                        // Piece already moved back
+        board.setPosition(fromSquare, promotedPieceInfo.getPieceColor(), pieceType, promotedPieceInfo.getPieceDirection(), hasMoved, pieceScore); // Get piece type & score prior to promotion
     }
 
     // Undo castle
@@ -140,12 +143,9 @@ void BoardMove::undoMove(ChessBoard &board) const {
 #pragma mark - Getters
 
 // Squares
-int BoardMove::getFromRow() const { return fromRow; }
-int BoardMove::getToRow() const { return toRow; }
-int BoardMove::getCaptureRow() const { return captureRow; }
-int BoardMove::getFromCol() const { return fromCol; }
-int BoardMove::getToCol() const { return toCol; }
-int BoardMove::getCaptureCol() const { return captureCol; }
+BoardSquare const& BoardMove::getFromSquare() const { return fromSquare; }
+BoardSquare const& BoardMove::getToSquare() const { return toSquare; }
+BoardSquare const& BoardMove::getCaptureSquare() const { return captureSquare; }
 
 // General Info
 MoveType BoardMove::getMoveType() const { return moveType; }

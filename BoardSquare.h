@@ -14,6 +14,7 @@ private:
 
 public:
     BoardSquare(int boardRow, int boardCol);
+    bool operator==(BoardSquare const &other) const;
 
     std::string toString() const;
     int getBoardRow() const;

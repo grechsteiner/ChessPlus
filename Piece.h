@@ -7,44 +7,32 @@
 
 #include "Constants.h"
 #include "BoardMove.h"
+#include "PieceInfo.h"
 
 class ChessBoard;
 
 class Piece {
 
 private:
-    virtual std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const = 0;
+    virtual std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const = 0;
     
 protected:
     Piece(Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore);
 
-    Color pieceColor;
-    PieceType pieceType;
-    PieceDirection pieceDirection;
-    bool hasMoved;
-    int pieceScore;
-    std::string image;
-    std::string display;
+    PieceInfo pieceInfo;
 
     // TODO:
     // Factory up for different move types
     // Maybe alter isAttackingMove
-    BoardMove createBoardMove(ChessBoard const &board, int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType = PieceType::EMPTY) const;
+    BoardMove createBoardMove(ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType = PieceType::EMPTY) const;
 
 public:
     virtual ~Piece() = default;
     
-    std::vector<BoardMove> getMoves(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const;
+    std::vector<BoardMove> getMoves(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const;
     
     // Getters
-    Color getPieceColor() const;
-    PieceType getPieceType() const;
-    PieceDirection getPieceDirection() const;
-    bool getHasMoved() const;
-    void setHasMoved(bool newHasMoved);
-    int getPieceScore() const;
-    const std::string& getImage() const;
-    const std::string& getDisplay() const;
+    PieceInfo& getPieceInfo();
 };
 
 

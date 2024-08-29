@@ -6,6 +6,12 @@
 
 BoardSquare::BoardSquare(int boardRow, int boardCol) : boardRow(boardRow), boardCol(boardCol) {}
 
+bool BoardSquare::operator==(BoardSquare const &other) const {
+    return 
+        boardRow == other.boardRow &&
+        boardCol == other.boardCol;
+}
+
 std::string BoardSquare::toString() const { return std::to_string(boardRow) + std::to_string(boardCol); }
 int BoardSquare::getBoardRow() const { return boardRow; }
 int BoardSquare::getBoardCol() const { return boardCol; }

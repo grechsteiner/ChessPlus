@@ -7,31 +7,31 @@
 
 #include "Constants.h"
 
-class Piece;
 class UserMove;
 class BoardMove;
 class UserSquare;
 class BoardSquare;
+class PieceInfo;
 
 
 class ChessBoard {
 
 private:
-    virtual Piece const& getPieceAtImpl(int row, int col) const = 0;
+    virtual PieceInfo getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
 
-    virtual bool isEmptySquareOnBoardImpl(int row, int col) const = 0;
-    virtual bool isOpposingColorOnBoardImpl(int row, int col, Color color) const = 0;
-    virtual bool isEmptySquareOrOpposingColorOnBoardImpl(int row, int col, Color color) const = 0;
-    virtual bool isSquareCheckAttackedImpl(int attackedRow, int attackedCol, Color color) const = 0;
+    virtual bool isEmptySquareOnBoardImpl(BoardSquare const &boardSquare) const = 0;
+    virtual bool isOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const = 0;
+    virtual bool isEmptySquareOrOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const = 0;
+    virtual bool isSquareCheckAttackedImpl(BoardSquare const &boardSquare, Color color) const = 0;
     
     virtual bool isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const = 0;
     virtual void setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
-    virtual void setPositionImpl(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
+    virtual void setPositionImpl(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
     virtual bool clearPositionImpl(UserSquare const &userSquare) = 0;
-    virtual bool clearPositionImpl(int row, int col) = 0;
+    virtual bool clearPositionImpl(BoardSquare const &boardSquare) = 0;
     virtual void clearBoardImpl() = 0;
-    virtual void swapPositionsImpl(int rowOne, int colOne, int rowTwo, int colTwo) = 0;
-    virtual void setHasMovedImpl(int row, int col, bool hasMoved) = 0;
+    virtual void swapPositionsImpl(BoardSquare const &boardSquareOne, BoardSquare const &boardSquareTwo) = 0;
+    virtual void setHasMovedImpl(BoardSquare const &boardSquare, bool hasMoved) = 0;
     virtual bool setBoardSizeImpl(int newNumRows, int newNumCols) = 0;
     virtual void applyStandardSetupImpl() = 0;
 
@@ -65,21 +65,21 @@ private:
     virtual std::vector<std::pair<std::string, std::string>> getMatchingOpeningsImpl() const = 0;
 
 public:
-    Piece const& getPieceAt(int row, int col) const;
+    PieceInfo getPieceInfoAt(BoardSquare const &boardSquare) const;
 
-    bool isEmptySquareOnBoard(int row, int col) const;
-    bool isOpposingColorOnBoard(int row, int col, Color color) const;
-    bool isEmptySquareOrOpposingColorOnBoard(int row, int col, Color color) const;
-    bool isSquareCheckAttacked(int attackedRow, int attackedCol, Color color) const;
+    bool isEmptySquareOnBoard(BoardSquare const &boardSquare) const;
+    bool isOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const;
+    bool isEmptySquareOrOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const;
+    bool isSquareCheckAttacked(BoardSquare const &boardSquare, Color color) const;
     
     bool isSquareOnCurrentBoard(UserSquare const &userSquare) const;
     void setPosition(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
-    void setPosition(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
+    void setPosition(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
     bool clearPosition(UserSquare const &userSquare);
-    bool clearPosition(int row, int col);
+    bool clearPosition(BoardSquare const &boardSquare);
     void clearBoard();
-    void swapPositions(int rowOne, int colOne, int rowTwo, int colTwo);
-    void setHasMoved(int row, int col, bool hasMoved);
+    void swapPositions(BoardSquare const &boardSquareOne, BoardSquare const &boardSquareTwo);
+    void setHasMoved(BoardSquare const &boardSquareTwo, bool hasMoved);
     bool setBoardSize(int newNumRows, int newNumCols);
     void applyStandardSetup();
 

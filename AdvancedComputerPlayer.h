@@ -8,7 +8,7 @@
 #include "ComputerPlayer.h"
 #include "Constants.h"
 #include "Board.h"
-#include "Move.h"
+
 
 
 class AdvancedComputerPlayer : public ComputerPlayer {

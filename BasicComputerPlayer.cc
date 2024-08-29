@@ -4,7 +4,7 @@
 
 #include "BasicComputerPlayer.h"
 #include "Board.h"
-#include "Move.h"
+
 #include "MoveShuffler.h"
 
 BasicComputerPlayer::BasicComputerPlayer() : ComputerPlayer() {}

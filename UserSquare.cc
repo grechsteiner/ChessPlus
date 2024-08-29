@@ -12,6 +12,10 @@ std::regex const UserSquare::regexPattern("([a-z]+)([1-9]\\d*)");
 
 UserSquare::UserSquare(std::string const &squareStr) : userSquare(squareStr) {}
 
+bool UserSquare::operator==(UserSquare const &other) const {
+    return userSquare == other.userSquare;
+}
+
 // Static
 bool UserSquare::isValidUserSquare(std::string const &squareStr) {
     std::smatch match;
@@ -34,11 +38,11 @@ std::string UserSquare::getUserCol() const {
     return match[1];
 }
 
-int UserSquare::getGridRow(int numRowsOnGrid) const {
+int UserSquare::getBoardRow(int numRowsOnGrid) const {
     return numRowsOnGrid - getUserRow();
 }
 
-int UserSquare::getGridCol(int numColsOnGrid) const { 
+int UserSquare::getBoardCol(int numColsOnGrid) const { 
     static int base = 26;
     int gridCol = 0;
     for (char c : getUserCol()) {

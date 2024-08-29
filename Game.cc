@@ -339,11 +339,11 @@ void Game::runGame() {
                     PieceDirection pieceDirection = pieceColor == Color::WHITE ? PieceDirection::NORTH : PieceDirection::SOUTH;
 
                     if (tokens.size() == 3) {
-                        board.setPosition(std::stoi(square.substr(1)), square.front(), pieceColor, pieceType, pieceDirection, false);
+                        board.setPosition(UserSquare(square), pieceColor, pieceType, pieceDirection, false);
                         notifyObservers();
                     } else if (tokens.size() == 4) {
                         if (isValidPieceDirection(tokens[3])) {
-                            board.setPosition(std::stoi(square.substr(1)), square.front(), pieceColor, pieceType, stringToPieceDirection(tokens[3]), false);
+                            board.setPosition(UserSquare(square), pieceColor, pieceType, stringToPieceDirection(tokens[3]), false);
                             notifyObservers();
                         } else {
                             outputError("Invalid direction");
@@ -367,7 +367,7 @@ void Game::runGame() {
                 std::string square = tokens[1];
                 if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnCurrentBoard(UserSquare(square))) {
                     outputError("Input square is not valid on board");
-                } else if (board.clearPosition(std::stoi(square.substr(1)), square.front())) {
+                } else if (board.clearPosition(UserSquare(square))) {
                     notifyObservers();
                 }
             }

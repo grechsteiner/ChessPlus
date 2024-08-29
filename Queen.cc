@@ -7,7 +7,7 @@
 #include "Queen.h"
 #include "ChessBoard.h"
 #include "Piece.h"
-#include "Move.h"
+
 
 std::vector<std::pair<int, int>> const Queen::queenDirections = { 
     {-1, -1}, 
@@ -23,17 +23,17 @@ std::vector<std::pair<int, int>> const Queen::queenDirections = {
 Queen::Queen(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::QUEEN, pieceDirection, hasMoved, "♛", "Q", pieceScore) {}
 
-std::vector<BoardMove> Queen::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+std::vector<BoardMove> Queen::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const {
     std::vector<BoardMove> moves;
 
     for (std::pair<int, int> const &queenDirection : queenDirections) {
-        int newRow = pieceRow + queenDirection.first;
-        int newCol = pieceCol + queenDirection.second;
-        while (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
+        int newRow = boardSquare.getBoardRow() + queenDirection.first;
+        int newCol = boardSquare.getBoardCol() + queenDirection.second;
+        while (board.isEmptySquareOrOpposingColorOnBoard(BoardSquare(newRow, newCol), pieceInfo.getPieceColor())) {
+            moves.emplace_back(createBoardMove(board, boardSquare, BoardSquare(newRow, newCol), BoardSquare(newRow, newCol), MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
-            if (board.isOpposingColorOnBoard(newRow, newCol, pieceColor)) {
+            if (board.isOpposingColorOnBoard(BoardSquare(newRow, newCol), pieceInfo.getPieceColor())) {
                 break;
             }
             

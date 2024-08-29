@@ -16,14 +16,15 @@ private:
     
 public:
     UserSquare(std::string const &squareStr);
+    bool operator==(UserSquare const &other) const;
     static bool isValidUserSquare(std::string const &squareStr);
 
     std::string toString() const;
     int getUserRow() const;
     std::string getUserCol() const;
 
-    int getGridRow(int numRowsOnGrid) const;
-    int getGridCol(int numColsOnGrid) const;
+    int getBoardRow(int numRowsOnGrid) const;
+    int getBoardCol(int numColsOnGrid) const;
 };
 
 

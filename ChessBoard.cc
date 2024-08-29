@@ -5,30 +5,30 @@
 #include "ChessBoard.h"
 #include "Constants.h"
 #include "BoardMove.h"
+#include "PieceInfo.h"
 
-class Piece;
 class UserMove;
 
 
-Piece const& ChessBoard::getPieceAt(int row, int col) const { return getPieceAtImpl(row, col); }
+PieceInfo ChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
 
-bool ChessBoard::isEmptySquareOnBoard(int row, int col) const { return isEmptySquareOnBoardImpl(row, col); }
-bool ChessBoard::isOpposingColorOnBoard(int row, int col, Color color) const { return isOpposingColorOnBoardImpl(row, col, color); }
-bool ChessBoard::isEmptySquareOrOpposingColorOnBoard(int row, int col, Color color) const { return isEmptySquareOrOpposingColorOnBoardImpl(row, col, color); }
-bool ChessBoard::isSquareCheckAttacked(int attackedRow, int attackedCol, Color color) const { return isSquareCheckAttackedImpl(attackedRow, attackedCol, color); }
+bool ChessBoard::isEmptySquareOnBoard(BoardSquare const &boardSquare) const { return isEmptySquareOnBoardImpl(boardSquare); }
+bool ChessBoard::isOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const { return isOpposingColorOnBoardImpl(boardSquare, color); }
+bool ChessBoard::isEmptySquareOrOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const { return isEmptySquareOrOpposingColorOnBoardImpl(boardSquare, color); }
+bool ChessBoard::isSquareCheckAttacked(BoardSquare const &boardSquare, Color color) const { return isSquareCheckAttackedImpl(boardSquare, color); }
 
 bool ChessBoard::isSquareOnCurrentBoard(UserSquare const &userSquare) const { return isSquareOnCurrentBoardImpl(userSquare); }
 void ChessBoard::setPosition(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) { 
     setPositionImpl(userSquare, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
-void ChessBoard::setPosition(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
-    setPositionImpl(row, col, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
+void ChessBoard::setPosition(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
+    setPositionImpl(boardSquare, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 bool ChessBoard::clearPosition(UserSquare const &userSquare) { return clearPositionImpl(userSquare); }
-bool ChessBoard::clearPosition(int row, int col) { clearPositionImpl(row, col); }
+bool ChessBoard::clearPosition(BoardSquare const &boardSquare) { return clearPositionImpl(boardSquare); }
 void ChessBoard::clearBoard() { clearBoardImpl(); }
-void ChessBoard::swapPositions(int rowOne, int colOne, int rowTwo, int colTwo) { swapPositionsImpl(rowOne, colOne, rowTwo, colTwo); }
-void ChessBoard::setHasMoved(int row, int col, bool hasMoved) { setHasMovedImpl(row, col, hasMoved); }
+void ChessBoard::swapPositions(BoardSquare const &boardSquareOne, BoardSquare const &boardSquareTwo) { swapPositionsImpl(boardSquareOne, boardSquareTwo); }
+void ChessBoard::setHasMoved(BoardSquare const &boardSquare, bool hasMoved) { setHasMovedImpl(boardSquare, hasMoved); }
 bool ChessBoard::setBoardSize(int newNumRows, int newNumCols) { return setBoardSizeImpl(newNumRows, newNumCols); }
 void ChessBoard::applyStandardSetup() { applyStandardSetupImpl(); }
 

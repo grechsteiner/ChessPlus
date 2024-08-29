@@ -5,6 +5,8 @@
 
 #include "Constants.h"
 #include "UserMove.h"
+#include "BoardSquare.h"
+
 
 
 class ChessBoard;
@@ -13,8 +15,9 @@ class ChessBoard;
 class BoardMove {
 
 private:
-    int fromRow, toRow, captureRow;     // 0: top row
-    int fromCol, toCol, captureCol;     // 0: leftmost col
+    BoardSquare fromSquare;
+    BoardSquare toSquare;
+    BoardSquare captureSquare;
 
     // General Info
     MoveType moveType;
@@ -38,7 +41,7 @@ private:
 
 public:
 
-    BoardMove(int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
+    BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, 
             MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
             bool hasMoved, PieceType pieceType, int pieceScore,
             Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
@@ -64,12 +67,9 @@ public:
     // TODO: Probably don't need all of these, if any
     
     // Squares
-    int getFromRow() const;
-    int getToRow() const;
-    int getCaptureRow() const;
-    int getFromCol() const;
-    int getToCol() const;
-    int getCaptureCol() const;
+    BoardSquare const& getFromSquare() const;
+    BoardSquare const& getToSquare() const;
+    BoardSquare const& getCaptureSquare() const;
 
     // General Info
     MoveType getMoveType() const;

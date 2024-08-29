@@ -14,11 +14,14 @@
 Pawn::Pawn(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::PAWN, pieceDirection, hasMoved, "♟", "P", pieceScore) {}
 
-std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const {
     std::vector<BoardMove> moves;
 
+    int pieceRow = boardSquare.getBoardRow();
+    int pieceCol = boardSquare.getBoardCol();
+
     std::pair<int, int> direction;
-    switch (pieceDirection) {
+    switch (pieceInfo.getPieceDirection()) {
         case PieceDirection::NORTH:
             direction = std::make_pair(-1, 0);
             break;
@@ -36,41 +39,44 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
     }
 
     // Normal Move + Double Pawn
-    if (board.isEmptySquareOnBoard(pieceRow + direction.first, pieceCol + direction.second)) {
+    if (board.isEmptySquareOnBoard(BoardSquare(pieceRow + direction.first, pieceCol + direction.second))) {
 
         // Normal Move
-        moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + direction.second, pieceRow + direction.first, pieceCol + direction.second, MoveType::STANDARD, false));
+        moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol + direction.second), BoardSquare(pieceRow + direction.first, pieceCol + direction.second), MoveType::STANDARD, false));
 
         // Double Pawn
-        if (!hasMoved && board.isEmptySquareOnBoard(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second)) {
-            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + 2 * direction.first, pieceCol + 2 * direction.second, pieceRow + 2 * direction.first, pieceCol + 2 * direction.second, MoveType::DOUBLE_PAWN, false));
+        if (!pieceInfo.getHasMoved() && board.isEmptySquareOnBoard(BoardSquare(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second))) {
+            moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second), BoardSquare(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second), MoveType::DOUBLE_PAWN, false));
         }
     }
     
     if (board.hasMoveBeenMade()) {
         BoardMove const &lastCompletedMove = board.getLastMove();
 
+        int lastToRow = lastCompletedMove.getToSquare().getBoardRow();
+        int lastToCol = lastCompletedMove.getToSquare().getBoardCol();
+
         // En passant
         // Last move was double pawn move, and different color team
-        if (lastCompletedMove.getMoveType() == MoveType::DOUBLE_PAWN && board.getPieceAt(lastCompletedMove.getToRow(), lastCompletedMove.getToCol()).getPieceColor() != pieceColor) {
-            switch (pieceDirection) {
+        if (lastCompletedMove.getMoveType() == MoveType::DOUBLE_PAWN && board.getPieceInfoAt(lastCompletedMove.getToSquare()).getPieceColor() != pieceInfo.getPieceColor()) {
+            switch (pieceInfo.getPieceDirection()) {
                 case PieceDirection::NORTH:
                 case PieceDirection::SOUTH:
-                    if (lastCompletedMove.getToRow() == pieceRow) {
-                        if (lastCompletedMove.getToCol() == pieceCol + 1) {
-                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + 1, pieceRow + direction.first, pieceCol + 1, MoveType::ENPASSANT, true));
-                        } else if (lastCompletedMove.getToCol() == pieceCol - 1) {
-                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol - 1, pieceRow + direction.first, pieceCol - 1, MoveType::ENPASSANT, true));
+                    if (lastToRow == pieceRow) {
+                        if (lastToCol == pieceCol + 1) {
+                            moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol + 1), BoardSquare(pieceRow + direction.first, pieceCol + 1), MoveType::ENPASSANT, true));
+                        } else if (lastToCol == pieceCol - 1) {
+                            moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol - 1), BoardSquare(pieceRow + direction.first, pieceCol - 1), MoveType::ENPASSANT, true));
                         }
                     }
                     break;
                 case PieceDirection::EAST:
                 case PieceDirection::WEST:
-                    if (lastCompletedMove.getToCol() == pieceCol) {
-                        if (lastCompletedMove.getToRow() == pieceRow + 1) {
-                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + 1, pieceCol + direction.second, pieceRow + 1, pieceCol + direction.second, MoveType::ENPASSANT, true));
-                        } else if (lastCompletedMove.getToRow() == pieceRow - 1) {
-                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow - 1, pieceCol + direction.second, pieceRow - 1, pieceCol + direction.second, MoveType::ENPASSANT, true));                        }
+                    if (lastToCol == pieceCol) {
+                        if (lastToRow == pieceRow + 1) {
+                            moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 1, pieceCol + direction.second), BoardSquare(pieceRow + 1, pieceCol + direction.second), MoveType::ENPASSANT, true));
+                        } else if (lastToRow == pieceRow - 1) {
+                            moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 1, pieceCol + direction.second), BoardSquare(pieceRow - 1, pieceCol + direction.second), MoveType::ENPASSANT, true));                        }
                     }
                     break;
                 default:
@@ -80,27 +86,27 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
     }
 
     // Attack
-    switch (pieceDirection) {
+    switch (pieceInfo.getPieceDirection()) {
         case PieceDirection::NORTH:
         case PieceDirection::SOUTH:
             // Left
-            if (board.isOpposingColorOnBoard(pieceRow + direction.first, pieceCol - 1, pieceColor)) {
-                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol - 1, pieceRow + direction.first, pieceCol - 1, MoveType::STANDARD, true));
+            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow + direction.first, pieceCol - 1), pieceInfo.getPieceColor())) {
+                moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol - 1), BoardSquare(pieceRow + direction.first, pieceCol - 1), MoveType::STANDARD, true));
             }
             // Right
-            if (board.isOpposingColorOnBoard(pieceRow + direction.first, pieceCol + 1, pieceColor)) {
-                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + 1, pieceRow + direction.first, pieceCol + 1, MoveType::STANDARD, true));
+            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow + direction.first, pieceCol + 1), pieceInfo.getPieceColor())) {
+                moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol + 1), BoardSquare(pieceRow + direction.first, pieceCol + 1), MoveType::STANDARD, true));
             }
             break;
         case PieceDirection::EAST:
         case PieceDirection::WEST:
             // Up (left) 
-            if (board.isOpposingColorOnBoard(pieceRow - 1, pieceCol + direction.second, pieceColor)) {
-                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow - 1, pieceCol + direction.second, pieceRow - 1, pieceCol + direction.second, MoveType::STANDARD, true));
+            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow - 1, pieceCol + direction.second), pieceInfo.getPieceColor())) {
+                moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 1, pieceCol + direction.second), BoardSquare(pieceRow - 1, pieceCol + direction.second), MoveType::STANDARD, true));
             }
             // Down (right)
-            if (board.isOpposingColorOnBoard(pieceRow + 1, pieceCol + direction.second, pieceColor)) {
-                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + 1, pieceCol + direction.second, pieceRow + 1, pieceCol + direction.second, MoveType::STANDARD, true));
+            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow + 1, pieceCol + direction.second), pieceInfo.getPieceColor())) {
+                moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 1, pieceCol + direction.second), BoardSquare(pieceRow + 1, pieceCol + direction.second), MoveType::STANDARD, true));
             }
             break;
         default:
@@ -111,12 +117,12 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
     // Fix any moves that got to the end of the board
     std::vector<BoardMove> promotionMoves;
     for (std::vector<BoardMove>::iterator it = moves.begin(); it != moves.end(); ) {
-        int toRow = it->getToRow();
-        int toCol = it->getToCol();
-        if ((pieceDirection == PieceDirection::NORTH && toRow == 0) ||
-            (pieceDirection == PieceDirection::SOUTH && toRow == board.getNumRows() - 1) ||
-            (pieceDirection == PieceDirection::EAST && toCol == board.getNumCols() - 1) ||
-            (pieceDirection == PieceDirection::WEST && toCol == 0)) {
+        int toRow = it->getToSquare().getBoardRow();
+        int toCol = it->getToSquare().getBoardCol();
+        if ((pieceInfo.getPieceDirection() == PieceDirection::NORTH && toRow == 0) ||
+            (pieceInfo.getPieceDirection() == PieceDirection::SOUTH && toRow == board.getNumRows() - 1) ||
+            (pieceInfo.getPieceDirection() == PieceDirection::EAST && toCol == board.getNumCols() - 1) ||
+            (pieceInfo.getPieceDirection() == PieceDirection::WEST && toCol == 0)) {
             
             std::vector<BoardMove> newPromotionMoves = getPromotionMoves(board, *it);
             promotionMoves.insert(promotionMoves.end(), newPromotionMoves.begin(), newPromotionMoves.end());
@@ -133,15 +139,10 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
 
 std::vector<BoardMove> Pawn::getPromotionMoves(ChessBoard const &board, BoardMove const &move) const {
     std::vector<BoardMove> promotionMoves;
-
-    int fromRow = move.getFromRow();
-    int fromCol = move.getFromCol();
-    int toRow = move.getToRow();
-    int toCol = move.getToCol();
-    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::QUEEN));
-    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::ROOK));
-    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::KNIGHT));
-    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::BISHOP));
+    promotionMoves.emplace_back(createBoardMove(board, move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), move.getMoveType(), move.getIsAttackingMove(), PieceType::QUEEN));
+    promotionMoves.emplace_back(createBoardMove(board, move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), move.getMoveType(), move.getIsAttackingMove(), PieceType::ROOK));
+    promotionMoves.emplace_back(createBoardMove(board, move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), move.getMoveType(), move.getIsAttackingMove(), PieceType::KNIGHT));
+    promotionMoves.emplace_back(createBoardMove(board, move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), move.getMoveType(), move.getIsAttackingMove(), PieceType::BISHOP));
     
     return promotionMoves;
 }

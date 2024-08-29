@@ -129,7 +129,7 @@ void TextObserver::printBoard(ChessBoard const& board, int turn) {
         }
         out << "║";
         for (int col = 0; col < board.getNumCols(); ++col) {
-            printPiece(board.getPieceAt(row, col).getImage(), board.getPieceAt(row, col).getPieceColor());
+            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).getImage(), board.getPieceInfoAt(BoardSquare(row, col)).getPieceColor());
         }
         out << "║ |" << std::endl;
     }

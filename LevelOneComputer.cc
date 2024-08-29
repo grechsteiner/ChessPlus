@@ -6,7 +6,7 @@
 #include "Constants.h"
 #include "LevelOneComputer.h"
 #include "Board.h"
-#include "Move.h"
+
 
 LevelOneComputer::LevelOneComputer() : BasicComputerPlayer() {}
 
