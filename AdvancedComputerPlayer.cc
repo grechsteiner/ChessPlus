@@ -9,25 +9,25 @@
 #include "MoveShuffler.h"
 
 
-FullMove AdvancedComputerPlayer::getMoveImplementation(ChessBoard &board, Color color) const {
+BoardMove AdvancedComputerPlayer::getMoveImplementation(ChessBoard &board, Color color) const {
     return std::get<1>(alphaBetaSearch(board, depth, color, 1000, -1000));
 }
 
-std::tuple<int, FullMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &board, int currentDepth, Color color, int beta, int alpha) const {
+std::tuple<int, BoardMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &board, int currentDepth, Color color, int beta, int alpha) const {
 
     if (currentDepth == 0) {
         if (board.isInStaleMate(color)) {
-            return std::make_tuple(0, FullMove::DEFAULT);
+            return std::make_tuple(0, BoardMove::DEFAULT);
         }
-        return std::make_tuple(board.getAlphaBetaBoardScore(color), FullMove::DEFAULT);
+        return std::make_tuple(board.getAlphaBetaBoardScore(color), BoardMove::DEFAULT);
     }
 
     int bestScore = (color == board.getColorOne()) ? -10000 : 10000;
-    FullMove bestMove = FullMove::DEFAULT;
-    std::vector<FullMove> allMoves = board.getLegalMoves(color);
+    BoardMove bestMove = BoardMove::DEFAULT;
+    std::vector<BoardMove> allMoves = board.getLegalMoves(color);
     allMoves = rank_moves(board, allMoves);
     if (color == board.getColorOne()) {
-        for (FullMove const &move : allMoves) {
+        for (BoardMove const &move : allMoves) {
             board.makeMove(move);
             int currentScore = std::get<0>(alphaBetaSearch(board, currentDepth - 1, board.oppositeColor(color), beta, alpha));
             board.undoMove();   
@@ -43,7 +43,7 @@ std::tuple<int, FullMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &bo
         }
 
     } else {
-        for (FullMove const &move : allMoves) {
+        for (BoardMove const &move : allMoves) {
             board.makeMove(move);
             int currentScore = std::get<0>(alphaBetaSearch(board, currentDepth - 1, board.oppositeColor(color), beta, alpha));
             board.undoMove();    
@@ -62,22 +62,22 @@ std::tuple<int, FullMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &bo
 
     if (bestScore == 10000 || bestScore == -10000) {
         if (board.isInStaleMate(color)) {
-            return std::make_tuple(0, FullMove::DEFAULT);
+            return std::make_tuple(0, BoardMove::DEFAULT);
         }
-        return std::make_tuple(board.getAlphaBetaBoardScore(color), FullMove::DEFAULT);
+        return std::make_tuple(board.getAlphaBetaBoardScore(color), BoardMove::DEFAULT);
     }
 
     return std::make_tuple(bestScore, bestMove);
 }
 
 struct ScoredMove {
-    FullMove move;
+    BoardMove move;
     int score;
 
-    ScoredMove(const FullMove& m, int s) : move(m), score(s) {}
+    ScoredMove(const BoardMove& m, int s) : move(m), score(s) {}
 };
 
-std::vector<FullMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, const std::vector<FullMove>& moves) const {
+std::vector<BoardMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, const std::vector<BoardMove>& moves) const {
     std::vector<ScoredMove> scored_moves;
 
     // Assign values to each move
@@ -93,7 +93,7 @@ std::vector<FullMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, cons
     });
 
     // Randomize moves with the same score
-    std::vector<FullMove> final_list;
+    std::vector<BoardMove> final_list;
     int current_value = scored_moves[0].score;
     std::vector<ScoredMove> temp_list;
 

@@ -10,7 +10,7 @@
 
 LevelOneComputer::LevelOneComputer() : BasicComputerPlayer() {}
 
-std::vector<FullMove> LevelOneComputer::getPossibleMoves(ChessBoard &board, Color color) const {
-    std::vector<FullMove> possibleMoves = board.getLegalMoves(color);
+std::vector<BoardMove> LevelOneComputer::getPossibleMoves(ChessBoard &board, Color color) const {
+    std::vector<BoardMove> possibleMoves = board.getLegalMoves(color);
     return possibleMoves;
 }

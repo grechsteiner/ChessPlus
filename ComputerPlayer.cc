@@ -8,6 +8,6 @@
 
 ComputerPlayer::ComputerPlayer() {}
 
-FullMove ComputerPlayer::getMove(ChessBoard &board, Color color) const {
+BoardMove ComputerPlayer::getMove(ChessBoard &board, Color color) const {
     return getMoveImplementation(board, color);
 }

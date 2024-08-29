@@ -23,8 +23,8 @@ std::vector<std::pair<int, int>> const Queen::queenDirections = {
 Queen::Queen(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::QUEEN, pieceDirection, hasMoved, "♛", "Q", pieceScore) {}
 
-std::vector<FullMove> Queen::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<FullMove> moves;
+std::vector<BoardMove> Queen::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<BoardMove> moves;
 
     for (std::pair<int, int> const &queenDirection : queenDirections) {
         int newRow = pieceRow + queenDirection.first;

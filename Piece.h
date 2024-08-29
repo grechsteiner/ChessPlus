@@ -13,7 +13,7 @@ class ChessBoard;
 class Piece {
 
 private:
-    virtual std::vector<FullMove> getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const = 0;
+    virtual std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const = 0;
     
 protected:
     Piece(Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore);
@@ -29,12 +29,12 @@ protected:
     // TODO:
     // Factory up for different move types
     // Maybe alter isAttackingMove
-    FullMove createFullMove(ChessBoard const &board, int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType = PieceType::EMPTY) const;
+    BoardMove createFullMove(ChessBoard const &board, int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType = PieceType::EMPTY) const;
 
 public:
     virtual ~Piece() = default;
     
-    std::vector<FullMove> getMoves(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const;
+    std::vector<BoardMove> getMoves(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const;
     
     // Getters
     Color getPieceColor() const;

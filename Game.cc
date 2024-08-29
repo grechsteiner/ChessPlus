@@ -202,7 +202,7 @@ void Game::runGame() {
                         outputError("The current player is not a computer, specify move details for human player");
                     } else {
                         // Gauranteed to get valid move
-                        FullMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(board, std::get<0>(getPlayerWithTurn(currentTurn)));
+                        BoardMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(board, std::get<0>(getPlayerWithTurn(currentTurn)));
                         board.makeMove(compMove);
                         incrementTurn();
                         moveMade = true;
@@ -216,7 +216,7 @@ void Game::runGame() {
                         std::string toSquare = tokens[2];
                         std::string promotionPiece = tokens.size() == 3 ? "" : tokens[3];
                         if (UserSquare::isValidChessBoardSquare(fromSquare) && UserSquare::isValidChessBoardSquare(toSquare) && isValidPieceType(promotionPiece)) {
-                            std::unique_ptr<FullMove> fullMove = board.generateFullMove(UserMove(UserSquare(fromSquare), UserSquare(toSquare), stringToPieceType(promotionPiece)));
+                            std::unique_ptr<BoardMove> fullMove = board.generateFullMove(UserMove(UserSquare(fromSquare), UserSquare(toSquare), stringToPieceType(promotionPiece)));
                             // Nullptr if invalid move
                             if (fullMove != nullptr) {
                                 board.makeMove(*fullMove);

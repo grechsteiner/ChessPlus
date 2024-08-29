@@ -6,7 +6,7 @@
 #include "Constants.h"
 
 class Piece;
-class FullMove;
+class BoardMove;
 class UserMove;
 
 
@@ -32,19 +32,19 @@ void ChessBoard::setHasMoved(int row, int col, bool hasMoved) { setHasMovedImpl(
 bool ChessBoard::setBoardSize(int newNumRows, int newNumCols) { return setBoardSizeImpl(newNumRows, newNumCols); }
 void ChessBoard::applyStandardSetup() { applyStandardSetupImpl(); }
 
-std::vector<FullMove> ChessBoard::getLegalMoves(Color color) const { return getLegalMovesImpl(color); }
-std::vector<FullMove> ChessBoard::getCapturingMoves(Color color) const { return getCapturingMoves(color); }
-std::vector<FullMove> ChessBoard::getCheckApplyingMoves(Color color) const { return getCheckApplyingMovesImpl(color); }
-std::vector<FullMove> ChessBoard::getCaptureAvoidingMoves(Color color) const { return getCaptureAvoidingMovesImpl(color); }
+std::vector<BoardMove> ChessBoard::getLegalMoves(Color color) const { return getLegalMovesImpl(color); }
+std::vector<BoardMove> ChessBoard::getCapturingMoves(Color color) const { return getCapturingMoves(color); }
+std::vector<BoardMove> ChessBoard::getCheckApplyingMoves(Color color) const { return getCheckApplyingMovesImpl(color); }
+std::vector<BoardMove> ChessBoard::getCaptureAvoidingMoves(Color color) const { return getCaptureAvoidingMovesImpl(color); }
 
 Color ChessBoard::getColorOne() const { return getColorOneImpl(); }
 Color ChessBoard::getColorTwo() const { return getColorTwoImpl(); }
 Color ChessBoard::oppositeColor(Color color) const { return oppositeColorImpl(color); }
 
-std::unique_ptr<FullMove> ChessBoard::generateFullMove(UserMove const &userMove) const { return generateFullMoveImpl(userMove); }
-FullMove const& ChessBoard::getLastMove() const { return getLastMoveImpl(); }
+std::unique_ptr<BoardMove> ChessBoard::generateFullMove(UserMove const &userMove) const { return generateFullMoveImpl(userMove); }
+BoardMove const& ChessBoard::getLastMove() const { return getLastMoveImpl(); }
 bool ChessBoard::hasMoveBeenMade() const { return hasMoveBeenMadeImpl(); }
-void ChessBoard::makeMove(FullMove const &move) { makeMoveImpl(move); }
+void ChessBoard::makeMove(BoardMove const &move) { makeMoveImpl(move); }
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
 bool ChessBoard::redoMove() { return redoMoveImpl(); }
 

@@ -15,7 +15,7 @@ bool ChessBoard::isEmptySquareOrOpposingColorOnBoard(int row, int col, Color col
 bool ChessBoard::isSquareCheckAttacked(int attackedRow, int attackedCol, Color color) const { return isSquareCheckAttackedImplementation(attackedRow, attackedCol, color); }
 
 bool ChessBoard::hasMoveBeenMade() const { return hasMoveBeenMadeImplementation(); }
-FullMove const& ChessBoard::getLastMove() const { return getLastMoveImplementation(); }
+BoardMove const& ChessBoard::getLastMove() const { return getLastMoveImplementation(); }
 
 int ChessBoard::getNumRows() const { return getNumRowsImplementation(); }
 int ChessBoard::getNumCols() const { return getNumColsImplementation(); }

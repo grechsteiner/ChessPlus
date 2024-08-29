@@ -23,8 +23,8 @@ std::vector<std::pair<int, int>> const King::kingDirections = {
 King::King(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) : 
     Piece(pieceColor, PieceType::KING, pieceDirection, hasMoved, "♚", "K", pieceScore) {}
 
-std::vector<FullMove> King::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<FullMove> moves;
+std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<BoardMove> moves;
 
     // Standard moves
     for (std::pair<int, int> const &kingDirection : kingDirections) {

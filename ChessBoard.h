@@ -9,7 +9,7 @@
 
 class Piece;
 class UserMove;
-class FullMove;
+class BoardMove;
 class UserSquare;
 class BoardSquare;
 
@@ -35,19 +35,19 @@ private:
     virtual bool setBoardSizeImpl(int newNumRows, int newNumCols) = 0;
     virtual void applyStandardSetupImpl() = 0;
 
-    virtual std::vector<FullMove> getLegalMovesImpl(Color color) const = 0; 
-    virtual std::vector<FullMove> getCapturingMovesImpl(Color color) const = 0;
-    virtual std::vector<FullMove> getCheckApplyingMovesImpl(Color color) const = 0;
-    virtual std::vector<FullMove> getCaptureAvoidingMovesImpl(Color color) const = 0;
+    virtual std::vector<BoardMove> getLegalMovesImpl(Color color) const = 0; 
+    virtual std::vector<BoardMove> getCapturingMovesImpl(Color color) const = 0;
+    virtual std::vector<BoardMove> getCheckApplyingMovesImpl(Color color) const = 0;
+    virtual std::vector<BoardMove> getCaptureAvoidingMovesImpl(Color color) const = 0;
 
     virtual Color getColorOneImpl() const = 0;
     virtual Color getColorTwoImpl() const = 0;
     virtual Color oppositeColorImpl(Color color) const = 0;
 
-    virtual std::unique_ptr<FullMove> generateFullMoveImpl(UserMove const &userMove) const = 0;
-    virtual FullMove const& getLastMoveImpl() const = 0;
+    virtual std::unique_ptr<BoardMove> generateFullMoveImpl(UserMove const &userMove) const = 0;
+    virtual BoardMove const& getLastMoveImpl() const = 0;
     virtual bool hasMoveBeenMadeImpl() const = 0;
-    virtual void makeMoveImpl(FullMove const &move) = 0;                    
+    virtual void makeMoveImpl(BoardMove const &move) = 0;                    
     virtual bool undoMoveImpl() = 0;  
     virtual bool redoMoveImpl() = 0; 
 
@@ -83,19 +83,19 @@ public:
     bool setBoardSize(int newNumRows, int newNumCols);
     void applyStandardSetup();
 
-    std::vector<FullMove> getLegalMoves(Color color) const; 
-    std::vector<FullMove> getCapturingMoves(Color color) const;
-    std::vector<FullMove> getCheckApplyingMoves(Color color) const;
-    std::vector<FullMove> getCaptureAvoidingMoves(Color color) const;
+    std::vector<BoardMove> getLegalMoves(Color color) const; 
+    std::vector<BoardMove> getCapturingMoves(Color color) const;
+    std::vector<BoardMove> getCheckApplyingMoves(Color color) const;
+    std::vector<BoardMove> getCaptureAvoidingMoves(Color color) const;
 
     Color getColorOne() const;
     Color getColorTwo() const;
     Color oppositeColor(Color color) const;
 
-    std::unique_ptr<FullMove> generateFullMove(UserMove const &userMove) const;
-    FullMove const& getLastMove() const;
+    std::unique_ptr<BoardMove> generateFullMove(UserMove const &userMove) const;
+    BoardMove const& getLastMove() const;
     bool hasMoveBeenMade() const;
-    void makeMove(FullMove const &move);                    
+    void makeMove(BoardMove const &move);                    
     bool undoMove();  
     bool redoMove(); 
 

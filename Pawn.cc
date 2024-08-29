@@ -14,8 +14,8 @@
 Pawn::Pawn(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::PAWN, pieceDirection, hasMoved, "♟", "P", pieceScore) {}
 
-std::vector<FullMove> Pawn::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<FullMove> moves;
+std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<BoardMove> moves;
 
     std::pair<int, int> direction;
     switch (pieceDirection) {
@@ -48,7 +48,7 @@ std::vector<FullMove> Pawn::getMovesImplementation(ChessBoard const &board, int 
     }
     
     if (board.hasMoveBeenMade()) {
-        FullMove const &lastCompletedMove = board.getLastMove();
+        BoardMove const &lastCompletedMove = board.getLastMove();
 
         // En passant
         // Last move was double pawn move, and different color team
@@ -109,8 +109,8 @@ std::vector<FullMove> Pawn::getMovesImplementation(ChessBoard const &board, int 
 
     // Promotion
     // Fix any moves that got to the end of the board
-    std::vector<FullMove> promotionMoves;
-    for (std::vector<FullMove>::iterator it = moves.begin(); it != moves.end(); ) {
+    std::vector<BoardMove> promotionMoves;
+    for (std::vector<BoardMove>::iterator it = moves.begin(); it != moves.end(); ) {
         int toRow = it->getToRow();
         int toCol = it->getToCol();
         if ((pieceDirection == PieceDirection::NORTH && toRow == 0) ||
@@ -118,7 +118,7 @@ std::vector<FullMove> Pawn::getMovesImplementation(ChessBoard const &board, int 
             (pieceDirection == PieceDirection::EAST && toCol == board.getNumCols() - 1) ||
             (pieceDirection == PieceDirection::WEST && toCol == 0)) {
             
-            std::vector<FullMove> newPromotionMoves = getPromotionMoves(board, *it);
+            std::vector<BoardMove> newPromotionMoves = getPromotionMoves(board, *it);
             promotionMoves.insert(promotionMoves.end(), newPromotionMoves.begin(), newPromotionMoves.end());
             it = moves.erase(it);
         } else {
@@ -131,8 +131,8 @@ std::vector<FullMove> Pawn::getMovesImplementation(ChessBoard const &board, int 
 }
 
 
-std::vector<FullMove> Pawn::getPromotionMoves(ChessBoard const &board, FullMove const &move) const {
-    std::vector<FullMove> promotionMoves;
+std::vector<BoardMove> Pawn::getPromotionMoves(ChessBoard const &board, BoardMove const &move) const {
+    std::vector<BoardMove> promotionMoves;
 
     int fromRow = move.getFromRow();
     int fromCol = move.getFromCol();

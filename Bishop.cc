@@ -19,8 +19,8 @@ std::vector<std::pair<int, int>> const Bishop::bishopDirections = {
 Bishop::Bishop(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::BISHOP, pieceDirection, hasMoved, "♝", "B", pieceScore) {}
 
-std::vector<FullMove> Bishop::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<FullMove> moves;
+std::vector<BoardMove> Bishop::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<BoardMove> moves;
     for (std::pair<int, int> const &bishopDirection : bishopDirections) {
         int newRow = pieceRow + bishopDirection.first;
         int newCol = pieceCol + bishopDirection.second;

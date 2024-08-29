@@ -10,10 +10,10 @@
 
 LevelTwoComputer::LevelTwoComputer() : BasicComputerPlayer() {}
 
-std::vector<FullMove> LevelTwoComputer::getPossibleMoves(ChessBoard &board, Color color) const {
-    std::vector<FullMove> allMoves;
-    std::vector<FullMove> capturingMoves = board.getCapturingMoves(color);
-    std::vector<FullMove> checkApplyingMoves = board.getCheckApplyingMoves(color);
+std::vector<BoardMove> LevelTwoComputer::getPossibleMoves(ChessBoard &board, Color color) const {
+    std::vector<BoardMove> allMoves;
+    std::vector<BoardMove> capturingMoves = board.getCapturingMoves(color);
+    std::vector<BoardMove> checkApplyingMoves = board.getCheckApplyingMoves(color);
     allMoves.insert(allMoves.end(), capturingMoves.begin(), capturingMoves.end());
     allMoves.insert(allMoves.end(), checkApplyingMoves.begin(), checkApplyingMoves.end());
 

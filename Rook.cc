@@ -19,8 +19,8 @@ std::vector<std::pair<int, int>> const Rook::rookDirections = {
 Rook::Rook(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::ROOK, pieceDirection, hasMoved, "♜", "R", pieceScore) {}
 
-std::vector<FullMove> Rook::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
-    std::vector<FullMove> moves;
+std::vector<BoardMove> Rook::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+    std::vector<BoardMove> moves;
 
     for (std::pair<int, int> const &rookDirection : rookDirections) {
         int newRow = pieceRow + rookDirection.first;

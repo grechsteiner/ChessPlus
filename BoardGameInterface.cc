@@ -14,7 +14,7 @@ bool ChessBoard::isSquareOnBoard(int row, char col) const { return isSquareOnBoa
 bool ChessBoard::setBoardSize(int newNumRows, int newNumCols) { return setBoardSizeImpl(newNumRows, newNumCols); }
 void ChessBoard::applyStandardSetup() { applyStandardSetupImpl(); }
 
-std::unique_ptr<FullMove> ChessBoard::generateFullMove(UserMove const &userMove) const { return generateFullMoveImpl(userMove); }
-void ChessBoard::makeMove(FullMove const &move) { makeMoveImpl(move); }
+std::unique_ptr<BoardMove> ChessBoard::generateFullMove(UserMove const &userMove) const { return generateFullMoveImpl(userMove); }
+void ChessBoard::makeMove(BoardMove const &move) { makeMoveImpl(move); }
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
 bool ChessBoard::redoMove() { return redoMoveImpl(); }

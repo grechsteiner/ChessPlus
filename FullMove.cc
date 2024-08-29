@@ -12,13 +12,13 @@
 
 
 // Static
-const FullMove FullMove::DEFAULT = 
-    FullMove(0, 0, 0, 0, 0, 0,
+const BoardMove BoardMove::DEFAULT = 
+    BoardMove(0, 0, 0, 0, 0, 0,
             MoveType::STANDARD, false, PieceType::EMPTY, 
             false, PieceType::EMPTY, 0, 
             Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);
 
-FullMove::FullMove( int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
+BoardMove::BoardMove( int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
                     MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
                     bool hasMoved, PieceType pieceType, int pieceScore,
                     Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore) :
@@ -41,7 +41,7 @@ FullMove::FullMove( int fromRow, int fromCol, int toRow, int toCol,
 {}
 */
 
-bool FullMove::operator==(FullMove const &other) const {
+bool BoardMove::operator==(BoardMove const &other) const {
     return 
         fromRow == other.fromRow &&
         toRow == other.toRow &&
@@ -63,7 +63,7 @@ bool FullMove::operator==(FullMove const &other) const {
 }
 
 
-std::string FullMove::toString() const {
+std::string BoardMove::toString() const {
     std::string moveString = std::to_string(fromCol) + std::to_string(fromRow) + " " + std::to_string(toCol) + std::to_string(toRow);
     if (promotionPieceType != PieceType::EMPTY) {
         moveString += " " + pieceTypeToString(promotionPieceType);
@@ -73,7 +73,7 @@ std::string FullMove::toString() const {
 
 #pragma mark - Commands
 
-void FullMove::performRookCastle(ChessBoard &board, bool isUndo) const {
+void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
     bool newHasRookMoved = isUndo ? false : true;
     if (abs(fromCol - toCol) == 2) {
             // Horizontal castle
@@ -110,7 +110,7 @@ void FullMove::performRookCastle(ChessBoard &board, bool isUndo) const {
         }
 }
 
-void FullMove::makeMove(ChessBoard &board) const {
+void BoardMove::makeMove(ChessBoard &board) const {
 
     // Basic Stuff
     board.setPosition(captureRow, captureCol, Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);      // Set captured piece to blank
@@ -129,7 +129,7 @@ void FullMove::makeMove(ChessBoard &board) const {
     }
 }
 
-bool FullMove::undoMove(ChessBoard &board) const {
+bool BoardMove::undoMove(ChessBoard &board) const {
 
     // Basic Stuff
     board.swapPositions(fromRow, fromCol, toRow, toCol);                                                                                        // Undo moving the piece
@@ -152,26 +152,26 @@ bool FullMove::undoMove(ChessBoard &board) const {
 #pragma mark - Getters
 
 // Squares
-int FullMove::getFromRow() const { return fromRow; }
-int FullMove::getToRow() const { return toRow; }
-int FullMove::getCaptureRow() const { return captureRow; }
-int FullMove::getFromCol() const { return fromCol; }
-int FullMove::getToCol() const { return toCol; }
-int FullMove::getCaptureCol() const { return captureCol; }
+int BoardMove::getFromRow() const { return fromRow; }
+int BoardMove::getToRow() const { return toRow; }
+int BoardMove::getCaptureRow() const { return captureRow; }
+int BoardMove::getFromCol() const { return fromCol; }
+int BoardMove::getToCol() const { return toCol; }
+int BoardMove::getCaptureCol() const { return captureCol; }
 
 // General Info
-MoveType FullMove::getMoveType() const { return moveType; }
-bool FullMove::getIsAttackingMove() const { return isAttackingMove; }
-PieceType FullMove::getPromotionPieceType() const { return promotionPieceType; }
+MoveType BoardMove::getMoveType() const { return moveType; }
+bool BoardMove::getIsAttackingMove() const { return isAttackingMove; }
+PieceType BoardMove::getPromotionPieceType() const { return promotionPieceType; }
 
 // Moved Piece Info
-bool FullMove::getHasMoved() const { return hasMoved; }
-PieceType FullMove::getPieceType() const { return pieceType; }
-int FullMove::getPieceScore() const { return pieceScore; }
+bool BoardMove::getHasMoved() const { return hasMoved; }
+PieceType BoardMove::getPieceType() const { return pieceType; }
+int BoardMove::getPieceScore() const { return pieceScore; }
 
 // Captured Piece Info
-Color FullMove::getCapturedColor() const { return capturedColor; }
-PieceType FullMove::getCapturedPieceType() const { return capturedPieceType; }
-PieceDirection FullMove::getCapturedPieceDirection() const { return capturedPieceDirection; }
-bool FullMove::getCapturedHasMoved() const { return capturedHasMoved; }
-int FullMove::getCapturedPieceScore() const { return capturedPieceScore; }
+Color BoardMove::getCapturedColor() const { return capturedColor; }
+PieceType BoardMove::getCapturedPieceType() const { return capturedPieceType; }
+PieceDirection BoardMove::getCapturedPieceDirection() const { return capturedPieceDirection; }
+bool BoardMove::getCapturedHasMoved() const { return capturedHasMoved; }
+int BoardMove::getCapturedPieceScore() const { return capturedPieceScore; }

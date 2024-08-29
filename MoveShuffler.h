@@ -10,7 +10,7 @@
 
 class MoveShuffler {
 public:
-    static void shuffle(std::vector<FullMove> &moves);
+    static void shuffle(std::vector<BoardMove> &moves);
 };
 
 

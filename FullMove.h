@@ -10,7 +10,7 @@
 class ChessBoard;
 
 
-class FullMove {
+class BoardMove {
 
 private:
     int fromRow, toRow, captureRow;     // 0: top row
@@ -38,7 +38,7 @@ private:
 
 public:
 
-    FullMove(int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
+    BoardMove(int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, 
             MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
             bool hasMoved, PieceType pieceType, int pieceScore,
             Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
@@ -51,15 +51,15 @@ public:
             Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
     */
 
-   static const FullMove DEFAULT;
+   static const BoardMove DEFAULT;
 
-    FullMove(FullMove const &other) = default;
-    FullMove(FullMove &&other) = default;
-    FullMove& operator=(const FullMove& other) = default;
-    FullMove& operator=(FullMove&& other) = default;
-    ~FullMove() = default;
+    BoardMove(BoardMove const &other) = default;
+    BoardMove(BoardMove &&other) = default;
+    BoardMove& operator=(const BoardMove& other) = default;
+    BoardMove& operator=(BoardMove&& other) = default;
+    ~BoardMove() = default;
 
-    bool operator==(FullMove const &other) const;
+    bool operator==(BoardMove const &other) const;
         
     std::string toString() const;
 

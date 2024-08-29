@@ -13,8 +13,8 @@ class ChessBoard;
 
 class Pawn : public Piece {
 private:
-    std::vector<FullMove> getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
-    std::vector<FullMove> getPromotionMoves(ChessBoard const &board, FullMove const &move) const;
+    std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
+    std::vector<BoardMove> getPromotionMoves(ChessBoard const &board, BoardMove const &move) const;
 public:
     Pawn(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 1);
 };

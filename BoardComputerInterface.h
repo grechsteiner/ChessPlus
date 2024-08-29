@@ -15,16 +15,16 @@ class Context;
 class ChessBoard {
 
 private:
-    virtual std::vector<FullMove> getLegalMovesImpl(Color color) const = 0; 
-    virtual std::vector<FullMove> getCapturingMovesImpl(Color color) const = 0;
-    virtual std::vector<FullMove> getCheckApplyingMovesImpl(Color color) const = 0;
-    virtual std::vector<FullMove> getCaptureAvoidingMovesImpl(Color color) const = 0;
+    virtual std::vector<BoardMove> getLegalMovesImpl(Color color) const = 0; 
+    virtual std::vector<BoardMove> getCapturingMovesImpl(Color color) const = 0;
+    virtual std::vector<BoardMove> getCheckApplyingMovesImpl(Color color) const = 0;
+    virtual std::vector<BoardMove> getCaptureAvoidingMovesImpl(Color color) const = 0;
 
     virtual Color getColorOneImpl() const = 0;
     virtual Color getColorTwoImpl() const = 0;
     virtual Color oppositeColorImpl(Color color) const = 0;
 
-    virtual void makeMoveImpl(FullMove const &move) = 0;                    
+    virtual void makeMoveImpl(BoardMove const &move) = 0;                    
     virtual bool undoMoveImpl() = 0;   
 
     virtual Piece const& getPieceAtImpl(int row, int col) const = 0;
@@ -34,16 +34,16 @@ private:
     virtual Context& getContextImpl() = 0;
 
 public:
-    std::vector<FullMove> getLegalMoves(Color color) const; 
-    std::vector<FullMove> getCapturingMoves(Color color) const;
-    std::vector<FullMove> getCheckApplyingMoves(Color color) const;
-    std::vector<FullMove> getCaptureAvoidingMoves(Color color) const;
+    std::vector<BoardMove> getLegalMoves(Color color) const; 
+    std::vector<BoardMove> getCapturingMoves(Color color) const;
+    std::vector<BoardMove> getCheckApplyingMoves(Color color) const;
+    std::vector<BoardMove> getCaptureAvoidingMoves(Color color) const;
 
     Color getColorOne() const;
     Color getColorTwo() const;
     Color oppositeColor(Color color) const;
 
-    void makeMove(FullMove const &move);                    
+    void makeMove(BoardMove const &move);                    
     bool undoMove();   
 
     Piece const& getPieceAt(int row, int col) const;

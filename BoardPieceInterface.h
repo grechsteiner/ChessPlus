@@ -21,7 +21,7 @@ private:
     virtual bool isSquareCheckAttackedImplementation(int attackedRow, int attackedCol, Color color) const = 0;
 
     virtual bool hasMoveBeenMadeImplementation() const = 0;
-    virtual FullMove const& getLastMoveImplementation() const = 0;
+    virtual BoardMove const& getLastMoveImplementation() const = 0;
 
     virtual int getNumRowsImplementation() const = 0;
     virtual int getNumColsImplementation() const = 0;
@@ -36,7 +36,7 @@ public:
     bool isSquareCheckAttacked(int attackedRow, int attackedCol, Color color) const;
 
     bool hasMoveBeenMade() const;
-    FullMove const& getLastMove() const;
+    BoardMove const& getLastMove() const;
 
     int getNumRows() const;
     int getNumCols() const;

@@ -11,9 +11,9 @@
 class ComputerPlayer {
 
 private:
-    virtual FullMove getMoveImplementation(ChessBoard &board, Color color) const = 0;
+    virtual BoardMove getMoveImplementation(ChessBoard &board, Color color) const = 0;
 public:
-    FullMove getMove(ChessBoard &board, Color color) const;
+    BoardMove getMove(ChessBoard &board, Color color) const;
     ComputerPlayer();
     virtual ~ComputerPlayer() = default;
 };

@@ -30,21 +30,21 @@ private:
 
     std::vector<std::vector<std::unique_ptr<Piece>>> grid;
 
-    std::vector<FullMove> completedMoves;
-    std::vector<FullMove> redoMoves;
+    std::vector<BoardMove> completedMoves;
+    std::vector<BoardMove> redoMoves;
 
 
     /* Utility */
     void initializeBoard();
 
-    std::vector<FullMove> getPseudoLegalMoves(Color color) const;   
-    std::vector<FullMove> getAllPseudoLegalAttackingMoves(Color color) const;
+    std::vector<BoardMove> getPseudoLegalMoves(Color color) const;   
+    std::vector<BoardMove> getAllPseudoLegalAttackingMoves(Color color) const;
 
-    bool doesMoveApplyCheck(FullMove const &fullMove) const;
-    bool doesMoveCapturePiece(FullMove const &fullMove) const;
-    bool doesMoveHavePieceAttackedAfter(FullMove const &fullMove) const;
+    bool doesMoveApplyCheck(BoardMove const &fullMove) const;
+    bool doesMoveCapturePiece(BoardMove const &fullMove) const;
+    bool doesMoveHavePieceAttackedAfter(BoardMove const &fullMove) const;
     bool canMakeMove(Color color) const;
-    bool isInCheckAfterMove(FullMove const &fullMove) const;   
+    bool isInCheckAfterMove(BoardMove const &fullMove) const;   
 
 
 
@@ -67,19 +67,19 @@ private:
     bool setBoardSizeImpl(int newNumRows, int newNumCols) override; // Set board to have provided coordinates, returning true if coordinates are valid, false otherwise, Does not change the state of any pieces on the board
     void applyStandardSetupImpl() override;
 
-    std::vector<FullMove> getLegalMovesImpl(Color color) const override; 
-    std::vector<FullMove> getCapturingMovesImpl(Color color) const override;
-    std::vector<FullMove> getCheckApplyingMovesImpl(Color color) const override;
-    std::vector<FullMove> getCaptureAvoidingMovesImpl(Color color) const override;
+    std::vector<BoardMove> getLegalMovesImpl(Color color) const override; 
+    std::vector<BoardMove> getCapturingMovesImpl(Color color) const override;
+    std::vector<BoardMove> getCheckApplyingMovesImpl(Color color) const override;
+    std::vector<BoardMove> getCaptureAvoidingMovesImpl(Color color) const override;
 
     Color getColorOneImpl() const override;
     Color getColorTwoImpl() const override;
     Color oppositeColorImpl(Color color) const override;
 
-    std::unique_ptr<FullMove> generateFullMoveImpl(UserMove const &userMove) const override;
-    FullMove const& getLastMoveImpl() const override;
+    std::unique_ptr<BoardMove> generateFullMoveImpl(UserMove const &userMove) const override;
+    BoardMove const& getLastMoveImpl() const override;
     bool hasMoveBeenMadeImpl() const override;
-    void makeMoveImpl(FullMove const &move) override;                    
+    void makeMoveImpl(BoardMove const &move) override;                    
     bool undoMoveImpl() override;  
     bool redoMoveImpl() override; 
 

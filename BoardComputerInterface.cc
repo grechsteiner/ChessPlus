@@ -8,16 +8,16 @@
 #include "Piece.h"
 
 
-std::vector<FullMove> ChessBoard::getLegalMoves(Color color) const { return getLegalMovesImpl(color); }
-std::vector<FullMove> ChessBoard::getCapturingMoves(Color color) const { return getCapturingMovesImpl(color); }
-std::vector<FullMove> ChessBoard::getCheckApplyingMoves(Color color) const { return getCheckApplyingMoves(color); }
-std::vector<FullMove> ChessBoard::getCaptureAvoidingMoves(Color color) const { return getCaptureAvoidingMovesImpl(color); }
+std::vector<BoardMove> ChessBoard::getLegalMoves(Color color) const { return getLegalMovesImpl(color); }
+std::vector<BoardMove> ChessBoard::getCapturingMoves(Color color) const { return getCapturingMovesImpl(color); }
+std::vector<BoardMove> ChessBoard::getCheckApplyingMoves(Color color) const { return getCheckApplyingMoves(color); }
+std::vector<BoardMove> ChessBoard::getCaptureAvoidingMoves(Color color) const { return getCaptureAvoidingMovesImpl(color); }
 
 Color ChessBoard::getColorOne() const { return getColorOneImpl(); }
 Color ChessBoard::getColorTwo() const { return getColorTwoImpl(); }
 Color ChessBoard::oppositeColor(Color color) const { return oppositeColorImpl(color); }
 
-void ChessBoard::makeMove(FullMove const &move) { makeMoveImpl(move); }
+void ChessBoard::makeMove(BoardMove const &move) { makeMoveImpl(move); }
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
 
 Piece const& ChessBoard::getPieceAt(int row, int col) const { return getPieceAtImpl(row, col); }
