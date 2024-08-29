@@ -117,7 +117,7 @@ void BoardMove::makeMove(ChessBoard &board) const {
     }
 }
 
-bool BoardMove::undoMove(ChessBoard &board) const {
+void BoardMove::undoMove(ChessBoard &board) const {
 
     // Basic Stuff
     board.swapPositions(fromRow, fromCol, toRow, toCol);                                                                                        // Undo moving the piece

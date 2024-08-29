@@ -9,6 +9,7 @@
 #include "StandardOpeningTrie.h"
 #include "UserMove.h"
 #include "BoardMove.h"
+#include "UserSquare.h"
 
 using std::string;
 using std::vector;
@@ -20,11 +21,11 @@ using std::unique_ptr;
 const StandardOpeningTrie StandardOpeningTrie::Hardcoded = [] {
     StandardOpeningTrie trie;
 
-    trie.insert({UserMove("e2", "e4"), UserMove("e7", "e5"), UserMove("g1", "f3"), UserMove("b8", "c6"), UserMove("f1", "b5")}, "Ruy López");
-    trie.insert({UserMove("e2", "e4"), UserMove("e7", "e6")}, "French Defense");
-    trie.insert({UserMove("e2", "e4"), UserMove("e7", "e5"), UserMove("g1", "f3"), UserMove("b8", "c6"), UserMove("f1", "c4")}, "Italian Game");
-    trie.insert({UserMove("d2", "d4"), UserMove("d6", "d5"), UserMove("c2", "c4")}, "Queen's Gambit");
-    trie.insert({UserMove("d2", "d4"), UserMove("g8", "f6"), UserMove("c2", "c4"), UserMove("g7", "g6")}, "King's Indian Defense");
+    trie.insert({UserMove(UserSquare("e2"), UserSquare("e4")), UserMove(UserSquare("e7"), UserSquare("e5")), UserMove(UserSquare("g1"), UserSquare("f3")), UserMove(UserSquare("b8"), UserSquare("c6")), UserMove(UserSquare("f1"), UserSquare("b5"))}, "Ruy López");
+    trie.insert({UserMove(UserSquare("e2"), UserSquare("e4")), UserMove(UserSquare("e7"), UserSquare("e6"))}, "French Defense");
+    trie.insert({UserMove(UserSquare("e2"), UserSquare("e4")), UserMove(UserSquare("e7"), UserSquare("e5")), UserMove(UserSquare("g1"), UserSquare("f3")), UserMove(UserSquare("b8"), UserSquare("c6")), UserMove(UserSquare("f1"), UserSquare("c4"))}, "Italian Game");
+    trie.insert({UserMove(UserSquare("d2"), UserSquare("d4")), UserMove(UserSquare("d6"), UserSquare("d5")), UserMove(UserSquare("c2"), UserSquare("c4"))}, "Queen's Gambit");
+    trie.insert({UserMove(UserSquare("d2"), UserSquare("d4")), UserMove(UserSquare("g8"), UserSquare("f6")), UserMove(UserSquare("c2"), UserSquare("c4")), UserMove(UserSquare("g7"), UserSquare("g6"))}, "King's Indian Defense");
 
     return trie;
 }();

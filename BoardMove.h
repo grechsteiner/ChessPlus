@@ -57,7 +57,7 @@ public:
 
     // Commands
     void makeMove(ChessBoard &board) const;
-    bool undoMove(ChessBoard &board) const;
+    void undoMove(ChessBoard &board) const;
 
 
     /* Getters */

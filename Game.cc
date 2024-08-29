@@ -81,11 +81,11 @@ const std::tuple<PlayerTuple, PlayerTuple>& Game::getMainMenuState() const {
 }
 
 std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
-    return std::make_tuple(board, std::cref(players), currentTurn);
+    return std::make_tuple(std::ref(board), std::cref(players), currentTurn);
 }
 
 std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
-    return std::make_tuple(board, std::cref(players), currentTurn, showingStandardOpenings);
+    return std::make_tuple(std::ref(board), std::cref(players), currentTurn, showingStandardOpenings);
 }
 
 void Game::resetComputerPlayers() {

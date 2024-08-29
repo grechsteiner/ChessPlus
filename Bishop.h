@@ -10,7 +10,7 @@
 #include "BoardMove.h"
 
 
-class BoarePieceInterface;
+class ChessBoard;
 
 class Bishop : public Piece {
 private:

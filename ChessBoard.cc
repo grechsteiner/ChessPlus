@@ -4,9 +4,9 @@
 
 #include "ChessBoard.h"
 #include "Constants.h"
+#include "BoardMove.h"
 
 class Piece;
-class BoardMove;
 class UserMove;
 
 
@@ -33,7 +33,7 @@ bool ChessBoard::setBoardSize(int newNumRows, int newNumCols) { return setBoardS
 void ChessBoard::applyStandardSetup() { applyStandardSetupImpl(); }
 
 std::vector<BoardMove> ChessBoard::getLegalMoves(Color color) const { return getLegalMovesImpl(color); }
-std::vector<BoardMove> ChessBoard::getCapturingMoves(Color color) const { return getCapturingMoves(color); }
+std::vector<BoardMove> ChessBoard::getCapturingMoves(Color color) const { return getCapturingMovesImpl(color); }
 std::vector<BoardMove> ChessBoard::getCheckApplyingMoves(Color color) const { return getCheckApplyingMovesImpl(color); }
 std::vector<BoardMove> ChessBoard::getCaptureAvoidingMoves(Color color) const { return getCaptureAvoidingMovesImpl(color); }
 
