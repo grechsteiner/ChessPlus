@@ -6,14 +6,14 @@
 #include "Constants.h"
 #include "Board.h"
 #include "FullMove.h"
-#include "BoardComputerInterface.h"
+#include "ChessBoard.h"
 
 class ComputerPlayer {
 
 private:
-    virtual FullMove getMoveImplementation(BoardComputerInterface &board, Color color) const = 0;
+    virtual FullMove getMoveImplementation(ChessBoard &board, Color color) const = 0;
 public:
-    FullMove getMove(BoardComputerInterface &board, Color color) const;
+    FullMove getMove(ChessBoard &board, Color color) const;
     ComputerPlayer();
     virtual ~ComputerPlayer() = default;
 };

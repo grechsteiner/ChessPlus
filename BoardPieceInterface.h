@@ -1,7 +1,7 @@
-// BoardPieceInterface.h
+// ChessBoard.h
 
-#ifndef BoardPieceInterface_h
-#define BoardPieceInterface_h
+#ifndef ChessBoard_h
+#define ChessBoard_h
 
 #include <memory>
 
@@ -11,7 +11,7 @@
 
 class Context;
 
-class BoardPieceInterface {
+class ChessBoard {
 
 private:
     virtual Piece const& getPieceAtImpl(int row, int col) const = 0;
@@ -41,10 +41,10 @@ public:
     int getNumRows() const;
     int getNumCols() const;
 
-    virtual ~BoardPieceInterface() = default;
+    virtual ~ChessBoard() = default;
 
     Context& getContext() { return getContextImpl(); }
 };
 
 
-#endif /* BoardPieceInterface */
+#endif /* ChessBoard */

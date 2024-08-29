@@ -1,18 +1,18 @@
-// BoardDisplayInterface.cc
+// ChessBoard.cc
 
 #include <vector>
 #include <string>
 
-#include "BoardDisplayInterface.h"
+#include "ChessBoard.h"
 #include "Piece.h"
 
 
-int BoardDisplayInterface::getNumRows() const { return getNumRowsImpl(); }
-int BoardDisplayInterface::getNumCols() const { return getNumColsImpl(); }
+int ChessBoard::getNumRows() const { return getNumRowsImpl(); }
+int ChessBoard::getNumCols() const { return getNumColsImpl(); }
 
-Piece const& BoardDisplayInterface::getPieceAt(int row, int col) const { return getPieceAtImpl(row, col); }
-std::vector<std::pair<std::string, std::string>> BoardDisplayInterface::getMatchingOpenings() const { return getMatchingOpeningsImpl(); }
+Piece const& ChessBoard::getPieceAt(int row, int col) const { return getPieceAtImpl(row, col); }
+std::vector<std::pair<std::string, std::string>> ChessBoard::getMatchingOpenings() const { return getMatchingOpeningsImpl(); }
 
-bool BoardDisplayInterface::isInCheck(Color color) const { return isInCheckImpl(color); }
-bool BoardDisplayInterface::isInCheckMate(Color color) const { return isInCheckMateImpl(color); }
-bool BoardDisplayInterface::isInStaleMate(Color color) const { return isInStaleMateImpl(color); }
+bool ChessBoard::isInCheck(Color color) const { return isInCheckImpl(color); }
+bool ChessBoard::isInCheckMate(Color color) const { return isInCheckMateImpl(color); }
+bool ChessBoard::isInStaleMate(Color color) const { return isInStaleMateImpl(color); }

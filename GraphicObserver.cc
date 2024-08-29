@@ -20,13 +20,13 @@ void GraphicObserver::notifyImplementation() {
         window.drawString(50, 50, "Main Menu"); // Center the "Main Menu" text
     } else if (gameState == GameState::SETUP) {
         auto state = game->getSetupState();
-        const BoardDisplayInterface& board = std::get<0>(state);
+        const ChessBoard& board = std::get<0>(state);
 
         window.fillRectangle(0, 0, 600, 600, 0); // Clear the window with white color
         printBoard(board, std::get<2>(state));
     } else {
         auto state = game->getActiveGameState();
-        const BoardDisplayInterface& board = std::get<0>(state);
+        const ChessBoard& board = std::get<0>(state);
 
         window.fillRectangle(0, 0, 600, 600, 0); // Clear the window with white color
         printBoard(board, std::get<2>(state));
@@ -39,7 +39,7 @@ void GraphicObserver::printPiece(const std::string& str, Color color, int x, int
     window.drawString(x, y, str, pieceColor);
 }
 
-void GraphicObserver::printBoard(const BoardDisplayInterface& board, int turn) {
+void GraphicObserver::printBoard(const ChessBoard& board, int turn) {
     int numRows = board.getNumRows();
     int numCols = board.getNumCols();
     int windowWidth = 600;  // Width of the window

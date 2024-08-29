@@ -9,7 +9,7 @@
 
 BasicComputerPlayer::BasicComputerPlayer() : ComputerPlayer() {}
 
-FullMove BasicComputerPlayer::getMoveImplementation(BoardComputerInterface &board, Color color) const {
+FullMove BasicComputerPlayer::getMoveImplementation(ChessBoard &board, Color color) const {
     std::vector<FullMove> possibleMoves = getPossibleMoves(board, color);
     MoveShuffler::shuffle(possibleMoves);
     return possibleMoves[0];

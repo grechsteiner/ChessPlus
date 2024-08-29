@@ -5,7 +5,7 @@
 
 #include "Constants.h"
 #include "King.h"
-#include "BoardPieceInterface.h"
+#include "ChessBoard.h"
 #include "Piece.h"
 #include "Move.h"
 
@@ -23,7 +23,7 @@ std::vector<std::pair<int, int>> const King::kingDirections = {
 King::King(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) : 
     Piece(pieceColor, PieceType::KING, pieceDirection, hasMoved, "♚", "K", pieceScore) {}
 
-std::vector<FullMove> King::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+std::vector<FullMove> King::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
     std::vector<FullMove> moves;
 
     // Standard moves

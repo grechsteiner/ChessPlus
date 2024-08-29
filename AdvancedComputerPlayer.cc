@@ -9,11 +9,11 @@
 #include "MoveShuffler.h"
 
 
-FullMove AdvancedComputerPlayer::getMoveImplementation(BoardComputerInterface &board, Color color) const {
+FullMove AdvancedComputerPlayer::getMoveImplementation(ChessBoard &board, Color color) const {
     return std::get<1>(alphaBetaSearch(board, depth, color, 1000, -1000));
 }
 
-std::tuple<int, FullMove> AdvancedComputerPlayer::alphaBetaSearch(BoardComputerInterface &board, int currentDepth, Color color, int beta, int alpha) const {
+std::tuple<int, FullMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &board, int currentDepth, Color color, int beta, int alpha) const {
 
     if (currentDepth == 0) {
         if (board.isInStaleMate(color)) {
@@ -77,7 +77,7 @@ struct ScoredMove {
     ScoredMove(const FullMove& m, int s) : move(m), score(s) {}
 };
 
-std::vector<FullMove> AdvancedComputerPlayer::rank_moves(BoardComputerInterface& board, const std::vector<FullMove>& moves) const {
+std::vector<FullMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, const std::vector<FullMove>& moves) const {
     std::vector<ScoredMove> scored_moves;
 
     // Assign values to each move

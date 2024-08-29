@@ -9,11 +9,11 @@
 #include "Piece.h"
 #include "FullMove.h"
 
-class BoardPieceInterface;
+class ChessBoard;
 
 class Rook : public Piece {
 private:
-    std::vector<FullMove> getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
+    std::vector<FullMove> getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
     static std::vector<std::pair<int, int>> const rookDirections;
 public:
     Rook(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 5);

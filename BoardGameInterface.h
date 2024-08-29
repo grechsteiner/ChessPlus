@@ -1,7 +1,7 @@
-// BoardGameInterface.h
+// ChessBoard.h
 
-#ifndef BoardGameInterface_h
-#define BoardGameInterface_h
+#ifndef ChessBoard_h
+#define ChessBoard_h
 
 #include <memory>
 
@@ -11,7 +11,7 @@
 
 class Context;
 
-class BoardGameInterface {
+class ChessBoard {
 
 private:
     virtual bool isInStaleMateImpl() const = 0;
@@ -56,4 +56,4 @@ public:
 };
 
 
-#endif /* BoardGameInterface_h */
+#endif /* ChessBoard_h */

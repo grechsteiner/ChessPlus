@@ -6,7 +6,7 @@
 
 #include "Constants.h"
 #include "Pawn.h"
-#include "BoardPieceInterface.h"
+#include "ChessBoard.h"
 #include "Piece.h"
 #include "FullMove.h"
 
@@ -14,7 +14,7 @@
 Pawn::Pawn(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::PAWN, pieceDirection, hasMoved, "♟", "P", pieceScore) {}
 
-std::vector<FullMove> Pawn::getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
+std::vector<FullMove> Pawn::getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const {
     std::vector<FullMove> moves;
 
     std::pair<int, int> direction;
@@ -131,7 +131,7 @@ std::vector<FullMove> Pawn::getMovesImplementation(BoardPieceInterface const &bo
 }
 
 
-std::vector<FullMove> Pawn::getPromotionMoves(BoardPieceInterface const &board, FullMove const &move) const {
+std::vector<FullMove> Pawn::getPromotionMoves(ChessBoard const &board, FullMove const &move) const {
     std::vector<FullMove> promotionMoves;
 
     int fromRow = move.getFromRow();

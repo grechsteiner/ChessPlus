@@ -1,7 +1,7 @@
-// BoardMoveInterface.h
+// ChessBoard.h
 
-#ifndef BoardMoveInterface_h
-#define BoardMoveInterface_h
+#ifndef ChessBoard_h
+#define ChessBoard_h
 
 #include "Constants.h"
 #include "FullMove.h"
@@ -9,7 +9,7 @@
 
 class Context;
 
-class BoardMoveInterface {
+class ChessBoard {
 
 private:
     virtual Piece const& getPieceAtImpl(int row, int col) const = 0;
@@ -32,4 +32,4 @@ public:
 };
 
 
-#endif /* BoardMoveInterface_h */
+#endif /* ChessBoard_h */

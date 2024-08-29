@@ -5,16 +5,16 @@
 
 #include <vector>
 
-#include "BoardPieceInterface.h"
+#include "ChessBoard.h"
 #include "Constants.h"
 #include "Piece.h"
 #include "Move.h"
 
-class BoardPieceInterface;
+class ChessBoard;
 
 class Empty : public Piece {
 private:
-    std::vector<FullMove> getMovesImplementation(BoardPieceInterface const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
+    std::vector<FullMove> getMovesImplementation(ChessBoard const &board, int pieceRow, int pieceCol, bool attackingMoves) const override;
 public:
     Empty(Color pieceColor = Color::NONE, PieceDirection pieceDirection = PieceDirection::BLANK, bool hasMoved = false, int pieceScore = 0);
 };

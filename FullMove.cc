@@ -6,7 +6,7 @@
 
 #include "FullMove.h"
 #include "Constants.h"
-#include "BoardMoveInterface.h"
+#include "ChessBoard.h"
 #include "Piece.h"
 #include "Square.h"
 
@@ -73,7 +73,7 @@ std::string FullMove::toString() const {
 
 #pragma mark - Commands
 
-void FullMove::performRookCastle(BoardMoveInterface &board, bool isUndo) const {
+void FullMove::performRookCastle(ChessBoard &board, bool isUndo) const {
     bool newHasRookMoved = isUndo ? false : true;
     if (abs(fromCol - toCol) == 2) {
             // Horizontal castle
@@ -110,7 +110,7 @@ void FullMove::performRookCastle(BoardMoveInterface &board, bool isUndo) const {
         }
 }
 
-void FullMove::makeMove(BoardMoveInterface &board) const {
+void FullMove::makeMove(ChessBoard &board) const {
 
     // Basic Stuff
     board.setPosition(captureRow, captureCol, Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);      // Set captured piece to blank
@@ -129,7 +129,7 @@ void FullMove::makeMove(BoardMoveInterface &board) const {
     }
 }
 
-bool FullMove::undoMove(BoardMoveInterface &board) const {
+bool FullMove::undoMove(ChessBoard &board) const {
 
     // Basic Stuff
     board.swapPositions(fromRow, fromCol, toRow, toCol);                                                                                        // Undo moving the piece

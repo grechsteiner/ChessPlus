@@ -1,7 +1,7 @@
-// BoardDisplayInterface.h
+// ChessBoard.h
 
-#ifndef BoardDisplayInterface_h
-#define BoardDisplayInterface_h
+#ifndef ChessBoard_h
+#define ChessBoard_h
 
 #include <vector>
 #include <string>
@@ -10,7 +10,7 @@
 
 class Context;
 
-class BoardDisplayInterface {
+class ChessBoard {
 
 private:
     virtual int getNumRowsImpl() const = 0;
@@ -41,4 +41,4 @@ public:
 };
 
 
-#endif /* BoardDisplayInterface_h */
+#endif /* ChessBoard_h */

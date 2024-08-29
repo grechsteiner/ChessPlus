@@ -1,7 +1,7 @@
-// BoardComputerInterface.h
+// ChessBoard.h
 
-#ifndef BoardComputerInterface_h
-#define BoardComputerInterface_h
+#ifndef ChessBoard_h
+#define ChessBoard_h
 
 #include <vector>
 
@@ -12,7 +12,7 @@
 class Context;
 
 
-class BoardComputerInterface {
+class ChessBoard {
 
 private:
     virtual std::vector<FullMove> getLegalMovesImpl(Color color) const = 0; 
@@ -55,4 +55,4 @@ public:
 };
 
 
-#endif /* BoardComputerInterface_h */
+#endif /* ChessBoard_h */

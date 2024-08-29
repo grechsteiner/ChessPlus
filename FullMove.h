@@ -7,7 +7,7 @@
 #include "UserEnteredMove.h"
 
 
-class BoardMoveInterface;
+class ChessBoard;
 
 
 class FullMove {
@@ -34,7 +34,7 @@ private:
     int capturedPieceScore;
 
     // Logic is exact same for move & undo except for setting hasMoved
-    void performRookCastle(BoardMoveInterface &board, bool isUndo) const;
+    void performRookCastle(ChessBoard &board, bool isUndo) const;
 
 public:
 
@@ -64,8 +64,8 @@ public:
     std::string toString() const;
 
     // Commands
-    void makeMove(BoardMoveInterface &board) const;
-    bool undoMove(BoardMoveInterface &board) const;
+    void makeMove(ChessBoard &board) const;
+    bool undoMove(ChessBoard &board) const;
 
 
     /* Getters */
