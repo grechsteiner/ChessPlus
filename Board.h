@@ -13,7 +13,7 @@
 #include "Piece.h"
 #include "Move.h"
 #include "StandardOpeningTrie.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "UserMove.h"
 
 
@@ -40,11 +40,11 @@ private:
     std::vector<BoardMove> getPseudoLegalMoves(Color color) const;   
     std::vector<BoardMove> getAllPseudoLegalAttackingMoves(Color color) const;
 
-    bool doesMoveApplyCheck(BoardMove const &fullMove) const;
-    bool doesMoveCapturePiece(BoardMove const &fullMove) const;
-    bool doesMoveHavePieceAttackedAfter(BoardMove const &fullMove) const;
+    bool doesMoveApplyCheck(BoardMove const &boardMove) const;
+    bool doesMoveCapturePiece(BoardMove const &boardMove) const;
+    bool doesMoveHavePieceAttackedAfter(BoardMove const &boardMove) const;
     bool canMakeMove(Color color) const;
-    bool isInCheckAfterMove(BoardMove const &fullMove) const;   
+    bool isInCheckAfterMove(BoardMove const &boardMove) const;   
 
 
 
@@ -76,7 +76,7 @@ private:
     Color getColorTwoImpl() const override;
     Color oppositeColorImpl(Color color) const override;
 
-    std::unique_ptr<BoardMove> generateFullMoveImpl(UserMove const &userMove) const override;
+    std::unique_ptr<BoardMove> generateBoardMoveImpl(UserMove const &userMove) const override;
     BoardMove const& getLastMoveImpl() const override;
     bool hasMoveBeenMadeImpl() const override;
     void makeMoveImpl(BoardMove const &move) override;                    

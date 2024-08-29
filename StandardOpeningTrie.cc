@@ -8,7 +8,7 @@
 
 #include "StandardOpeningTrie.h"
 #include "UserMove.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 using std::string;
 using std::vector;

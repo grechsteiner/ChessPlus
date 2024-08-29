@@ -7,7 +7,7 @@
 
 #include "Constants.h"
 #include "Piece.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 class ChessBoard;
 

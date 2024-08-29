@@ -11,7 +11,7 @@
 #include "Board.h"
 #include "Piece.h"
 #include "ChessPieceFactory.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "UserSquare.h"
 
 
@@ -34,51 +34,51 @@ void Board::initializeBoard() {
 }
 
 std::vector<BoardMove> Board::getPseudoLegalMoves(Color color) const {
-    std::vector<BoardMove> fullMoves;
+    std::vector<BoardMove> boardMoves;
     for (int row = 0; row < grid.size(); ++row) {
         for (int col = 0; col < grid[0].size(); ++col) {
             if (grid[row][col]->getPieceColor() == color) {
                 std::vector<BoardMove> pieceMoves = grid[row][col]->getMoves(*this, row, col, false);
-                fullMoves.insert(fullMoves.end(), pieceMoves.begin(), pieceMoves.end());
+                boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
             }
         }
     }
-    return fullMoves;
+    return boardMoves;
 }
 
 std::vector<BoardMove> Board::getAllPseudoLegalAttackingMoves(Color color) const {
-    std::vector<BoardMove> fullMoves;
+    std::vector<BoardMove> boardMoves;
     for (int row = 0; row < grid.size(); ++row) {
         for (int col = 0; col < grid[0].size(); ++col) {
             if (grid[row][col]->getPieceColor() == color) {
                 std::vector<BoardMove> pieceMoves = grid[row][col]->getMoves(*this, row, col, true);
-                fullMoves.insert(fullMoves.end(), pieceMoves.begin(), pieceMoves.end());
+                boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
             }  
         }
     }
-    return fullMoves;
+    return boardMoves;
 } 
 
-bool Board::doesMoveApplyCheck(BoardMove const &fullMove) const {
-    const_cast<Board*>(this)->makeMove(fullMove);
-    bool isColorInCheck = isInCheck(oppositeColor(grid[fullMove.getFromRow()][fullMove.getFromCol()]->getPieceColor()));
+bool Board::doesMoveApplyCheck(BoardMove const &boardMove) const {
+    const_cast<Board*>(this)->makeMove(boardMove);
+    bool isColorInCheck = isInCheck(oppositeColor(grid[boardMove.getFromRow()][boardMove.getFromCol()]->getPieceColor()));
     const_cast<Board*>(this)->undoMove();
     return isColorInCheck;
 }
 
-bool Board::doesMoveCapturePiece(BoardMove const &fullMove) const {
-    Color turnColor = grid[fullMove.getFromRow()][fullMove.getFromCol()]->getPieceColor();
-    Color attackedColor = grid[fullMove.getCaptureRow()][fullMove.getCaptureCol()]->getPieceColor();
+bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
+    Color turnColor = grid[boardMove.getFromRow()][boardMove.getFromCol()]->getPieceColor();
+    Color attackedColor = grid[boardMove.getCaptureRow()][boardMove.getCaptureCol()]->getPieceColor();
     return (attackedColor == oppositeColor(turnColor));
 }
 
-bool Board::doesMoveHavePieceAttackedAfter(BoardMove const &fullMove) const {
-    Color turnColor = grid[fullMove.getFromRow()][fullMove.getFromCol()]->getPieceColor();
-    const_cast<Board*>(this)->makeMove(fullMove);
-    std::vector<BoardMove> fullMoves = getCapturingMoves(oppositeColor(turnColor));
+bool Board::doesMoveHavePieceAttackedAfter(BoardMove const &boardMove) const {
+    Color turnColor = grid[boardMove.getFromRow()][boardMove.getFromCol()]->getPieceColor();
+    const_cast<Board*>(this)->makeMove(boardMove);
+    std::vector<BoardMove> boardMoves = getCapturingMoves(oppositeColor(turnColor));
 
     // Don't need to try every move if just two colours (I think) --> just check if capturingMoves.size() == 0
-    for (BoardMove const &fMove : fullMoves) {
+    for (BoardMove const &fMove : boardMoves) {
         if (grid[fMove.getCaptureRow()][fMove.getCaptureCol()]->getPieceColor() == turnColor) {
             const_cast<Board*>(this)->undoMove();
             return true;
@@ -92,9 +92,9 @@ bool Board::canMakeMove(Color color) const {
     return getLegalMoves(color).size() > 0;
 }
 
-bool Board::isInCheckAfterMove(BoardMove const &fullMove) const {
-    const_cast<Board*>(this)->makeMove(fullMove);
-    bool isColorInCheck = isInCheck(grid[fullMove.getFromRow()][fullMove.getFromCol()]->getPieceColor());
+bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
+    const_cast<Board*>(this)->makeMove(boardMove);
+    bool isColorInCheck = isInCheck(grid[boardMove.getFromRow()][boardMove.getFromCol()]->getPieceColor());
     const_cast<Board*>(this)->undoMove();
     return isColorInCheck;
 } 
@@ -123,9 +123,9 @@ bool Board::isEmptySquareOrOpposingColorOnBoardImpl(int row, int col, Color colo
 }
 
 bool Board::isSquareCheckAttackedImpl(int attackedRow, int attackedCol, Color color) const {
-    std::vector<BoardMove> fullMoves = getAllPseudoLegalAttackingMoves(oppositeColor(color));
-    for (BoardMove const& fullMove : fullMoves) {
-        if (fullMove.getCaptureRow() == attackedRow && fullMove.getCaptureCol() == attackedCol) {
+    std::vector<BoardMove> boardMoves = getAllPseudoLegalAttackingMoves(oppositeColor(color));
+    for (BoardMove const& boardMove : boardMoves) {
+        if (boardMove.getCaptureRow() == attackedRow && boardMove.getCaptureCol() == attackedCol) {
             return true;
         }
     }
@@ -253,51 +253,51 @@ void Board::applyStandardSetupImpl() {
 }
 
 std::vector<BoardMove> Board::getLegalMovesImpl(Color color) const { 
-    std::vector<BoardMove> fullMoves = getPseudoLegalMoves(color);
-    for (auto it = fullMoves.begin(); it != fullMoves.end();) {
+    std::vector<BoardMove> boardMoves = getPseudoLegalMoves(color);
+    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (isInCheckAfterMove(*it)) {
-            it = fullMoves.erase(it);
+            it = boardMoves.erase(it);
         } else {
             ++it;
         }
     }
-    return fullMoves;
+    return boardMoves;
 }
 
 std::vector<BoardMove> Board::getCapturingMovesImpl(Color color) const { 
-    std::vector<BoardMove> fullMoves = getLegalMoves(color);
-    for (auto it = fullMoves.begin(); it != fullMoves.end();) {
+    std::vector<BoardMove> boardMoves = getLegalMoves(color);
+    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (!doesMoveCapturePiece(*it)) {
-            it = fullMoves.erase(it);
+            it = boardMoves.erase(it);
         } else {
             ++it;
         }
     }
-    return fullMoves;
+    return boardMoves;
 }
 
 std::vector<BoardMove> Board::getCheckApplyingMovesImpl(Color color) const {
-    std::vector<BoardMove> fullMoves = getLegalMoves(color);
-    for (auto it = fullMoves.begin(); it != fullMoves.end();) {
+    std::vector<BoardMove> boardMoves = getLegalMoves(color);
+    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (!doesMoveApplyCheck(*it)) {
-            it = fullMoves.erase(it);
+            it = boardMoves.erase(it);
         } else {
             ++it;
         }
     }
-    return fullMoves;
+    return boardMoves;
 }
 
 std::vector<BoardMove> Board::getCaptureAvoidingMovesImpl(Color color) const { 
-    std::vector<BoardMove> fullMoves = getLegalMoves(color);
-    for (auto it = fullMoves.begin(); it != fullMoves.end();) {
+    std::vector<BoardMove> boardMoves = getLegalMoves(color);
+    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (doesMoveHavePieceAttackedAfter(*it)) {
-            it = fullMoves.erase(it);
+            it = boardMoves.erase(it);
         } else {
             ++it;
         }
     }
-    return fullMoves;
+    return boardMoves;
 }
 
 Color Board::getColorOneImpl() const { 
@@ -312,17 +312,17 @@ Color Board::oppositeColorImpl(Color color) const {
     return color == colorOne ? colorTwo : colorOne; 
 }
 
-std::unique_ptr<BoardMove> Board::generateFullMoveImpl(UserMove const &userMove) const { 
+std::unique_ptr<BoardMove> Board::generateBoardMoveImpl(UserMove const &userMove) const { 
     int gridFromRow = userMove.getFromSquare().getGridRow(getNumRows());
     int gridFromCol = userMove.getFromSquare().getGridCol(getNumCols());
     std::vector<BoardMove> legalMoves = getLegalMoves(grid[gridFromRow][gridFromCol]->getPieceColor());
-    auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &userMove](BoardMove const &fullMove) {
+    auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &userMove](BoardMove const &boardMove) {
         return 
-            userMove.getFromSquare().getGridRow(getNumRows()) == fullMove.getFromRow() &&
-            userMove.getFromSquare().getGridCol(getNumCols()) == fullMove.getFromCol() && 
-            userMove.getToSquare().getGridRow(getNumRows()) == fullMove.getToRow() &&
-            userMove.getToSquare().getGridCol(getNumCols()) == fullMove.getToCol() &&
-            userMove.getPromotionPieceType() == fullMove.getPromotionPieceType();
+            userMove.getFromSquare().getGridRow(getNumRows()) == boardMove.getFromRow() &&
+            userMove.getFromSquare().getGridCol(getNumCols()) == boardMove.getFromCol() && 
+            userMove.getToSquare().getGridRow(getNumRows()) == boardMove.getToRow() &&
+            userMove.getToSquare().getGridCol(getNumCols()) == boardMove.getToCol() &&
+            userMove.getPromotionPieceType() == boardMove.getPromotionPieceType();
     });
     return it != legalMoves.end() ? std::make_unique<BoardMove>(*it) : nullptr;
 }

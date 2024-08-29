@@ -5,7 +5,7 @@
 
 #include "Constants.h"
 #include "Board.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "ChessBoard.h"
 
 class ComputerPlayer {

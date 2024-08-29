@@ -7,7 +7,7 @@
 #include "Knight.h"
 #include "ChessBoard.h"
 #include "Piece.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 std::vector<std::pair<int, int>> const Knight::knightDirections = { 
     {-1, -2}, 
@@ -29,7 +29,7 @@ std::vector<BoardMove> Knight::getMovesImplementation(ChessBoard const &board, i
         int newRow = pieceRow + knightDirection.first;
         int newCol = pieceCol + knightDirection.second;
         if (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
+            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
         }
     }
     return moves;

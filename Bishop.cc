@@ -25,7 +25,7 @@ std::vector<BoardMove> Bishop::getMovesImplementation(ChessBoard const &board, i
         int newRow = pieceRow + bishopDirection.first;
         int newCol = pieceCol + bishopDirection.second;
         while (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
+            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
             if (board.isOpposingColorOnBoard(newRow, newCol, pieceColor)) {

@@ -15,7 +15,7 @@ std::vector<BoardMove> Piece::getMoves(ChessBoard const &board, int pieceRow, in
     return getMovesImplementation(board, pieceRow, pieceCol, attackingMoves);
 }
 
-BoardMove Piece::createFullMove(ChessBoard const &board, int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType) const {
+BoardMove Piece::createBoardMove(ChessBoard const &board, int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType) const {
     Piece const &capturePiece = board.getPieceAt(captureRow, captureCol);
     return BoardMove(fromRow, fromCol, toRow, toCol, captureRow, captureCol, 
                     moveType, isAttackingMove, promotionPieceType, 

@@ -7,7 +7,7 @@
 #include "Rook.h"
 #include "ChessBoard.h"
 #include "Piece.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 std::vector<std::pair<int, int>> const Rook::rookDirections = { 
     {-1, 0}, 
@@ -26,7 +26,7 @@ std::vector<BoardMove> Rook::getMovesImplementation(ChessBoard const &board, int
         int newRow = pieceRow + rookDirection.first;
         int newCol = pieceCol + rookDirection.second;
         while (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
+            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
             if (board.isOpposingColorOnBoard(newRow, newCol, pieceColor)) {

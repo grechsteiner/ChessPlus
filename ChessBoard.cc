@@ -41,7 +41,7 @@ Color ChessBoard::getColorOne() const { return getColorOneImpl(); }
 Color ChessBoard::getColorTwo() const { return getColorTwoImpl(); }
 Color ChessBoard::oppositeColor(Color color) const { return oppositeColorImpl(color); }
 
-std::unique_ptr<BoardMove> ChessBoard::generateFullMove(UserMove const &userMove) const { return generateFullMoveImpl(userMove); }
+std::unique_ptr<BoardMove> ChessBoard::generateBoardMove(UserMove const &userMove) const { return generateBoardMoveImpl(userMove); }
 BoardMove const& ChessBoard::getLastMove() const { return getLastMoveImpl(); }
 bool ChessBoard::hasMoveBeenMade() const { return hasMoveBeenMadeImpl(); }
 void ChessBoard::makeMove(BoardMove const &move) { makeMoveImpl(move); }

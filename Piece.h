@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Constants.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 class ChessBoard;
 
@@ -29,7 +29,7 @@ protected:
     // TODO:
     // Factory up for different move types
     // Maybe alter isAttackingMove
-    BoardMove createFullMove(ChessBoard const &board, int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType = PieceType::EMPTY) const;
+    BoardMove createBoardMove(ChessBoard const &board, int fromRow, int fromCol, int toRow, int toCol, int captureRow, int captureCol, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType = PieceType::EMPTY) const;
 
 public:
     virtual ~Piece() = default;

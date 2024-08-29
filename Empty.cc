@@ -7,7 +7,7 @@
 #include "Empty.h"
 #include "ChessBoard.h"
 #include "Piece.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 Empty::Empty(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(pieceColor, PieceType::EMPTY, pieceDirection, hasMoved, " ", " ", pieceScore) {}

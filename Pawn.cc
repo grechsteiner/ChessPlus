@@ -8,7 +8,7 @@
 #include "Pawn.h"
 #include "ChessBoard.h"
 #include "Piece.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 
 Pawn::Pawn(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
@@ -39,11 +39,11 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
     if (board.isEmptySquareOnBoard(pieceRow + direction.first, pieceCol + direction.second)) {
 
         // Normal Move
-        moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + direction.second, pieceRow + direction.first, pieceCol + direction.second, MoveType::STANDARD, false));
+        moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + direction.second, pieceRow + direction.first, pieceCol + direction.second, MoveType::STANDARD, false));
 
         // Double Pawn
         if (!hasMoved && board.isEmptySquareOnBoard(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second)) {
-            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + 2 * direction.first, pieceCol + 2 * direction.second, pieceRow + 2 * direction.first, pieceCol + 2 * direction.second, MoveType::DOUBLE_PAWN, false));
+            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + 2 * direction.first, pieceCol + 2 * direction.second, pieceRow + 2 * direction.first, pieceCol + 2 * direction.second, MoveType::DOUBLE_PAWN, false));
         }
     }
     
@@ -58,9 +58,9 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
                 case PieceDirection::SOUTH:
                     if (lastCompletedMove.getToRow() == pieceRow) {
                         if (lastCompletedMove.getToCol() == pieceCol + 1) {
-                            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + 1, pieceRow + direction.first, pieceCol + 1, MoveType::ENPASSANT, true));
+                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + 1, pieceRow + direction.first, pieceCol + 1, MoveType::ENPASSANT, true));
                         } else if (lastCompletedMove.getToCol() == pieceCol - 1) {
-                            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol - 1, pieceRow + direction.first, pieceCol - 1, MoveType::ENPASSANT, true));
+                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol - 1, pieceRow + direction.first, pieceCol - 1, MoveType::ENPASSANT, true));
                         }
                     }
                     break;
@@ -68,9 +68,9 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
                 case PieceDirection::WEST:
                     if (lastCompletedMove.getToCol() == pieceCol) {
                         if (lastCompletedMove.getToRow() == pieceRow + 1) {
-                            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + 1, pieceCol + direction.second, pieceRow + 1, pieceCol + direction.second, MoveType::ENPASSANT, true));
+                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + 1, pieceCol + direction.second, pieceRow + 1, pieceCol + direction.second, MoveType::ENPASSANT, true));
                         } else if (lastCompletedMove.getToRow() == pieceRow - 1) {
-                            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow - 1, pieceCol + direction.second, pieceRow - 1, pieceCol + direction.second, MoveType::ENPASSANT, true));                        }
+                            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow - 1, pieceCol + direction.second, pieceRow - 1, pieceCol + direction.second, MoveType::ENPASSANT, true));                        }
                     }
                     break;
                 default:
@@ -85,22 +85,22 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, int
         case PieceDirection::SOUTH:
             // Left
             if (board.isOpposingColorOnBoard(pieceRow + direction.first, pieceCol - 1, pieceColor)) {
-                moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol - 1, pieceRow + direction.first, pieceCol - 1, MoveType::STANDARD, true));
+                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol - 1, pieceRow + direction.first, pieceCol - 1, MoveType::STANDARD, true));
             }
             // Right
             if (board.isOpposingColorOnBoard(pieceRow + direction.first, pieceCol + 1, pieceColor)) {
-                moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + 1, pieceRow + direction.first, pieceCol + 1, MoveType::STANDARD, true));
+                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + direction.first, pieceCol + 1, pieceRow + direction.first, pieceCol + 1, MoveType::STANDARD, true));
             }
             break;
         case PieceDirection::EAST:
         case PieceDirection::WEST:
             // Up (left) 
             if (board.isOpposingColorOnBoard(pieceRow - 1, pieceCol + direction.second, pieceColor)) {
-                moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow - 1, pieceCol + direction.second, pieceRow - 1, pieceCol + direction.second, MoveType::STANDARD, true));
+                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow - 1, pieceCol + direction.second, pieceRow - 1, pieceCol + direction.second, MoveType::STANDARD, true));
             }
             // Down (right)
             if (board.isOpposingColorOnBoard(pieceRow + 1, pieceCol + direction.second, pieceColor)) {
-                moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + 1, pieceCol + direction.second, pieceRow + 1, pieceCol + direction.second, MoveType::STANDARD, true));
+                moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + 1, pieceCol + direction.second, pieceRow + 1, pieceCol + direction.second, MoveType::STANDARD, true));
             }
             break;
         default:
@@ -138,10 +138,10 @@ std::vector<BoardMove> Pawn::getPromotionMoves(ChessBoard const &board, BoardMov
     int fromCol = move.getFromCol();
     int toRow = move.getToRow();
     int toCol = move.getToCol();
-    promotionMoves.emplace_back(createFullMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::QUEEN));
-    promotionMoves.emplace_back(createFullMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::ROOK));
-    promotionMoves.emplace_back(createFullMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::KNIGHT));
-    promotionMoves.emplace_back(createFullMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::BISHOP));
+    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::QUEEN));
+    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::ROOK));
+    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::KNIGHT));
+    promotionMoves.emplace_back(createBoardMove(board, fromRow, fromCol, toRow, toCol, toRow, toCol, move.getMoveType(), move.getIsAttackingMove(), PieceType::BISHOP));
     
     return promotionMoves;
 }

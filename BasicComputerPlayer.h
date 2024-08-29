@@ -7,7 +7,7 @@
 
 #include "Constants.h"
 #include "Board.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "ComputerPlayer.h"
 
 class BasicComputerPlayer : public ComputerPlayer {

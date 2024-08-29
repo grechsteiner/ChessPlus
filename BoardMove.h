@@ -1,7 +1,7 @@
-// FullMove.h
+// BoardMove.h
 
-#ifndef FullMove_h
-#define FullMove_h
+#ifndef BoardMove_h
+#define BoardMove_h
 
 #include "Constants.h"
 #include "UserMove.h"
@@ -42,14 +42,6 @@ public:
             MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
             bool hasMoved, PieceType pieceType, int pieceScore,
             Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
-    
-    // captureRow/captureCol default set to toRow/toCol
-    /*
-    FullMove(int fromRow, int fromCol, int toRow, int toCol,
-            bool hasMoved, PieceType promotionPieceType, MoveType moveType, bool isAttackingMove,
-            PieceType pieceType, int pieceScore,
-            Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
-    */
 
    static const BoardMove DEFAULT;
 
@@ -97,4 +89,4 @@ public:
     int getCapturedPieceScore() const;
 };
 
-#endif /* FullMove_h */
+#endif /* BoardMove */

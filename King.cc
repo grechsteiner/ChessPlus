@@ -31,7 +31,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, int
         int newRow = pieceRow + kingDirection.first;
         int newCol = pieceCol + kingDirection.second;
         if (board.isEmptySquareOrOpposingColorOnBoard(newRow, newCol, pieceColor)) {
-            moves.emplace_back(createFullMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
+            moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, newRow, newCol, newRow, newCol, MoveType::STANDARD, true));
         }
     }
 
@@ -54,7 +54,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, int
                         board.isEmptySquareOnBoard(pieceRow, pieceCol - 2) &&                                                                       // Other empty move through
                         board.isEmptySquareOnBoard(pieceRow, pieceCol - 3)) {                                                                       // Other empty move through
                         
-                        moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow, pieceCol - 2, pieceRow, pieceCol - 2, MoveType::CASTLE, false));
+                        moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow, pieceCol - 2, pieceRow, pieceCol - 2, MoveType::CASTLE, false));
                     }
 
                     // Right
@@ -67,7 +67,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, int
                         board.isEmptySquareOnBoard(pieceRow, pieceCol + 1) && !board.isSquareCheckAttacked(pieceRow, pieceCol + 1, pieceColor) &&   // Move through square not attacked
                         board.isEmptySquareOnBoard(pieceRow, pieceCol + 2)) {                                                                       // Other empty move through
 
-                        moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow, pieceCol + 2, pieceRow, pieceCol + 2, MoveType::CASTLE, false));
+                        moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow, pieceCol + 2, pieceRow, pieceCol + 2, MoveType::CASTLE, false));
                     }
                     
 
@@ -86,7 +86,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, int
                         board.isEmptySquareOnBoard(pieceRow - 2, pieceCol) && 
                         board.isEmptySquareOnBoard(pieceRow - 3, pieceCol)) {
 
-                        moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow - 2, pieceCol, pieceRow - 2, pieceCol, MoveType::CASTLE, false));
+                        moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow - 2, pieceCol, pieceRow - 2, pieceCol, MoveType::CASTLE, false));
                     }
                     
                     // Down (right)
@@ -99,7 +99,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, int
                         board.isEmptySquareOnBoard(pieceRow + 1, pieceCol) && !board.isSquareCheckAttacked(pieceRow + 1, pieceCol, pieceColor) &&
                         board.isEmptySquareOnBoard(pieceRow + 2, pieceCol)) {
 
-                        moves.emplace_back(createFullMove(board, pieceRow, pieceCol, pieceRow + 2, pieceCol, pieceRow + 2, pieceCol, MoveType::CASTLE, false));
+                        moves.emplace_back(createBoardMove(board, pieceRow, pieceCol, pieceRow + 2, pieceCol, pieceRow + 2, pieceCol, MoveType::CASTLE, false));
                     }
 
                     break;

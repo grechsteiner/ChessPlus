@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "BasicComputerPlayer.h"
 
 class LevelOneComputer : public BasicComputerPlayer {

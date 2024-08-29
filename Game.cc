@@ -20,7 +20,7 @@
 #include "ComputerPlayerFactory.h"
 #include "ComputerPlayer.h"
 
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "UserMove.h"
 
 #include "ChessBoard.h"
@@ -215,11 +215,11 @@ void Game::runGame() {
                         std::string fromSquare = tokens[1];
                         std::string toSquare = tokens[2];
                         std::string promotionPiece = tokens.size() == 3 ? "" : tokens[3];
-                        if (UserSquare::isValidChessBoardSquare(fromSquare) && UserSquare::isValidChessBoardSquare(toSquare) && isValidPieceType(promotionPiece)) {
-                            std::unique_ptr<BoardMove> fullMove = board.generateFullMove(UserMove(UserSquare(fromSquare), UserSquare(toSquare), stringToPieceType(promotionPiece)));
+                        if (UserSquare::isValidUserSquare(fromSquare) && UserSquare::isValidUserSquare(toSquare) && isValidPieceType(promotionPiece)) {
+                            std::unique_ptr<BoardMove> boardMove = board.generateBoardMove(UserMove(UserSquare(fromSquare), UserSquare(toSquare), stringToPieceType(promotionPiece)));
                             // Nullptr if invalid move
-                            if (fullMove != nullptr) {
-                                board.makeMove(*fullMove);
+                            if (boardMove != nullptr) {
+                                board.makeMove(*boardMove);
                                 incrementTurn();
                                 moveMade = true;
                             }
@@ -330,7 +330,7 @@ void Game::runGame() {
 
                 if (!isValidPieceType(piece)) {
                     outputError("Input piece is not valid");
-                } else if (square.size() < 2 || !isInt(square.substr(1)) || !board.isSquareOnBoard(std::stoi(square.substr(1)), square.front())) {
+                } else if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnCurrentBoard(UserSquare(square))) {
                     outputError("Input square is not valid on board");
                 } else {
 
@@ -365,7 +365,7 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");
             } else {
                 std::string square = tokens[1];
-                if (square.size() < 2 || !board.isSquareOnBoard(!isInt(square.substr(1)) || std::stoi(square.substr(1)), square.front())) {
+                if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnCurrentBoard(UserSquare(square))) {
                     outputError("Input square is not valid on board");
                 } else if (board.clearPosition(std::stoi(square.substr(1)), square.front())) {
                     notifyObservers();

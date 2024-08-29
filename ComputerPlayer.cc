@@ -2,7 +2,7 @@
 
 #include "Constants.h"
 #include "ComputerPlayer.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "Board.h"
 #include "ChessBoard.h"
 

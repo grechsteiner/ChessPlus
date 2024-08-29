@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 #include "UserMove.h"
-#include "FullMove.h"
+#include "BoardMove.h"
 
 
 class StandardOpeningTrie {

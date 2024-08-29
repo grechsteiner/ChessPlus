@@ -44,7 +44,7 @@ private:
     virtual Color getColorTwoImpl() const = 0;
     virtual Color oppositeColorImpl(Color color) const = 0;
 
-    virtual std::unique_ptr<BoardMove> generateFullMoveImpl(UserMove const &userMove) const = 0;
+    virtual std::unique_ptr<BoardMove> generateBoardMoveImpl(UserMove const &userMove) const = 0;
     virtual BoardMove const& getLastMoveImpl() const = 0;
     virtual bool hasMoveBeenMadeImpl() const = 0;
     virtual void makeMoveImpl(BoardMove const &move) = 0;                    
@@ -92,7 +92,7 @@ public:
     Color getColorTwo() const;
     Color oppositeColor(Color color) const;
 
-    std::unique_ptr<BoardMove> generateFullMove(UserMove const &userMove) const;
+    std::unique_ptr<BoardMove> generateBoardMove(UserMove const &userMove) const;
     BoardMove const& getLastMove() const;
     bool hasMoveBeenMade() const;
     void makeMove(BoardMove const &move);                    

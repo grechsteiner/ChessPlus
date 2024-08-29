@@ -1,10 +1,10 @@
-// FullMove.cc
+// BoardMoves.cc
 
 #include <cmath>
 #include <cassert>
 #include <string>
 
-#include "FullMove.h"
+#include "BoardMove.h"
 #include "Constants.h"
 #include "ChessBoard.h"
 #include "Piece.h"
@@ -28,18 +28,6 @@ BoardMove::BoardMove( int fromRow, int fromCol, int toRow, int toCol, int captur
     hasMoved(hasMoved), pieceType(pieceType), pieceScore(pieceScore),
     capturedColor(capturedColor), capturedPieceType(capturedPieceType), capturedPieceDirection(capturedPieceDirection), capturedHasMoved(capturedHasMoved), capturedPieceScore(capturedPieceScore) 
 {}
-
-/*
-FullMove::FullMove( int fromRow, int fromCol, int toRow, int toCol,
-                    bool hasMoved, PieceType promotionPieceType, MoveType moveType, bool isAttackingMove,
-                    PieceType pieceType, int pieceScore,
-                    Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore) :
-    FullMove(fromRow, fromCol, toRow, toCol, toRow, toCol, 
-            hasMoved, promotionPieceType, moveType, isAttackingMove, 
-            pieceType, pieceScore,
-            capturedColor, capturedPieceType, capturedPieceDirection, capturedHasMoved, capturedPieceScore) 
-{}
-*/
 
 bool BoardMove::operator==(BoardMove const &other) const {
     return 
