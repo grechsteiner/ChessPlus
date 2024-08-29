@@ -47,7 +47,9 @@ private:
     bool doesMoveCapturePiece(FullMove const &fullMove) const;
     bool doesMoveHavePieceAttackedAfter(FullMove const &fullMove) const;
     bool canMakeMove(Color color) const;
-    bool isInCheckAfterMove(FullMove const &fullMove) const;                 
+    bool isInCheckAfterMove(FullMove const &fullMove) const;   
+
+
 
     // BoardPieceInterface
     Piece const& getPieceAtImpl(int row, int col) const override;
@@ -80,7 +82,6 @@ private:
     void makeMoveImpl(FullMove const &move) override;                    
     bool undoMoveImpl() override;   
 
-    // Piece const& getPieceAtImpl(int row, int col) const override;
     bool isInStaleMateImpl(Color color) const override;
     int getAlphaBetaBoardScoreImpl(Color color) const override;
 
@@ -90,7 +91,7 @@ private:
     int getNumColsImpl() const override;
 
     // Piece const& getPieceAtImpl(int row, int col) const = 0;
-    std::vector<std::pair<std::string, std::string>> getMatchingOpeningsImpl() const override;
+    std::vector<std::pair<std::string, std::string>> getMatchingOpeningsImpl() const override;      // vector<pair(openingName, to_string(move))>
 
     bool isInCheckImpl(Color color) const override;
     bool isInCheckMateImpl(Color color) const override;
@@ -107,7 +108,7 @@ private:
     void clearBoardImpl() override;
     
     bool isSquareOnBoardImpl(int row, char col) const override;
-    bool setBoardSizeImpl(int newNumRows, int newNumCols) override;
+    bool setBoardSizeImpl(int newNumRows, int newNumCols) override; // Set board to have provided coordinates, returning true if coordinates are valid, false otherwise, Does not change the state of any pieces on the board
     void applyStandardSetupImpl() override;
 
     std::unique_ptr<FullMove> generateFullMoveImpl(UserEnteredMove const &userEnteredMove) const override;
@@ -123,56 +124,13 @@ private:
 public:
     Board();
 
-    Color oppositeColor(Color color) const;
-    Color getColorOne() const;
-    Color getColorTwo() const;
-
     // Max number of letters in alphabet
     // TODO: Remove max once graphic logic is updated
     static int const maxRows = 26;
     static int const maxCols = 26;
 
-    // vector<pair(openingName, to_string(move))>
-    std::vector<std::pair<std::string, std::string>> getMatchingOpenings() const;
-
-    // Set board to have provided coordinates, returning true if coordinates are valid, false otherwise
-    // Does not change the state of any pieces on the board
-    bool setBoardSize(int newNumRows, int newNumCols);
-
-    bool isSquareOnBoard(int row, char col) const;
-    bool isSquareOnBoard(int row, int col) const;
-
-    std::vector<FullMove> getLegalMoves(Color color) const; 
-    std::vector<FullMove> getCapturingMoves(Color color) const;
-    std::vector<FullMove> getCheckApplyingMoves(Color color) const;
-    std::vector<FullMove> getCaptureAvoidingMoves(Color color) const;    
-    
-
-    bool isInCheck(Color color) const;
-    bool isInCheckMate(Color color) const;
-
-    std::unique_ptr<FullMove> generateFullMove(UserEnteredMove const &userEnteredMove) const;                 
-    void makeMove(FullMove const &move);                    
-    bool undoMove();            
-    bool redoMove();                       
-    bool hasGameFinished() const;
-    bool isInStaleMate(Color colour) const;
-    bool isInStaleMate() const;
-
-
-    void setPosition(int row, char col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
-    void setPosition(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
-    bool clearPosition(int row, char col);
-    bool clearPosition(int row, int col);
-    void clearBoard();
-    void applyStandardSetup();
-    bool isBoardInValidState() const;
-
-    int getAlphaBetaBoardScore(Color color) const;   
-
-    const std::vector<std::vector<std::unique_ptr<Piece>>>& getGrid() const {
-        return grid;
-    }
+    // TODO: Utility
+    bool isSquareOnBoard(int row, int col) const;  
 
 };
 
