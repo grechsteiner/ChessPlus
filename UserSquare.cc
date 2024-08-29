@@ -8,7 +8,7 @@
 #include "UserSquare.h"
 
 // Static
-std::regex const UserSquare::regexPattern("([a-zA-Z]+)([1-9]\\d*)");
+std::regex const UserSquare::regexPattern("([a-z]+)([1-9]\\d*)");
 
 UserSquare::UserSquare(std::string const &squareStr) : userSquare(squareStr) {}
 
@@ -39,11 +39,10 @@ int UserSquare::getGridRow(int numRowsOnGrid) const {
 }
 
 int UserSquare::getGridCol(int numColsOnGrid) const { 
-    std::string userCol = getUserCol();
+    static int base = 26;
     int gridCol = 0;
-    gridCol += (userCol[0] - 'a'); 
-    for (int i = 1; i < userCol.size(); ++i) {
-        gridCol += (userCol[i] - 'a' + 1);
+    for (char c : getUserCol()) {
+        gridCol = gridCol * base + (c - 'a');
     }
     return gridCol;
 }

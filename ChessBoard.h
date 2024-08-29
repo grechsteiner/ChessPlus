@@ -8,9 +8,10 @@
 #include "Constants.h"
 
 class Piece;
-class FullMove;
 class UserMove;
+class FullMove;
 class UserSquare;
+class BoardSquare;
 
 
 class ChessBoard {
