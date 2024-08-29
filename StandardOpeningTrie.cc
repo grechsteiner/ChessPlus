@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include "StandardOpeningTrie.h"
-#include "UserEnteredMove.h"
+#include "UserMove.h"
 #include "FullMove.h"
 
 using std::string;

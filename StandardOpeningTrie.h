@@ -9,7 +9,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "UserEnteredMove.h"
+#include "UserMove.h"
 #include "FullMove.h"
 
 

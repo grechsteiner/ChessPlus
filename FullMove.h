@@ -4,7 +4,7 @@
 #define FullMove_h
 
 #include "Constants.h"
-#include "UserEnteredMove.h"
+#include "UserMove.h"
 
 
 class ChessBoard;

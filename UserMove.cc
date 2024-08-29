@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "UserEnteredMove.h"
+#include "UserMove.h"
 #include "Constants.h"
 #include "UserSquare.h"
 

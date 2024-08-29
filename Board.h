@@ -14,7 +14,7 @@
 #include "Move.h"
 #include "StandardOpeningTrie.h"
 #include "FullMove.h"
-#include "UserEnteredMove.h"
+#include "UserMove.h"
 
 
 class Context;

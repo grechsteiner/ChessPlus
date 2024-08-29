@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "FullMove.h"
-#include "UserEnteredMove.h"
+#include "UserMove.h"
 #include "Constants.h"
 
 class Context;
