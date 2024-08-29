@@ -1,44 +1,35 @@
-// UserEnteredMove.h
+// UserMove.h
 
-#ifndef UserEnteredMove_h
-#define UserEnteredMove_h
+#ifndef UserMove_h
+#define UserMove_h
 
 #include <string>
 
 #include "Constants.h"
+#include "Square.h"
 
 
-class UserEnteredMove {
+class UserMove {
 
 private:
-    int fromRow, toRow;                 // 1: bottom row
-    std::string fromCol, toCol;         // a: leftmost col
-    std::string promotionPiece;
+    UserSquare fromSquare;
+    UserSquare toSquare;
+    PieceType promotionPieceType;
 
 public:
-    UserEnteredMove(std::string const &fromSquare, std::string const &toSquare, std::string const &promotionPiece = "");
+    UserMove(UserSquare const &fromSquare, UserSquare const &toSquare, PieceType promotionPieceType = PieceType::EMPTY);
 
-    UserEnteredMove(UserEnteredMove const &other);
-    UserEnteredMove(UserEnteredMove &&other);
-    UserEnteredMove& operator=(UserEnteredMove const &other);
-    UserEnteredMove& operator=(UserEnteredMove &&other);
-    ~UserEnteredMove() = default;
+    UserMove(UserMove const &other);
+    UserMove(UserMove &&other);
+    UserMove& operator=(UserMove const &other);
+    UserMove& operator=(UserMove &&other);
+    ~UserMove() = default;
 
-    static bool isValidSyntax(std::string const &fromSquare, std::string const &toSquare, std::string const &promotionPiece = "");
-    std::string toString() const;   // TODO: Probably not needed --> Needed for trie
-
-
-    /* Getters */
-
-    // Squares
-    int getFromRow() const;
-    int getToRow() const;
-    std::string const& getFromCol() const;
-    std::string const& getToCol() const;
-
-    // General Info
-    std::string const& getPromotionPiece() const;
+    std::string toString() const;
+    UserSquare const& getFromSquare() const;
+    UserSquare const& getToSquare() const;
+    PieceType getPromotionPieceType() const;
 };
 
 
-#endif /* UserEnteredMove_h */
+#endif /* UserMove_h */

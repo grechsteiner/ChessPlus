@@ -9,7 +9,8 @@
 
 class Piece;
 class FullMove;
-class UserEnteredMove;
+class UserMove;
+class UserSquare;
 
 
 class ChessBoard {
@@ -22,10 +23,10 @@ private:
     virtual bool isEmptySquareOrOpposingColorOnBoardImpl(int row, int col, Color color) const = 0;
     virtual bool isSquareCheckAttackedImpl(int attackedRow, int attackedCol, Color color) const = 0;
     
-    virtual bool isSquareOnBoardImpl(int row, char col) const = 0;
-    virtual void setPositionImpl(int row, char col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
+    virtual bool isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const = 0;
+    virtual void setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
     virtual void setPositionImpl(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
-    virtual bool clearPositionImpl(int row, char col) = 0;
+    virtual bool clearPositionImpl(UserSquare const &userSquare) = 0;
     virtual bool clearPositionImpl(int row, int col) = 0;
     virtual void clearBoardImpl() = 0;
     virtual void swapPositionsImpl(int rowOne, int colOne, int rowTwo, int colTwo) = 0;
@@ -42,7 +43,7 @@ private:
     virtual Color getColorTwoImpl() const = 0;
     virtual Color oppositeColorImpl(Color color) const = 0;
 
-    virtual std::unique_ptr<FullMove> generateFullMoveImpl(UserEnteredMove const &userEnteredMove) const = 0;
+    virtual std::unique_ptr<FullMove> generateFullMoveImpl(UserMove const &userMove) const = 0;
     virtual FullMove const& getLastMoveImpl() const = 0;
     virtual bool hasMoveBeenMadeImpl() const = 0;
     virtual void makeMoveImpl(FullMove const &move) = 0;                    
@@ -70,10 +71,10 @@ public:
     bool isEmptySquareOrOpposingColorOnBoard(int row, int col, Color color) const;
     bool isSquareCheckAttacked(int attackedRow, int attackedCol, Color color) const;
     
-    bool isSquareOnBoard(int row, char col) const;
-    void setPosition(int row, char col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
+    bool isSquareOnCurrentBoard(UserSquare const &userSquare) const;
+    void setPosition(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
     void setPosition(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
-    bool clearPosition(int row, char col);
+    bool clearPosition(UserSquare const &userSquare);
     bool clearPosition(int row, int col);
     void clearBoard();
     void swapPositions(int rowOne, int colOne, int rowTwo, int colTwo);
@@ -90,7 +91,7 @@ public:
     Color getColorTwo() const;
     Color oppositeColor(Color color) const;
 
-    std::unique_ptr<FullMove> generateFullMove(UserEnteredMove const &userEnteredMove) const;
+    std::unique_ptr<FullMove> generateFullMove(UserMove const &userMove) const;
     FullMove const& getLastMove() const;
     bool hasMoveBeenMade() const;
     void makeMove(FullMove const &move);                    

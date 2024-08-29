@@ -26,7 +26,7 @@ private:
     virtual bool setBoardSizeImpl(int newNumRows, int newNumCols) = 0;
     virtual void applyStandardSetupImpl() = 0;
 
-    virtual std::unique_ptr<FullMove> generateFullMoveImpl(UserEnteredMove const &userEnteredMove) const = 0;
+    virtual std::unique_ptr<FullMove> generateFullMoveImpl(UserMove const &userMove) const = 0;
     virtual void makeMoveImpl(FullMove const &move) = 0;                    
     virtual bool undoMoveImpl() = 0;            
     virtual bool redoMoveImpl() = 0;
@@ -46,7 +46,7 @@ public:
     bool setBoardSize(int newNumRows, int newNumCols);
     void applyStandardSetup();
 
-    std::unique_ptr<FullMove> generateFullMove(UserEnteredMove const &userEnteredMove) const;
+    std::unique_ptr<FullMove> generateFullMove(UserMove const &userMove) const;
     void makeMove(FullMove const &move);                    
     bool undoMove();            
     bool redoMove();  

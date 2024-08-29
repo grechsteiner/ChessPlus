@@ -175,20 +175,3 @@ PieceType FullMove::getCapturedPieceType() const { return capturedPieceType; }
 PieceDirection FullMove::getCapturedPieceDirection() const { return capturedPieceDirection; }
 bool FullMove::getCapturedHasMoved() const { return capturedHasMoved; }
 int FullMove::getCapturedPieceScore() const { return capturedPieceScore; }
-
-
-bool isUserEqualToFull(FullMove const &fullMove, UserEnteredMove const &userEnteredMove, int numRows, int numCols) {
-    int userFromRow = Square::getGridRow(userEnteredMove.getFromRow(), numRows);
-    int userFromCol = Square::getGridCol(userEnteredMove.getFromCol(), numCols);
-    int userToRow = Square::getGridRow(userEnteredMove.getToRow(), numRows);
-    int userToCol = Square::getGridCol(userEnteredMove.getToCol(), numCols);
-    PieceType promotionPieceType = stringToPieceType(userEnteredMove.getPromotionPiece());
-    
-    return 
-        userFromRow == fullMove.getFromRow() &&
-        userFromCol == fullMove.getFromCol() &&
-        userToRow == fullMove.getToRow() &&
-        userToCol == fullMove.getToCol() &&
-        promotionPieceType == fullMove.getPromotionPieceType();
-}
-

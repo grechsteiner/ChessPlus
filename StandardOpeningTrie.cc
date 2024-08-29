@@ -20,11 +20,11 @@ using std::unique_ptr;
 const StandardOpeningTrie StandardOpeningTrie::Hardcoded = [] {
     StandardOpeningTrie trie;
 
-    trie.insert({UserEnteredMove("e2", "e4"), UserEnteredMove("e7", "e5"), UserEnteredMove("g1", "f3"), UserEnteredMove("b8", "c6"), UserEnteredMove("f1", "b5")}, "Ruy López");
-    trie.insert({UserEnteredMove("e2", "e4"), UserEnteredMove("e7", "e6")}, "French Defense");
-    trie.insert({UserEnteredMove("e2", "e4"), UserEnteredMove("e7", "e5"), UserEnteredMove("g1", "f3"), UserEnteredMove("b8", "c6"), UserEnteredMove("f1", "c4")}, "Italian Game");
-    trie.insert({UserEnteredMove("d2", "d4"), UserEnteredMove("d6", "d5"), UserEnteredMove("c2", "c4")}, "Queen's Gambit");
-    trie.insert({UserEnteredMove("d2", "d4"), UserEnteredMove("g8", "f6"), UserEnteredMove("c2", "c4"), UserEnteredMove("g7", "g6")}, "King's Indian Defense");
+    trie.insert({UserMove("e2", "e4"), UserMove("e7", "e5"), UserMove("g1", "f3"), UserMove("b8", "c6"), UserMove("f1", "b5")}, "Ruy López");
+    trie.insert({UserMove("e2", "e4"), UserMove("e7", "e6")}, "French Defense");
+    trie.insert({UserMove("e2", "e4"), UserMove("e7", "e5"), UserMove("g1", "f3"), UserMove("b8", "c6"), UserMove("f1", "c4")}, "Italian Game");
+    trie.insert({UserMove("d2", "d4"), UserMove("d6", "d5"), UserMove("c2", "c4")}, "Queen's Gambit");
+    trie.insert({UserMove("d2", "d4"), UserMove("g8", "f6"), UserMove("c2", "c4"), UserMove("g7", "g6")}, "King's Indian Defense");
 
     return trie;
 }();
@@ -39,7 +39,7 @@ void StandardOpeningTrie::collectNextMoves(StandardOpeningTrieNode const *standa
     }
 }
 
-void StandardOpeningTrie::insert(const vector<UserEnteredMove>& userEnteredMoves, const string& openingName) {
+void StandardOpeningTrie::insert(const vector<UserMove>& userEnteredMoves, const string& openingName) {
     StandardOpeningTrieNode* standardOpeningTrieNode = root.get();
     for (const auto& userEnteredMove : userEnteredMoves) {
         if (standardOpeningTrieNode->children.find(userEnteredMove.toString()) == standardOpeningTrieNode->children.end()) {

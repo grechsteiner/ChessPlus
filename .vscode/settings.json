@@ -82,7 +82,8 @@
         "span": "cpp",
         "sstream": "cpp",
         "stop_token": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "cassert": "cpp"
     },
     "files.exclude": {
     "**/*.d": true,

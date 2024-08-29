@@ -56,10 +56,10 @@ private:
     bool isEmptySquareOrOpposingColorOnBoardImpl(int row, int col, Color color) const override;
     bool isSquareCheckAttackedImpl(int attackedRow, int attackedCol, Color color) const override;
     
-    bool isSquareOnBoardImpl(int row, char col) const override;
-    void setPositionImpl(int row, char col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
+    bool isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const override;
+    void setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
     void setPositionImpl(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
-    bool clearPositionImpl(int row, char col) override;
+    bool clearPositionImpl(UserSquare const &userSquare) override;
     bool clearPositionImpl(int row, int col) override;
     void clearBoardImpl() override;
     void swapPositionsImpl(int rowOne, int colOne, int rowTwo, int colTwo) override;
@@ -76,7 +76,7 @@ private:
     Color getColorTwoImpl() const override;
     Color oppositeColorImpl(Color color) const override;
 
-    std::unique_ptr<FullMove> generateFullMoveImpl(UserEnteredMove const &userEnteredMove) const override;
+    std::unique_ptr<FullMove> generateFullMoveImpl(UserMove const &userMove) const override;
     FullMove const& getLastMoveImpl() const override;
     bool hasMoveBeenMadeImpl() const override;
     void makeMoveImpl(FullMove const &move) override;                    

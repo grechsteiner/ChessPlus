@@ -7,7 +7,7 @@
 
 class Piece;
 class FullMove;
-class UserEnteredMove;
+class UserMove;
 
 
 Piece const& ChessBoard::getPieceAt(int row, int col) const { return getPieceAtImpl(row, col); }
@@ -17,14 +17,14 @@ bool ChessBoard::isOpposingColorOnBoard(int row, int col, Color color) const { r
 bool ChessBoard::isEmptySquareOrOpposingColorOnBoard(int row, int col, Color color) const { return isEmptySquareOrOpposingColorOnBoardImpl(row, col, color); }
 bool ChessBoard::isSquareCheckAttacked(int attackedRow, int attackedCol, Color color) const { return isSquareCheckAttackedImpl(attackedRow, attackedCol, color); }
 
-bool ChessBoard::isSquareOnBoard(int row, char col) const { return isSquareOnBoardImpl(row, col); }
-void ChessBoard::setPosition(int row, char col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) { 
-    setPositionImpl(row, col, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
+bool ChessBoard::isSquareOnCurrentBoard(UserSquare const &userSquare) const { return isSquareOnCurrentBoardImpl(userSquare); }
+void ChessBoard::setPosition(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) { 
+    setPositionImpl(userSquare, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 void ChessBoard::setPosition(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
     setPositionImpl(row, col, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
-bool ChessBoard::clearPosition(int row, char col) { return clearPositionImpl(row, col); }
+bool ChessBoard::clearPosition(UserSquare const &userSquare) { return clearPositionImpl(userSquare); }
 bool ChessBoard::clearPosition(int row, int col) { clearPositionImpl(row, col); }
 void ChessBoard::clearBoard() { clearBoardImpl(); }
 void ChessBoard::swapPositions(int rowOne, int colOne, int rowTwo, int colTwo) { swapPositionsImpl(rowOne, colOne, rowTwo, colTwo); }
@@ -41,7 +41,7 @@ Color ChessBoard::getColorOne() const { return getColorOneImpl(); }
 Color ChessBoard::getColorTwo() const { return getColorTwoImpl(); }
 Color ChessBoard::oppositeColor(Color color) const { return oppositeColorImpl(color); }
 
-std::unique_ptr<FullMove> ChessBoard::generateFullMove(UserEnteredMove const &userEnteredMove) const { return generateFullMoveImpl(userEnteredMove); }
+std::unique_ptr<FullMove> ChessBoard::generateFullMove(UserMove const &userMove) const { return generateFullMoveImpl(userMove); }
 FullMove const& ChessBoard::getLastMove() const { return getLastMoveImpl(); }
 bool ChessBoard::hasMoveBeenMade() const { return hasMoveBeenMadeImpl(); }
 void ChessBoard::makeMove(FullMove const &move) { makeMoveImpl(move); }

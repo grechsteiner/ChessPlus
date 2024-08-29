@@ -8,31 +8,22 @@
 #include <utility>
 
 
-class Square {
+class UserSquare {
 
 private:
     static std::regex const regexPattern;
+    std::string userSquare;
     
 public:
+    UserSquare(std::string const &squareStr);
+    static bool isValidUserSquare(std::string const &squareStr);
 
-    // TODO: Many overloads
-    static bool isValidSquare(std::string const &squareStr);
+    std::string toString() const;
+    int getUserRow() const;
+    std::string getUserCol() const;
 
-    // TODO: Many overloads
-    static std::pair<int, std::string> getRowAndCol(std::string const &squareStr);
-
-    // TODO: Many overloads
-    static int getRow(std::string const &squareStr);
-
-    // TODO: Many overloads
-    static std::string getCol(std::string const &squareStr);
-
-    // TODO: Many overloads
-    static std::pair<int, int> getGridRowAndCol(std::string const &squareStr, int numRows, int numCols);
-
-    static int getGridRow(int squareRow, int numRows);
-    static int getGridCol(std::string const &squareStr, int numCols);
-
+    int getGridRow(int numRowsOnGrid) const;
+    int getGridCol(int numColsOnGrid) const;
 };
 
 

@@ -1,83 +1,60 @@
-// UserEnteredMove.cc
+// UserMove.cc
 
 #include <string>
-#include <utility>
 
 #include "UserEnteredMove.h"
+#include "Constants.h"
 #include "Square.h"
 
-UserEnteredMove::UserEnteredMove(std::string const &fromSquare, std::string const &toSquare, std::string const &promotionPiece) : 
-    fromRow(Square::getRow(fromSquare)),
-    fromCol(Square::getCol(fromSquare)),
-    toRow(Square::getRow(toSquare)),
-    toCol(Square::getCol(toSquare)),
-    promotionPiece(promotionPiece) 
-{} 
+// ctor
+UserMove::UserMove(UserSquare const &fromSquare, UserSquare const &toSquare, PieceType promotionPieceType) :
+    fromSquare(fromSquare), toSquare(toSquare), promotionPieceType(promotionPieceType) {} 
 
 // Copy ctor
-UserEnteredMove::UserEnteredMove(UserEnteredMove const &other) : 
-    fromRow(other.fromRow), toRow(other.toRow), fromCol(other.fromCol), toCol(other.toCol), promotionPiece(other.promotionPiece) 
-{}
+UserMove::UserMove(UserMove const &other) : 
+    fromSquare(other.fromSquare), toSquare(other.toSquare), promotionPieceType(other.promotionPieceType) {}
 
 // Move ctor 
-UserEnteredMove::UserEnteredMove(UserEnteredMove &&other) :
-    fromRow(other.fromRow), toRow(other.toRow), fromCol(std::move(other.fromCol)), toCol(std::move(other.toCol)), promotionPiece(std::move(other.promotionPiece)) 
-{}
+UserMove::UserMove(UserMove &&other) :
+    fromSquare(std::move(other.fromSquare)), toSquare(std::move(other.toSquare)), promotionPieceType(other.promotionPieceType) {}
 
 // Copy Assignment
-UserEnteredMove& UserEnteredMove::operator=(UserEnteredMove const &other) {
+UserMove& UserMove::operator=(UserMove const &other) {
     if (this != &other) {
-        fromRow = other.fromRow;
-        toRow = other.toRow;
-        fromCol = other.fromCol;
-        toCol = other.toCol;
-        promotionPiece = other.promotionPiece;
+        fromSquare = other.fromSquare;
+        toSquare = other.toSquare;
+        promotionPieceType = other.promotionPieceType;
     }
     return *this;
 }
 
 // Move Assignment
-UserEnteredMove& UserEnteredMove::operator=(UserEnteredMove &&other) {
+UserMove& UserMove::operator=(UserMove &&other) {
     if (this != &other) {
         // Transfer data from the other object
-        fromRow = other.fromRow;
-        toRow = other.toRow;
-        fromCol = std::move(other.fromCol);
-        toCol = std::move(other.toCol);
-        promotionPiece = std::move(other.promotionPiece);
-
-        // Optionally, reset the source object
-        other.fromRow = 0;
-        other.toRow = 0;
-        other.fromCol.clear();
-        other.toCol.clear();
-        other.promotionPiece.clear();
+        fromSquare = std::move(other.fromSquare);
+        toSquare = std::move(other.toSquare);
+        promotionPieceType = promotionPieceType;
     }
-
     return *this;
 }
 
-// Static
-bool UserEnteredMove::isValidSyntax(std::string const &fromSquare, std::string const &toSquare, std::string const &promotionPiece) {
-    return Square::isValidSquare(fromSquare) && Square::isValidSquare(toSquare);
-}  
-
-std::string UserEnteredMove::toString() const {
-    std::string moveString = fromCol + std::to_string(fromRow) + " " + toCol + std::to_string(toRow);
-    if (!promotionPiece.empty()) {
-        moveString += " " + promotionPiece;
+std::string UserMove::toString() const {
+    std::string moveString = fromSquare.toString() + " " + toSquare.toString();
+    if (promotionPieceType != PieceType::EMPTY) {
+        moveString += " " + pieceTypeToString(promotionPieceType);
     }
     return moveString;
 }
 
+UserSquare const& UserMove::getFromSquare() const {
+    return fromSquare;
+}
 
-#pragma mark - Getters
+UserSquare const& UserMove::getToSquare() const {
+    return toSquare;
+}
 
-// Squares
-int UserEnteredMove::getFromRow() const { return fromRow; }
-int UserEnteredMove::getToRow() const { return toRow; }
-std::string const& UserEnteredMove::getFromCol() const { return fromCol;}
-std::string const& UserEnteredMove::getToCol() const { return toCol; }
-
-// General Info
-std::string const& UserEnteredMove::getPromotionPiece() const { return promotionPiece; }
+PieceType UserMove::getPromotionPieceType() const {
+    return promotionPieceType;
+}

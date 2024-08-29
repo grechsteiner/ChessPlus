@@ -215,8 +215,8 @@ void Game::runGame() {
                         std::string fromSquare = tokens[1];
                         std::string toSquare = tokens[2];
                         std::string promotionPiece = tokens.size() == 3 ? "" : tokens[3];
-                        if (UserEnteredMove::isValidSyntax(fromSquare, toSquare, promotionPiece)) {
-                            std::unique_ptr<FullMove> fullMove = board.generateFullMove(UserEnteredMove(fromSquare, toSquare, promotionPiece));
+                        if (UserSquare::isValidChessBoardSquare(fromSquare) && UserSquare::isValidChessBoardSquare(toSquare) && isValidPieceType(promotionPiece)) {
+                            std::unique_ptr<FullMove> fullMove = board.generateFullMove(UserMove(UserSquare(fromSquare), UserSquare(toSquare), stringToPieceType(promotionPiece)));
                             // Nullptr if invalid move
                             if (fullMove != nullptr) {
                                 board.makeMove(*fullMove);

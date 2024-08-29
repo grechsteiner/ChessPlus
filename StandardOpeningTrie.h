@@ -27,7 +27,7 @@ private:
 
 public:
     StandardOpeningTrie();
-    void insert(std::vector<UserEnteredMove> const &userEnteredMoves, std::string const &openingName);
+    void insert(std::vector<UserMove> const &userEnteredMoves, std::string const &openingName);
     std::vector<std::pair<std::string, std::string>> getMatchingOpenings(std::vector<FullMove> const &completedMoves) const;
 
     // TODO: Ideally read in from text file

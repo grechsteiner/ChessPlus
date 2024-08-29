@@ -97,11 +97,4 @@ public:
     int getCapturedPieceScore() const;
 };
 
-
-// TODO: Put somewhere else 
-// Same as toString == toString
-bool isUserEqualToFull(FullMove const &fullMove, UserEnteredMove const &userEnteredMove, int numRows, int numCols);
-
-
-
 #endif /* FullMove_h */

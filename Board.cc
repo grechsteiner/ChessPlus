@@ -132,26 +132,26 @@ bool Board::isSquareCheckAttackedImpl(int attackedRow, int attackedCol, Color co
     return false;
 }
 
-bool Board::isSquareOnBoardImpl(int row, char col) const { 
-    int vectorRow = grid.size() - row;
-    int vectorCol = col - 'a';
-    return vectorRow >= 0 && vectorRow < grid.size() && vectorCol >= 0 && vectorCol < grid[vectorRow].size();
+bool Board::isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const { 
+    int gridRow = userSquare.getGridRow(getNumRows());
+    int gridCol = userSquare.getGridCol(getNumCols());
+    return gridRow >= 0 && gridRow < getNumRows() && gridCol >= 0 && gridCol < getNumCols();
 }
 
-void Board::setPositionImpl(int row, char col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
-    int vectorRow = grid.size() - row;
-    int vectorCol = col - 'a';
-    setPosition(vectorRow, vectorCol, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
+void Board::setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
+    int gridRow = userSquare.getGridRow(getNumRows());
+    int gridCol = userSquare.getGridCol(getNumCols());
+    setPosition(gridRow, gridCol, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 
 void Board::setPositionImpl(int row, int col, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
     grid[row][col] = ChessPieceFactory::createPiece(pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 
-bool Board::clearPositionImpl(int row, char col) {
-    int vectorRow = grid.size() - row;
-    int vectorCol = col - 'a';
-    return clearPosition(vectorRow, vectorCol);
+bool Board::clearPositionImpl(UserSquare const &userSquare) {
+    int gridRow = userSquare.getGridRow(getNumRows());
+    int gridCol = userSquare.getGridCol(getNumCols());
+    return clearPosition(gridRow, gridCol);
 }
 
 bool Board::clearPositionImpl(int row, int col) {
@@ -312,10 +312,17 @@ Color Board::oppositeColorImpl(Color color) const {
     return color == colorOne ? colorTwo : colorOne; 
 }
 
-std::unique_ptr<FullMove> Board::generateFullMoveImpl(UserEnteredMove const &userEnteredMove) const { 
-    std::vector<FullMove> legalMoves = getLegalMoves(grid[Square::getGridRow(userEnteredMove.getFromRow(), grid.size())][Square::getGridCol(userEnteredMove.getFromCol(), grid[0].size())]->getPieceColor());
-    auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &userEnteredMove](FullMove const &fullMove) {
-        return isUserEqualToFull(fullMove, userEnteredMove, grid.size(), grid[0].size());
+std::unique_ptr<FullMove> Board::generateFullMoveImpl(UserMove const &userMove) const { 
+    int gridFromRow = userMove.getFromSquare().getGridRow(getNumRows());
+    int gridFromCol = userMove.getFromSquare().getGridCol(getNumCols());
+    std::vector<FullMove> legalMoves = getLegalMoves(grid[gridFromRow][gridFromCol]->getPieceColor());
+    auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &userMove](FullMove const &fullMove) {
+        return 
+            userMove.getFromSquare().getGridRow(getNumRows()) == fullMove.getFromRow() &&
+            userMove.getFromSquare().getGridCol(getNumCols()) == fullMove.getFromCol() && 
+            userMove.getToSquare().getGridRow(getNumRows()) == fullMove.getToRow() &&
+            userMove.getToSquare().getGridCol(getNumCols()) == fullMove.getToCol() &&
+            userMove.getPromotionPieceType() == fullMove.getPromotionPieceType();
     });
     return it != legalMoves.end() ? std::make_unique<FullMove>(*it) : nullptr;
 }

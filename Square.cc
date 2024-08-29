@@ -8,79 +8,42 @@
 #include "Square.h"
 
 // Static
-std::regex const Square::regexPattern("([a-zA-Z]+)([1-9]\\d*)");
+std::regex const UserSquare::regexPattern("([a-zA-Z]+)([1-9]\\d*)");
+
+UserSquare::UserSquare(std::string const &squareStr) : userSquare(squareStr) {}
 
 // Static
-bool Square::isValidSquare(std::string const &squareStr) {
+bool UserSquare::isValidUserSquare(std::string const &squareStr) {
     std::smatch match;
     return std::regex_match(squareStr, match, regexPattern);
 }
 
-// Static
-std::pair<int, std::string> Square::getRowAndCol(std::string const &squareStr) {
+std::string UserSquare::toString() const {
+    return userSquare;
+}
+
+int UserSquare::getUserRow() const { 
     std::smatch match;
-    if (std::regex_match(squareStr, match, regexPattern)) {
-        std::string col = match[1];
-        int row = std::stoi(match[2]);
-        return std::make_pair(row, col);
-    } else {
-        assert(false);
-    }
+    std::regex_match(userSquare, match, regexPattern);
+    return std::stoi(match[2]);
 }
 
-// Static
-int Square::getRow(std::string const &squareStr) {
+std::string UserSquare::getUserCol() const { 
     std::smatch match;
-    if (std::regex_match(squareStr, match, regexPattern)) {
-        return std::stoi(match[2]);
-    } else {
-        assert(false);
-    }
+    std::regex_match(userSquare, match, regexPattern);
+    return match[1];
 }
 
-// Static
-std::string Square::getCol(std::string const &squareStr) {
-    std::smatch match;
-    if (std::regex_match(squareStr, match, regexPattern)) {
-        return match[1];
-    } else {
-        assert(false);
-    }
+int UserSquare::getGridRow(int numRowsOnGrid) const {
+    return numRowsOnGrid - getUserRow();
 }
 
-// Static
-std::pair<int, int> Square::getGridRowAndCol(std::string const &squareStr, int numRows, int numCols) {
-    std::smatch match;
-    if (std::regex_match(squareStr, match, regexPattern)) {
-        std::string squareCol = match[1];
-        int squareRow = std::stoi(match[2]);
-
-        int gridCol = 0;
-        gridCol += (squareCol[0] - 'a'); 
-        for (int i = 1; i < squareCol.size(); ++i) {
-            gridCol += (squareCol[i] - 'a' + 1);
-        }
-
-        int gridRow = numRows - squareRow;
-
-        return std::make_pair(gridRow, gridCol);
-    } else {
-        assert(false);
-    }
-
-}
-
-// Static
-int Square::getGridRow(int squareRow, int numRows) {
-    return numRows - squareRow;
-}
-
-// Static
-int Square::getGridCol(std::string const &squareCol, int numCols) {
+int UserSquare::getGridCol(int numColsOnGrid) const { 
+    std::string userCol = getUserCol();
     int gridCol = 0;
-    gridCol += (squareCol[0] - 'a'); 
-    for (int i = 1; i < squareCol.size(); ++i) {
-        gridCol += (squareCol[i] - 'a' + 1);
+    gridCol += (userCol[0] - 'a'); 
+    for (int i = 1; i < userCol.size(); ++i) {
+        gridCol += (userCol[i] - 'a' + 1);
     }
     return gridCol;
 }
