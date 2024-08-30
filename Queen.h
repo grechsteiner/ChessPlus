@@ -16,7 +16,7 @@ private:
     std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const override;
     static std::vector<std::pair<int, int>> const queenDirections;
 public:
-    Queen(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 9);
+    Queen(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 9);
 };
 
 

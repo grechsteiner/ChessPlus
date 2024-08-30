@@ -14,15 +14,15 @@ enum class GameState {
     GAME_ACTIVE
 };
 
-enum class Color {
-    WHITE,
-    BLACK,
-    NONE
+enum class Team {
+    TEAM_ONE,
+    TEAM_TWO,
+    TEAM_NONE
 };
-extern const std::vector<std::pair<Color, std::string>> colorStringMap;
+extern const std::vector<std::pair<Team, std::string>> colorStringMap;
 bool isValidColor(std::string const &str);
-Color stringToColor(std::string const &str);
-std::string colorToString(Color color);
+Team stringToColor(std::string const &str);
+std::string colorToString(Team color);
 
 enum class PieceType {
     KING,
@@ -64,5 +64,13 @@ enum class MoveType {
     ENPASSANT,
     DOUBLE_PAWN
 };
+
+/*
+enum class Team {
+    TEAM_ONE,
+    TEAM_TWO,
+    TEAM_NONE
+};
+*/
 
 #endif /* Constants_h */

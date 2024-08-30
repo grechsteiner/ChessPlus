@@ -11,9 +11,9 @@
 #pragma mark - Color
 
 // Static
-const std::vector<std::pair<Color, std::string>> colorStringMap = {
-    { Color::WHITE, "WHITE" },
-    { Color::BLACK, "BLACK" },
+const std::vector<std::pair<Team, std::string>> colorStringMap = {
+    { Team::TEAM_ONE, "WHITE" },
+    { Team::TEAM_TWO, "BLACK" },
 };
 
 bool isValidColor(std::string const &str) {
@@ -26,17 +26,17 @@ bool isValidColor(std::string const &str) {
     return false;
 }
 
-Color stringToColor(std::string const &str) {
+Team stringToColor(std::string const &str) {
     std::string upperStr = toUpper(str);
     for (auto const &pair : colorStringMap) {
         if (pair.second == upperStr) {
             return pair.first;
         }
     }
-    return Color::NONE;
+    return Team::TEAM_NONE;
 }
 
-std::string colorToString(Color color) {
+std::string colorToString(Team color) {
     for (auto const &pair : colorStringMap) {
         if (pair.first == color) {
             return pair.second;

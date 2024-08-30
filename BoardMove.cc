@@ -10,7 +10,6 @@
 #include "PieceInfo.h"
 #include "UserSquare.h"
 #include "BoardSquare.h"
-#include "UserMove.h"
 
 
 // Static
@@ -18,17 +17,17 @@ const BoardMove BoardMove::DEFAULT =
     BoardMove(BoardSquare(0, 0), BoardSquare(0, 0), BoardSquare(0, 0),
             MoveType::STANDARD, false, PieceType::EMPTY, 
             false, PieceType::EMPTY, 0, 
-            Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);
+            Team::TEAM_NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);
 
 BoardMove::BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare,
                     MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
                     bool hasMoved, PieceType pieceType, int pieceScore,
-                    Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore) :
+                    Team capturedTeam, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore) :
 
     fromSquare(fromSquare), toSquare(toSquare), captureSquare(captureSquare),
     moveType(moveType), isAttackingMove(isAttackingMove), promotionPieceType(promotionPieceType),
     hasMoved(hasMoved), pieceType(pieceType), pieceScore(pieceScore),
-    capturedColor(capturedColor), capturedPieceType(capturedPieceType), capturedPieceDirection(capturedPieceDirection), capturedHasMoved(capturedHasMoved), capturedPieceScore(capturedPieceScore) 
+    capturedTeam(capturedTeam), capturedPieceType(capturedPieceType), capturedPieceDirection(capturedPieceDirection), capturedHasMoved(capturedHasMoved), capturedPieceScore(capturedPieceScore) 
 {}
 
 bool BoardMove::operator==(BoardMove const &other) const {
@@ -42,7 +41,7 @@ bool BoardMove::operator==(BoardMove const &other) const {
         hasMoved == other.hasMoved &&
         pieceType == other.pieceType &&
         pieceScore == other.pieceScore &&
-        capturedColor == other.capturedColor &&
+        capturedTeam == other.capturedTeam &&
         capturedPieceType == other.capturedPieceType &&
         capturedPieceDirection == other.capturedPieceDirection &&
         capturedHasMoved == other.capturedHasMoved &&
@@ -97,14 +96,14 @@ void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
 void BoardMove::makeMove(ChessBoard &board) const {
 
     // Basic Stuff
-    board.setPosition(captureSquare, Color::NONE, PieceType::EMPTY, PieceDirection::BLANK, false, 0);      // Set captured piece to blank
+    board.clearPosition(captureSquare);      // Set captured piece to blank
     board.swapPositions(fromSquare, toSquare);                                                            // Move piece (if this is capturing move, captured piece will already be set to empty)
     board.setHasMoved(toSquare, true);                                                                          // Set has moved to true
 
     // Apply Promotion
     if (promotionPieceType != PieceType::EMPTY) {
         PieceInfo unPromotedPieceInfo = board.getPieceInfoAt(toSquare);                                                                      // Piece already moved
-        board.setPosition(toSquare, unPromotedPieceInfo.pieceColor, promotionPieceType, unPromotedPieceInfo.pieceDirection, true);    // Default piece score for promoted piece
+        board.setPosition(toSquare, unPromotedPieceInfo.team, promotionPieceType, unPromotedPieceInfo.pieceDirection, true);    // Default piece score for promoted piece
     }
 
     // Apply Castle (rook part)
@@ -118,26 +117,18 @@ void BoardMove::undoMove(ChessBoard &board) const {
     // Basic Stuff
     board.swapPositions(fromSquare, toSquare);                                                                                        // Undo moving the piece
     board.setHasMoved(fromSquare, hasMoved);                                                                                              // Set hasMoved field to what it was before
-    board.setPosition(captureSquare, capturedColor, capturedPieceType, capturedPieceDirection, capturedHasMoved, capturedPieceScore);  // Place captured piece back
+    board.setPosition(captureSquare, capturedTeam, capturedPieceType, capturedPieceDirection, capturedHasMoved, capturedPieceScore);  // Place captured piece back
 
     // Undo promotion
     if (promotionPieceType != PieceType::EMPTY) {
         PieceInfo promotedPieceInfo = board.getPieceInfoAt(fromSquare);                                                                        // Piece already moved back
-        board.setPosition(fromSquare, promotedPieceInfo.pieceColor, pieceType, promotedPieceInfo.pieceDirection, hasMoved, pieceScore); // Get piece type & score prior to promotion
+        board.setPosition(fromSquare, promotedPieceInfo.team, pieceType, promotedPieceInfo.pieceDirection, hasMoved, pieceScore); // Get piece type & score prior to promotion
     }
 
     // Undo castle
     if (moveType == MoveType::CASTLE) {
         performRookCastle(board, true);
     }
-}
-
-
-bool BoardMove::isEqualToBoardMove(UserMove const &userMove, int numRowsOnBoard, int numColsOnBoard) const {
-    return 
-        fromSquare.isEqualToUserSquare(userMove.getFromSquare(), numRowsOnBoard, numColsOnBoard) &&
-        toSquare.isEqualToUserSquare(userMove.getToSquare(), numRowsOnBoard, numColsOnBoard) &&
-        promotionPieceType == userMove.getPromotionPieceType();
 }
 
 
@@ -159,7 +150,7 @@ PieceType BoardMove::getPieceType() const { return pieceType; }
 int BoardMove::getPieceScore() const { return pieceScore; }
 
 // Captured Piece Info
-Color BoardMove::getCapturedColor() const { return capturedColor; }
+Team BoardMove::getCapturedTeam() const { return capturedTeam; }
 PieceType BoardMove::getCapturedPieceType() const { return capturedPieceType; }
 PieceDirection BoardMove::getCapturedPieceDirection() const { return capturedPieceDirection; }
 bool BoardMove::getCapturedHasMoved() const { return capturedHasMoved; }

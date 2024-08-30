@@ -16,6 +16,7 @@
 #include "BoardSquare.h"
 
 
+
 #pragma mark - Internal Utility
 
 Board::Board() 
@@ -34,10 +35,10 @@ void Board::initializeBoard(std::vector<std::vector<std::unique_ptr<Piece>>> &gr
     }
 }
 
-std::vector<BoardMove> Board::getPseudoLegalMoves(Color color) const {
+std::vector<BoardMove> Board::getPseudoLegalMoves(Team team) const {
     std::vector<BoardMove> boardMoves;
     for (BoardSquare const &boardSquare : allBoardSquares()) {
-        if (getPieceInfoAt(boardSquare).pieceColor == color) {
+        if (getPieceInfoAt(boardSquare).team == team) {
             std::vector<BoardMove> pieceMoves = getPieceMovesAtSquare(boardSquare, false);
             boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
         }
@@ -45,10 +46,10 @@ std::vector<BoardMove> Board::getPseudoLegalMoves(Color color) const {
     return boardMoves;
 }
 
-std::vector<BoardMove> Board::getAllPseudoLegalAttackingMoves(Color color) const {
+std::vector<BoardMove> Board::getAllPseudoLegalAttackingMoves(Team team) const {
     std::vector<BoardMove> boardMoves;
     for (BoardSquare const &boardSquare : allBoardSquares()) {
-        if (getPieceInfoAt(boardSquare).pieceColor == color) {
+        if (getPieceInfoAt(boardSquare).team == team) {
             std::vector<BoardMove> pieceMoves = getPieceMovesAtSquare(boardSquare, true);
             boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
         }
@@ -57,29 +58,29 @@ std::vector<BoardMove> Board::getAllPseudoLegalAttackingMoves(Color color) const
 } 
 
 bool Board::doesMoveApplyCheck(BoardMove const &boardMove) const {
-    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
+    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).team;
     const_cast<Board*>(this)->makeMove(boardMove);
-    bool doesMoveApplyCheck = isInCheck(oppositeColor(turnColor));
+    bool doesMoveApplyCheck = isInCheck(getOtherTeam(turnTeam));
     const_cast<Board*>(this)->undoMove();
     return doesMoveApplyCheck;
 }
 
 bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
-    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
-    Color attackedColor = getPieceInfoAt(boardMove.getCaptureSquare()).pieceColor;
+    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).team;
+    Team attackedTeam = getPieceInfoAt(boardMove.getCaptureSquare()).team;
     return 
-        attackedColor != turnColor && 
-        attackedColor != Color::NONE;
+        attackedTeam != turnTeam && 
+        attackedTeam != Team::TEAM_NONE;
 }
 
 bool Board::doesMoveHavePieceAttackedAfter(BoardMove const &boardMove) const {
-    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
+    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).team;
     const_cast<Board*>(this)->makeMove(boardMove);
-    std::vector<BoardMove> opponentMoves = getCapturingMoves(oppositeColor(turnColor));
+    std::vector<BoardMove> opponentMoves = getCapturingMoves(getOtherTeam(turnTeam));
 
     // Don't need to try every move if just two colours (I think) --> just check if capturingMoves.size() == 0
     for (BoardMove const &opponentMove : opponentMoves) {
-        if (getPieceInfoAt(opponentMove.getCaptureSquare()).pieceColor == turnColor) {
+        if (getPieceInfoAt(opponentMove.getCaptureSquare()).team == turnTeam) {
             const_cast<Board*>(this)->undoMove();
             return true;
         }
@@ -89,14 +90,14 @@ bool Board::doesMoveHavePieceAttackedAfter(BoardMove const &boardMove) const {
     return false;
 }
 
-bool Board::canMakeMove(Color color) const {
-    return getLegalMoves(color).size() > 0;
+bool Board::canMakeMove(Team team) const {
+    return getLegalMoves(team).size() > 0;
 }
 
 bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
-    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
+    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).team;
     const_cast<Board*>(this)->makeMove(boardMove);
-    bool isInCheckAfterMove = isInCheck(turnColor);
+    bool isInCheckAfterMove = isInCheck(turnTeam);
     const_cast<Board*>(this)->undoMove();
     return isInCheckAfterMove;
 } 
@@ -126,16 +127,16 @@ bool Board::isEmptySquareOnBoardImpl(BoardSquare const &boardSquare) const {
     return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).pieceType == PieceType::EMPTY;
 }
 
-bool Board::isOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const {
-    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).pieceColor != color && getPieceInfoAt(boardSquare).pieceColor != Color::NONE;
+bool Board::isOpposingTeamOnBoardImpl(BoardSquare const &boardSquare, Team team) const {
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).team != team && getPieceInfoAt(boardSquare).team != Team::TEAM_NONE;
 }
 
-bool Board::isEmptySquareOrOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const {
-    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).pieceColor != color;
+bool Board::isEmptySquareOrOpposingTeamOnBoardImpl(BoardSquare const &boardSquare, Team team) const {
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).team != team;
 }
 
-bool Board::isSquareAttackedImpl(BoardSquare const &boardSquare, Color color) const {
-    std::vector<BoardMove> boardMoves = getAllPseudoLegalAttackingMoves(oppositeColor(color));
+bool Board::isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) const {
+    std::vector<BoardMove> boardMoves = getAllPseudoLegalAttackingMoves(getOtherTeam(team));
     for (BoardMove const& boardMove : boardMoves) {
         if (boardMove.getCaptureSquare() == boardSquare) {
             return true;
@@ -150,20 +151,8 @@ bool Board::isSquareOnBoardImpl(BoardSquare const &boardSquare) const {
     return boardRow >= 0 && boardRow < grid.size() && boardCol >= 0 && boardCol < grid[boardRow].size();
 }
 
-bool Board::isSquareOnBoardImpl(UserSquare const &userSquare) const { 
-    return isSquareOnBoard(userSquare.toBoardSquare(getNumRows(), getNumCols()));
-}
-
-void Board::setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
-    setPosition(userSquare.toBoardSquare(getNumRows(), getNumCols()), pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
-}
-
-void Board::setPositionImpl(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
-    grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
-}
-
-bool Board::clearPositionImpl(UserSquare const &userSquare) {
-    return clearPosition(userSquare.toBoardSquare(getNumRows(), getNumCols()));
+void Board::setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
+    grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(team, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 
 bool Board::clearPositionImpl(BoardSquare const &boardSquare) {
@@ -257,19 +246,19 @@ void Board::applyStandardSetupImpl() {
         }
         BoardSquare blackPieceSquare(topRow, col);
         BoardSquare whitePieceSquare(bottomRow, col);
-        setPosition(blackPieceSquare, Color::BLACK, pieceType, PieceDirection::SOUTH, false);               // Black
-        setPosition(whitePieceSquare, Color::WHITE, pieceType, PieceDirection::NORTH, false);            // White
+        setPosition(blackPieceSquare, Team::TEAM_TWO, pieceType, PieceDirection::SOUTH, false);               // Black
+        setPosition(whitePieceSquare, Team::TEAM_ONE, pieceType, PieceDirection::NORTH, false);            // White
 
         // Pawns
         BoardSquare blackPawnSquare(topRow + 1, col);
         BoardSquare whitePawnSquare(bottomRow - 1, col);
-        setPosition(blackPawnSquare, Color::BLACK, PieceType::PAWN, PieceDirection::SOUTH, false);     // Black
-        setPosition(whitePawnSquare, Color::WHITE, PieceType::PAWN, PieceDirection::NORTH, false);  // Black
+        setPosition(blackPawnSquare, Team::TEAM_TWO, PieceType::PAWN, PieceDirection::SOUTH, false);     // Black
+        setPosition(whitePawnSquare, Team::TEAM_ONE, PieceType::PAWN, PieceDirection::NORTH, false);  // Black
     }
 }
 
-std::vector<BoardMove> Board::getLegalMovesImpl(Color color) const { 
-    std::vector<BoardMove> boardMoves = getPseudoLegalMoves(color);
+std::vector<BoardMove> Board::getLegalMovesImpl(Team team) const { 
+    std::vector<BoardMove> boardMoves = getPseudoLegalMoves(team);
     for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (isInCheckAfterMove(*it)) {
             it = boardMoves.erase(it);
@@ -280,8 +269,8 @@ std::vector<BoardMove> Board::getLegalMovesImpl(Color color) const {
     return boardMoves;
 }
 
-std::vector<BoardMove> Board::getCapturingMovesImpl(Color color) const { 
-    std::vector<BoardMove> boardMoves = getLegalMoves(color);
+std::vector<BoardMove> Board::getCapturingMovesImpl(Team team) const { 
+    std::vector<BoardMove> boardMoves = getLegalMoves(team);
     for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (!doesMoveCapturePiece(*it)) {
             it = boardMoves.erase(it);
@@ -292,8 +281,8 @@ std::vector<BoardMove> Board::getCapturingMovesImpl(Color color) const {
     return boardMoves;
 }
 
-std::vector<BoardMove> Board::getCheckApplyingMovesImpl(Color color) const {
-    std::vector<BoardMove> boardMoves = getLegalMoves(color);
+std::vector<BoardMove> Board::getCheckApplyingMovesImpl(Team team) const {
+    std::vector<BoardMove> boardMoves = getLegalMoves(team);
     for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (!doesMoveApplyCheck(*it)) {
             it = boardMoves.erase(it);
@@ -304,8 +293,8 @@ std::vector<BoardMove> Board::getCheckApplyingMovesImpl(Color color) const {
     return boardMoves;
 }
 
-std::vector<BoardMove> Board::getCaptureAvoidingMovesImpl(Color color) const { 
-    std::vector<BoardMove> boardMoves = getLegalMoves(color);
+std::vector<BoardMove> Board::getCaptureAvoidingMovesImpl(Team team) const { 
+    std::vector<BoardMove> boardMoves = getLegalMoves(team);
     for (auto it = boardMoves.begin(); it != boardMoves.end();) {
         if (doesMoveHavePieceAttackedAfter(*it)) {
             it = boardMoves.erase(it);
@@ -316,22 +305,25 @@ std::vector<BoardMove> Board::getCaptureAvoidingMovesImpl(Color color) const {
     return boardMoves;
 }
 
-Color Board::getColorOneImpl() const { 
-    return colorOne;
+Team Board::getTeamOneImpl() const { 
+    return teamOne;
 }
 
-Color Board::getColorTwoImpl() const  { 
-    return colorTwo;
+Team Board::getTeamTwoImpl() const  { 
+    return teamTwo;
 }
 
-Color Board::oppositeColorImpl(Color color) const { 
-    return color == colorOne ? colorTwo : colorOne; 
+Team Board::getOtherTeamImpl(Team team) const { 
+    return team == teamOne ? teamTwo : teamOne; 
 }
 
 std::unique_ptr<BoardMove> Board::generateBoardMoveImpl(UserMove const &userMove) const { 
-    std::vector<BoardMove> legalMoves = getLegalMoves(getPieceInfoAt(userMove.getFromSquare().toBoardSquare(getNumRows(), getNumCols())).pieceColor);
+    std::vector<BoardMove> legalMoves = getLegalMoves(getPieceInfoAt(userMove.getFromSquare().toBoardSquare(getNumRows(), getNumCols())).team);
     auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &userMove](BoardMove const &boardMove) {
-        return userMove.isEqualToBoardMove(boardMove, getNumRows(), getNumCols());
+        return
+            userMove.getFromSquare().isEqualToBoardSquare(boardMove.getFromSquare(), getNumRows(), getNumCols()) &&
+            userMove.getToSquare().isEqualToBoardSquare(boardMove.getToSquare(), getNumRows(), getNumCols()) &&
+            userMove.getPromotionPieceType() == boardMove.getPromotionPieceType();
     });
     return it != legalMoves.end() ? std::make_unique<BoardMove>(*it) : nullptr;
 }
@@ -388,10 +380,10 @@ int Board::getNumColsImpl() const {
     return grid[0].size();
 }
 
-bool Board::isInCheckImpl(Color color) const {
+bool Board::isInCheckImpl(Team team) const {
     for (BoardSquare const &boardSquare : allBoardSquares()) {
-        if (getPieceInfoAt(boardSquare).pieceType == PieceType::KING && getPieceInfoAt(boardSquare).pieceColor == color) {
-            if (isSquareAttacked(boardSquare, color)) {
+        if (getPieceInfoAt(boardSquare).pieceType == PieceType::KING && getPieceInfoAt(boardSquare).team == team) {
+            if (isSquareAttacked(boardSquare, team)) {
                 return true;
             }
         }
@@ -399,19 +391,19 @@ bool Board::isInCheckImpl(Color color) const {
     return false;
 }
 
-bool Board::isInCheckMateImpl(Color color) const {
-    return isInCheck(color) && !canMakeMove(color);
+bool Board::isInCheckMateImpl(Team team) const {
+    return isInCheck(team) && !canMakeMove(team);
 }
 
-bool Board::isInStaleMateImpl(Color color) const {
-    return !canMakeMove(color) && !isInCheck(color);
+bool Board::isInStaleMateImpl(Team team) const {
+    return !canMakeMove(team) && !isInCheck(team);
 }
 
 bool Board::isInStaleMateImpl() const {
-    return (isInStaleMate(colorOne) || isInStaleMate(colorTwo));
+    return (isInStaleMate(teamOne) || isInStaleMate(teamTwo));
 }
 bool Board::hasGameFinishedImpl() const {
-    return (isInStaleMate() || isInCheckMate(colorOne) || isInCheckMate(colorTwo));
+    return (isInStaleMate() || isInCheckMate(teamOne) || isInCheckMate(teamTwo));
 }
 bool Board::isBoardInValidStateImpl() const {
     int whiteKingCount = 0;
@@ -422,13 +414,13 @@ bool Board::isBoardInValidStateImpl() const {
 
     for (BoardSquare const &boardSquare : allBoardSquares()) {
         if (getPieceInfoAt(boardSquare).pieceType == PieceType::KING) {
-            Color pieceColor = getPieceInfoAt(boardSquare).pieceColor;
-            if (isSquareAttacked(boardSquare, pieceColor)) {
+            Team team = getPieceInfoAt(boardSquare).team;
+            if (isSquareAttacked(boardSquare, team)) {
                 return false;
             }
-            if (pieceColor == colorOne) {
+            if (team == teamOne) {
                 whiteKingCount++;
-            } else if (pieceColor == colorTwo) {
+            } else if (team == teamTwo) {
                 blackKingCount++;
             }
         }

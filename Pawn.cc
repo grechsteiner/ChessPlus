@@ -11,8 +11,8 @@
 #include "BoardMove.h"
 
 
-Pawn::Pawn(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Piece(pieceColor, PieceType::PAWN, pieceDirection, hasMoved, "♟", "P", pieceScore) {}
+Pawn::Pawn(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
+    Piece(team, PieceType::PAWN, pieceDirection, hasMoved, "♟", "P", pieceScore) {}
 
 std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
@@ -62,7 +62,7 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, Boa
 
         // En passant
         // Last move was double pawn move, and different color team
-        if (lastCompletedMove.getMoveType() == MoveType::DOUBLE_PAWN && board.getPieceInfoAt(lastCompletedMove.getToSquare()).pieceColor != pieceInfo.pieceColor) {
+        if (lastCompletedMove.getMoveType() == MoveType::DOUBLE_PAWN && board.getPieceInfoAt(lastCompletedMove.getToSquare()).team != pieceInfo.team) {
             switch (pieceInfo.pieceDirection) {
                 case PieceDirection::NORTH:
                 case PieceDirection::SOUTH:
@@ -94,22 +94,22 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, Boa
         case PieceDirection::NORTH:
         case PieceDirection::SOUTH:
             // Left
-            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow + direction.first, pieceCol - 1), pieceInfo.pieceColor)) {
+            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow + direction.first, pieceCol - 1), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol - 1), BoardSquare(pieceRow + direction.first, pieceCol - 1), MoveType::STANDARD, true));
             }
             // Right
-            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow + direction.first, pieceCol + 1), pieceInfo.pieceColor)) {
+            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow + direction.first, pieceCol + 1), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol + 1), BoardSquare(pieceRow + direction.first, pieceCol + 1), MoveType::STANDARD, true));
             }
             break;
         case PieceDirection::EAST:
         case PieceDirection::WEST:
             // Up (left) 
-            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow - 1, pieceCol + direction.second), pieceInfo.pieceColor)) {
+            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow - 1, pieceCol + direction.second), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 1, pieceCol + direction.second), BoardSquare(pieceRow - 1, pieceCol + direction.second), MoveType::STANDARD, true));
             }
             // Down (right)
-            if (board.isOpposingColorOnBoard(BoardSquare(pieceRow + 1, pieceCol + direction.second), pieceInfo.pieceColor)) {
+            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow + 1, pieceCol + direction.second), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 1, pieceCol + direction.second), BoardSquare(pieceRow + 1, pieceCol + direction.second), MoveType::STANDARD, true));
             }
             break;

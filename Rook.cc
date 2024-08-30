@@ -16,8 +16,8 @@ std::vector<std::pair<int, int>> const Rook::rookDirections = {
     {1, 0}, 
 };
 
-Rook::Rook(Color pieceColor, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Piece(pieceColor, PieceType::ROOK, pieceDirection, hasMoved, "♜", "R", pieceScore) {}
+Rook::Rook(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
+    Piece(team, PieceType::ROOK, pieceDirection, hasMoved, "♜", "R", pieceScore) {}
 
 std::vector<BoardMove> Rook::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
@@ -25,11 +25,11 @@ std::vector<BoardMove> Rook::getMovesImplementation(ChessBoard const &board, Boa
     for (std::pair<int, int> const &rookDirection : rookDirections) {
         int newRow = boardSquare.getBoardRow() + rookDirection.first;
         int newCol = boardSquare.getBoardCol() + rookDirection.second;
-        while (board.isEmptySquareOrOpposingColorOnBoard(BoardSquare(newRow, newCol), pieceInfo.pieceColor)) {
+        while (board.isEmptySquareOrOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
             moves.emplace_back(createBoardMove(board, boardSquare, BoardSquare(newRow, newCol), BoardSquare(newRow, newCol), MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
-            if (board.isOpposingColorOnBoard(BoardSquare(newRow, newCol), pieceInfo.pieceColor)) {
+            if (board.isOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
                 break;
             }
             

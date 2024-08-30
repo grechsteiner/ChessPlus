@@ -11,7 +11,7 @@
 struct PieceInfo {
 
 public:
-    Color pieceColor;
+    Team team;
     PieceType pieceType;
     PieceDirection pieceDirection;
     int pieceScore;
@@ -19,7 +19,7 @@ public:
     std::string image;
     std::string display;
 
-    PieceInfo(Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore);
+    PieceInfo(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore);
 };
 
 

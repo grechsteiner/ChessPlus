@@ -98,8 +98,8 @@ void Game::applyStalematePoints() {
     std::get<1>(std::get<1>(players)) += 0.5;
 }
     
-void Game::applyWinPoints(Color color) {
-    if (color == Color::WHITE) {
+void Game::applyWinPoints(Team team) {
+    if (team == Team::TEAM_ONE) {
         std::get<1>(std::get<0>(players)) += 1;
     } else {
         std::get<1>(std::get<1>(players)) += 1;
@@ -239,7 +239,7 @@ void Game::runGame() {
                         if (board.isInStaleMate()) {
                             applyStalematePoints();
                         } else {
-                            Color winner = currentTurn == 0 ? Color::BLACK : Color::WHITE;
+                            Team winner = currentTurn == 0 ? Team::TEAM_TWO : Team::TEAM_ONE;
                             applyWinPoints(winner);
                         }
 
@@ -269,9 +269,9 @@ void Game::runGame() {
 
 
                 if (currentTurn == 0) {
-                    applyWinPoints(Color::BLACK);
+                    applyWinPoints(Team::TEAM_TWO);
                 } else {
-                    applyWinPoints(Color::WHITE);
+                    applyWinPoints(Team::TEAM_ONE);
                 }
 
                 // Reset board for next run through
@@ -330,20 +330,21 @@ void Game::runGame() {
 
                 if (!isValidPieceType(piece)) {
                     outputError("Input piece is not valid");
-                } else if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnBoard(UserSquare(square))) {
+                } else if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnBoard(UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols()))) {
                     outputError("Input square is not valid on board");
                 } else {
 
                     PieceType pieceType = stringToPieceType(piece);
-                    Color pieceColor = std::isupper(piece.front()) ? Color::WHITE : Color::BLACK;
-                    PieceDirection pieceDirection = pieceColor == Color::WHITE ? PieceDirection::NORTH : PieceDirection::SOUTH;
+                    Team team = std::isupper(piece.front()) ? Team::TEAM_ONE : Team::TEAM_TWO;
+                    PieceDirection pieceDirection = team == Team::TEAM_ONE ? PieceDirection::NORTH : PieceDirection::SOUTH;
 
+                    BoardSquare boardSquare = UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols());
                     if (tokens.size() == 3) {
-                        board.setPosition(UserSquare(square), pieceColor, pieceType, pieceDirection, false);
+                        board.setPosition(boardSquare, team, pieceType, pieceDirection, false);
                         notifyObservers();
                     } else if (tokens.size() == 4) {
                         if (isValidPieceDirection(tokens[3])) {
-                            board.setPosition(UserSquare(square), pieceColor, pieceType, stringToPieceDirection(tokens[3]), false);
+                            board.setPosition(boardSquare, team, pieceType, stringToPieceDirection(tokens[3]), false);
                             notifyObservers();
                         } else {
                             outputError("Invalid direction");
@@ -365,9 +366,9 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");
             } else {
                 std::string square = tokens[1];
-                if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnBoard(UserSquare(square))) {
+                if (!UserSquare::isValidUserSquare(square) || board.isSquareOnBoard(UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols()))) {
                     outputError("Input square is not valid on board");
-                } else if (board.clearPosition(UserSquare(square))) {
+                } else if (board.clearPosition(UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols()))) {
                     notifyObservers();
                 }
             }
@@ -383,7 +384,7 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");
             } else if (!isValidColor(tokens[1])) {
                 outputError("Must specify color to go first");
-            } else if (stringToColor(tokens[1]) == Color::BLACK) {
+            } else if (stringToColor(tokens[1]) == Team::TEAM_TWO) {
                 currentTurn = 1;
                 notifyObservers();
             } else {

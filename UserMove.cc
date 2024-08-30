@@ -63,10 +63,3 @@ UserSquare const& UserMove::getToSquare() const {
 PieceType UserMove::getPromotionPieceType() const {
     return promotionPieceType;
 }
-
-bool UserMove::isEqualToBoardMove(BoardMove const &boardMove, int numRowsOnBoard, int numColsOnBoard) const {
-    return
-        fromSquare.isEqualToBoardSquare(boardMove.getFromSquare(), numRowsOnBoard, numColsOnBoard) &&
-        toSquare.isEqualToBoardSquare(boardMove.getToSquare(), numRowsOnBoard, numColsOnBoard) &&
-        promotionPieceType == boardMove.getPromotionPieceType();
-}

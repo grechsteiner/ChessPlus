@@ -18,7 +18,7 @@
 #include "ChessBoard.h"
 
 // (Color, totalScore, ComputerPlayer)
-using PlayerTuple = std::tuple<Color, double, std::unique_ptr<ComputerPlayer>>;
+using PlayerTuple = std::tuple<Team, double, std::unique_ptr<ComputerPlayer>>;
 
 class Game : public Subject {
 private:
@@ -32,8 +32,8 @@ private:
     bool showingStandardOpenings = false;
 
     std::tuple<PlayerTuple, PlayerTuple> players = std::make_tuple(
-        std::make_tuple(Color::WHITE,  0,  nullptr),
-        std::make_tuple(Color::BLACK,  0,  nullptr));
+        std::make_tuple(Team::TEAM_ONE,  0,  nullptr),
+        std::make_tuple(Team::TEAM_TWO,  0,  nullptr));
     
 
     void outputError(std::string const &errorMessage) const;
@@ -43,7 +43,7 @@ private:
 
     void resetComputerPlayers();
     void applyStalematePoints();
-    void applyWinPoints(Color color);
+    void applyWinPoints(Team team);
 
     PlayerTuple& getPlayerWithTurn(int i);
 

@@ -70,20 +70,20 @@ void TextObserver::notifyImplementation() {
         printBoard(std::get<0>(state), std::get<2>(state));
 
         if (std::get<2>(state) == 0) { 
-            if (board.isInCheckMate(Color::WHITE)) {
+            if (board.isInCheckMate(Team::TEAM_ONE)) {
                 out << "Checkmate! Black wins!" << std::endl;
-            } else if (board.isInCheck(Color::WHITE)) {
+            } else if (board.isInCheck(Team::TEAM_ONE)) {
                 out << "White is in check" << std::endl;
-            } else if (board.isInStaleMate(Color::WHITE)) {
+            } else if (board.isInStaleMate(Team::TEAM_ONE)) {
                 out << "Stalemate!" << std::endl;
             }
 
         } else {
-            if (board.isInCheckMate(Color::BLACK)) {
+            if (board.isInCheckMate(Team::TEAM_TWO)) {
                 out << "Checkmate! White wins!" << std::endl;
-            } else if (board.isInCheck(Color::BLACK)) {
+            } else if (board.isInCheck(Team::TEAM_TWO)) {
                 out << "Black is in check" << std::endl;
-            } else if (board.isInStaleMate(Color::BLACK)) {
+            } else if (board.isInStaleMate(Team::TEAM_TWO)) {
                 out << "Stalemate!" << std::endl;
             }
         }
@@ -106,10 +106,10 @@ void TextObserver::notifyImplementation() {
     }
 }
 
-void TextObserver::printPiece(const std::string& str, Color color) {
+void TextObserver::printPiece(const std::string& str, Team team) {
     if (str == " ") {
         out << " ";
-    } else if (color == Color::BLACK) {
+    } else if (team == Team::TEAM_TWO) {
         out << "\033[30m" << str << "\033[0m";
     } else {
         out << "\033[90m" << str << "\033[0m";
@@ -131,7 +131,7 @@ void TextObserver::printBoard(ChessBoard const& board, int turn) {
         }
         out << "║";
         for (int col = 0; col < board.getNumCols(); ++col) {
-            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).image, board.getPieceInfoAt(BoardSquare(row, col)).pieceColor);
+            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).image, board.getPieceInfoAt(BoardSquare(row, col)).team);
         }
         out << "║ |" << std::endl;
     }

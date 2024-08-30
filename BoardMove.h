@@ -31,7 +31,7 @@ private:
     int pieceScore;
 
     // Captured Piece Info
-    Color capturedColor;
+    Team capturedTeam;
     PieceType capturedPieceType;
     PieceDirection capturedPieceDirection;
     bool capturedHasMoved;
@@ -45,7 +45,7 @@ public:
     BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, 
             MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
             bool hasMoved, PieceType pieceType, int pieceScore,
-            Color capturedColor, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
+            Team capturedTeam, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
 
    static const BoardMove DEFAULT;
 
@@ -60,9 +60,6 @@ public:
     // Commands
     void makeMove(ChessBoard &board) const;
     void undoMove(ChessBoard &board) const;
-
-    bool isEqualToBoardMove(UserMove const &userMove, int numRowsOnBoard, int numColsOnBoard) const;
-
 
     /* Getters */
     // TODO: Probably don't need all of these, if any
@@ -83,7 +80,7 @@ public:
     int getPieceScore() const;
 
     // Captured Piece Info
-    Color getCapturedColor() const;
+    Team getCapturedTeam() const;
     PieceType getCapturedPieceType() const;
     PieceDirection getCapturedPieceDirection() const;
     bool getCapturedHasMoved() const;

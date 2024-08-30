@@ -14,7 +14,7 @@ private:
     Game *game;
     Xwindow window;
     void notifyImplementation() override;
-    void printPiece(const std::string& str, Color color, int x, int y);
+    void printPiece(const std::string& str, Team team, int x, int y);
     void printBoard(const ChessBoard& board, int turn);
 
 public:

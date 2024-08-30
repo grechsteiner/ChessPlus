@@ -8,8 +8,8 @@
 #include "Piece.h"
 
 
-Piece::Piece(Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore) :
-    pieceInfo(pieceColor, pieceType, pieceDirection, hasMoved, image, display, pieceScore) {}
+Piece::Piece(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore) :
+    pieceInfo(team, pieceType, pieceDirection, hasMoved, image, display, pieceScore) {}
 
 std::vector<BoardMove> Piece::getMoves(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     return getMovesImplementation(board, boardSquare, onlyAttackingMoves);
@@ -20,7 +20,7 @@ BoardMove Piece::createBoardMove(ChessBoard const &board, BoardSquare const &fro
     return BoardMove(fromSquare, toSquare, captureSquare, 
                     moveType, isAttackingMove, promotionPieceType, 
                     pieceInfo.hasMoved, pieceInfo.pieceType, pieceInfo.pieceScore, 
-                    capturePieceInfo.pieceColor, capturePieceInfo.pieceType, capturePieceInfo.pieceDirection, capturePieceInfo.hasMoved, capturePieceInfo.pieceScore);
+                    capturePieceInfo.team, capturePieceInfo.pieceType, capturePieceInfo.pieceDirection, capturePieceInfo.hasMoved, capturePieceInfo.pieceScore);
 }
 
 

@@ -24,9 +24,11 @@ class Context;
 class Board : public ChessBoard {
 
 private:
+
+
     // TODO: Change when 3+ colours
-    Color colorOne = Color::WHITE;
-    Color colorTwo = Color::BLACK;
+    Team teamOne = Team::TEAM_ONE;
+    Team teamTwo = Team::TEAM_TWO;
 
     std::vector<std::vector<std::unique_ptr<Piece>>> grid;
 
@@ -37,13 +39,13 @@ private:
     /* Utility */
     void initializeBoard(std::vector<std::vector<std::unique_ptr<Piece>>> &grid);
 
-    std::vector<BoardMove> getPseudoLegalMoves(Color color) const;   
-    std::vector<BoardMove> getAllPseudoLegalAttackingMoves(Color color) const;
+    std::vector<BoardMove> getPseudoLegalMoves(Team team) const;   
+    std::vector<BoardMove> getAllPseudoLegalAttackingMoves(Team team) const;
 
     bool doesMoveApplyCheck(BoardMove const &boardMove) const;
     bool doesMoveCapturePiece(BoardMove const &boardMove) const;
     bool doesMoveHavePieceAttackedAfter(BoardMove const &boardMove) const;
-    bool canMakeMove(Color color) const;
+    bool canMakeMove(Team team) const;
     bool isInCheckAfterMove(BoardMove const &boardMove) const;   
 
     std::vector<BoardMove> getPieceMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
@@ -54,15 +56,12 @@ private:
     std::vector<BoardSquare> allBoardSquaresImpl() const override;
 
     bool isEmptySquareOnBoardImpl(BoardSquare const &boardSquare) const override;
-    bool isOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const override;
-    bool isEmptySquareOrOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const override;
-    bool isSquareAttackedImpl(BoardSquare const &boardSquare, Color color) const override;
+    bool isOpposingTeamOnBoardImpl(BoardSquare const &boardSquare, Team team) const override;
+    bool isEmptySquareOrOpposingTeamOnBoardImpl(BoardSquare const &boardSquare, Team team) const override;
+    bool isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) const override;
     
     bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const override;
-    bool isSquareOnBoardImpl(UserSquare const &userSquare) const override;
-    void setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
-    void setPositionImpl(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
-    bool clearPositionImpl(UserSquare const &userSquare) override;
+    void setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
     bool clearPositionImpl(BoardSquare const &boardSquare) override;
     void clearBoardImpl() override;
     void swapPositionsImpl(BoardSquare const &boardSquareOne, BoardSquare const &boardSquareTwo) override;
@@ -70,14 +69,14 @@ private:
     bool setBoardSizeImpl(int newNumRows, int newNumCols) override; // Set board to have provided coordinates, returning true if coordinates are valid, false otherwise, Does not change the state of any pieces on the board
     void applyStandardSetupImpl() override;
 
-    std::vector<BoardMove> getLegalMovesImpl(Color color) const override; 
-    std::vector<BoardMove> getCapturingMovesImpl(Color color) const override;
-    std::vector<BoardMove> getCheckApplyingMovesImpl(Color color) const override;
-    std::vector<BoardMove> getCaptureAvoidingMovesImpl(Color color) const override;
+    std::vector<BoardMove> getLegalMovesImpl(Team team) const override; 
+    std::vector<BoardMove> getCapturingMovesImpl(Team team) const override;
+    std::vector<BoardMove> getCheckApplyingMovesImpl(Team team) const override;
+    std::vector<BoardMove> getCaptureAvoidingMovesImpl(Team team) const override;
 
-    Color getColorOneImpl() const override;
-    Color getColorTwoImpl() const override;
-    Color oppositeColorImpl(Color color) const override;
+    Team getTeamOneImpl() const override;
+    Team getTeamTwoImpl() const override;
+    Team getOtherTeamImpl(Team team) const override;
 
     std::unique_ptr<BoardMove> generateBoardMoveImpl(UserMove const &userMove) const override;
     BoardMove const& getLastMadeMoveImpl() const override;
@@ -90,9 +89,9 @@ private:
     int getNumRowsImpl() const override;
     int getNumColsImpl() const override;
 
-    bool isInCheckImpl(Color color) const override;
-    bool isInCheckMateImpl(Color color) const override;
-    bool isInStaleMateImpl(Color color) const override;
+    bool isInCheckImpl(Team team) const override;
+    bool isInCheckMateImpl(Team team) const override;
+    bool isInStaleMateImpl(Team team) const override;
     bool isInStaleMateImpl() const override;
     bool hasGameFinishedImpl() const override;
     bool isBoardInValidStateImpl() const override;

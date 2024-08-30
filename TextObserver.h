@@ -15,7 +15,7 @@ private:
     std::ostream& out;
     Game *game;
     void notifyImplementation() override;
-    void printPiece(const std::string& str, Color color);
+    void printPiece(const std::string& str, Team color);
     void printBoard(ChessBoard const& board, int turn);
 public:
     TextObserver(std::ostream &out, Game *game);

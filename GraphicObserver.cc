@@ -34,8 +34,8 @@ void GraphicObserver::notifyImplementation() {
     */
 }
 
-void GraphicObserver::printPiece(const std::string& str, Color color, int x, int y) {
-    int pieceColor = (color == Color::BLACK) ? 1 : 0; // Use predefined colors
+void GraphicObserver::printPiece(const std::string& str, Team team, int x, int y) {
+    int pieceColor = (team == Team::TEAM_TWO) ? 1 : 0; // Use predefined colors
     window.drawString(x, y, str, pieceColor);
 }
 
@@ -55,7 +55,7 @@ void GraphicObserver::printBoard(const ChessBoard& board, int turn) {
             window.fillRectangle(x, y, squareSize, squareSize, color);
 
 
-            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).display, board.getPieceInfoAt(BoardSquare(row, col)).pieceColor, x + squareSize / 2, y + squareSize / 2);
+            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).display, board.getPieceInfoAt(BoardSquare(row, col)).team, x + squareSize / 2, y + squareSize / 2);
             
         }
     }

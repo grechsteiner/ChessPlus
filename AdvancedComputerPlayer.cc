@@ -9,27 +9,27 @@
 #include "MoveShuffler.h"
 
 
-BoardMove AdvancedComputerPlayer::getMoveImplementation(ChessBoard &board, Color color) const {
-    return std::get<1>(alphaBetaSearch(board, depth, color, 1000, -1000));
+BoardMove AdvancedComputerPlayer::getMoveImplementation(ChessBoard &board, Team team) const {
+    return std::get<1>(alphaBetaSearch(board, depth, team, 1000, -1000));
 }
 
-std::tuple<int, BoardMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &board, int currentDepth, Color color, int beta, int alpha) const {
+std::tuple<int, BoardMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &board, int currentDepth, Team team, int beta, int alpha) const {
 
     if (currentDepth == 0) {
-        if (board.isInStaleMate(color)) {
+        if (board.isInStaleMate(team)) {
             return std::make_tuple(0, BoardMove::DEFAULT);
         }
-        return std::make_tuple(getAlphaBetaBoardScore(board, color), BoardMove::DEFAULT);
+        return std::make_tuple(getAlphaBetaBoardScore(board, team), BoardMove::DEFAULT);
     }
 
-    int bestScore = (color == board.getColorOne()) ? -10000 : 10000;
+    int bestScore = (team == board.getTeamOne()) ? -10000 : 10000;
     BoardMove bestMove = BoardMove::DEFAULT;
-    std::vector<BoardMove> allMoves = board.getLegalMoves(color);
+    std::vector<BoardMove> allMoves = board.getLegalMoves(team);
     allMoves = rank_moves(board, allMoves);
-    if (color == board.getColorOne()) {
+    if (team == board.getTeamOne()) {
         for (BoardMove const &move : allMoves) {
             board.makeMove(move);
-            int currentScore = std::get<0>(alphaBetaSearch(board, currentDepth - 1, board.oppositeColor(color), beta, alpha));
+            int currentScore = std::get<0>(alphaBetaSearch(board, currentDepth - 1, board.getOtherTeam(team), beta, alpha));
             board.undoMove();   
             if (currentScore > bestScore) {
                 bestScore = currentScore;
@@ -45,7 +45,7 @@ std::tuple<int, BoardMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &b
     } else {
         for (BoardMove const &move : allMoves) {
             board.makeMove(move);
-            int currentScore = std::get<0>(alphaBetaSearch(board, currentDepth - 1, board.oppositeColor(color), beta, alpha));
+            int currentScore = std::get<0>(alphaBetaSearch(board, currentDepth - 1, board.getOtherTeam(team), beta, alpha));
             board.undoMove();    
             if (currentScore < bestScore) {
                 bestScore = currentScore;
@@ -61,10 +61,10 @@ std::tuple<int, BoardMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &b
     }
 
     if (bestScore == 10000 || bestScore == -10000) {
-        if (board.isInStaleMate(color)) {
+        if (board.isInStaleMate(team)) {
             return std::make_tuple(0, BoardMove::DEFAULT);
         }
-        return std::make_tuple(getAlphaBetaBoardScore(board, color), BoardMove::DEFAULT);
+        return std::make_tuple(getAlphaBetaBoardScore(board, team), BoardMove::DEFAULT);
     }
 
     return std::make_tuple(bestScore, bestMove);
@@ -122,7 +122,7 @@ std::vector<BoardMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, con
     return final_list;
 }
 
-int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Color color) const {
+int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team) const {
     int totalScore = 0;
 
     for (BoardSquare const &boardSquare : board.allBoardSquares()) {
@@ -130,7 +130,7 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Color colo
         int numBoardCols = board.getNumCols();
 
 
-        if (board.getPieceInfoAt(boardSquare).pieceColor == board.getColorOne()) {
+        if (board.getPieceInfoAt(boardSquare).team == board.getTeamOne()) {
             totalScore += board.getPieceInfoAt(boardSquare).pieceScore * 10;
             // Advance bonus, only until row before pawns so no stupid sacrifice
             switch (board.getPieceInfoAt(boardSquare).pieceDirection) {
@@ -149,7 +149,7 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Color colo
                 default:
                     break;
             }
-        } else if (board.getPieceInfoAt(boardSquare).pieceColor == board.getColorTwo()) {
+        } else if (board.getPieceInfoAt(boardSquare).team == board.getTeamTwo()) {
             totalScore -= board.getPieceInfoAt(boardSquare).pieceScore * 10;
             // Advance bonus, only until row before pawns so no stupid sacrifice
             switch (board.getPieceInfoAt(boardSquare).pieceDirection) {
@@ -172,8 +172,8 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Color colo
     }
 
     // Checkmate
-    if (board.isInCheckMate(color)) {
-        if (color == board.getColorTwo()) {
+    if (board.isInCheckMate(team)) {
+        if (team == board.getTeamTwo()) {
             totalScore += 1000;
         } else {
             totalScore -= 1000;

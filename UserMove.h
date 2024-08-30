@@ -31,8 +31,6 @@ public:
     UserSquare const& getFromSquare() const;
     UserSquare const& getToSquare() const;
     PieceType getPromotionPieceType() const;
-
-    bool isEqualToBoardMove(BoardMove const &boardMove, int numRowsOnBoard, int numColsOnBoard) const;
 };
 
 
