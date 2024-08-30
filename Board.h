@@ -28,8 +28,6 @@ private:
     Color colorOne = Color::WHITE;
     Color colorTwo = Color::BLACK;
 
-    StandardOpeningTrie const &standardOpeningTrie = StandardOpeningTrie::Hardcoded;         // TODO: Read in from file, separate from board class
-
     std::vector<std::vector<std::unique_ptr<Piece>>> grid;
 
     std::vector<BoardMove> completedMoves;
@@ -37,7 +35,7 @@ private:
 
 
     /* Utility */
-    void initializeBoard();
+    void initializeBoard(std::vector<std::vector<std::unique_ptr<Piece>>> &grid);
 
     std::vector<BoardMove> getPseudoLegalMoves(Color color) const;   
     std::vector<BoardMove> getAllPseudoLegalAttackingMoves(Color color) const;
@@ -48,17 +46,20 @@ private:
     bool canMakeMove(Color color) const;
     bool isInCheckAfterMove(BoardMove const &boardMove) const;   
 
+    std::vector<BoardMove> getPieceMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
 
 
     /* ChessBoard Interface */
     PieceInfo getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
+    std::vector<BoardSquare> allBoardSquaresImpl() const override;
 
     bool isEmptySquareOnBoardImpl(BoardSquare const &boardSquare) const override;
     bool isOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const override;
     bool isEmptySquareOrOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const override;
-    bool isSquareCheckAttackedImpl(BoardSquare const &boardSquare, Color color) const override;
+    bool isSquareAttackedImpl(BoardSquare const &boardSquare, Color color) const override;
     
-    bool isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const override;
+    bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const override;
+    bool isSquareOnBoardImpl(UserSquare const &userSquare) const override;
     void setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
     void setPositionImpl(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) override;
     bool clearPositionImpl(UserSquare const &userSquare) override;
@@ -79,7 +80,8 @@ private:
     Color oppositeColorImpl(Color color) const override;
 
     std::unique_ptr<BoardMove> generateBoardMoveImpl(UserMove const &userMove) const override;
-    BoardMove const& getLastMoveImpl() const override;
+    BoardMove const& getLastMadeMoveImpl() const override;
+    std::vector<BoardMove> const& getAllMadeMovesImpl() const override;
     bool hasMoveBeenMadeImpl() const override;
     void makeMoveImpl(BoardMove const &move) override;                    
     bool undoMoveImpl() override;  
@@ -95,19 +97,18 @@ private:
     bool hasGameFinishedImpl() const override;
     bool isBoardInValidStateImpl() const override;
 
-    std::vector<std::pair<std::string, std::string>> getMatchingOpeningsImpl() const override;      // vector<pair(openingName, to_string(move))>
-    int getAlphaBetaBoardScoreImpl(Color color) const override;                                     // TODO: Shouldn't be part of board, can do through getPieceAt()
-
 public:
     Board();
 
     // Max number of letters in alphabet
     // TODO: Remove max once graphic logic is updated
-    static int const maxRows = 26;
-    static int const maxCols = 26;
+    static int const maxNumRows = 26;
+    static int const maxNumCols = 26;
+    static int const minNumRows = 4;
+    static int const minNumCols = 8;
 
     // TODO: Utility
-    bool isSquareOnBoard(int row, int col) const;  
+    
 
 };
 

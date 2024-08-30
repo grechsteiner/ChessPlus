@@ -53,6 +53,7 @@ void StandardOpeningTrie::insert(const vector<UserMove>& userEnteredMoves, const
 
 vector<pair<string, string>> StandardOpeningTrie::getMatchingOpenings(const vector<BoardMove>& completedMoves) const {
     vector<pair<string, string>> results;
+    /*
     const StandardOpeningTrieNode* standardOpeningTrieNode = root.get();
     if (!standardOpeningTrieNode) return results; // Ensure root is not null
 
@@ -63,5 +64,6 @@ vector<pair<string, string>> StandardOpeningTrie::getMatchingOpenings(const vect
         standardOpeningTrieNode = standardOpeningTrieNode->children.at(completedMove.toString()).get();
     }
     collectNextMoves(standardOpeningTrieNode, results);
+    */
     return results;
 }

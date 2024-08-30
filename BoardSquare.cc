@@ -3,6 +3,7 @@
 #include <string>
 
 #include "BoardSquare.h"
+#include "UserSquare.h"
 
 BoardSquare::BoardSquare(int boardRow, int boardCol) : boardRow(boardRow), boardCol(boardCol) {}
 
@@ -12,7 +13,6 @@ bool BoardSquare::operator==(BoardSquare const &other) const {
         boardCol == other.boardCol;
 }
 
-std::string BoardSquare::toString() const { return std::to_string(boardRow) + std::to_string(boardCol); }
 int BoardSquare::getBoardRow() const { return boardRow; }
 int BoardSquare::getBoardCol() const { return boardCol; }
 
@@ -27,4 +27,14 @@ std::string BoardSquare::getUserCol(int numColsOnBoard) const {
         n = n / base - 1;  // Subtract 1 to handle the 0-indexed system properly
     }
     return userCol;
+}
+
+bool BoardSquare::isEqualToUserSquare(UserSquare const &userSquare, int numRowsOnBoard, int numColsOnBoard) const {
+    return 
+        getUserRow(numRowsOnBoard) == userSquare.getUserRow() &&
+        getUserCol(numColsOnBoard) == userSquare.getUserCol();
+}
+
+UserSquare BoardSquare::toUserSquare(int numRowsOnBoard, int numColOnBoard) const {
+    return UserSquare(getUserCol(numColOnBoard) + std::to_string(getUserRow(numRowsOnBoard)));
 }

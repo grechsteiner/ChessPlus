@@ -3,6 +3,7 @@
 #include <string>
 
 #include "UserMove.h"
+#include "BoardMove.h"
 #include "Constants.h"
 #include "UserSquare.h"
 
@@ -14,9 +15,11 @@ UserMove::UserMove(UserSquare const &fromSquare, UserSquare const &toSquare, Pie
 UserMove::UserMove(UserMove const &other) : 
     fromSquare(other.fromSquare), toSquare(other.toSquare), promotionPieceType(other.promotionPieceType) {}
 
+/*
 // Move ctor 
 UserMove::UserMove(UserMove &&other) :
     fromSquare(std::move(other.fromSquare)), toSquare(std::move(other.toSquare)), promotionPieceType(other.promotionPieceType) {}
+*/
 
 // Copy Assignment
 UserMove& UserMove::operator=(UserMove const &other) {
@@ -28,6 +31,7 @@ UserMove& UserMove::operator=(UserMove const &other) {
     return *this;
 }
 
+/*
 // Move Assignment
 UserMove& UserMove::operator=(UserMove &&other) {
     if (this != &other) {
@@ -38,6 +42,7 @@ UserMove& UserMove::operator=(UserMove &&other) {
     }
     return *this;
 }
+*/
 
 std::string UserMove::toString() const {
     std::string moveString = fromSquare.toString() + " " + toSquare.toString();
@@ -57,4 +62,11 @@ UserSquare const& UserMove::getToSquare() const {
 
 PieceType UserMove::getPromotionPieceType() const {
     return promotionPieceType;
+}
+
+bool UserMove::isEqualToBoardMove(BoardMove const &boardMove, int numRowsOnBoard, int numColsOnBoard) const {
+    return
+        fromSquare.isEqualToBoardSquare(boardMove.getFromSquare(), numRowsOnBoard, numColsOnBoard) &&
+        toSquare.isEqualToBoardSquare(boardMove.getToSquare(), numRowsOnBoard, numColsOnBoard) &&
+        promotionPieceType == boardMove.getPromotionPieceType();
 }

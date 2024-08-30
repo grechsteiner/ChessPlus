@@ -330,7 +330,7 @@ void Game::runGame() {
 
                 if (!isValidPieceType(piece)) {
                     outputError("Input piece is not valid");
-                } else if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnCurrentBoard(UserSquare(square))) {
+                } else if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnBoard(UserSquare(square))) {
                     outputError("Input square is not valid on board");
                 } else {
 
@@ -365,7 +365,7 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");
             } else {
                 std::string square = tokens[1];
-                if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnCurrentBoard(UserSquare(square))) {
+                if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnBoard(UserSquare(square))) {
                     outputError("Input square is not valid on board");
                 } else if (board.clearPosition(UserSquare(square))) {
                     notifyObservers();

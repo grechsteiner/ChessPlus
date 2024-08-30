@@ -13,6 +13,7 @@
 
 class AdvancedComputerPlayer : public ComputerPlayer {
 private:
+    int getAlphaBetaBoardScore(ChessBoard& board, Color color) const;
     std::vector<BoardMove> rank_moves(ChessBoard& board, const std::vector<BoardMove>& moves) const;
     BoardMove getMoveImplementation(ChessBoard &board, Color color) const override;
     int depth = 4;

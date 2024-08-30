@@ -6,11 +6,14 @@
 #include <cassert>
 
 #include "UserSquare.h"
+#include "BoardSquare.h"
 
-// Static
-std::regex const UserSquare::regexPattern("([a-z]+)([1-9]\\d*)");
-
-UserSquare::UserSquare(std::string const &squareStr) : userSquare(squareStr) {}
+UserSquare::UserSquare(std::string const &squareStr) : userSquare(squareStr) {
+    std::smatch match;
+    std::regex_match(squareStr, match, std::regex("^([a-z]+)([1-9][0-9]*)$"));
+    userRow = std::stoi(match[2].str());
+    userCol = match[1].str();
+}
 
 bool UserSquare::operator==(UserSquare const &other) const {
     return userSquare == other.userSquare;
@@ -19,7 +22,7 @@ bool UserSquare::operator==(UserSquare const &other) const {
 // Static
 bool UserSquare::isValidUserSquare(std::string const &squareStr) {
     std::smatch match;
-    return std::regex_match(squareStr, match, regexPattern);
+    return std::regex_match(squareStr, match, std::regex("^([a-z]+)([1-9][0-9]*)$"));
 }
 
 std::string UserSquare::toString() const {
@@ -27,26 +30,32 @@ std::string UserSquare::toString() const {
 }
 
 int UserSquare::getUserRow() const { 
-    std::smatch match;
-    std::regex_match(userSquare, match, regexPattern);
-    return std::stoi(match[2]);
+    return userRow;
 }
 
 std::string UserSquare::getUserCol() const { 
-    std::smatch match;
-    std::regex_match(userSquare, match, regexPattern);
-    return match[1];
+    return userCol;
 }
 
-int UserSquare::getBoardRow(int numRowsOnGrid) const {
-    return numRowsOnGrid - getUserRow();
+int UserSquare::getBoardRow(int numRowsOnBoard) const {
+    return numRowsOnBoard - userRow;
 }
 
-int UserSquare::getBoardCol(int numColsOnGrid) const { 
+int UserSquare::getBoardCol(int numColsOnBoard) const { 
     static int base = 26;
-    int gridCol = 0;
-    for (char c : getUserCol()) {
-        gridCol = gridCol * base + (c - 'a');
+    int boardCol = 0;
+    for (char c : userCol) {
+        boardCol = boardCol * base + (c - 'a');
     }
-    return gridCol;
+    return boardCol;
+}
+
+bool UserSquare::isEqualToBoardSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard) const {
+    return 
+        getBoardRow(numRowsOnBoard) == boardSquare.getBoardRow() && 
+        getBoardCol(numColsOnBoard) == boardSquare.getBoardCol();
+}   
+
+BoardSquare UserSquare::toBoardSquare(int numRowsOnBoard, int numColOnBoard) const {
+    return BoardSquare(getBoardRow(numRowsOnBoard), getBoardCol(numColOnBoard));
 }

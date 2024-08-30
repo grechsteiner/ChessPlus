@@ -10,6 +10,7 @@
 #include "PieceInfo.h"
 #include "UserSquare.h"
 #include "BoardSquare.h"
+#include "UserMove.h"
 
 
 // Static
@@ -48,14 +49,6 @@ bool BoardMove::operator==(BoardMove const &other) const {
         capturedPieceScore == other.capturedPieceScore;
 }
 
-
-std::string BoardMove::toString() const {
-    std::string moveString = fromSquare.toString() + " " + toSquare.toString();
-    if (promotionPieceType != PieceType::EMPTY) {
-        moveString += " " + pieceTypeToString(promotionPieceType);
-    }
-    return moveString;
-}
 
 #pragma mark - Commands
 
@@ -111,7 +104,7 @@ void BoardMove::makeMove(ChessBoard &board) const {
     // Apply Promotion
     if (promotionPieceType != PieceType::EMPTY) {
         PieceInfo unPromotedPieceInfo = board.getPieceInfoAt(toSquare);                                                                      // Piece already moved
-        board.setPosition(toSquare, unPromotedPieceInfo.getPieceColor(), promotionPieceType, unPromotedPieceInfo.getPieceDirection(), true);    // Default piece score for promoted piece
+        board.setPosition(toSquare, unPromotedPieceInfo.pieceColor, promotionPieceType, unPromotedPieceInfo.pieceDirection, true);    // Default piece score for promoted piece
     }
 
     // Apply Castle (rook part)
@@ -130,13 +123,21 @@ void BoardMove::undoMove(ChessBoard &board) const {
     // Undo promotion
     if (promotionPieceType != PieceType::EMPTY) {
         PieceInfo promotedPieceInfo = board.getPieceInfoAt(fromSquare);                                                                        // Piece already moved back
-        board.setPosition(fromSquare, promotedPieceInfo.getPieceColor(), pieceType, promotedPieceInfo.getPieceDirection(), hasMoved, pieceScore); // Get piece type & score prior to promotion
+        board.setPosition(fromSquare, promotedPieceInfo.pieceColor, pieceType, promotedPieceInfo.pieceDirection, hasMoved, pieceScore); // Get piece type & score prior to promotion
     }
 
     // Undo castle
     if (moveType == MoveType::CASTLE) {
         performRookCastle(board, true);
     }
+}
+
+
+bool BoardMove::isEqualToBoardMove(UserMove const &userMove, int numRowsOnBoard, int numColsOnBoard) const {
+    return 
+        fromSquare.isEqualToUserSquare(userMove.getFromSquare(), numRowsOnBoard, numColsOnBoard) &&
+        toSquare.isEqualToUserSquare(userMove.getToSquare(), numRowsOnBoard, numColsOnBoard) &&
+        promotionPieceType == userMove.getPromotionPieceType();
 }
 
 

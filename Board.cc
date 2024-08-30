@@ -22,11 +22,11 @@ Board::Board()
     : grid(8) {
     for (auto& row : grid) {
         row.resize(8);
-    }
-    initializeBoard();
+    } 
+    initializeBoard(grid);
 }
 
-void Board::initializeBoard() {
+void Board::initializeBoard(std::vector<std::vector<std::unique_ptr<Piece>>> &grid) {
     for (auto& row : grid) {
         for (auto& piece : row) {
             piece = ChessPieceFactory::createEmptyPiece();
@@ -36,12 +36,10 @@ void Board::initializeBoard() {
 
 std::vector<BoardMove> Board::getPseudoLegalMoves(Color color) const {
     std::vector<BoardMove> boardMoves;
-    for (int row = 0; row < grid.size(); ++row) {
-        for (int col = 0; col < grid[0].size(); ++col) {
-            if (grid[row][col]->getPieceInfo().getPieceColor() == color) {
-                std::vector<BoardMove> pieceMoves = grid[row][col]->getMoves(*this, BoardSquare(row, col), false);
-                boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
-            }
+    for (BoardSquare const &boardSquare : allBoardSquares()) {
+        if (getPieceInfoAt(boardSquare).pieceColor == color) {
+            std::vector<BoardMove> pieceMoves = getPieceMovesAtSquare(boardSquare, false);
+            boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
         }
     }
     return boardMoves;
@@ -49,43 +47,45 @@ std::vector<BoardMove> Board::getPseudoLegalMoves(Color color) const {
 
 std::vector<BoardMove> Board::getAllPseudoLegalAttackingMoves(Color color) const {
     std::vector<BoardMove> boardMoves;
-    for (int row = 0; row < grid.size(); ++row) {
-        for (int col = 0; col < grid[0].size(); ++col) {
-            if (grid[row][col]->getPieceInfo().getPieceColor() == color) {
-                std::vector<BoardMove> pieceMoves = grid[row][col]->getMoves(*this, BoardSquare(row, col), true);
-                boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
-            }  
+    for (BoardSquare const &boardSquare : allBoardSquares()) {
+        if (getPieceInfoAt(boardSquare).pieceColor == color) {
+            std::vector<BoardMove> pieceMoves = getPieceMovesAtSquare(boardSquare, true);
+            boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
         }
     }
     return boardMoves;
 } 
 
 bool Board::doesMoveApplyCheck(BoardMove const &boardMove) const {
+    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
     const_cast<Board*>(this)->makeMove(boardMove);
-    bool isColorInCheck = isInCheck(oppositeColor(getPieceInfoAt(boardMove.getFromSquare()).getPieceColor()));
+    bool doesMoveApplyCheck = isInCheck(oppositeColor(turnColor));
     const_cast<Board*>(this)->undoMove();
-    return isColorInCheck;
+    return doesMoveApplyCheck;
 }
 
 bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
-    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).getPieceColor();
-    Color attackedColor = getPieceInfoAt(boardMove.getCaptureSquare()).getPieceColor();
-    return (attackedColor == oppositeColor(turnColor));
+    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
+    Color attackedColor = getPieceInfoAt(boardMove.getCaptureSquare()).pieceColor;
+    return 
+        attackedColor != turnColor && 
+        attackedColor != Color::NONE;
 }
 
 bool Board::doesMoveHavePieceAttackedAfter(BoardMove const &boardMove) const {
-    Color turnColor = grid[boardMove.getFromSquare().getBoardRow()][boardMove.getFromSquare().getBoardCol()]->getPieceInfo().getPieceColor();
+    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
     const_cast<Board*>(this)->makeMove(boardMove);
-    std::vector<BoardMove> boardMoves = getCapturingMoves(oppositeColor(turnColor));
+    std::vector<BoardMove> opponentMoves = getCapturingMoves(oppositeColor(turnColor));
 
     // Don't need to try every move if just two colours (I think) --> just check if capturingMoves.size() == 0
-    for (BoardMove const &fMove : boardMoves) {
-        if (getPieceInfoAt(fMove.getCaptureSquare()).getPieceColor() == turnColor) {
+    for (BoardMove const &opponentMove : opponentMoves) {
+        if (getPieceInfoAt(opponentMove.getCaptureSquare()).pieceColor == turnColor) {
             const_cast<Board*>(this)->undoMove();
             return true;
         }
-        const_cast<Board*>(this)->undoMove();
+        
     }
+    const_cast<Board*>(this)->undoMove();
     return false;
 }
 
@@ -94,14 +94,15 @@ bool Board::canMakeMove(Color color) const {
 }
 
 bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
+    Color turnColor = getPieceInfoAt(boardMove.getFromSquare()).pieceColor;
     const_cast<Board*>(this)->makeMove(boardMove);
-    bool isColorInCheck = isInCheck(getPieceInfoAt(boardMove.getFromSquare()).getPieceColor());
+    bool isInCheckAfterMove = isInCheck(turnColor);
     const_cast<Board*>(this)->undoMove();
-    return isColorInCheck;
+    return isInCheckAfterMove;
 } 
 
-bool Board::isSquareOnBoard(int row, int col) const {
-    return row >= 0 && row < grid.size() && col >= 0 && col < grid[row].size();
+std::vector<BoardMove> Board::getPieceMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
+    return grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getMoves(*this, boardSquare, onlyAttackingMoves);
 }
 
 
@@ -111,25 +112,29 @@ PieceInfo Board::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
     return grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceInfo();
 }
 
+std::vector<BoardSquare> Board::allBoardSquaresImpl() const {
+    std::vector<BoardSquare> boardSquares;
+    for (int row = 0; row < grid.size(); ++row) {
+        for (int col = 0; col < grid[row].size(); ++col) {
+            boardSquares.emplace_back(BoardSquare(row, col));
+        }
+    }
+    return boardSquares;
+}
+
 bool Board::isEmptySquareOnBoardImpl(BoardSquare const &boardSquare) const {
-    int boardRow = boardSquare.getBoardRow();
-    int boardCol = boardSquare.getBoardCol();
-    return isSquareOnBoard(boardRow, boardCol) && grid[boardRow][boardCol]->getPieceInfo().getPieceType() == PieceType::EMPTY;
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).pieceType == PieceType::EMPTY;
 }
 
 bool Board::isOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const {
-    int boardRow = boardSquare.getBoardRow();
-    int boardCol = boardSquare.getBoardCol();
-    return isSquareOnBoard(boardRow, boardCol) && grid[boardRow][boardCol]->getPieceInfo().getPieceColor() != color && grid[boardRow][boardCol]->getPieceInfo().getPieceColor() != Color::NONE;
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).pieceColor != color && getPieceInfoAt(boardSquare).pieceColor != Color::NONE;
 }
 
 bool Board::isEmptySquareOrOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const {
-    int boardRow = boardSquare.getBoardRow();
-    int boardCol = boardSquare.getBoardCol();
-    return isSquareOnBoard(boardRow, boardCol) && grid[boardRow][boardCol]->getPieceInfo().getPieceColor() != color;
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).pieceColor != color;
 }
 
-bool Board::isSquareCheckAttackedImpl(BoardSquare const &boardSquare, Color color) const {
+bool Board::isSquareAttackedImpl(BoardSquare const &boardSquare, Color color) const {
     std::vector<BoardMove> boardMoves = getAllPseudoLegalAttackingMoves(oppositeColor(color));
     for (BoardMove const& boardMove : boardMoves) {
         if (boardMove.getCaptureSquare() == boardSquare) {
@@ -139,51 +144,43 @@ bool Board::isSquareCheckAttackedImpl(BoardSquare const &boardSquare, Color colo
     return false;
 }
 
-bool Board::isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const { 
-    int gridRow = userSquare.getBoardRow(getNumRows());
-    int gridCol = userSquare.getBoardCol(getNumCols());
-    return gridRow >= 0 && gridRow < getNumRows() && gridCol >= 0 && gridCol < getNumCols();
+bool Board::isSquareOnBoardImpl(BoardSquare const &boardSquare) const {
+    int boardRow = boardSquare.getBoardRow();
+    int boardCol = boardSquare.getBoardCol();
+    return boardRow >= 0 && boardRow < grid.size() && boardCol >= 0 && boardCol < grid[boardRow].size();
+}
+
+bool Board::isSquareOnBoardImpl(UserSquare const &userSquare) const { 
+    return isSquareOnBoard(userSquare.toBoardSquare(getNumRows(), getNumCols()));
 }
 
 void Board::setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
-    int boardRow = userSquare.getBoardRow(getNumRows());
-    int boardCol = userSquare.getBoardCol(getNumCols());
-    BoardSquare boardSquare(boardRow, boardCol);
-    setPosition(boardSquare, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
+    setPosition(userSquare.toBoardSquare(getNumRows(), getNumCols()), pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 
 void Board::setPositionImpl(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) {
-    int boardRow = boardSquare.getBoardRow();
-    int boardCol = boardSquare.getBoardCol();
-    grid[boardRow][boardCol] = ChessPieceFactory::createPiece(pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
+    grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
 
 bool Board::clearPositionImpl(UserSquare const &userSquare) {
-    int boardRow = userSquare.getBoardRow(getNumRows());
-    int boardCol = userSquare.getBoardCol(getNumCols());
-    BoardSquare boardSquare(boardRow, boardCol);
-    return clearPosition(boardSquare);
+    return clearPosition(userSquare.toBoardSquare(getNumRows(), getNumCols()));
 }
 
 bool Board::clearPositionImpl(BoardSquare const &boardSquare) {
-    int boardRow = boardSquare.getBoardRow();
-    int boardCol = boardSquare.getBoardCol();
-    if (grid[boardRow][boardCol]->getPieceInfo().getPieceType() == PieceType::EMPTY) {
+    if (getPieceInfoAt(boardSquare).pieceType == PieceType::EMPTY) {
         return false;
-    }
-    else {
-        grid[boardRow][boardCol] = ChessPieceFactory::createEmptyPiece();
+    } else {
+        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createEmptyPiece();
         return true;
     }
 }
 
 void Board::clearBoardImpl() {
-    for (int boardRow = 0; boardRow < getNumRows(); ++boardRow) {
-        for (int boardCol = 0; boardCol < getNumCols(); ++boardCol) {
-            grid[boardRow][boardCol] = ChessPieceFactory::createEmptyPiece();
-        }
+    for (BoardSquare const &boardSquare : allBoardSquares()) {
+        clearPosition(boardSquare);
     }
-    completedMoves.clear();
+    completedMoves.clear();     // TODO: Is this needed?
+    redoMoves.clear();          // TODO: Is this needed?
 }
 
 void Board::swapPositionsImpl(BoardSquare const &boardSquareOne, BoardSquare const &boardSquareTwo) {
@@ -197,32 +194,28 @@ void Board::swapPositionsImpl(BoardSquare const &boardSquareOne, BoardSquare con
 void Board::setHasMovedImpl(BoardSquare const &boardSquare, bool hasMoved) {
     int boardRow = boardSquare.getBoardRow();
     int boardCol = boardSquare.getBoardCol();
-    grid[boardRow][boardCol]->getPieceInfo().setHasMoved(hasMoved);
+    grid[boardRow][boardCol]->setHasMoved(hasMoved);
 }
 
 bool Board::setBoardSizeImpl(int newNumRows, int newNumCols) { 
-    if (newNumRows >= 8 && newNumRows <= maxRows && newNumCols >= 8 && newNumCols <= maxCols) {
-        int oldNumRows = grid.size();
-        int oldNumCols = oldNumRows > 0 ? grid[0].size() : 0;
+    if (newNumRows >= minNumRows && newNumRows <= maxNumRows && newNumCols >= minNumCols && newNumCols <= maxNumCols) {
+        int oldNumRows = getNumRows();
+        int oldNumCols = getNumCols();
 
-        // Create a new grid with the desired size
+        // Create new grid
         std::vector<std::vector<std::unique_ptr<Piece>>> newGrid(newNumRows);
-
-        for (int row = 0; row < newNumRows; ++row) {
-            newGrid[row].resize(newNumCols);
+        for (int boardRow = 0; boardRow < newNumRows; ++boardRow) {
+            newGrid[boardRow].resize(newNumCols);
         }
+        initializeBoard(newGrid);
 
-        // Copy existing pieces to the new grid, focusing on the bottom-left portion
-        int rowOffset = std::max(0, oldNumRows - newNumRows);
-        int colOffset = 0; // Always start from the first column to preserve bottom-left
-
-        for (int row = 0; row < newNumRows; ++row) {
-            for (int col = 0; col < newNumCols; ++col) {
-                if (row + rowOffset < oldNumRows && col + colOffset < oldNumCols) {
-                    newGrid[row][col] = std::move(grid[row + rowOffset][col + colOffset]);
-                } else {
-                    newGrid[row][col] = ChessPieceFactory::createEmptyPiece();
-                }
+        for (BoardSquare const &boardSquare : allBoardSquares()) {
+            int oldRow = boardSquare.getBoardRow();
+            int oldCol = boardSquare.getBoardCol();
+            int newRow = oldRow + (newNumRows - oldNumRows);
+            int newCol = oldCol;
+            if (newRow >= 0 && newRow < newNumRows && newCol >= 0 && newCol < newNumCols) {
+                newGrid[newRow][newCol] = std::move(grid[oldRow][oldCol]);
             }
         }
 
@@ -336,22 +329,19 @@ Color Board::oppositeColorImpl(Color color) const {
 }
 
 std::unique_ptr<BoardMove> Board::generateBoardMoveImpl(UserMove const &userMove) const { 
-    int boardFromRow = userMove.getFromSquare().getBoardRow(getNumRows());
-    int boardFromCol = userMove.getFromSquare().getBoardCol(getNumCols());
-    std::vector<BoardMove> legalMoves = getLegalMoves(grid[boardFromRow][boardFromCol]->getPieceInfo().getPieceColor());
+    std::vector<BoardMove> legalMoves = getLegalMoves(getPieceInfoAt(userMove.getFromSquare().toBoardSquare(getNumRows(), getNumCols())).pieceColor);
     auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &userMove](BoardMove const &boardMove) {
-        return 
-            userMove.getFromSquare().getBoardRow(getNumRows()) == boardMove.getFromSquare().getBoardRow() &&
-            userMove.getFromSquare().getBoardCol(getNumCols()) == boardMove.getFromSquare().getBoardCol() && 
-            userMove.getToSquare().getBoardRow(getNumRows()) == boardMove.getToSquare().getBoardRow() &&
-            userMove.getToSquare().getBoardCol(getNumCols()) == boardMove.getToSquare().getBoardCol() &&
-            userMove.getPromotionPieceType() == boardMove.getPromotionPieceType();
+        return userMove.isEqualToBoardMove(boardMove, getNumRows(), getNumCols());
     });
     return it != legalMoves.end() ? std::make_unique<BoardMove>(*it) : nullptr;
 }
 
-BoardMove const& Board::getLastMoveImpl() const {
+BoardMove const& Board::getLastMadeMoveImpl() const {
     return completedMoves.back();
+}
+
+std::vector<BoardMove> const& Board::getAllMadeMovesImpl() const {
+    return completedMoves;
 }
 
 bool Board::hasMoveBeenMadeImpl() const {
@@ -360,7 +350,7 @@ bool Board::hasMoveBeenMadeImpl() const {
 
 void Board::makeMoveImpl(BoardMove const &move) {
     move.makeMove(*this);                               // Apply the move
-    completedMoves.emplace_back(std::move(move));       // Track it for undoing 
+    completedMoves.emplace_back(move);                  // Track it for undoing 
     redoMoves.clear();                                      // Clear redo moves (can't redo after making a move)
 }
 bool Board::undoMoveImpl() {
@@ -393,17 +383,16 @@ int Board::getNumRowsImpl() const {
     return grid.size();
 }
 
+// TODO: Need max col
 int Board::getNumColsImpl() const {
     return grid[0].size();
 }
 
 bool Board::isInCheckImpl(Color color) const {
-    for (int row = 0; row < grid.size(); ++row) {
-        for (int col = 0; col < grid[0].size(); ++col) {
-            if (grid[row][col]->getPieceInfo().getPieceType() == PieceType::KING && grid[row][col]->getPieceInfo().getPieceColor() == color) {
-                if (isSquareCheckAttacked(BoardSquare(row, col), color)) {
-                    return true;
-                }
+    for (BoardSquare const &boardSquare : allBoardSquares()) {
+        if (getPieceInfoAt(boardSquare).pieceType == PieceType::KING && getPieceInfoAt(boardSquare).pieceColor == color) {
+            if (isSquareAttacked(boardSquare, color)) {
+                return true;
             }
         }
     }
@@ -431,92 +420,23 @@ bool Board::isBoardInValidStateImpl() const {
     int topRow = 0;
     int bottomRow = grid.size() - 1;
 
-    for (int row = 0; row < grid.size(); ++row) {
-        for (int col = 0; col < grid[0].size(); ++col) {
-            if (grid[row][col]->getPieceInfo().getPieceType() == PieceType::KING) {
-                Color pieceColor = grid[row][col]->getPieceInfo().getPieceColor();
-                if (isSquareCheckAttacked(BoardSquare(row, col), pieceColor)) {
-                    return false;
-                }
-
-                if (pieceColor == colorOne) {
-                    whiteKingCount++;
-                } else if (pieceColor == colorTwo) {
-                    blackKingCount++;
-                }
-            }
-
-            if ((row == topRow || row == bottomRow) && grid[row][col]->getPieceInfo().getPieceType() == PieceType::PAWN) {
+    for (BoardSquare const &boardSquare : allBoardSquares()) {
+        if (getPieceInfoAt(boardSquare).pieceType == PieceType::KING) {
+            Color pieceColor = getPieceInfoAt(boardSquare).pieceColor;
+            if (isSquareAttacked(boardSquare, pieceColor)) {
                 return false;
             }
+            if (pieceColor == colorOne) {
+                whiteKingCount++;
+            } else if (pieceColor == colorTwo) {
+                blackKingCount++;
+            }
+        }
+
+        if (getPieceInfoAt(boardSquare).pieceType == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
+            return false;
         }
     }
 
     return (whiteKingCount != 1 || blackKingCount != 1) ? false : true;
-}
-
-
-
-
-std::vector<std::pair<std::string, std::string>> Board::getMatchingOpeningsImpl() const { 
-    return standardOpeningTrie.getMatchingOpenings(completedMoves);
-}
-
-int Board::getAlphaBetaBoardScoreImpl(Color color) const {
-    int totalScore = 0;
-    for (int row = 0; row < grid.size(); ++row) {
-        for (int col = 0; col < grid[0].size(); ++col) {
-
-            if (grid[row][col]->getPieceInfo().getPieceColor() == colorOne) {
-                totalScore += grid[row][col]->getPieceInfo().getPieceScore() * 10;
-                // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (grid[row][col]->getPieceInfo().getPieceDirection()) {
-                    case PieceDirection::NORTH:
-                        totalScore += min(grid.size() - 1 - row, grid.size() - 4);
-                        break;
-                    case PieceDirection::SOUTH:
-                        totalScore += min(grid.size(), grid.size() - 4);
-                        break;
-                    case PieceDirection::EAST:
-                        totalScore += min(grid[0].size() - 1 - col, grid[0].size() - 4);
-                        break;
-                    case PieceDirection::WEST:
-                        totalScore += min(grid[0].size(), grid[0].size() - 4);
-                        break;
-                    default:
-                        break;
-                }
-            } else if (grid[row][col]->getPieceInfo().getPieceColor() == colorTwo) {
-                totalScore -= grid[row][col]->getPieceInfo().getPieceScore() * 10;
-                // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (grid[row][col]->getPieceInfo().getPieceDirection()) {
-                    case PieceDirection::NORTH:
-                        totalScore -= min(grid.size() - 1 - row, grid.size() - 4);
-                        break;
-                    case PieceDirection::SOUTH:
-                        totalScore -= min(grid.size(), grid.size() - 4);
-                        break;
-                    case PieceDirection::EAST:
-                        totalScore -= min(grid[0].size() - 1 - col, grid[0].size() - 4);
-                        break;
-                    case PieceDirection::WEST:
-                        totalScore -= min(grid[0].size(), grid[0].size() - 4);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
-    // Checkmate
-    if (isInCheckMate(color)) {
-        if (color == colorTwo) {
-            totalScore += 1000;
-        } else {
-            totalScore -= 1000;
-        }
-    }
-
-    return totalScore;
 }

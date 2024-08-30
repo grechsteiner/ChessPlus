@@ -10,6 +10,7 @@
 
 
 class ChessBoard;
+class UserMove;
 
 
 class BoardMove {
@@ -56,11 +57,11 @@ public:
 
     bool operator==(BoardMove const &other) const;
         
-    std::string toString() const;
-
     // Commands
     void makeMove(ChessBoard &board) const;
     void undoMove(ChessBoard &board) const;
+
+    bool isEqualToBoardMove(UserMove const &userMove, int numRowsOnBoard, int numColsOnBoard) const;
 
 
     /* Getters */

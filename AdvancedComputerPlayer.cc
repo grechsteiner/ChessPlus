@@ -19,7 +19,7 @@ std::tuple<int, BoardMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &b
         if (board.isInStaleMate(color)) {
             return std::make_tuple(0, BoardMove::DEFAULT);
         }
-        return std::make_tuple(board.getAlphaBetaBoardScore(color), BoardMove::DEFAULT);
+        return std::make_tuple(getAlphaBetaBoardScore(board, color), BoardMove::DEFAULT);
     }
 
     int bestScore = (color == board.getColorOne()) ? -10000 : 10000;
@@ -64,7 +64,7 @@ std::tuple<int, BoardMove> AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &b
         if (board.isInStaleMate(color)) {
             return std::make_tuple(0, BoardMove::DEFAULT);
         }
-        return std::make_tuple(board.getAlphaBetaBoardScore(color), BoardMove::DEFAULT);
+        return std::make_tuple(getAlphaBetaBoardScore(board, color), BoardMove::DEFAULT);
     }
 
     return std::make_tuple(bestScore, bestMove);
@@ -83,7 +83,7 @@ std::vector<BoardMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, con
     // Assign values to each move
     for (const auto& move : moves) {
         int score = 0;
-        score += board.getPieceInfoAt(move.getCaptureSquare()).getPieceScore();
+        score += board.getPieceInfoAt(move.getCaptureSquare()).pieceScore;
         scored_moves.emplace_back(move, score);
     }
 
@@ -120,4 +120,65 @@ std::vector<BoardMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, con
     }
 
     return final_list;
+}
+
+int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Color color) const {
+    int totalScore = 0;
+
+    for (BoardSquare const &boardSquare : board.allBoardSquares()) {
+        int numBoardRows = board.getNumRows();
+        int numBoardCols = board.getNumCols();
+
+
+        if (board.getPieceInfoAt(boardSquare).pieceColor == board.getColorOne()) {
+            totalScore += board.getPieceInfoAt(boardSquare).pieceScore * 10;
+            // Advance bonus, only until row before pawns so no stupid sacrifice
+            switch (board.getPieceInfoAt(boardSquare).pieceDirection) {
+                case PieceDirection::NORTH:
+                    totalScore += min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
+                    break;
+                case PieceDirection::SOUTH:
+                    totalScore += min(numBoardRows, numBoardRows - 4);
+                    break;
+                case PieceDirection::EAST:
+                    totalScore += min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
+                    break;
+                case PieceDirection::WEST:
+                    totalScore += min(numBoardCols, numBoardCols - 4);
+                    break;
+                default:
+                    break;
+            }
+        } else if (board.getPieceInfoAt(boardSquare).pieceColor == board.getColorTwo()) {
+            totalScore -= board.getPieceInfoAt(boardSquare).pieceScore * 10;
+            // Advance bonus, only until row before pawns so no stupid sacrifice
+            switch (board.getPieceInfoAt(boardSquare).pieceDirection) {
+                case PieceDirection::NORTH:
+                    totalScore -= min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
+                    break;
+                case PieceDirection::SOUTH:
+                    totalScore -= min(numBoardRows, numBoardRows - 4);
+                    break;
+                case PieceDirection::EAST:
+                    totalScore -= min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
+                    break;
+                case PieceDirection::WEST:
+                    totalScore -= min(numBoardCols, numBoardCols - 4);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // Checkmate
+    if (board.isInCheckMate(color)) {
+        if (color == board.getColorTwo()) {
+            totalScore += 1000;
+        } else {
+            totalScore -= 1000;
+        }
+    }
+
+    return totalScore;
 }

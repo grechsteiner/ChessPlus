@@ -7,12 +7,17 @@
 #include <regex>
 #include <utility>
 
+class BoardSquare;
+
 
 class UserSquare {
 
 private:
-    static std::regex const regexPattern;
     std::string userSquare;
+
+    // For convenience: userSquare = userCol + to_string(userRow)
+    int userRow;
+    std::string userCol;
     
 public:
     UserSquare(std::string const &squareStr);
@@ -23,8 +28,11 @@ public:
     int getUserRow() const;
     std::string getUserCol() const;
 
-    int getBoardRow(int numRowsOnGrid) const;
-    int getBoardCol(int numColsOnGrid) const;
+    int getBoardRow(int numRowsOnBoard) const;
+    int getBoardCol(int numColsOnBoard) const;
+
+    bool isEqualToBoardSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard) const;
+    BoardSquare toBoardSquare(int numRowsOnBoard, int numColOnBoard) const;
 };
 
 

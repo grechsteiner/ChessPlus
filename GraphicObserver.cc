@@ -55,7 +55,7 @@ void GraphicObserver::printBoard(const ChessBoard& board, int turn) {
             window.fillRectangle(x, y, squareSize, squareSize, color);
 
 
-            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).getDisplay(), board.getPieceInfoAt(BoardSquare(row, col)).getPieceColor(), x + squareSize / 2, y + squareSize / 2);
+            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).display, board.getPieceInfoAt(BoardSquare(row, col)).pieceColor, x + squareSize / 2, y + squareSize / 2);
             
         }
     }

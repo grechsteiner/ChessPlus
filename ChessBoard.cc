@@ -11,13 +11,15 @@ class UserMove;
 
 
 PieceInfo ChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
+std::vector<BoardSquare> ChessBoard::allBoardSquares() const { return allBoardSquaresImpl(); }
 
 bool ChessBoard::isEmptySquareOnBoard(BoardSquare const &boardSquare) const { return isEmptySquareOnBoardImpl(boardSquare); }
 bool ChessBoard::isOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const { return isOpposingColorOnBoardImpl(boardSquare, color); }
 bool ChessBoard::isEmptySquareOrOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const { return isEmptySquareOrOpposingColorOnBoardImpl(boardSquare, color); }
-bool ChessBoard::isSquareCheckAttacked(BoardSquare const &boardSquare, Color color) const { return isSquareCheckAttackedImpl(boardSquare, color); }
+bool ChessBoard::isSquareAttacked(BoardSquare const &boardSquare, Color color) const { return isSquareAttackedImpl(boardSquare, color); }
 
-bool ChessBoard::isSquareOnCurrentBoard(UserSquare const &userSquare) const { return isSquareOnCurrentBoardImpl(userSquare); }
+bool ChessBoard::isSquareOnBoard(BoardSquare const &boardSquare) const { return isSquareOnBoardImpl(boardSquare); }
+bool ChessBoard::isSquareOnBoard(UserSquare const &userSquare) const { return isSquareOnBoardImpl(userSquare); }
 void ChessBoard::setPosition(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore) { 
     setPositionImpl(userSquare, pieceColor, pieceType, pieceDirection, hasMoved, pieceScore);
 }
@@ -42,7 +44,8 @@ Color ChessBoard::getColorTwo() const { return getColorTwoImpl(); }
 Color ChessBoard::oppositeColor(Color color) const { return oppositeColorImpl(color); }
 
 std::unique_ptr<BoardMove> ChessBoard::generateBoardMove(UserMove const &userMove) const { return generateBoardMoveImpl(userMove); }
-BoardMove const& ChessBoard::getLastMove() const { return getLastMoveImpl(); }
+BoardMove const& ChessBoard::getLastMadeMove() const { return getLastMadeMoveImpl(); }
+std::vector<BoardMove> const& ChessBoard::getAllMadeMoves() const { return getAllMadeMovesImpl(); }
 bool ChessBoard::hasMoveBeenMade() const { return hasMoveBeenMadeImpl(); }
 void ChessBoard::makeMove(BoardMove const &move) { makeMoveImpl(move); }
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
@@ -57,6 +60,3 @@ bool ChessBoard::isInStaleMate(Color color) const { return isInStaleMateImpl(col
 bool ChessBoard::isInStaleMate() const { return isInStaleMateImpl(); }
 bool ChessBoard::hasGameFinished() const { return hasGameFinishedImpl(); }
 bool ChessBoard::isBoardInValidState() const { return isBoardInValidStateImpl(); }
-
-int ChessBoard::getAlphaBetaBoardScore(Color color) const { return getAlphaBetaBoardScoreImpl(color); }
-std::vector<std::pair<std::string, std::string>> ChessBoard::getMatchingOpenings() const { return getMatchingOpeningsImpl(); }

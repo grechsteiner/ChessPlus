@@ -95,12 +95,14 @@ void TextObserver::notifyImplementation() {
         out << "-----+" << std::endl;
 
 
+        /*
         if (std::get<3>(state) == true) {
             std::vector<std::pair<std::string, std::string>> openings = board.getMatchingOpenings();
             for (size_t i = 0; i < openings.size(); ++i) {
-                std::cout << "Name: " << openings[i].first << std::endl;
+                out << "Name: " << openings[i].first << std::endl;
             }
         }
+        */
     }
 }
 
@@ -129,7 +131,7 @@ void TextObserver::printBoard(ChessBoard const& board, int turn) {
         }
         out << "║";
         for (int col = 0; col < board.getNumCols(); ++col) {
-            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).getImage(), board.getPieceInfoAt(BoardSquare(row, col)).getPieceColor());
+            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).image, board.getPieceInfoAt(BoardSquare(row, col)).pieceColor);
         }
         out << "║ |" << std::endl;
     }

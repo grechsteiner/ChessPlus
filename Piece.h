@@ -14,7 +14,7 @@ class ChessBoard;
 class Piece {
 
 private:
-    virtual std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const = 0;
+    virtual std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const = 0;
     
 protected:
     Piece(Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore);
@@ -29,10 +29,11 @@ protected:
 public:
     virtual ~Piece() = default;
     
-    std::vector<BoardMove> getMoves(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const;
+    std::vector<BoardMove> getMoves(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
     
     // Getters
-    PieceInfo& getPieceInfo();
+    PieceInfo getPieceInfo() const;
+    void setHasMoved(bool newHasMoved);
 };
 
 

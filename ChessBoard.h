@@ -11,20 +11,22 @@ class UserMove;
 class BoardMove;
 class UserSquare;
 class BoardSquare;
-class PieceInfo;
+struct PieceInfo;
 
 
 class ChessBoard {
 
 private:
     virtual PieceInfo getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
+    virtual std::vector<BoardSquare> allBoardSquaresImpl() const = 0;
 
     virtual bool isEmptySquareOnBoardImpl(BoardSquare const &boardSquare) const = 0;
     virtual bool isOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const = 0;
     virtual bool isEmptySquareOrOpposingColorOnBoardImpl(BoardSquare const &boardSquare, Color color) const = 0;
-    virtual bool isSquareCheckAttackedImpl(BoardSquare const &boardSquare, Color color) const = 0;
+    virtual bool isSquareAttackedImpl(BoardSquare const &boardSquare, Color color) const = 0;
     
-    virtual bool isSquareOnCurrentBoardImpl(UserSquare const &userSquare) const = 0;
+    virtual bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const = 0;
+    virtual bool isSquareOnBoardImpl(UserSquare const &userSquare) const = 0;
     virtual void setPositionImpl(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
     virtual void setPositionImpl(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1) = 0;
     virtual bool clearPositionImpl(UserSquare const &userSquare) = 0;
@@ -45,7 +47,8 @@ private:
     virtual Color oppositeColorImpl(Color color) const = 0;
 
     virtual std::unique_ptr<BoardMove> generateBoardMoveImpl(UserMove const &userMove) const = 0;
-    virtual BoardMove const& getLastMoveImpl() const = 0;
+    virtual BoardMove const& getLastMadeMoveImpl() const = 0;
+    virtual std::vector<BoardMove> const& getAllMadeMovesImpl() const = 0;
     virtual bool hasMoveBeenMadeImpl() const = 0;
     virtual void makeMoveImpl(BoardMove const &move) = 0;                    
     virtual bool undoMoveImpl() = 0;  
@@ -61,18 +64,17 @@ private:
     virtual bool hasGameFinishedImpl() const = 0;
     virtual bool isBoardInValidStateImpl() const = 0;
 
-    virtual int getAlphaBetaBoardScoreImpl(Color color) const = 0;
-    virtual std::vector<std::pair<std::string, std::string>> getMatchingOpeningsImpl() const = 0;
-
 public:
     PieceInfo getPieceInfoAt(BoardSquare const &boardSquare) const;
+    std::vector<BoardSquare> allBoardSquares() const;
 
     bool isEmptySquareOnBoard(BoardSquare const &boardSquare) const;
     bool isOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const;
     bool isEmptySquareOrOpposingColorOnBoard(BoardSquare const &boardSquare, Color color) const;
-    bool isSquareCheckAttacked(BoardSquare const &boardSquare, Color color) const;
+    bool isSquareAttacked(BoardSquare const &boardSquare, Color color) const;
     
-    bool isSquareOnCurrentBoard(UserSquare const &userSquare) const;
+    bool isSquareOnBoard(BoardSquare const &boardSquare) const;
+    bool isSquareOnBoard(UserSquare const &userSquare) const;
     void setPosition(UserSquare const &userSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
     void setPosition(BoardSquare const &boardSquare, Color pieceColor, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, int pieceScore = -1);
     bool clearPosition(UserSquare const &userSquare);
@@ -93,7 +95,8 @@ public:
     Color oppositeColor(Color color) const;
 
     std::unique_ptr<BoardMove> generateBoardMove(UserMove const &userMove) const;
-    BoardMove const& getLastMove() const;
+    BoardMove const& getLastMadeMove() const;
+    std::vector<BoardMove> const& getAllMadeMoves() const;
     bool hasMoveBeenMade() const;
     void makeMove(BoardMove const &move);                    
     bool undoMove();  
@@ -108,9 +111,6 @@ public:
     bool isInStaleMate() const;
     bool hasGameFinished() const;
     bool isBoardInValidState() const;
-
-    int getAlphaBetaBoardScore(Color color) const;
-    std::vector<std::pair<std::string, std::string>> getMatchingOpenings() const;
 
 };
 
