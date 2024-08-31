@@ -8,8 +8,6 @@
 #include "Constants.h"
 #include "UserSquare.h"
 
-class BoardMove;
-
 
 class UserMove {
 

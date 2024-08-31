@@ -7,8 +7,6 @@
 #include <regex>
 #include <utility>
 
-class BoardSquare;
-
 
 class UserSquare {
 
@@ -27,12 +25,6 @@ public:
     std::string toString() const;
     int getUserRow() const;
     std::string getUserCol() const;
-
-    int getBoardRow(int numRowsOnBoard) const;
-    int getBoardCol(int numColsOnBoard) const;
-
-    bool isEqualToBoardSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard) const;
-    BoardSquare toBoardSquare(int numRowsOnBoard, int numColOnBoard) const;
 };
 
 

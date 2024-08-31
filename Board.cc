@@ -317,13 +317,13 @@ Team Board::getOtherTeamImpl(Team team) const {
     return team == teamOne ? teamTwo : teamOne; 
 }
 
-std::unique_ptr<BoardMove> Board::generateBoardMoveImpl(UserMove const &userMove) const { 
-    std::vector<BoardMove> legalMoves = getLegalMoves(getPieceInfoAt(userMove.getFromSquare().toBoardSquare(getNumRows(), getNumCols())).team);
-    auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &userMove](BoardMove const &boardMove) {
+std::unique_ptr<BoardMove> Board::generateBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const { 
+    std::vector<BoardMove> legalMoves = getLegalMoves(getPieceInfoAt(fromSquare).team);
+    auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [this, &fromSquare, &toSquare, &promotionPieceType](BoardMove const &boardMove) {
         return
-            userMove.getFromSquare().isEqualToBoardSquare(boardMove.getFromSquare(), getNumRows(), getNumCols()) &&
-            userMove.getToSquare().isEqualToBoardSquare(boardMove.getToSquare(), getNumRows(), getNumCols()) &&
-            userMove.getPromotionPieceType() == boardMove.getPromotionPieceType();
+            fromSquare == boardMove.getFromSquare() &&
+            toSquare == boardMove.getToSquare() &&
+            promotionPieceType == boardMove.getPromotionPieceType();
     });
     return it != legalMoves.end() ? std::make_unique<BoardMove>(*it) : nullptr;
 }

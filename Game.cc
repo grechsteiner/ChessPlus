@@ -216,7 +216,11 @@ void Game::runGame() {
                         std::string toSquare = tokens[2];
                         std::string promotionPiece = tokens.size() == 3 ? "" : tokens[3];
                         if (UserSquare::isValidUserSquare(fromSquare) && UserSquare::isValidUserSquare(toSquare) && isValidPieceType(promotionPiece)) {
-                            std::unique_ptr<BoardMove> boardMove = board.generateBoardMove(UserMove(UserSquare(fromSquare), UserSquare(toSquare), stringToPieceType(promotionPiece)));
+
+                            BoardSquare fromBoardSquare = createBoardSquare(UserSquare(fromSquare), board.getNumRows(), board.getNumCols());
+                            BoardSquare toBoardSquare = createBoardSquare(UserSquare(toSquare), board.getNumRows(), board.getNumCols());
+                            std::unique_ptr<BoardMove> boardMove = board.generateBoardMove(fromBoardSquare, toBoardSquare, stringToPieceType(promotionPiece));
+
                             // Nullptr if invalid move
                             if (boardMove != nullptr) {
                                 board.makeMove(*boardMove);
@@ -330,7 +334,7 @@ void Game::runGame() {
 
                 if (!isValidPieceType(piece)) {
                     outputError("Input piece is not valid");
-                } else if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnBoard(UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols()))) {
+                } else if (!UserSquare::isValidUserSquare(square) || !board.isSquareOnBoard(createBoardSquare(UserSquare(square), board.getNumRows(), board.getNumCols()))) {
                     outputError("Input square is not valid on board");
                 } else {
 
@@ -338,7 +342,7 @@ void Game::runGame() {
                     Team team = std::isupper(piece.front()) ? Team::TEAM_ONE : Team::TEAM_TWO;
                     PieceDirection pieceDirection = team == Team::TEAM_ONE ? PieceDirection::NORTH : PieceDirection::SOUTH;
 
-                    BoardSquare boardSquare = UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols());
+                    BoardSquare boardSquare = createBoardSquare(UserSquare(square), board.getNumRows(), board.getNumCols());
                     if (tokens.size() == 3) {
                         board.setPosition(boardSquare, team, pieceType, pieceDirection, false);
                         notifyObservers();
@@ -366,9 +370,9 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");
             } else {
                 std::string square = tokens[1];
-                if (!UserSquare::isValidUserSquare(square) || board.isSquareOnBoard(UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols()))) {
+                if (!UserSquare::isValidUserSquare(square) || board.isSquareOnBoard(createBoardSquare(UserSquare(square), board.getNumRows(), board.getNumCols()))) {
                     outputError("Input square is not valid on board");
-                } else if (board.clearPosition(UserSquare(square).toBoardSquare(board.getNumRows(), board.getNumCols()))) {
+                } else if (board.clearPosition(createBoardSquare(UserSquare(square), board.getNumRows(), board.getNumCols()))) {
                     notifyObservers();
                 }
             }

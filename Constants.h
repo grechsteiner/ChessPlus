@@ -7,6 +7,11 @@
 #include <utility>
 #include <vector>
 
+class BoardSquare;
+class BoardMove;
+class UserSquare;
+class UserMove;
+
 
 enum class GameState {
     MAIN_MENU,
@@ -65,12 +70,12 @@ enum class MoveType {
     DOUBLE_PAWN
 };
 
-/*
-enum class Team {
-    TEAM_ONE,
-    TEAM_TWO,
-    TEAM_NONE
-};
-*/
+
+extern int const base;
+BoardSquare createBoardSquare(UserSquare const &userSquare, int numRowsOnBoard, int numColsOnBoard);
+UserSquare createUserSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard);
+bool areEqual(UserSquare const &userSquare, BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard);
+bool areEqual(UserMove const &userMove, BoardMove const &boardMove, int numRowsOnBoard, int numColsOnBoard);
+
 
 #endif /* Constants_h */

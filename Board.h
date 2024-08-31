@@ -78,7 +78,7 @@ private:
     Team getTeamTwoImpl() const override;
     Team getOtherTeamImpl(Team team) const override;
 
-    std::unique_ptr<BoardMove> generateBoardMoveImpl(UserMove const &userMove) const override;
+    std::unique_ptr<BoardMove> generateBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const override;
     BoardMove const& getLastMadeMoveImpl() const override;
     std::vector<BoardMove> const& getAllMadeMovesImpl() const override;
     bool hasMoveBeenMadeImpl() const override;

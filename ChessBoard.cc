@@ -38,7 +38,7 @@ Team ChessBoard::getTeamOne() const { return getTeamOneImpl(); }
 Team ChessBoard::getTeamTwo() const { return getTeamTwoImpl(); }
 Team ChessBoard::getOtherTeam(Team team) const { return getOtherTeamImpl(team); }
 
-std::unique_ptr<BoardMove> ChessBoard::generateBoardMove(UserMove const &userMove) const { return generateBoardMoveImpl(userMove); }
+std::unique_ptr<BoardMove> ChessBoard::generateBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const { return generateBoardMoveImpl(fromSquare, toSquare, promotionPieceType); }
 BoardMove const& ChessBoard::getLastMadeMove() const { return getLastMadeMoveImpl(); }
 std::vector<BoardMove> const& ChessBoard::getAllMadeMoves() const { return getAllMadeMovesImpl(); }
 bool ChessBoard::hasMoveBeenMade() const { return hasMoveBeenMadeImpl(); }

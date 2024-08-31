@@ -36,26 +36,3 @@ int UserSquare::getUserRow() const {
 std::string UserSquare::getUserCol() const { 
     return userCol;
 }
-
-int UserSquare::getBoardRow(int numRowsOnBoard) const {
-    return numRowsOnBoard - userRow;
-}
-
-int UserSquare::getBoardCol(int numColsOnBoard) const { 
-    static int base = 26;
-    int boardCol = 0;
-    for (char c : userCol) {
-        boardCol = boardCol * base + (c - 'a');
-    }
-    return boardCol;
-}
-
-bool UserSquare::isEqualToBoardSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard) const {
-    return 
-        getBoardRow(numRowsOnBoard) == boardSquare.getBoardRow() && 
-        getBoardCol(numColsOnBoard) == boardSquare.getBoardCol();
-}   
-
-BoardSquare UserSquare::toBoardSquare(int numRowsOnBoard, int numColOnBoard) const {
-    return BoardSquare(getBoardRow(numRowsOnBoard), getBoardCol(numColOnBoard));
-}

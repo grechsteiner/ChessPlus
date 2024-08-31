@@ -5,9 +5,6 @@
 
 #include <string>
 
-class UserSquare;
-
-
 class BoardSquare {
 
 private:
@@ -20,12 +17,6 @@ public:
 
     int getBoardRow() const;
     int getBoardCol() const;
-
-    int getUserRow(int numRowsOnBoard) const;
-    std::string getUserCol(int numColsOnBoard) const;
-
-    bool isEqualToUserSquare(UserSquare const &userSquare, int numRowsOnBoard, int numColsOnBoard) const;
-    UserSquare toUserSquare(int numRowsOnBoard, int numColOnBoard) const;
 };
 
 

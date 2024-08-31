@@ -43,7 +43,7 @@ private:
     virtual Team getTeamTwoImpl() const = 0;
     virtual Team getOtherTeamImpl(Team team) const = 0;
 
-    virtual std::unique_ptr<BoardMove> generateBoardMoveImpl(UserMove const &userMove) const = 0;
+    virtual std::unique_ptr<BoardMove> generateBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const = 0;
     virtual BoardMove const& getLastMadeMoveImpl() const = 0;
     virtual std::vector<BoardMove> const& getAllMadeMovesImpl() const = 0;
     virtual bool hasMoveBeenMadeImpl() const = 0;
@@ -88,7 +88,7 @@ public:
     Team getTeamTwo() const;
     Team getOtherTeam(Team team) const;
 
-    std::unique_ptr<BoardMove> generateBoardMove(UserMove const &userMove) const;
+    std::unique_ptr<BoardMove> generateBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const;
     BoardMove const& getLastMadeMove() const;
     std::vector<BoardMove> const& getAllMadeMoves() const;
     bool hasMoveBeenMade() const;
