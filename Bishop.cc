@@ -17,7 +17,7 @@ std::vector<std::pair<int, int>> const Bishop::bishopDirections = {
 };
 
 Bishop::Bishop(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Piece(team, PieceType::BISHOP, pieceDirection, hasMoved, "♝", "B", pieceScore) {}
+    Piece(PieceType::BISHOP, team, pieceDirection, hasMoved, pieceScore, "♝", "B") {}
 
 std::vector<BoardMove> Bishop::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
@@ -26,7 +26,7 @@ std::vector<BoardMove> Bishop::getMovesImplementation(ChessBoard const &board, B
         int newCol = boardSquare.getBoardCol() + bishopDirection.second;
         BoardSquare newBoardSquare(newRow, newCol);
         while (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-            moves.emplace_back(createBoardMove(board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true));
+            createAndAppendBoardMove(moves, board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true);
 
             // If we ran into a piece of the opposite color, don't look past it
             if (board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {

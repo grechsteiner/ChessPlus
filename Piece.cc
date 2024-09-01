@@ -8,17 +8,19 @@
 #include "Piece.h"
 
 
-Piece::Piece(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore) :
-    pieceInfo(team, pieceType, pieceDirection, hasMoved, image, display, pieceScore) {}
+Piece::Piece(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display) :
+    pieceInfo(pieceType, team, pieceDirection, hasMoved, pieceScore, image, display) {}
 
 std::vector<BoardMove> Piece::getMoves(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     return getMovesImplementation(board, boardSquare, onlyAttackingMoves);
 }
 
-BoardMove Piece::createBoardMove(ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType) const {
-    return BoardMove(fromSquare, toSquare, captureSquare, 
-                    board.getPieceInfoAt(fromSquare).value(), board.getPieceInfoAt(captureSquare),
-                    moveType, isAttackingMove, promotionPieceType);
+void Piece::createAndAppendBoardMove(std::vector<BoardMove> &moves, ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType) const {
+    if (board.getPieceInfoAt(fromSquare).has_value()) {
+        moves.emplace_back(BoardMove(fromSquare, toSquare, captureSquare, 
+                                        board.getPieceInfoAt(fromSquare).value(), board.getPieceInfoAt(captureSquare),
+                                        moveType, isAttackingMove, promotionPieceType));
+    }
 }
 
 

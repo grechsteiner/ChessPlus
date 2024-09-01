@@ -3,16 +3,16 @@
 #include "PieceInfo.h"
 #include "Constants.h"
 
-PieceInfo::PieceInfo(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore) :
-    team(team), pieceType(pieceType), pieceDirection(pieceDirection), hasMoved(hasMoved), image(image), display(display), pieceScore(pieceScore) {}
+PieceInfo::PieceInfo(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display) :
+    pieceType(pieceType), team(team), pieceDirection(pieceDirection), hasMoved(hasMoved), pieceScore(pieceScore), image(image), display(display) {}
 
 bool PieceInfo::operator==(PieceInfo const &other) const {
     return
-        team == other.team &&
         pieceType == other.pieceType &&
+        team == other.team &&
         pieceDirection == other.pieceDirection &&
         hasMoved == other.hasMoved &&
+        pieceScore == other.pieceScore &&
         image == other.image &&
-        display == other.display &&
-        pieceScore == other.pieceScore;
+        display == other.display;
 }

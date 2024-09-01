@@ -37,7 +37,7 @@ Team stringToColor(std::string const &str) {
             return pair.first;
         }
     }
-    return Team::TEAM_NONE;
+    assert(false);
 }
 
 std::string colorToString(Team color) {
@@ -59,8 +59,7 @@ const std::vector<std::pair<PieceType, std::string>> pieceTypeStringMap = {
     { PieceType::BISHOP,    "B" },
     { PieceType::ROOK,      "R" },
     { PieceType::QUEEN,     "Q" },
-    { PieceType::KING,      "K" },
-    { PieceType::EMPTY,     ""  }
+    { PieceType::KING,      "K" }
 };
 
 bool isValidPieceType(std::string const &str) {
@@ -80,7 +79,7 @@ PieceType stringToPieceType(std::string const &str) {
             return pair.first;
         }
     }
-    return PieceType::EMPTY;
+    assert(false);
 }
 
 std::string pieceTypeToString(PieceType pieceType) {
@@ -120,7 +119,7 @@ PieceDirection stringToPieceDirection(std::string const &str) {
             return pair.first;
         }
     }
-    return PieceDirection::BLANK;
+    assert(false);
 }
 
 std::string pieceDirectionToString(PieceDirection pieceDirection) {

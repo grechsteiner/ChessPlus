@@ -74,27 +74,34 @@ bool Board::isMoveValid(BoardMove const &boardMove) const {
 }
 
 bool Board::doesMoveApplyCheck(BoardMove const &boardMove) const {
-    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).value().team;
-    const_cast<Board*>(this)->makeMoveInternal(boardMove);
-    bool doesMoveApplyCheck = isInCheck(getOtherTeam(turnTeam));
-    const_cast<Board*>(this)->undoMove();
-    return doesMoveApplyCheck;
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    if (movedPieceInfo.has_value()) {
+        const_cast<Board*>(this)->makeMoveInternal(boardMove);
+        bool doesMoveApplyCheck = isInCheck(getOtherTeam(movedPieceInfo.value().team));
+        const_cast<Board*>(this)->undoMove();
+        return doesMoveApplyCheck;
+    }
+    assert(false);
 }
 
 bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
-    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).value().team;
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     std::optional<PieceInfo> attackedPieceInfo = getPieceInfoAt(boardMove.getCaptureSquare());
-    return 
-        attackedPieceInfo.has_value() && 
-        attackedPieceInfo.value().team != turnTeam;
+    if (movedPieceInfo.has_value()) {
+        return attackedPieceInfo.has_value() && attackedPieceInfo.value().team != movedPieceInfo.value().team;
+    }
+    assert(false);
 }
 
 bool Board::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
-    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).value().team;
-    const_cast<Board*>(this)->makeMoveInternal(boardMove);
-    bool doesMoveLeavePieceAttacked = getCapturingMoves(getOtherTeam(turnTeam)).empty();
-    const_cast<Board*>(this)->undoMove();
-    return doesMoveLeavePieceAttacked;
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    if (movedPieceInfo.has_value()) {
+        const_cast<Board*>(this)->makeMoveInternal(boardMove);
+        bool doesMoveLeavePieceAttacked = getCapturingMoves(getOtherTeam(movedPieceInfo.value().team)).empty();
+        const_cast<Board*>(this)->undoMove();
+        return doesMoveLeavePieceAttacked;
+    } 
+    assert(false);
 
     /*
     std::vector<BoardMove> opponentMoves = getCapturingMoves(getOtherTeam(turnTeam));
@@ -113,11 +120,14 @@ bool Board::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
 }
 
 bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
-    Team turnTeam = getPieceInfoAt(boardMove.getFromSquare()).value().team;
-    const_cast<Board*>(this)->makeMoveInternal(boardMove);
-    bool isInCheckAfterMove = isInCheck(turnTeam);
-    const_cast<Board*>(this)->undoMove();
-    return isInCheckAfterMove;
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    if (movedPieceInfo.has_value()) {
+        const_cast<Board*>(this)->makeMoveInternal(boardMove);
+        bool isInCheckAfterMove = isInCheck(movedPieceInfo.value().team);
+        const_cast<Board*>(this)->undoMove();
+        return isInCheckAfterMove;
+    }
+    assert(false);
 } 
 
 
@@ -150,11 +160,11 @@ bool Board::isSquareEmptyImpl(BoardSquare const &boardSquare) const {
 }
 
 bool Board::isSquareOwnTeamImpl(BoardSquare const &boardSquare, Team team) const {
-    return isSquareOnBoard(boardSquare) && !isSquareEmpty(boardSquare) && getPieceInfoAt(boardSquare).value().team == team;
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().team == team;
 }
 
 bool Board::isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team team) const {
-    return isSquareOnBoard(boardSquare) && !isSquareEmpty(boardSquare) && getPieceInfoAt(boardSquare).value().team == getOtherTeam(team);
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().team == getOtherTeam(team);
 }
 
 bool Board::isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) const {

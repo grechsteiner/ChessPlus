@@ -22,12 +22,13 @@ using PlayerTuple = std::tuple<Team, double, std::unique_ptr<ComputerPlayer>>;
 
 class Game : public Subject {
 private:
+    ChessBoard &board;      // TODO: Can be smart pointer too
     std::unique_ptr<Input> input;
     std::unique_ptr<ErrorReporter> errorReporter;
     std::ostream &out;
 
     GameState gameState = GameState::MAIN_MENU;
-    ChessBoard &board;      // TODO: Can be smart pointer too
+    
 
     bool showingStandardOpenings = false;
 

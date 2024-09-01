@@ -22,7 +22,6 @@ enum class GameState {
 enum class Team {
     TEAM_ONE,
     TEAM_TWO,
-    TEAM_NONE
 };
 extern const std::vector<std::pair<Team, std::string>> colorStringMap;
 bool isValidColor(std::string const &str);
@@ -36,7 +35,6 @@ enum class PieceType {
     KNIGHT,
     BISHOP,
     PAWN,
-    EMPTY
 };
 extern const std::vector<std::pair<PieceType, std::string>> pieceTypeStringMap;
 bool isValidPieceType(std::string const &str);
@@ -48,7 +46,6 @@ enum class PieceDirection {
     SOUTH,
     EAST,
     WEST,
-    BLANK
 };
 extern const std::vector<std::pair<PieceDirection, std::string>> pieceDirectionStringMap;
 bool isValidPieceDirection(std::string const &str);

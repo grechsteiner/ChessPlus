@@ -21,7 +21,7 @@ std::vector<std::pair<int, int>> const King::kingDirections = {
 };
 
 King::King(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) : 
-    Piece(team, PieceType::KING, pieceDirection, hasMoved, "♚", "K", pieceScore) {}
+    Piece(PieceType::KING, team, pieceDirection, hasMoved, pieceScore, "♚", "K") {}
 
 std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
@@ -35,7 +35,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
         int newCol = pieceCol + kingDirection.second;
         BoardSquare newBoardSquare(newRow, newCol);
         if (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-            moves.emplace_back(createBoardMove(board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true));
+            createAndAppendBoardMove(moves, board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true);
         }
     }
 
@@ -60,7 +60,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 2)) &&                                                                       // Other empty move through
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 3))) {                                                                       // Other empty move through
                         
-                        moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol - 2), BoardSquare(pieceRow, pieceCol - 2), MoveType::CASTLE, false));
+                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol - 2), BoardSquare(pieceRow, pieceCol - 2), MoveType::CASTLE, false);
                     }
 
                     // Right
@@ -74,7 +74,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol + 1), pieceInfo.team) &&   // Move through square not attacked
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 2))) {                                                                       // Other empty move through
 
-                        moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol + 2), BoardSquare(pieceRow, pieceCol + 2), MoveType::CASTLE, false));
+                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol + 2), BoardSquare(pieceRow, pieceCol + 2), MoveType::CASTLE, false);
                     }
                     
 
@@ -94,7 +94,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.isSquareEmpty(BoardSquare(pieceRow - 2, pieceCol)) && 
                         board.isSquareEmpty(BoardSquare(pieceRow - 3, pieceCol))) {
 
-                        moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 2, pieceCol), BoardSquare(pieceRow - 2, pieceCol), MoveType::CASTLE, false));
+                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 2, pieceCol), BoardSquare(pieceRow - 2, pieceCol), MoveType::CASTLE, false);
                     }
                     
                     // Down (right)
@@ -108,7 +108,7 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.isSquareEmpty(BoardSquare(pieceRow + 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow + 1, pieceCol), pieceInfo.team) &&
                         board.isSquareEmpty(BoardSquare(pieceRow + 2, pieceCol))) {
 
-                        moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 2, pieceCol), BoardSquare(pieceRow + 2, pieceCol), MoveType::CASTLE, false));
+                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 2, pieceCol), BoardSquare(pieceRow + 2, pieceCol), MoveType::CASTLE, false);
                     }
 
                     break;

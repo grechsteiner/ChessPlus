@@ -11,7 +11,6 @@
 #include "Bishop.h"
 #include "Knight.h"
 #include "Pawn.h"
-#include "Empty.h"
 
 // Static
 std::unique_ptr<Piece> ChessPieceFactory::createPiece(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) {
@@ -40,15 +39,8 @@ std::unique_ptr<Piece> ChessPieceFactory::createPiece(Team team, PieceType piece
             return pieceScore.has_value()
                 ? std::make_unique<Pawn>(team, pieceDirection, hasMoved, pieceScore.value())
                 : std::make_unique<Pawn>(team, pieceDirection, hasMoved);
-        case PieceType::EMPTY:
         default:
-            return pieceScore.has_value()
-                ? std::make_unique<Empty>(team, pieceDirection, hasMoved, pieceScore.value())
-                : std::make_unique<Empty>(team, pieceDirection, hasMoved);
+            return nullptr;
     }
 }
 
-// Static
-std::unique_ptr<Piece> ChessPieceFactory::createEmptyPiece() {
-    return std::make_unique<Empty>(Team::TEAM_NONE, PieceDirection::BLANK, 0, false);
-}

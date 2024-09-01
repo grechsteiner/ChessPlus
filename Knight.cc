@@ -21,7 +21,7 @@ std::vector<std::pair<int, int>> const Knight::knightDirections = {
 };
 
 Knight::Knight(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Piece(team, PieceType::KNIGHT, pieceDirection, hasMoved, "♞", "N", pieceScore) {}
+    Piece(PieceType::KNIGHT, team, pieceDirection, hasMoved, pieceScore, "♞", "N") {}
 
 std::vector<BoardMove> Knight::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
@@ -30,7 +30,7 @@ std::vector<BoardMove> Knight::getMovesImplementation(ChessBoard const &board, B
         int newCol = boardSquare.getBoardCol() + knightDirection.second;
         BoardSquare newBoardSquare(newRow, newCol);
         if (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-            moves.emplace_back(createBoardMove(board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true));
+            createAndAppendBoardMove(moves, board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true);
         }
     }
     return moves;
