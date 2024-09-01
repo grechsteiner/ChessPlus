@@ -43,10 +43,10 @@ private:
     std::vector<BoardMove> getPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
     std::vector<BoardMove> getPseudoLegalMoves(Team team, bool onlyAttackingMoves) const;   
 
-    // TODO: Make this explicit
-    void makeMoveInternal(BoardMove const &boardMove);
+    // Does not perform any checks of whether of not move is legal
+    void performMove(BoardMove const &boardMove);
 
-    bool performMove(Team team) const;
+    bool canMakeMove(Team team) const;
     bool isMoveValid(BoardMove const &boardMove) const;
     bool doesMoveApplyCheck(BoardMove const &boardMove) const;
     bool doesMoveCapturePiece(BoardMove const &boardMove) const;

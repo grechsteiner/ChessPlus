@@ -54,8 +54,8 @@ public:
     bool operator==(BoardMove const &other) const;
         
     // Commands
-    void makeMove(ChessBoard &board) const;
-    void undoMove(ChessBoard &board) const;
+    void makeBoardMove(ChessBoard &board) const;
+    void undoBoardMove(ChessBoard &board) const;
 
     /* Getters */
     // TODO: Probably don't need all of these, if any

@@ -96,7 +96,7 @@ void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
     }
 }
 
-void BoardMove::makeMove(ChessBoard &board) const {
+void BoardMove::makeBoardMove(ChessBoard &board) const {
 
     // Basic Stuff
     board.clearPosition(captureSquare);      // Set captured piece to blank (may not be square moving to)
@@ -114,7 +114,7 @@ void BoardMove::makeMove(ChessBoard &board) const {
     }
 }
 
-void BoardMove::undoMove(ChessBoard &board) const {
+void BoardMove::undoBoardMove(ChessBoard &board) const {
 
     // Basic Stuff
     board.setPosition(fromSquare, movedPieceInfo.team, movedPieceInfo.pieceType, movedPieceInfo.pieceDirection, movedPieceInfo.hasMoved, movedPieceInfo.pieceScore);   // Undo moving piece (has moved to what it was before)

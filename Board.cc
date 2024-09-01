@@ -53,13 +53,13 @@ std::vector<BoardMove> Board::getPseudoLegalMoves(Team team, bool onlyAttackingM
     return boardMoves;
 }
 
-void Board::makeMoveInternal(BoardMove const &boardMove) {
-    boardMove.makeMove(*this);                               // Apply the move
+void Board::performMove(BoardMove const &boardMove) {
+    boardMove.makeBoardMove(*this);                               // Apply the move
     completedMoves.emplace_back(boardMove);                  // Track it for undoing 
     redoMoves.clear();                                  // Clear redo moves (can't redo after making a move)
 }
 
-bool Board::performMove(Team team) const {
+bool Board::canMakeMove(Team team) const {
     return !getLegalMoves(team).empty();
 }
 
@@ -76,7 +76,7 @@ bool Board::isMoveValid(BoardMove const &boardMove) const {
 bool Board::doesMoveApplyCheck(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<Board*>(this)->makeMoveInternal(boardMove);
+        const_cast<Board*>(this)->performMove(boardMove);
         bool doesMoveApplyCheck = isInCheck(getOtherTeam(movedPieceInfo.value().team));
         const_cast<Board*>(this)->undoMove();
         return doesMoveApplyCheck;
@@ -96,7 +96,7 @@ bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
 bool Board::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<Board*>(this)->makeMoveInternal(boardMove);
+        const_cast<Board*>(this)->performMove(boardMove);
         bool doesMoveLeavePieceAttacked = getCapturingMoves(getOtherTeam(movedPieceInfo.value().team)).empty();
         const_cast<Board*>(this)->undoMove();
         return doesMoveLeavePieceAttacked;
@@ -122,7 +122,7 @@ bool Board::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
 bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<Board*>(this)->makeMoveInternal(boardMove);
+        const_cast<Board*>(this)->performMove(boardMove);
         bool isInCheckAfterMove = isInCheck(movedPieceInfo.value().team);
         const_cast<Board*>(this)->undoMove();
         return isInCheckAfterMove;
@@ -332,7 +332,7 @@ std::vector<BoardMove> const& Board::getAllCompletedMovesImpl() const {
 
 bool Board::makeMoveImpl(BoardMove const &move) {
     if (isMoveValid(move)) {
-        makeMoveInternal(move);
+        performMove(move);
         return true;
     }
     return false;                              
@@ -346,7 +346,7 @@ bool Board::undoMoveImpl() {
 
     BoardMove lastMove = completedMoves.back();      // Get the last made move
     completedMoves.pop_back();                      // Pop it off the completed moves stack
-    lastMove.undoMove(*this);                       // Undo the move
+    lastMove.undoBoardMove(*this);                       // Undo the move
     redoMoves.emplace_back(lastMove);               // Push it to the redo moves stack
     return true;      
 }
@@ -359,7 +359,7 @@ bool Board::redoMoveImpl() {
 
     BoardMove lastUndoneMove = redoMoves.back();     // Get the last move to be undone
     redoMoves.pop_back();                           // Pop it off the redo moves stack
-    lastUndoneMove.makeMove(*this);                 // Apply the move
+    lastUndoneMove.makeBoardMove(*this);                 // Apply the move
     completedMoves.emplace_back(lastUndoneMove);    // Push it to the completed moves stack
     return true;                                    // Success
 }
@@ -385,9 +385,9 @@ bool Board::isInCheckImpl(Team team) const {
 }
 
 bool Board::isInCheckMateImpl(Team team) const {
-    return isInCheck(team) && !performMove(team);
+    return isInCheck(team) && !canMakeMove(team);
 }
 
 bool Board::isInStaleMateImpl(Team team) const {
-    return !performMove(team) && !isInCheck(team);
+    return !canMakeMove(team) && !isInCheck(team);
 }
