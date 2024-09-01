@@ -20,6 +20,8 @@ public:
     std::string display;
 
     PieceInfo(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::string const &image, std::string const &display, int pieceScore);
+
+    bool operator==(PieceInfo const &other) const;
 };
 
 

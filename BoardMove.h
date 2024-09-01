@@ -6,6 +6,7 @@
 #include "Constants.h"
 #include "UserMove.h"
 #include "BoardSquare.h"
+#include "PieceInfo.h"
 
 
 
@@ -20,35 +21,30 @@ private:
     BoardSquare toSquare;
     BoardSquare captureSquare;
 
+    // Moved Piece Info (needed for undoing promotion of non pawn)
+    PieceInfo movedPieceInfo;
+
+    // Captured Piece Info
+    std::optional<PieceInfo> capturedPieceInfo;
+
     // General Info
     MoveType moveType;
     bool isAttackingMove;
-    PieceType promotionPieceType;
+    std::optional<PieceType> promotionPieceType;
 
-    // Moved Piece Info (needed for undoing promotion of non pawn)
-    bool hasMovedBeforeMove;
-    PieceType pieceTypeBeforeMove;
-    int pieceScoreBeforeMove;
 
-    // Captured Piece Info
-    Team capturedTeam;
-    PieceType capturedPieceType;
-    PieceDirection capturedPieceDirection;
-    bool capturedHasMoved;
-    int capturedPieceScore;
-
-    // Logic is exact same for move & undo except for setting hasMoved
+    // Logic is exact same for move & undo except for setting hasMoved and which is fromRookSquare and which is toRookSquare
     void performRookCastle(ChessBoard &board, bool isUndo) const;
 
 public:
 
-    BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, 
-            MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
-            bool hasMovedBeforeMove, PieceType pieceTypeBeforeMove, int pieceScoreBeforeMove,
-            Team capturedTeam, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
+    BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare,
+            PieceInfo movedPieceInfo, std::optional<PieceInfo> capturedPieceInfo,
+            MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType = std::nullopt);
 
-   static const BoardMove DEFAULT;
+    static const BoardMove DEFAULT;
 
+    // TODO
     BoardMove(BoardMove const &other) = default;
     BoardMove(BoardMove &&other) = default;
     BoardMove& operator=(const BoardMove& other) = default;
@@ -65,26 +61,20 @@ public:
     // TODO: Probably don't need all of these, if any
     
     // Squares
-    BoardSquare const& getFromSquare() const;
-    BoardSquare const& getToSquare() const;
-    BoardSquare const& getCaptureSquare() const;
+    BoardSquare getFromSquare() const;
+    BoardSquare getToSquare() const;
+    BoardSquare getCaptureSquare() const;
+
+    // Moved Piece Info
+    PieceInfo getMovedPieceInfo() const;
+
+    // Captured Piece Info
+    std::optional<PieceInfo> getCapturedPieceInfo() const;
 
     // General Info
     MoveType getMoveType() const;
     bool getIsAttackingMove() const;
-    PieceType getPromotionPieceType() const;
-
-    // Moved Piece Info
-    bool getHasMovedBeforeMove() const;
-    PieceType getPieceTypeBeforeMove() const;
-    int getPieceScoreBeforeMove() const;
-
-    // Captured Piece Info
-    Team getCapturedTeam() const;
-    PieceType getCapturedPieceType() const;
-    PieceDirection getCapturedPieceDirection() const;
-    bool getCapturedHasMoved() const;
-    int getCapturedPieceScore() const;
+    std::optional<PieceType> getPromotionPieceType() const;
 };
 
 #endif /* BoardMove */

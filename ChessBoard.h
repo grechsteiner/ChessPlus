@@ -18,7 +18,7 @@ struct PieceInfo;
 class ChessBoard {
 
 private:
-    virtual PieceInfo getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
+    virtual std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
     virtual std::vector<BoardSquare> allBoardSquaresImpl() const = 0;
 
     virtual bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const = 0;
@@ -27,7 +27,7 @@ private:
     virtual bool isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team team) const = 0;
     virtual bool isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) const = 0;
     
-    virtual void setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt) = 0;
+    virtual bool setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt) = 0;
     virtual bool clearPositionImpl(BoardSquare const &boardSquare) = 0;
     virtual void clearBoardImpl() = 0;
     virtual bool setBoardSizeImpl(int newNumRows, int newNumCols) = 0;
@@ -42,7 +42,7 @@ private:
     virtual Team getTeamTwoImpl() const = 0;
     virtual Team getOtherTeamImpl(Team team) const = 0;
 
-    virtual std::optional<BoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const = 0;
+    virtual std::optional<BoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const = 0;
     virtual std::optional<BoardMove> getLastCompletedMoveImpl() const = 0;
     virtual std::vector<BoardMove> const& getAllCompletedMovesImpl() const = 0;
 
@@ -58,7 +58,7 @@ private:
     virtual bool isInStaleMateImpl(Team team) const = 0;
 
 public:
-    PieceInfo getPieceInfoAt(BoardSquare const &boardSquare) const;
+    std::optional<PieceInfo> getPieceInfoAt(BoardSquare const &boardSquare) const;
     std::vector<BoardSquare> allBoardSquares() const;
 
     bool isSquareOnBoard(BoardSquare const &boardSquare) const;
@@ -67,7 +67,7 @@ public:
     bool isSquareOtherTeam(BoardSquare const &boardSquare, Team team) const;
     bool isSquareAttacked(BoardSquare const &boardSquare, Team team) const;
     
-    void setPosition(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt);    
+    bool setPosition(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt);    
     bool clearPosition(BoardSquare const &boardSquare);
     void clearBoard();
     bool setBoardSize(int newNumRows, int newNumCols);
@@ -83,7 +83,7 @@ public:
     Team getTeamTwo() const;
     Team getOtherTeam(Team team) const;
 
-    std::optional<BoardMove> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const;
+    std::optional<BoardMove> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const;
     std::optional<BoardMove> getLastCompletedMove() const;
     std::vector<BoardMove> const& getAllCompletedMoves() const;
 

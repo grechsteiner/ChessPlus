@@ -63,7 +63,7 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, Boa
 
         // En passant
         // Last move was double pawn move, and different color team
-        if (lastCompletedMove.getMoveType() == MoveType::DOUBLE_PAWN && board.getPieceInfoAt(lastCompletedMove.getToSquare()).team != pieceInfo.team) {
+        if (lastCompletedMove.getMoveType() == MoveType::DOUBLE_PAWN && lastCompletedMove.getMovedPieceInfo().team != pieceInfo.team) {
             switch (pieceInfo.pieceDirection) {
                 case PieceDirection::NORTH:
                 case PieceDirection::SOUTH:

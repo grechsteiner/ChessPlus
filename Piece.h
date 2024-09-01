@@ -24,7 +24,7 @@ protected:
     // TODO:
     // Factory up for different move types
     // Maybe alter isAttackingMove
-    BoardMove createBoardMove(ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType = PieceType::EMPTY) const;
+    BoardMove createBoardMove(ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType = std::nullopt) const;
 
 public:
     virtual ~Piece() = default;

@@ -55,7 +55,7 @@ private:
 
 
     /* ChessBoard Interface */
-    PieceInfo getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
+    std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
     std::vector<BoardSquare> allBoardSquaresImpl() const override;
 
     bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const override;
@@ -64,7 +64,7 @@ private:
     bool isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team team) const override;
     bool isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) const override;
     
-    void setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt) override;
+    bool setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt) override;
     bool clearPositionImpl(BoardSquare const &boardSquare) override;
     void clearBoardImpl() override;
     bool setBoardSizeImpl(int newNumRows, int newNumCols) override; // Set board to have provided coordinates, returning true if coordinates are valid, false otherwise, Does not change the state of any pieces on the board
@@ -79,7 +79,7 @@ private:
     Team getTeamTwoImpl() const override;
     Team getOtherTeamImpl(Team team) const override;
 
-    std::optional<BoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const override;
+    std::optional<BoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const override;
     std::optional<BoardMove> getLastCompletedMoveImpl() const override;
     std::vector<BoardMove> const& getAllCompletedMovesImpl() const override;
     

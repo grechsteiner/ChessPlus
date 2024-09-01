@@ -13,6 +13,6 @@ Empty::Empty(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceS
     Piece(team, PieceType::EMPTY, pieceDirection, hasMoved, " ", " ", pieceScore) {}
 
 std::vector<BoardMove> Empty::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool attackingMoves) const {
-    return {};
+    return std::vector<BoardMove>();
 }
 

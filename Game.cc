@@ -220,7 +220,8 @@ void Game::runGame() {
 
                             BoardSquare fromBoardSquare = createBoardSquare(UserSquare(fromSquare), board.getNumRows(), board.getNumCols());
                             BoardSquare toBoardSquare = createBoardSquare(UserSquare(toSquare), board.getNumRows(), board.getNumCols());
-                            std::optional<BoardMove> boardMove = board.createBoardMove(fromBoardSquare, toBoardSquare, stringToPieceType(promotionPiece));
+                            std::optional<PieceType> promotion = promotionPiece == "" ? std::nullopt : std::make_optional(stringToPieceType(promotionPiece));
+                            std::optional<BoardMove> boardMove = board.createBoardMove(fromBoardSquare, toBoardSquare, promotion);
 
                             // Nullptr if invalid move
                             if (boardMove.has_value()) {
@@ -510,21 +511,25 @@ bool Game::isBoardInProperSetup() const {
     int bottomRow = board.getNumRows() - 1;
 
     for (BoardSquare const &boardSquare : board.allBoardSquares()) {
-        if (board.getPieceInfoAt(boardSquare).pieceType == PieceType::KING) {
-            Team team = board.getPieceInfoAt(boardSquare).team;
-            if (board.isSquareAttacked(boardSquare, team)) {
+        std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(boardSquare);
+        if (pieceInfo.has_value()) {
+            if (pieceInfo.value().pieceType == PieceType::KING) {
+                Team team = pieceInfo.value().team;
+                if (board.isSquareAttacked(boardSquare, team)) {
+                    return false;
+                }
+                if (team == board.getTeamOne()) {
+                    whiteKingCount++;
+                } else if (team == board.getTeamTwo()) {
+                    blackKingCount++;
+                }
+            }
+
+            if (pieceInfo.value().pieceType == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
                 return false;
             }
-            if (team == board.getTeamOne()) {
-                whiteKingCount++;
-            } else if (team == board.getTeamTwo()) {
-                blackKingCount++;
-            }
         }
-
-        if (board.getPieceInfoAt(boardSquare).pieceType == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
-            return false;
-        }
+        
     }
 
     return (whiteKingCount != 1 || blackKingCount != 1) ? false : true;

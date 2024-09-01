@@ -4,9 +4,11 @@
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include <optional>
 
 #include "AdvancedComputerPlayer.h"
 #include "MoveShuffler.h"
+#include "PieceInfo.h"
 
 
 BoardMove AdvancedComputerPlayer::getMoveImplementation(ChessBoard &board, Team team) const {
@@ -83,7 +85,10 @@ std::vector<BoardMove> AdvancedComputerPlayer::rank_moves(ChessBoard& board, con
     // Assign values to each move
     for (const auto& move : moves) {
         int score = 0;
-        score += board.getPieceInfoAt(move.getCaptureSquare()).pieceScore;
+        std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(move.getCaptureSquare());
+        if (pieceInfo.has_value()) {
+            score += pieceInfo.value().pieceScore;
+        }
         scored_moves.emplace_back(move, score);
     }
 
@@ -130,45 +135,50 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team)
         int numBoardCols = board.getNumCols();
 
 
-        if (board.getPieceInfoAt(boardSquare).team == board.getTeamOne()) {
-            totalScore += board.getPieceInfoAt(boardSquare).pieceScore * 10;
-            // Advance bonus, only until row before pawns so no stupid sacrifice
-            switch (board.getPieceInfoAt(boardSquare).pieceDirection) {
-                case PieceDirection::NORTH:
-                    totalScore += min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
-                    break;
-                case PieceDirection::SOUTH:
-                    totalScore += min(numBoardRows, numBoardRows - 4);
-                    break;
-                case PieceDirection::EAST:
-                    totalScore += min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
-                    break;
-                case PieceDirection::WEST:
-                    totalScore += min(numBoardCols, numBoardCols - 4);
-                    break;
-                default:
-                    break;
-            }
-        } else if (board.getPieceInfoAt(boardSquare).team == board.getTeamTwo()) {
-            totalScore -= board.getPieceInfoAt(boardSquare).pieceScore * 10;
-            // Advance bonus, only until row before pawns so no stupid sacrifice
-            switch (board.getPieceInfoAt(boardSquare).pieceDirection) {
-                case PieceDirection::NORTH:
-                    totalScore -= min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
-                    break;
-                case PieceDirection::SOUTH:
-                    totalScore -= min(numBoardRows, numBoardRows - 4);
-                    break;
-                case PieceDirection::EAST:
-                    totalScore -= min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
-                    break;
-                case PieceDirection::WEST:
-                    totalScore -= min(numBoardCols, numBoardCols - 4);
-                    break;
-                default:
-                    break;
+        std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(boardSquare);
+        if (pieceInfo.has_value()) {
+            if (pieceInfo.value().team == board.getTeamOne()) {
+                totalScore += pieceInfo.value().pieceScore * 10;
+                // Advance bonus, only until row before pawns so no stupid sacrifice
+                switch (pieceInfo.value().pieceDirection) {
+                    case PieceDirection::NORTH:
+                        totalScore += min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
+                        break;
+                    case PieceDirection::SOUTH:
+                        totalScore += min(numBoardRows, numBoardRows - 4);
+                        break;
+                    case PieceDirection::EAST:
+                        totalScore += min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
+                        break;
+                    case PieceDirection::WEST:
+                        totalScore += min(numBoardCols, numBoardCols - 4);
+                        break;
+                    default:
+                        break;
+                }
+            } else if (pieceInfo.value().team == board.getTeamTwo()) {
+                totalScore -= pieceInfo.value().pieceScore * 10;
+                // Advance bonus, only until row before pawns so no stupid sacrifice
+                switch (pieceInfo.value().pieceDirection) {
+                    case PieceDirection::NORTH:
+                        totalScore -= min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
+                        break;
+                    case PieceDirection::SOUTH:
+                        totalScore -= min(numBoardRows, numBoardRows - 4);
+                        break;
+                    case PieceDirection::EAST:
+                        totalScore -= min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
+                        break;
+                    case PieceDirection::WEST:
+                        totalScore -= min(numBoardCols, numBoardCols - 4);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
+
+        
     }
 
     // Checkmate

@@ -15,12 +15,10 @@ std::vector<BoardMove> Piece::getMoves(ChessBoard const &board, BoardSquare cons
     return getMovesImplementation(board, boardSquare, onlyAttackingMoves);
 }
 
-BoardMove Piece::createBoardMove(ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, PieceType promotionPieceType) const {
-    PieceInfo capturePieceInfo = board.getPieceInfoAt(captureSquare);
+BoardMove Piece::createBoardMove(ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType) const {
     return BoardMove(fromSquare, toSquare, captureSquare, 
-                    moveType, isAttackingMove, promotionPieceType, 
-                    pieceInfo.hasMoved, pieceInfo.pieceType, pieceInfo.pieceScore, 
-                    capturePieceInfo.team, capturePieceInfo.pieceType, capturePieceInfo.pieceDirection, capturePieceInfo.hasMoved, capturePieceInfo.pieceScore);
+                    board.getPieceInfoAt(fromSquare).value(), board.getPieceInfoAt(captureSquare),
+                    moveType, isAttackingMove, promotionPieceType);
 }
 
 

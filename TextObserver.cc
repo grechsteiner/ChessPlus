@@ -72,9 +72,6 @@ void TextObserver::notifyImplementation() {
         
         
         if (std::get<2>(state) == 0) { 
-            out << "ONE" << std::endl;
-            board.getLegalMoves(Team::TEAM_ONE);
-            out << "TWO" << std::endl;
 
             if (board.isInCheckMate(Team::TEAM_ONE)) {
                 out << "Checkmate! Black wins!" << std::endl;
@@ -137,7 +134,14 @@ void TextObserver::printBoard(ChessBoard const& board, int turn) {
         }
         out << "║";
         for (int col = 0; col < board.getNumCols(); ++col) {
-            printPiece(board.getPieceInfoAt(BoardSquare(row, col)).image, board.getPieceInfoAt(BoardSquare(row, col)).team);
+
+            std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(BoardSquare(row, col));
+            if (pieceInfo.has_value()) {
+                printPiece(pieceInfo.value().image, pieceInfo.value().team);
+            } else {
+                out << " ";
+            }
+
         }
         out << "║ |" << std::endl;
     }

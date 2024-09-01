@@ -10,7 +10,7 @@
 class UserMove;
 
 
-PieceInfo ChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
+std::optional<PieceInfo> ChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
 std::vector<BoardSquare> ChessBoard::allBoardSquares() const { return allBoardSquaresImpl(); }
 
 bool ChessBoard::isSquareOnBoard(BoardSquare const &boardSquare) const { return isSquareOnBoardImpl(boardSquare); }
@@ -19,7 +19,7 @@ bool ChessBoard::isSquareOwnTeam(BoardSquare const &boardSquare, Team team) cons
 bool ChessBoard::isSquareOtherTeam(BoardSquare const &boardSquare, Team team) const { return isSquareOtherTeamImpl(boardSquare, team); }
 bool ChessBoard::isSquareAttacked(BoardSquare const &boardSquare, Team team) const { return isSquareAttackedImpl(boardSquare, team); }
 
-void ChessBoard::setPosition(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) { setPositionImpl(boardSquare, team, pieceType, pieceDirection, hasMoved, pieceScore); }
+bool ChessBoard::setPosition(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) { return setPositionImpl(boardSquare, team, pieceType, pieceDirection, hasMoved, pieceScore); }
 bool ChessBoard::clearPosition(BoardSquare const &boardSquare) { return clearPositionImpl(boardSquare); }
 void ChessBoard::clearBoard() { clearBoardImpl(); }
 bool ChessBoard::setBoardSize(int newNumRows, int newNumCols) { return setBoardSizeImpl(newNumRows, newNumCols); }
@@ -34,7 +34,7 @@ Team ChessBoard::getTeamOne() const { return getTeamOneImpl(); }
 Team ChessBoard::getTeamTwo() const { return getTeamTwoImpl(); }
 Team ChessBoard::getOtherTeam(Team team) const { return getOtherTeamImpl(team); }
 
-std::optional<BoardMove> ChessBoard::createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, PieceType promotionPieceType) const { return createBoardMoveImpl(fromSquare, toSquare, promotionPieceType); }
+std::optional<BoardMove> ChessBoard::createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { return createBoardMoveImpl(fromSquare, toSquare, promotionPieceType); }
 std::optional<BoardMove> ChessBoard::getLastCompletedMove() const { return getLastCompletedMoveImpl(); }
 std::vector<BoardMove> const& ChessBoard::getAllCompletedMoves() const { return getAllCompletedMovesImpl(); }
 

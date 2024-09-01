@@ -52,9 +52,10 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                     // Check that don't end up in check during other check calculation
                     if ((pieceRow == 0 || pieceRow == board.getNumRows() - 1) &&                                                                    // Top or bottom row
                         pieceCol >= 4 &&                                                                                                            // Enough space on left
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).team == pieceInfo.team &&                                                  // Must be same colour
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).pieceType == PieceType::ROOK &&                                              // Must be rook
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).has_value() &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).value().team == pieceInfo.team &&                                                  // Must be same colour
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).value().pieceType == PieceType::ROOK &&                                              // Must be rook
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).value().pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol - 1), pieceInfo.team) &&   // Move through square not attacked
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 2)) &&                                                                       // Other empty move through
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 3))) {                                                                       // Other empty move through
@@ -66,9 +67,10 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                     // Check that don't end up in check during other check calculation
                     if ((pieceRow == 0 || pieceRow == board.getNumRows() - 1) &&                                                                    // Top or bottom row
                         pieceCol <= board.getNumCols() - 4 &&                                                                                       // Enough space on right
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).team == pieceInfo.team &&                                                  // Must be same colour
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).pieceType == PieceType::ROOK &&                                              // Must be rook
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).has_value() &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).value().team == pieceInfo.team &&                                                  // Must be same colour
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).value().pieceType == PieceType::ROOK &&                                              // Must be rook
+                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).value().pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol + 1), pieceInfo.team) &&   // Move through square not attacked
                         board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 2))) {                                                                       // Other empty move through
 
@@ -84,9 +86,10 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                     // Check that don't end up in check during other check calculation
                     if ((pieceCol == 0 || pieceCol == board.getNumCols() - 1) &&
                         pieceRow >= 4 &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).team == pieceInfo.team &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).pieceType == PieceType::ROOK &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).pieceDirection == pieceInfo.pieceDirection &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).has_value() &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).value().team == pieceInfo.team &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).value().pieceType == PieceType::ROOK &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).value().pieceDirection == pieceInfo.pieceDirection &&
                         board.isSquareEmpty(BoardSquare(pieceRow - 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow - 1, pieceCol), pieceInfo.team) &&
                         board.isSquareEmpty(BoardSquare(pieceRow - 2, pieceCol)) && 
                         board.isSquareEmpty(BoardSquare(pieceRow - 3, pieceCol))) {
@@ -98,9 +101,10 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                     // Check that don't end up in check during other check calculation
                     if ((pieceCol == 0 || pieceCol == board.getNumCols() - 1) &&
                         pieceCol <= board.getNumRows() - 4 &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).team == pieceInfo.team &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).pieceType == PieceType::ROOK &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).pieceDirection == pieceInfo.pieceDirection &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).has_value() &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).value().team == pieceInfo.team &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).value().pieceType == PieceType::ROOK &&
+                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).value().pieceDirection == pieceInfo.pieceDirection &&
                         board.isSquareEmpty(BoardSquare(pieceRow + 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow + 1, pieceCol), pieceInfo.team) &&
                         board.isSquareEmpty(BoardSquare(pieceRow + 2, pieceCol))) {
 
