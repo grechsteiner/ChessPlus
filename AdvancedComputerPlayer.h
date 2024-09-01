@@ -4,6 +4,7 @@
 #define AdvancedComputerPlayer_h
 
 #include <utility>
+#include <optional>
 
 #include "ComputerPlayer.h"
 #include "Constants.h"
@@ -14,11 +15,19 @@
 class AdvancedComputerPlayer : public ComputerPlayer {
 private:
     int getAlphaBetaBoardScore(ChessBoard& board, Team team) const;
-    std::vector<BoardMove> rank_moves(ChessBoard& board, const std::vector<BoardMove>& moves) const;
+    std::vector<BoardMove> rankMoves(ChessBoard& board, std::vector<BoardMove> const &moves) const;
     BoardMove getMoveImplementation(ChessBoard &board, Team team) const override;
     int depth = 4;
 
-    std::tuple<int, BoardMove> alphaBetaSearch(ChessBoard &board, int currentDepth, Team team, int beta, int alpha) const;
+
+    struct ScoredBoardMove {
+        int score;
+        std::optional<BoardMove> boardMove;
+
+        ScoredBoardMove(int score, std::optional<BoardMove> boardMove = std::nullopt) : score(score), boardMove(boardMove) {}
+    };
+
+    ScoredBoardMove alphaBetaSearch(ChessBoard &board, int currentDepth, Team team, int alpha, int beta) const;
 public:
     AdvancedComputerPlayer() = default;
 };

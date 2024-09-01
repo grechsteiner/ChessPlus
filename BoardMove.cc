@@ -12,12 +12,6 @@
 #include "BoardSquare.h"
 
 
-// Static
-const BoardMove BoardMove::DEFAULT = 
-    BoardMove(BoardSquare(0, 0), BoardSquare(0, 0), BoardSquare(0, 0), 
-            PieceInfo(PieceType::BISHOP, Team::TEAM_ONE, PieceDirection::NORTH, false, 0, " ", " "), std::nullopt,
-            MoveType::STANDARD, false);
-
 BoardMove::BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare,
                     PieceInfo movedPieceInfo, std::optional<PieceInfo> capturedPieceInfo,
                     MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType) :

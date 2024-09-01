@@ -42,8 +42,6 @@ public:
             PieceInfo movedPieceInfo, std::optional<PieceInfo> capturedPieceInfo,
             MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType = std::nullopt);
 
-    static const BoardMove DEFAULT;
-
     // TODO
     BoardMove(BoardMove const &other) = default;
     BoardMove(BoardMove &&other) = default;
