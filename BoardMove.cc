@@ -21,12 +21,12 @@ const BoardMove BoardMove::DEFAULT =
 
 BoardMove::BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare,
                     MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
-                    bool hasMoved, PieceType pieceType, int pieceScore,
+                    bool hasMovedBeforeMove, PieceType pieceTypeBeforeMove, int pieceScoreBeforeMove,
                     Team capturedTeam, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore) :
 
     fromSquare(fromSquare), toSquare(toSquare), captureSquare(captureSquare),
     moveType(moveType), isAttackingMove(isAttackingMove), promotionPieceType(promotionPieceType),
-    hasMoved(hasMoved), pieceType(pieceType), pieceScore(pieceScore),
+    hasMovedBeforeMove(hasMovedBeforeMove), pieceTypeBeforeMove(pieceTypeBeforeMove), pieceScoreBeforeMove(pieceScoreBeforeMove),
     capturedTeam(capturedTeam), capturedPieceType(capturedPieceType), capturedPieceDirection(capturedPieceDirection), capturedHasMoved(capturedHasMoved), capturedPieceScore(capturedPieceScore) 
 {}
 
@@ -38,9 +38,9 @@ bool BoardMove::operator==(BoardMove const &other) const {
         moveType == other.moveType &&
         isAttackingMove == other.isAttackingMove &&
         promotionPieceType == other.promotionPieceType &&
-        hasMoved == other.hasMoved &&
-        pieceType == other.pieceType &&
-        pieceScore == other.pieceScore &&
+        hasMovedBeforeMove == other.hasMovedBeforeMove &&
+        pieceTypeBeforeMove == other.pieceTypeBeforeMove &&
+        pieceScoreBeforeMove == other.pieceScoreBeforeMove &&
         capturedTeam == other.capturedTeam &&
         capturedPieceType == other.capturedPieceType &&
         capturedPieceDirection == other.capturedPieceDirection &&
@@ -59,46 +59,53 @@ void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
     int toRow = toSquare.getBoardRow();
     int toCol = toSquare.getBoardCol();
     if (abs(fromCol - toCol) == 2) {
-            // Horizontal castle
-            int rookFromCol;
-            int rookToCol;
-            if (fromCol > toCol) {
-                // Left
-                rookFromCol = toCol - 2;
-                rookToCol = toCol + 1;
-            } else {
-                // Right
-                rookFromCol = toCol + 1;
-                rookToCol = toCol - 1;
-            }
-            board.swapPositions(BoardSquare(toRow, rookFromCol), BoardSquare(toRow, rookToCol));
-            board.setHasMoved(BoardSquare(toRow, rookToCol), hasRookMoved);
-        } else if (abs(fromRow - toRow) == 2) {
-            // Vertical castle
-            int rookFromRow;
-            int rookToRow;
-            if (fromRow > toRow) {
-                // Up
-                rookFromRow = toRow - 2;
-                rookToRow = toRow + 1;
-            } else {
-                // Down
-                rookFromRow = toRow + 1;
-                rookToRow = toRow - 1;
-            }
-            board.swapPositions(BoardSquare(rookFromRow, toCol), BoardSquare(rookToRow, toCol));
-            board.setHasMoved(BoardSquare(rookToRow, toCol), hasRookMoved);
+        // Horizontal castle
+        int rookFromCol;
+        int rookToCol;
+        if (fromCol > toCol) {
+            // Left
+            rookFromCol = toCol - 2;
+            rookToCol = toCol + 1;
         } else {
-            assert(false);
+            // Right
+            rookFromCol = toCol + 1;
+            rookToCol = toCol - 1;
         }
+        BoardSquare rookFromSquare(toRow, rookFromCol);
+        BoardSquare rookToSquare(toRow, rookToCol);
+        PieceInfo rookPieceInfo = board.getPieceInfoAt(rookFromSquare);
+        board.setPosition(rookToSquare, rookPieceInfo.team, rookPieceInfo.pieceType, rookPieceInfo.pieceDirection, hasRookMoved, rookPieceInfo.pieceScore);
+        board.clearPosition(rookFromSquare);
+    } else if (abs(fromRow - toRow) == 2) {
+        // Vertical castle
+        int rookFromRow;
+        int rookToRow;
+        if (fromRow > toRow) {
+            // Up
+            rookFromRow = toRow - 2;
+            rookToRow = toRow + 1;
+        } else {
+            // Down
+            rookFromRow = toRow + 1;
+            rookToRow = toRow - 1;
+        }
+        BoardSquare rookFromSquare(rookFromRow, toCol);
+        BoardSquare rookToSquare(rookToRow, toCol);
+        PieceInfo rookPieceInfo = board.getPieceInfoAt(rookFromSquare);
+        board.setPosition(rookToSquare, rookPieceInfo.team, rookPieceInfo.pieceType, rookPieceInfo.pieceDirection, hasRookMoved, rookPieceInfo.pieceScore);
+        board.clearPosition(rookFromSquare);
+    } else {
+        assert(false);
+    }
 }
 
 void BoardMove::makeMove(ChessBoard &board) const {
+    PieceInfo pieceInfo = board.getPieceInfoAt(fromSquare);
 
     // Basic Stuff
-    board.clearPosition(captureSquare);      // Set captured piece to blank
-    board.swapPositions(fromSquare, toSquare);                                                            // Move piece (if this is capturing move, captured piece will already be set to empty)
-    board.setHasMoved(toSquare, true);                                                                          // Set has moved to true
+    board.clearPosition(captureSquare);      // Set captured piece to blank (may not be square moving to)
+    board.setPosition(toSquare, pieceInfo.team, pieceInfo.pieceType, pieceInfo.pieceDirection, true, pieceInfo.pieceScore);        // Move the piece to new square (hasMoved = true)
+    board.clearPosition(fromSquare);                                    // Clear old spot
 
     // Apply Promotion
     if (promotionPieceType != PieceType::EMPTY) {
@@ -113,16 +120,17 @@ void BoardMove::makeMove(ChessBoard &board) const {
 }
 
 void BoardMove::undoMove(ChessBoard &board) const {
+    PieceInfo pieceInfo = board.getPieceInfoAt(toSquare);
 
     // Basic Stuff
-    board.swapPositions(fromSquare, toSquare);                                                                                        // Undo moving the piece
-    board.setHasMoved(fromSquare, hasMoved);                                                                                              // Set hasMoved field to what it was before
+    board.setPosition(fromSquare, pieceInfo.team, pieceInfo.pieceType, pieceInfo.pieceDirection, hasMovedBeforeMove, pieceInfo.pieceScore);   // Undo moving piece (has moved to what it was before)
+    board.clearPosition(toSquare);
     board.setPosition(captureSquare, capturedTeam, capturedPieceType, capturedPieceDirection, capturedHasMoved, capturedPieceScore);  // Place captured piece back
 
     // Undo promotion
     if (promotionPieceType != PieceType::EMPTY) {
         PieceInfo promotedPieceInfo = board.getPieceInfoAt(fromSquare);                                                                        // Piece already moved back
-        board.setPosition(fromSquare, promotedPieceInfo.team, pieceType, promotedPieceInfo.pieceDirection, hasMoved, pieceScore); // Get piece type & score prior to promotion
+        board.setPosition(fromSquare, promotedPieceInfo.team, pieceTypeBeforeMove, promotedPieceInfo.pieceDirection, promotedPieceInfo.hasMoved, pieceScoreBeforeMove); // Get piece type & score prior to promotion
     }
 
     // Undo castle
@@ -145,9 +153,9 @@ bool BoardMove::getIsAttackingMove() const { return isAttackingMove; }
 PieceType BoardMove::getPromotionPieceType() const { return promotionPieceType; }
 
 // Moved Piece Info
-bool BoardMove::getHasMoved() const { return hasMoved; }
-PieceType BoardMove::getPieceType() const { return pieceType; }
-int BoardMove::getPieceScore() const { return pieceScore; }
+bool BoardMove::getHasMovedBeforeMove() const { return hasMovedBeforeMove; }
+PieceType BoardMove::getPieceTypeBeforeMove() const { return pieceTypeBeforeMove; }
+int BoardMove::getPieceScoreBeforeMove() const { return pieceScoreBeforeMove; }
 
 // Captured Piece Info
 Team BoardMove::getCapturedTeam() const { return capturedTeam; }

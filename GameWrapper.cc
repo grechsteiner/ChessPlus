@@ -12,7 +12,7 @@ GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &erro
     observers() 
     {
         observers.push_back(std::make_unique<TextObserver>(out, &game));
-        observers.push_back(std::make_unique<GraphicObserver>(&game));
+        // observers.push_back(std::make_unique<GraphicObserver>(&game));
     }
 
 void GameWrapper::runGame() {

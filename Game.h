@@ -52,6 +52,10 @@ private:
     bool isInSetupMode() const;
     bool isGameActive() const;
 
+    void applyStandardSetup();
+    bool isBoardInProperSetup() const;
+
+
 public:
     Game(ChessBoard &board, std::istream &in, std::ostream &out, std::ostream &errorOut);
     void runGame();

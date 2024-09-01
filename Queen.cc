@@ -29,16 +29,18 @@ std::vector<BoardMove> Queen::getMovesImplementation(ChessBoard const &board, Bo
     for (std::pair<int, int> const &queenDirection : queenDirections) {
         int newRow = boardSquare.getBoardRow() + queenDirection.first;
         int newCol = boardSquare.getBoardCol() + queenDirection.second;
-        while (board.isEmptySquareOrOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
-            moves.emplace_back(createBoardMove(board, boardSquare, BoardSquare(newRow, newCol), BoardSquare(newRow, newCol), MoveType::STANDARD, true));
+        BoardSquare newBoardSquare(newRow, newCol);
+        while (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
+            moves.emplace_back(createBoardMove(board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
-            if (board.isOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
+            if (board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
                 break;
             }
             
             newRow += queenDirection.first;
             newCol += queenDirection.second;
+            newBoardSquare = BoardSquare(newRow + queenDirection.first, newCol + queenDirection.second);
         }
     }
     return moves;

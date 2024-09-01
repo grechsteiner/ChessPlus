@@ -33,7 +33,6 @@ public:
     
     // Getters
     PieceInfo getPieceInfo() const;
-    void setHasMoved(bool newHasMoved);
 };
 
 

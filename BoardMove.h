@@ -26,9 +26,9 @@ private:
     PieceType promotionPieceType;
 
     // Moved Piece Info (needed for undoing promotion of non pawn)
-    bool hasMoved;
-    PieceType pieceType;
-    int pieceScore;
+    bool hasMovedBeforeMove;
+    PieceType pieceTypeBeforeMove;
+    int pieceScoreBeforeMove;
 
     // Captured Piece Info
     Team capturedTeam;
@@ -44,7 +44,7 @@ public:
 
     BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, 
             MoveType moveType, bool isAttackingMove, PieceType promotionPieceType,
-            bool hasMoved, PieceType pieceType, int pieceScore,
+            bool hasMovedBeforeMove, PieceType pieceTypeBeforeMove, int pieceScoreBeforeMove,
             Team capturedTeam, PieceType capturedPieceType, PieceDirection capturedPieceDirection, bool capturedHasMoved, int capturedPieceScore);
 
    static const BoardMove DEFAULT;
@@ -75,9 +75,9 @@ public:
     PieceType getPromotionPieceType() const;
 
     // Moved Piece Info
-    bool getHasMoved() const;
-    PieceType getPieceType() const;
-    int getPieceScore() const;
+    bool getHasMovedBeforeMove() const;
+    PieceType getPieceTypeBeforeMove() const;
+    int getPieceScoreBeforeMove() const;
 
     // Captured Piece Info
     Team getCapturedTeam() const;

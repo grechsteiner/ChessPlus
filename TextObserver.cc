@@ -67,9 +67,15 @@ void TextObserver::notifyImplementation() {
         }
         out << "|" << std::endl;
         
+        
         printBoard(std::get<0>(state), std::get<2>(state));
-
+        
+        
         if (std::get<2>(state) == 0) { 
+            out << "ONE" << std::endl;
+            board.getLegalMoves(Team::TEAM_ONE);
+            out << "TWO" << std::endl;
+
             if (board.isInCheckMate(Team::TEAM_ONE)) {
                 out << "Checkmate! Black wins!" << std::endl;
             } else if (board.isInCheck(Team::TEAM_ONE)) {

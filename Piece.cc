@@ -28,6 +28,3 @@ BoardMove Piece::createBoardMove(ChessBoard const &board, BoardSquare const &fro
 
 PieceInfo Piece::getPieceInfo() const { return pieceInfo; }
 
-void Piece::setHasMoved(bool newHasMoved) {
-    pieceInfo.hasMoved = newHasMoved;
-}

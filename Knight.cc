@@ -28,8 +28,9 @@ std::vector<BoardMove> Knight::getMovesImplementation(ChessBoard const &board, B
     for (std::pair<int, int> const &knightDirection : knightDirections) {
         int newRow = boardSquare.getBoardRow() + knightDirection.first;
         int newCol = boardSquare.getBoardCol() + knightDirection.second;
-        if (board.isEmptySquareOrOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
-            moves.emplace_back(createBoardMove(board, boardSquare, BoardSquare(newRow, newCol), BoardSquare(newRow, newCol), MoveType::STANDARD, true));
+        BoardSquare newBoardSquare(newRow, newCol);
+        if (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
+            moves.emplace_back(createBoardMove(board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true));
         }
     }
     return moves;

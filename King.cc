@@ -33,8 +33,9 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
     for (std::pair<int, int> const &kingDirection : kingDirections) {
         int newRow = pieceRow + kingDirection.first;
         int newCol = pieceCol + kingDirection.second;
-        if (board.isEmptySquareOrOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
-            moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(newRow, newCol), BoardSquare(newRow, newCol), MoveType::STANDARD, true));
+        BoardSquare newBoardSquare(newRow, newCol);
+        if (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
+            moves.emplace_back(createBoardMove(board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true));
         }
     }
 
@@ -54,9 +55,9 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).team == pieceInfo.team &&                                                  // Must be same colour
                         board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).pieceType == PieceType::ROOK &&                                              // Must be rook
                         board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow, pieceCol - 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol - 1), pieceInfo.team) &&   // Move through square not attacked
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow, pieceCol - 2)) &&                                                                       // Other empty move through
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow, pieceCol - 3))) {                                                                       // Other empty move through
+                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol - 1), pieceInfo.team) &&   // Move through square not attacked
+                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 2)) &&                                                                       // Other empty move through
+                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 3))) {                                                                       // Other empty move through
                         
                         moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol - 2), BoardSquare(pieceRow, pieceCol - 2), MoveType::CASTLE, false));
                     }
@@ -68,8 +69,8 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).team == pieceInfo.team &&                                                  // Must be same colour
                         board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).pieceType == PieceType::ROOK &&                                              // Must be rook
                         board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow, pieceCol + 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol + 1), pieceInfo.team) &&   // Move through square not attacked
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow, pieceCol + 2))) {                                                                       // Other empty move through
+                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol + 1), pieceInfo.team) &&   // Move through square not attacked
+                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 2))) {                                                                       // Other empty move through
 
                         moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol + 2), BoardSquare(pieceRow, pieceCol + 2), MoveType::CASTLE, false));
                     }
@@ -86,9 +87,9 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).team == pieceInfo.team &&
                         board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).pieceType == PieceType::ROOK &&
                         board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).pieceDirection == pieceInfo.pieceDirection &&
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow - 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow - 1, pieceCol), pieceInfo.team) &&
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow - 2, pieceCol)) && 
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow - 3, pieceCol))) {
+                        board.isSquareEmpty(BoardSquare(pieceRow - 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow - 1, pieceCol), pieceInfo.team) &&
+                        board.isSquareEmpty(BoardSquare(pieceRow - 2, pieceCol)) && 
+                        board.isSquareEmpty(BoardSquare(pieceRow - 3, pieceCol))) {
 
                         moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 2, pieceCol), BoardSquare(pieceRow - 2, pieceCol), MoveType::CASTLE, false));
                     }
@@ -100,8 +101,8 @@ std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, Boa
                         board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).team == pieceInfo.team &&
                         board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).pieceType == PieceType::ROOK &&
                         board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).pieceDirection == pieceInfo.pieceDirection &&
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow + 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow + 1, pieceCol), pieceInfo.team) &&
-                        board.isEmptySquareOnBoard(BoardSquare(pieceRow + 2, pieceCol))) {
+                        board.isSquareEmpty(BoardSquare(pieceRow + 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow + 1, pieceCol), pieceInfo.team) &&
+                        board.isSquareEmpty(BoardSquare(pieceRow + 2, pieceCol))) {
 
                         moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 2, pieceCol), BoardSquare(pieceRow + 2, pieceCol), MoveType::CASTLE, false));
                     }

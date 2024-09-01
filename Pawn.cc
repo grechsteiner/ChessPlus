@@ -41,12 +41,12 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, Boa
     // Normal Move + Double Pawn
     // Only if not get only attacking moves
     if (!onlyAttackingMoves) {
-        if (board.isEmptySquareOnBoard(BoardSquare(pieceRow + direction.first, pieceCol + direction.second))) {
+        if (board.isSquareEmpty(BoardSquare(pieceRow + direction.first, pieceCol + direction.second))) {
             // Normal Move
             moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol + direction.second), BoardSquare(pieceRow + direction.first, pieceCol + direction.second), MoveType::STANDARD, false));
 
             // Double Pawn
-            if (!pieceInfo.hasMoved && board.isEmptySquareOnBoard(BoardSquare(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second))) {
+            if (!pieceInfo.hasMoved && board.isSquareEmpty(BoardSquare(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second))) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second), BoardSquare(pieceRow + 2 * direction.first, pieceCol + 2 * direction.second), MoveType::DOUBLE_PAWN, false));
             }
         }
@@ -54,8 +54,9 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, Boa
     
     
     // En passant
-    if (board.hasMoveBeenMade()) {
-        BoardMove const &lastCompletedMove = board.getLastMadeMove();
+    std::optional<BoardMove> last = board.getLastCompletedMove();
+    if (last.has_value()) {
+        BoardMove lastCompletedMove = last.value();
 
         int lastToRow = lastCompletedMove.getToSquare().getBoardRow();
         int lastToCol = lastCompletedMove.getToSquare().getBoardCol();
@@ -94,22 +95,22 @@ std::vector<BoardMove> Pawn::getMovesImplementation(ChessBoard const &board, Boa
         case PieceDirection::NORTH:
         case PieceDirection::SOUTH:
             // Left
-            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow + direction.first, pieceCol - 1), pieceInfo.team)) {
+            if (board.isSquareOtherTeam(BoardSquare(pieceRow + direction.first, pieceCol - 1), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol - 1), BoardSquare(pieceRow + direction.first, pieceCol - 1), MoveType::STANDARD, true));
             }
             // Right
-            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow + direction.first, pieceCol + 1), pieceInfo.team)) {
+            if (board.isSquareOtherTeam(BoardSquare(pieceRow + direction.first, pieceCol + 1), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + direction.first, pieceCol + 1), BoardSquare(pieceRow + direction.first, pieceCol + 1), MoveType::STANDARD, true));
             }
             break;
         case PieceDirection::EAST:
         case PieceDirection::WEST:
             // Up (left) 
-            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow - 1, pieceCol + direction.second), pieceInfo.team)) {
+            if (board.isSquareOtherTeam(BoardSquare(pieceRow - 1, pieceCol + direction.second), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 1, pieceCol + direction.second), BoardSquare(pieceRow - 1, pieceCol + direction.second), MoveType::STANDARD, true));
             }
             // Down (right)
-            if (board.isOpposingTeamOnBoard(BoardSquare(pieceRow + 1, pieceCol + direction.second), pieceInfo.team)) {
+            if (board.isSquareOtherTeam(BoardSquare(pieceRow + 1, pieceCol + direction.second), pieceInfo.team)) {
                 moves.emplace_back(createBoardMove(board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 1, pieceCol + direction.second), BoardSquare(pieceRow + 1, pieceCol + direction.second), MoveType::STANDARD, true));
             }
             break;

@@ -25,16 +25,18 @@ std::vector<BoardMove> Rook::getMovesImplementation(ChessBoard const &board, Boa
     for (std::pair<int, int> const &rookDirection : rookDirections) {
         int newRow = boardSquare.getBoardRow() + rookDirection.first;
         int newCol = boardSquare.getBoardCol() + rookDirection.second;
-        while (board.isEmptySquareOrOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
-            moves.emplace_back(createBoardMove(board, boardSquare, BoardSquare(newRow, newCol), BoardSquare(newRow, newCol), MoveType::STANDARD, true));
+        BoardSquare newBoardSquare(newRow, newCol);
+        while (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
+            moves.emplace_back(createBoardMove(board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true));
 
             // If we ran into a piece of the opposite color, don't look past it
-            if (board.isOpposingTeamOnBoard(BoardSquare(newRow, newCol), pieceInfo.team)) {
+            if (board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
                 break;
             }
             
             newRow += rookDirection.first;
             newCol += rookDirection.second;
+            newBoardSquare = BoardSquare(newRow + rookDirection.first, newCol + rookDirection.second);
         }
     }
     return moves;
