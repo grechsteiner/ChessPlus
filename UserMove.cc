@@ -1,38 +1,24 @@
 // UserMove.cc
 
 #include <string>
+#include <utility>
 
 #include "UserMove.h"
-#include "BoardMove.h"
 #include "Constants.h"
 #include "UserSquare.h"
 
-// ctor
+
+// Basic ctor
 UserMove::UserMove(UserSquare const &fromSquare, UserSquare const &toSquare, std::optional<PieceType> promotionPieceType) :
     fromSquare(fromSquare), toSquare(toSquare), promotionPieceType(promotionPieceType) {} 
 
-// Copy ctor
-UserMove::UserMove(UserMove const &other) : 
-    fromSquare(other.fromSquare), toSquare(other.toSquare), promotionPieceType(other.promotionPieceType) {}
-
 // Move ctor 
-UserMove::UserMove(UserMove &&other) :
+UserMove::UserMove(UserMove &&other) noexcept :
     fromSquare(std::move(other.fromSquare)), toSquare(std::move(other.toSquare)), promotionPieceType(std::move(other.promotionPieceType)) {}
 
-// Copy Assignment
-UserMove& UserMove::operator=(UserMove const &other) {
+// Move assignment
+UserMove& UserMove::operator=(UserMove &&other) noexcept {
     if (this != &other) {
-        fromSquare = other.fromSquare;
-        toSquare = other.toSquare;
-        promotionPieceType = other.promotionPieceType;
-    }
-    return *this;
-}
-
-// Move Assignment
-UserMove& UserMove::operator=(UserMove &&other) {
-    if (this != &other) {
-        // Transfer data from the other object
         fromSquare = std::move(other.fromSquare);
         toSquare = std::move(other.toSquare);
         promotionPieceType = std::move(other.promotionPieceType);
@@ -40,22 +26,22 @@ UserMove& UserMove::operator=(UserMove &&other) {
     return *this;
 }
 
+// Equality operator
+bool UserMove::operator==(UserMove const &other) const {
+    return 
+        fromSquare == other.fromSquare &&
+        toSquare == other.toSquare &&
+        promotionPieceType == other.promotionPieceType;
+}
+
 std::string UserMove::toString() const {
-    std::string moveString = fromSquare.toString() + " " + toSquare.toString();
+    std::string userMoveString = fromSquare.getUserSquare() + " " + toSquare.getUserSquare();
     if (promotionPieceType.has_value()) {
-        moveString += " " + pieceTypeToString(promotionPieceType.value());
+        userMoveString += " " + pieceTypeToString(promotionPieceType.value());
     }
-    return moveString;
+    return userMoveString;
 }
 
-UserSquare UserMove::getFromSquare() const {
-    return fromSquare;
-}
-
-UserSquare UserMove::getToSquare() const {
-    return toSquare;
-}
-
-std::optional<PieceType> UserMove::getPromotionPieceType() const {
-    return promotionPieceType;
-}
+UserSquare const& UserMove::getFromSquare() const { return fromSquare; }
+UserSquare const& UserMove::getToSquare() const { return toSquare; }
+std::optional<PieceType> UserMove::getPromotionPieceType() const { return promotionPieceType; }

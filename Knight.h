@@ -4,17 +4,24 @@
 #define Knight_h
 
 #include <vector>
+#include <utility>
+#include <set>
 
 #include "Constants.h"
 #include "Piece.h"
-#include "BoardMove.h"
 
 class ChessBoard;
+class BoardSquare;
+class BoardMove;
 
+
+/**
+ * Knight Piece Class
+ */
 class Knight : public Piece {
 private:
-    std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const override;
-    static std::vector<std::pair<int, int>> const knightDirections;
+    static std::set<std::pair<int, int>> const knightDirections;
+    std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
     Knight(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 3);
 };

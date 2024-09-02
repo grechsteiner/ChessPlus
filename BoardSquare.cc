@@ -1,12 +1,12 @@
 // BoardSquare.cc
 
-#include <string>
-
 #include "BoardSquare.h"
-#include "UserSquare.h"
 
+
+// Basic ctor
 BoardSquare::BoardSquare(int boardRow, int boardCol) : boardRow(boardRow), boardCol(boardCol) {}
 
+// Equality operator
 bool BoardSquare::operator==(BoardSquare const &other) const {
     return 
         boardRow == other.boardRow &&
@@ -14,5 +14,5 @@ bool BoardSquare::operator==(BoardSquare const &other) const {
 }
 
 int BoardSquare::getBoardRow() const { return boardRow; }
-int BoardSquare::getBoardCol() const { return boardCol; }
 
+int BoardSquare::getBoardCol() const { return boardCol; }

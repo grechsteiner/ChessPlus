@@ -80,7 +80,7 @@ std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(ChessBoard& board, std:
         int score = 0;
         std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(move.getCaptureSquare());
         if (pieceInfo.has_value()) {
-            score += pieceInfo.value().pieceScore;
+            score += pieceInfo.value().getPieceScore();
         }
         scoredBoardMoves.emplace_back(ScoredBoardMove(score, move));
     }
@@ -130,10 +130,10 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team)
 
         std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value()) {
-            if (pieceInfo.value().team == board.getTeamOne()) {
-                totalScore += pieceInfo.value().pieceScore * 10;
+            if (pieceInfo.value().getTeam() == board.getTeamOne()) {
+                totalScore += pieceInfo.value().getPieceScore() * 10;
                 // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (pieceInfo.value().pieceDirection) {
+                switch (pieceInfo.value().getPieceDirection()) {
                     case PieceDirection::NORTH:
                         totalScore += min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
                         break;
@@ -149,10 +149,10 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team)
                     default:
                         break;
                 }
-            } else if (pieceInfo.value().team == board.getTeamTwo()) {
-                totalScore -= pieceInfo.value().pieceScore * 10;
+            } else if (pieceInfo.value().getTeam() == board.getTeamTwo()) {
+                totalScore -= pieceInfo.value().getPieceScore() * 10;
                 // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (pieceInfo.value().pieceDirection) {
+                switch (pieceInfo.value().getPieceDirection()) {
                     case PieceDirection::NORTH:
                         totalScore -= min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
                         break;

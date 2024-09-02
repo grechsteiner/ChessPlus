@@ -4,12 +4,17 @@
 #define UserMove_h
 
 #include <string>
+#include <optional>
 
 #include "Constants.h"
 #include "UserSquare.h"
 
 
-class UserMove {
+/**
+ * UserMove Class
+ * Represents a move entered by a user
+ */
+class UserMove final {
 
 private:
     UserSquare fromSquare;
@@ -17,17 +22,18 @@ private:
     std::optional<PieceType> promotionPieceType;
 
 public:
-    UserMove(UserSquare const &fromSquare, UserSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt);
-
-    UserMove(UserMove const &other);
-    UserMove(UserMove &&other);
-    UserMove& operator=(UserMove const &other);
-    UserMove& operator=(UserMove &&other);
+    explicit UserMove(UserSquare const &fromSquare, UserSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt);
+    UserMove(UserMove const &other) = default;
+    UserMove(UserMove &&other) noexcept;
+    UserMove& operator=(UserMove const &other) = default;
+    UserMove& operator=(UserMove &&other) noexcept;
     ~UserMove() = default;
 
+    bool operator==(UserMove const &other) const;
     std::string toString() const;
-    UserSquare getFromSquare() const;
-    UserSquare getToSquare() const;
+
+    UserSquare const& getFromSquare() const;
+    UserSquare const& getToSquare() const;
     std::optional<PieceType> getPromotionPieceType() const;
 };
 

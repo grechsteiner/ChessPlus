@@ -6,33 +6,30 @@
 #include <vector>
 
 #include "Constants.h"
-#include "BoardMove.h"
 #include "PieceInfo.h"
 
 class ChessBoard;
+class BoardSquare;
+class BoardMove;
 
+
+/**
+ * Abstract Piece Class
+ * Represents a piece on a chessboard
+ */
 class Piece {
 
 private:
-    virtual std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const = 0;
+    virtual std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
     
 protected:
-    Piece(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display);
-
+    explicit Piece(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display);
     PieceInfo pieceInfo;
 
-    // TODO:
-    // Factory up for different move types
-    // Maybe alter isAttackingMove
-    void createAndAppendBoardMove(std::vector<BoardMove> &moves, ChessBoard const &board, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, MoveType moveType, bool isAttackingMove, std::optional<PieceType> promotionPieceType = std::nullopt) const;
-
 public:
+    std::vector<BoardMove> getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
     virtual ~Piece() = default;
-    
-    std::vector<BoardMove> getMoves(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
-    
-    // Getters
-    PieceInfo getPieceInfo() const;
+    PieceInfo const& getPieceInfo() const;
 };
 
 

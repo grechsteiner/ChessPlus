@@ -1,15 +1,19 @@
 // Knight.cc
 
 #include <vector>
-#include <cassert>
+#include <utility>
+#include <set>
 
-#include "Constants.h"
 #include "Knight.h"
-#include "ChessBoard.h"
+#include "Constants.h"
 #include "Piece.h"
+#include "ChessBoard.h"
+#include "BoardSquare.h"
 #include "BoardMove.h"
 
-std::vector<std::pair<int, int>> const Knight::knightDirections = { 
+
+// Static
+std::set<std::pair<int, int>> const Knight::knightDirections = { 
     {-1, -2}, 
     {-1, 2}, 
     {1, -2}, 
@@ -23,14 +27,14 @@ std::vector<std::pair<int, int>> const Knight::knightDirections = {
 Knight::Knight(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(PieceType::KNIGHT, team, pieceDirection, hasMoved, pieceScore, "♞", "N") {}
 
-std::vector<BoardMove> Knight::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Knight::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
-    for (std::pair<int, int> const &knightDirection : knightDirections) {
-        int newRow = boardSquare.getBoardRow() + knightDirection.first;
-        int newCol = boardSquare.getBoardCol() + knightDirection.second;
-        BoardSquare newBoardSquare(newRow, newCol);
-        if (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-            createAndAppendBoardMove(moves, board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true);
+    if (chessBoard.isSquareOnBoard(fromSquare)) {
+        for (std::pair<int, int> const &knightDirection : knightDirections) {
+            BoardSquare toSquare(fromSquare.getBoardRow() + knightDirection.first, fromSquare.getBoardCol() + knightDirection.second);
+            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.getTeam())) {
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+            }
         }
     }
     return moves;

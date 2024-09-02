@@ -1,15 +1,19 @@
 // Queen.cc
 
 #include <vector>
-#include <cassert>
+#include <utility>
+#include <set>
 
-#include "Constants.h"
 #include "Queen.h"
-#include "ChessBoard.h"
+#include "Constants.h"
 #include "Piece.h"
+#include "ChessBoard.h"
+#include "BoardSquare.h"
+#include "BoardMove.h"
 
 
-std::vector<std::pair<int, int>> const Queen::queenDirections = { 
+// Static
+std::set<std::pair<int, int>> const Queen::queenDirections = { 
     {-1, -1}, 
     {-1, 0}, 
     {-1, 1}, 
@@ -23,24 +27,18 @@ std::vector<std::pair<int, int>> const Queen::queenDirections = {
 Queen::Queen(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(PieceType::QUEEN, team, pieceDirection, hasMoved, pieceScore, "♛", "Q") {}
 
-std::vector<BoardMove> Queen::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Queen::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
-
-    for (std::pair<int, int> const &queenDirection : queenDirections) {
-        int newRow = boardSquare.getBoardRow() + queenDirection.first;
-        int newCol = boardSquare.getBoardCol() + queenDirection.second;
-        BoardSquare newBoardSquare(newRow, newCol);
-        while (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-            createAndAppendBoardMove(moves, board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true);
-
-            // If we ran into a piece of the opposite color, don't look past it
-            if (board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-                break;
+    if (chessBoard.isSquareOnBoard(fromSquare)) {
+        for (std::pair<int, int> const &queenDirection : queenDirections) {
+            BoardSquare toSquare(fromSquare.getBoardRow() + queenDirection.first, fromSquare.getBoardCol() + queenDirection.second);
+            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.getTeam())) {
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+                if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.getTeam())) {
+                    break;
+                }
+                toSquare = BoardSquare(toSquare.getBoardRow() + queenDirection.first, toSquare.getBoardCol() + queenDirection.second);
             }
-            
-            newRow += queenDirection.first;
-            newCol += queenDirection.second;
-            newBoardSquare = BoardSquare(newRow + queenDirection.first, newCol + queenDirection.second);
         }
     }
     return moves;

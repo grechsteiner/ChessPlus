@@ -1,15 +1,18 @@
 // King.cc
 
 #include <vector>
-#include <cassert>
+#include <utility>
+#include <set>
 
-#include "Constants.h"
 #include "King.h"
-#include "ChessBoard.h"
+#include "Constants.h"
 #include "Piece.h"
+#include "ChessBoard.h"
+#include "BoardSquare.h"
+#include "BoardMove.h"
 
 
-std::vector<std::pair<int, int>> const King::kingDirections = { 
+std::set<std::pair<int, int>> const King::kingDirections = { 
     {-1, -1}, 
     {-1, 0}, 
     {-1, 1}, 
@@ -23,100 +26,98 @@ std::vector<std::pair<int, int>> const King::kingDirections = {
 King::King(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) : 
     Piece(PieceType::KING, team, pieceDirection, hasMoved, pieceScore, "♚", "K") {}
 
-std::vector<BoardMove> King::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> King::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
+    if (chessBoard.isSquareOnBoard(fromSquare)) {
+        int fromRow = fromSquare.getBoardRow();
+        int fromCol = fromSquare.getBoardCol();
 
-    int pieceRow = boardSquare.getBoardRow();
-    int pieceCol = boardSquare.getBoardCol();
-
-    // Standard moves
-    for (std::pair<int, int> const &kingDirection : kingDirections) {
-        int newRow = pieceRow + kingDirection.first;
-        int newCol = pieceCol + kingDirection.second;
-        BoardSquare newBoardSquare(newRow, newCol);
-        if (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-            createAndAppendBoardMove(moves, board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true);
+        // Standard Moves
+        for (std::pair<int, int> const &kingDirection : kingDirections) {
+            BoardSquare toSquare(fromRow + kingDirection.first, fromCol + kingDirection.second);
+            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.getTeam())) {
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+            }
         }
-    }
 
-    // Only get castle moves if not only getting attacking moves
-    if (!onlyAttackingMoves) {
+        // Non Attacking Moves
+        if (!onlyAttackingMoves) {
 
-        // Castle
-        if (!pieceInfo.hasMoved && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol), pieceInfo.team)) {
-            switch (pieceInfo.pieceDirection) {
-                case PieceDirection::NORTH:
-                case PieceDirection::SOUTH:
+            // Castle
+            if (!pieceInfo.getHasMoved() && !chessBoard.isSquareAttacked(fromSquare, pieceInfo.getTeam())) {
+                switch (pieceInfo.getPieceDirection()) {
+                    case PieceDirection::NORTH:
+                    case PieceDirection::SOUTH: {
+                        if (fromRow == 0 || fromRow == chessBoard.getNumRows() - 1) {
 
-                    // Left
-                    // Check that don't end up in check during other check calculation
-                    if ((pieceRow == 0 || pieceRow == board.getNumRows() - 1) &&                                                                    // Top or bottom row
-                        pieceCol >= 4 &&                                                                                                            // Enough space on left
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).has_value() &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).value().team == pieceInfo.team &&                                                  // Must be same colour
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).value().pieceType == PieceType::ROOK &&                                              // Must be rook
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol - 4)).value().pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
-                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol - 1), pieceInfo.team) &&   // Move through square not attacked
-                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 2)) &&                                                                       // Other empty move through
-                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol - 3))) {                                                                       // Other empty move through
-                        
-                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol - 2), BoardSquare(pieceRow, pieceCol - 2), MoveType::CASTLE, false);
+                            // Left Castle: Check if have enough room to the left and that the rook travel square is empty
+                            if (fromCol >= 4 && chessBoard.isSquareEmpty(BoardSquare(fromRow, fromCol - 3))) {
+                                BoardSquare rookFromSquare(fromRow, fromCol - 4);
+                                BoardSquare toSquare(fromRow, fromCol - 2);
+                                BoardSquare rookToSquare(fromRow, fromCol - 1);
+                                if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
+                                    moves.emplace_back(BoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo, fromSquare, toSquare, toSquare));
+                                }
+                            }
+
+                            // Right Castle: Check if have enough room to the right
+                            if (fromCol <= chessBoard.getNumCols() - 4) {
+                                BoardSquare rookFromSquare(fromRow, fromCol + 3);
+                                BoardSquare toSquare(fromRow, fromCol + 2);
+                                BoardSquare rookToSquare(fromRow, fromCol + 1);
+                                if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
+                                    moves.emplace_back(BoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo, fromSquare, toSquare, toSquare));
+                                }
+                            }
+                        }
+                        break;
                     }
+                    case PieceDirection::EAST:
+                    case PieceDirection::WEST: {
+                        if (fromCol == 0 || fromCol == chessBoard.getNumCols() - 1) {
 
-                    // Right
-                    // Check that don't end up in check during other check calculation
-                    if ((pieceRow == 0 || pieceRow == board.getNumRows() - 1) &&                                                                    // Top or bottom row
-                        pieceCol <= board.getNumCols() - 4 &&                                                                                       // Enough space on right
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).has_value() &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).value().team == pieceInfo.team &&                                                  // Must be same colour
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).value().pieceType == PieceType::ROOK &&                                              // Must be rook
-                        board.getPieceInfoAt(BoardSquare(pieceRow, pieceCol + 3)).value().pieceDirection == pieceInfo.pieceDirection &&                                          // With same direction
-                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 1)) && !board.isSquareAttacked(BoardSquare(pieceRow, pieceCol + 1), pieceInfo.team) &&   // Move through square not attacked
-                        board.isSquareEmpty(BoardSquare(pieceRow, pieceCol + 2))) {                                                                       // Other empty move through
+                            // Up Castle: Check if we have enough room up and that the rook travel square is empty
+                            if (fromRow >= 4 && chessBoard.isSquareEmpty(BoardSquare(fromRow - 3, fromCol))) {
+                                BoardSquare rookFromSquare(fromRow - 4, fromCol);
+                                BoardSquare toSquare(fromRow - 2, fromCol);
+                                BoardSquare rookToSquare(fromRow - 1, fromCol);
+                                if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
+                                    moves.emplace_back(BoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo, fromSquare, toSquare, toSquare));
+                                }
+                            }
 
-                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow, pieceCol + 2), BoardSquare(pieceRow, pieceCol + 2), MoveType::CASTLE, false);
+                            // Down Castle: Check if have enough room down
+                            if (fromCol <= chessBoard.getNumRows() - 4) {
+                                BoardSquare rookFromSquare(fromRow + 3, fromCol);
+                                BoardSquare toSquare(fromRow + 2, fromCol);
+                                BoardSquare rookToSquare(fromRow + 1, fromCol);
+                                if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
+                                    moves.emplace_back(BoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo, fromSquare, toSquare, toSquare));
+                                }
+                            }
+                        }
+                        break;
                     }
-                    
-
-                    break;
-                case PieceDirection::EAST:
-                case PieceDirection::WEST:
-
-                    // Up (left)
-                    // Check that don't end up in check during other check calculation
-                    if ((pieceCol == 0 || pieceCol == board.getNumCols() - 1) &&
-                        pieceRow >= 4 &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).has_value() &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).value().team == pieceInfo.team &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).value().pieceType == PieceType::ROOK &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow - 4, pieceCol)).value().pieceDirection == pieceInfo.pieceDirection &&
-                        board.isSquareEmpty(BoardSquare(pieceRow - 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow - 1, pieceCol), pieceInfo.team) &&
-                        board.isSquareEmpty(BoardSquare(pieceRow - 2, pieceCol)) && 
-                        board.isSquareEmpty(BoardSquare(pieceRow - 3, pieceCol))) {
-
-                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow - 2, pieceCol), BoardSquare(pieceRow - 2, pieceCol), MoveType::CASTLE, false);
-                    }
-                    
-                    // Down (right)
-                    // Check that don't end up in check during other check calculation
-                    if ((pieceCol == 0 || pieceCol == board.getNumCols() - 1) &&
-                        pieceCol <= board.getNumRows() - 4 &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).has_value() &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).value().team == pieceInfo.team &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).value().pieceType == PieceType::ROOK &&
-                        board.getPieceInfoAt(BoardSquare(pieceRow + 3, pieceCol)).value().pieceDirection == pieceInfo.pieceDirection &&
-                        board.isSquareEmpty(BoardSquare(pieceRow + 1, pieceCol)) && !board.isSquareAttacked(BoardSquare(pieceRow + 1, pieceCol), pieceInfo.team) &&
-                        board.isSquareEmpty(BoardSquare(pieceRow + 2, pieceCol))) {
-
-                        createAndAppendBoardMove(moves, board, BoardSquare(pieceRow, pieceCol), BoardSquare(pieceRow + 2, pieceCol), BoardSquare(pieceRow + 2, pieceCol), MoveType::CASTLE, false);
-                    }
-
-                    break;
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
     }
-
     return moves;
+}
+
+bool King::checkCommonCastleInfo(ChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const {
+    if (chessBoard.getPieceInfoAt(rookFromSquare).has_value()) {
+        PieceInfo rookPieceInfo = chessBoard.getPieceInfoAt(rookFromSquare).value();
+        return
+            rookPieceInfo.getPieceType() == PieceType::ROOK &&
+            rookPieceInfo.getTeam() == pieceInfo.getTeam() &&
+            rookPieceInfo.getPieceDirection() == pieceInfo.getPieceDirection() &&
+            rookPieceInfo.getHasMoved() == false &&
+            chessBoard.isSquareEmpty(toSquare) &&
+            chessBoard.isSquareEmpty(rookToSquare) && !chessBoard.isSquareAttacked(rookToSquare, pieceInfo.getTeam());
+    } else {
+        return false;
+    }
 }

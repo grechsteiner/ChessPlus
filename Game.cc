@@ -513,8 +513,8 @@ bool Game::isBoardInProperSetup() const {
     for (BoardSquare const &boardSquare : board.allBoardSquares()) {
         std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value()) {
-            if (pieceInfo.value().pieceType == PieceType::KING) {
-                Team team = pieceInfo.value().team;
+            if (pieceInfo.value().getPieceType() == PieceType::KING) {
+                Team team = pieceInfo.value().getTeam();
                 if (board.isSquareAttacked(boardSquare, team)) {
                     return false;
                 }
@@ -525,7 +525,7 @@ bool Game::isBoardInProperSetup() const {
                 }
             }
 
-            if (pieceInfo.value().pieceType == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
+            if (pieceInfo.value().getPieceType() == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
                 return false;
             }
         }

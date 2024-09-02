@@ -4,17 +4,24 @@
 #define Pawn_h
 
 #include <vector>
+#include <utility>
 
 #include "Constants.h"
 #include "Piece.h"
-#include "BoardMove.h"
 
 class ChessBoard;
+class BoardSquare;
+class BoardMove;
 
+
+/**
+ * Pawn Piece Class
+ */
 class Pawn : public Piece {
 private:
-    std::vector<BoardMove> getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const override;
-    std::vector<BoardMove> getPromotionMoves(ChessBoard const &board, BoardMove const &move) const;
+    std::pair<int, int> pawnDirection;
+    std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> createPromotionMoves(BoardMove const &move) const;
 public:
     Pawn(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 1);
 };

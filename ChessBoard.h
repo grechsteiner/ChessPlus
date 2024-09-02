@@ -12,7 +12,7 @@ class UserMove;
 class BoardMove;
 class UserSquare;
 class BoardSquare;
-struct PieceInfo;
+class PieceInfo;
 
 
 class ChessBoard {

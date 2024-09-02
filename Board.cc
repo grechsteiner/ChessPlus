@@ -45,7 +45,7 @@ std::vector<BoardMove> Board::getPseudoLegalMoves(Team team, bool onlyAttackingM
     std::vector<BoardMove> boardMoves;
     for (BoardSquare const &boardSquare : allBoardSquares()) {
         std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
-        if (pieceInfo.has_value() && pieceInfo.value().team == team) {
+        if (pieceInfo.has_value() && pieceInfo.value().getTeam() == team) {
             std::vector<BoardMove> pieceMoves = getPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
             boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
         }
@@ -77,7 +77,7 @@ bool Board::doesMoveApplyCheck(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         const_cast<Board*>(this)->performMove(boardMove);
-        bool doesMoveApplyCheck = isInCheck(getOtherTeam(movedPieceInfo.value().team));
+        bool doesMoveApplyCheck = isInCheck(getOtherTeam(movedPieceInfo.value().getTeam()));
         const_cast<Board*>(this)->undoMove();
         return doesMoveApplyCheck;
     }
@@ -88,7 +88,7 @@ bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     std::optional<PieceInfo> attackedPieceInfo = getPieceInfoAt(boardMove.getCaptureSquare());
     if (movedPieceInfo.has_value()) {
-        return attackedPieceInfo.has_value() && attackedPieceInfo.value().team != movedPieceInfo.value().team;
+        return attackedPieceInfo.has_value() && attackedPieceInfo.value().getTeam() != movedPieceInfo.value().getTeam();
     }
     assert(false);
 }
@@ -97,7 +97,7 @@ bool Board::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         const_cast<Board*>(this)->performMove(boardMove);
-        bool doesMoveLeavePieceAttacked = getCapturingMoves(getOtherTeam(movedPieceInfo.value().team)).empty();
+        bool doesMoveLeavePieceAttacked = getCapturingMoves(getOtherTeam(movedPieceInfo.value().getTeam())).empty();
         const_cast<Board*>(this)->undoMove();
         return doesMoveLeavePieceAttacked;
     } 
@@ -123,7 +123,7 @@ bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         const_cast<Board*>(this)->performMove(boardMove);
-        bool isInCheckAfterMove = isInCheck(movedPieceInfo.value().team);
+        bool isInCheckAfterMove = isInCheck(movedPieceInfo.value().getTeam());
         const_cast<Board*>(this)->undoMove();
         return isInCheckAfterMove;
     }
@@ -160,11 +160,11 @@ bool Board::isSquareEmptyImpl(BoardSquare const &boardSquare) const {
 }
 
 bool Board::isSquareOwnTeamImpl(BoardSquare const &boardSquare, Team team) const {
-    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().team == team;
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().getTeam() == team;
 }
 
 bool Board::isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team team) const {
-    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().team == getOtherTeam(team);
+    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().getTeam() == getOtherTeam(team);
 }
 
 bool Board::isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) const {
@@ -375,7 +375,7 @@ int Board::getNumColsImpl() const {
 bool Board::isInCheckImpl(Team team) const {
     for (BoardSquare const &boardSquare : allBoardSquares()) {
         std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
-        if (pieceInfo.has_value() && pieceInfo.value().pieceType == PieceType::KING && pieceInfo.value().team == team) {
+        if (pieceInfo.has_value() && pieceInfo.value().getPieceType() == PieceType::KING && pieceInfo.value().getTeam() == team) {
             if (isSquareAttacked(boardSquare, team)) {
                 return true;
             }

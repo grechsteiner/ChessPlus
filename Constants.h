@@ -59,13 +59,6 @@ bool isInt(std::string const &str);
 
 int min(int a, int b);
 
-// TODO: Can probably remove
-enum class MoveType {
-    STANDARD,
-    CASTLE,
-    ENPASSANT,
-    DOUBLE_PAWN
-};
 
 
 extern int const base;

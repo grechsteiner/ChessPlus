@@ -1,15 +1,19 @@
 // Rook.cc
 
 #include <vector>
-#include <cassert>
+#include <utility>
+#include <set>
 
-#include "Constants.h"
 #include "Rook.h"
-#include "ChessBoard.h"
+#include "Constants.h"
 #include "Piece.h"
+#include "ChessBoard.h"
+#include "BoardSquare.h"
 #include "BoardMove.h"
 
-std::vector<std::pair<int, int>> const Rook::rookDirections = { 
+
+// Static
+std::set<std::pair<int, int>> const Rook::rookDirections = { 
     {-1, 0}, 
     {0, -1}, 
     {0, 1}, 
@@ -19,24 +23,18 @@ std::vector<std::pair<int, int>> const Rook::rookDirections = {
 Rook::Rook(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
     Piece(PieceType::ROOK, team, pieceDirection, hasMoved, pieceScore, "♜", "R") {}
 
-std::vector<BoardMove> Rook::getMovesImplementation(ChessBoard const &board, BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Rook::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
-
-    for (std::pair<int, int> const &rookDirection : rookDirections) {
-        int newRow = boardSquare.getBoardRow() + rookDirection.first;
-        int newCol = boardSquare.getBoardCol() + rookDirection.second;
-        BoardSquare newBoardSquare(newRow, newCol);
-        while (board.isSquareEmpty(newBoardSquare) || board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-            createAndAppendBoardMove(moves, board, boardSquare, newBoardSquare, newBoardSquare, MoveType::STANDARD, true);
-
-            // If we ran into a piece of the opposite color, don't look past it
-            if (board.isSquareOtherTeam(newBoardSquare, pieceInfo.team)) {
-                break;
+    if (chessBoard.isSquareOnBoard(fromSquare)) {
+        for (std::pair<int, int> const &rookDirection : rookDirections) {
+            BoardSquare toSquare(fromSquare.getBoardRow() + rookDirection.first, fromSquare.getBoardCol() + rookDirection.second);
+            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.getTeam())) {
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+                if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.getTeam())) {
+                    break;
+                }
+                toSquare = BoardSquare(toSquare.getBoardRow() + rookDirection.first, toSquare.getBoardCol() + rookDirection.second);
             }
-            
-            newRow += rookDirection.first;
-            newCol += rookDirection.second;
-            newBoardSquare = BoardSquare(newRow + rookDirection.first, newCol + rookDirection.second);
         }
     }
     return moves;
