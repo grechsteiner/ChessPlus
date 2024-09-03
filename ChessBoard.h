@@ -9,6 +9,7 @@
 #include <memory>
 
 #include "IChessBoard.h"
+#include "Cloneable.h"
 #include "Constants.h"
 #include "BoardMove.h"
 #include "Piece.h"
@@ -20,7 +21,7 @@ class PieceInfo;
 /**
  * ChessBoard IChessBoard Class
  */
-class ChessBoard : public IChessBoard {
+class ChessBoard : public Cloneable<IChessBoard, ChessBoard> {
 
 private:
     int numRows;    // Initialize at construction time to avoid constantly getting size of vector

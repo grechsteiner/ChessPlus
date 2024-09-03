@@ -6,6 +6,7 @@
 #include <vector>
 #include <stack>
 #include <optional>
+#include <memory>
 
 #include "Constants.h"
 
@@ -20,6 +21,8 @@ class PieceInfo;
 class IChessBoard {
 
 private:
+    virtual std::unique_ptr<IChessBoard> cloneImpl() const = 0;
+
     virtual std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
     virtual std::vector<BoardSquare> getAllBoardSquaresImpl() const = 0;
 
@@ -58,6 +61,9 @@ private:
     virtual int getNumColsImpl() const = 0;
 
 public:
+    std::unique_ptr<IChessBoard> clone() const;
+    ~IChessBoard() = default;
+
     std::optional<PieceInfo> getPieceInfoAt(BoardSquare const &boardSquare) const;
     std::vector<BoardSquare> getAllBoardSquares() const;
 

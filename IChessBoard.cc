@@ -3,6 +3,7 @@
 #include <vector>
 #include <stack>
 #include <optional>
+#include <memory>
 
 #include "IChessBoard.h"
 #include "Constants.h"
@@ -10,6 +11,8 @@
 #include "BoardMove.h"
 #include "PieceInfo.h"
 
+
+std::unique_ptr<IChessBoard> IChessBoard::clone() const { return cloneImpl(); }
 
 std::optional<PieceInfo> IChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
 std::vector<BoardSquare> IChessBoard::getAllBoardSquares() const { return getAllBoardSquaresImpl(); }

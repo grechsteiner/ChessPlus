@@ -14,6 +14,11 @@ private:
     }
 public:
     using Base::Base;
+    virtual ~Cloneable() = 0;
 };
+
+template <typename Base, typename Derived>
+Cloneable<Base, Derived>::~Cloneable() {}
+
 
 #endif /* Cloneable */

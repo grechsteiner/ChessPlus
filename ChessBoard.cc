@@ -9,6 +9,8 @@
 #include <utility>
 
 #include "ChessBoard.h"
+#include "IChessBoard.h"
+#include "Cloneable.h"
 #include "Constants.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
