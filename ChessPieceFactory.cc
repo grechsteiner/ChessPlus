@@ -1,6 +1,7 @@
 // ChessPieceFactory.cc
 
 #include <memory>
+#include <cassert>
 
 #include "ChessPieceFactory.h"
 #include "Constants.h"
@@ -14,7 +15,7 @@
 
 // Static
 std::unique_ptr<Piece> ChessPieceFactory::createPiece(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) {
-    switch(pieceType) {
+    switch (pieceType) {
         case PieceType::KING:
             return pieceScore.has_value()
                 ? std::make_unique<King>(team, pieceDirection, hasMoved, pieceScore.value())
@@ -40,7 +41,7 @@ std::unique_ptr<Piece> ChessPieceFactory::createPiece(Team team, PieceType piece
                 ? std::make_unique<Pawn>(team, pieceDirection, hasMoved, pieceScore.value())
                 : std::make_unique<Pawn>(team, pieceDirection, hasMoved);
         default:
-            return nullptr;
+            assert(false);
     }
 }
 

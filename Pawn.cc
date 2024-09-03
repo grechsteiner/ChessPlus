@@ -4,6 +4,7 @@
 #include <utility>
 #include <set>
 #include <cmath>
+#include <cassert>
 
 #include "Pawn.h"
 #include "Constants.h"
@@ -16,24 +17,7 @@
 
 // Basic ctor
 Pawn::Pawn(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Cloneable<Piece, Pawn>(PieceType::PAWN, team, pieceDirection, hasMoved, pieceScore, "♟", "P") {
-    switch(pieceDirection) {
-        case PieceDirection::NORTH:
-            pawnDirection = std::make_pair(-1, 0);
-            break;
-        case PieceDirection::SOUTH:
-            pawnDirection = std::make_pair(1, 0);
-            break;
-        case PieceDirection::EAST:
-            pawnDirection = std::make_pair(0, 1);
-            break;
-        case PieceDirection::WEST:
-            pawnDirection = std::make_pair(0, -1);
-            break;
-        default:
-            break;
-    }
-}
+    Cloneable<Piece, Pawn>(PieceType::PAWN, team, pieceDirection, hasMoved, pieceScore, "♟", "P") {}
 
 // Copy ctor
 Pawn::Pawn(Pawn const &other) : 
@@ -59,11 +43,23 @@ Pawn& Pawn::operator=(Pawn &&other) noexcept {
     return *this;
 }
 
+std::pair<int, int> Pawn::getPawnDirection() const {
+    switch (pieceInfo.getPieceDirection()) {
+        case PieceDirection::NORTH: return std::make_pair(-1, 0);
+        case PieceDirection::SOUTH: return std::make_pair(1, 0);
+        case PieceDirection::EAST: return std::make_pair(0, 1);
+        case PieceDirection::WEST: return std::make_pair(0, -1);
+        default:
+            assert(false);
+    }
+}
+
 std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)){
         int fromRow = fromSquare.getBoardRow();
         int fromCol = fromSquare.getBoardCol();
+        std::pair<int, int> pawnDirection = getPawnDirection();
 
         // Non Attacking Moves 
         if (!onlyAttackingMoves) {
@@ -105,7 +101,7 @@ std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSq
                     break;
                 }
                 default:
-                    break;
+                    assert(false);
             }
         }
 
@@ -136,7 +132,7 @@ std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSq
                 break;
             }
             default:
-                break;
+                assert(false);
         }
 
         // Promotion (fix any moves that got to the end of the board)

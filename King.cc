@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <set>
+#include <cassert>
 
 #include "King.h"
 #include "Constants.h"
@@ -126,7 +127,7 @@ std::vector<BoardMove> King::getMovesImpl(IChessBoard const &chessBoard, BoardSq
                         break;
                     }
                     default:
-                        break;
+                        assert(false);
                 }
             }
         }

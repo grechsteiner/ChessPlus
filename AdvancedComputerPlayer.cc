@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <optional>
 #include <memory>
+#include <cassert>
 
 #include "AdvancedComputerPlayer.h"
 #include "MoveShuffler.h"
@@ -149,7 +150,7 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard const &chessBoard
                         totalScore += min(numBoardCols, numBoardCols - 4);
                         break;
                     default:
-                        break;
+                        assert(false);
                 }
             } else if (pieceInfo.value().getTeam() == chessBoard.getTeamTwo()) {
                 totalScore -= pieceInfo.value().getPieceScore() * 10;
@@ -168,7 +169,7 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard const &chessBoard
                         totalScore -= min(numBoardCols, numBoardCols - 4);
                         break;
                     default:
-                        break;
+                        assert(false);
                 }
             }
         }

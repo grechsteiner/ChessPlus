@@ -20,7 +20,7 @@ class BoardMove;
  */
 class Pawn : public Cloneable<Piece, Pawn> {
 private:
-    std::pair<int, int> pawnDirection;
+    std::pair<int, int> getPawnDirection() const;
     std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     std::vector<BoardMove> createPromotionMoves(BoardMove const &move) const;
 public:
