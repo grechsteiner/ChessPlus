@@ -12,8 +12,8 @@
 class CommandLineInput : public Input {
 private:
     std::istream &in;
-    std::string acceptInput() override;
-    bool isInputAvailableImplementation() const override;
+    std::string getInputImpl() override;
+    bool isInputAvailableImpl() const override;
 public:
     CommandLineInput(std::istream &in);
 };

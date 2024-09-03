@@ -13,7 +13,7 @@
 class ComputerPlayer {
 
 private:
-    virtual BoardMove getMoveImplementation(IChessBoard const &chessBoard, Team team) const = 0;
+    virtual BoardMove getMoveImpl(IChessBoard const &chessBoard, Team team) const = 0;
 public:
     BoardMove getMove(IChessBoard const &chessBoard, Team team) const;
     ComputerPlayer();

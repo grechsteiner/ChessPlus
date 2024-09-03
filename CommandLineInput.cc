@@ -6,12 +6,12 @@
 
 CommandLineInput::CommandLineInput(std::istream &in) : Input(), in(in) {}
 
-std::string CommandLineInput::acceptInput() {
+std::string CommandLineInput::getInputImpl() {
     std::string input;
     std::getline(in, input);
     return input;
 }
 
-bool CommandLineInput::isInputAvailableImplementation() const {
+bool CommandLineInput::isInputAvailableImpl() const {
     return !in.eof();
 }

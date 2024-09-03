@@ -12,7 +12,7 @@
 #include "PieceInfo.h"
 
 
-BoardMove AdvancedComputerPlayer::getMoveImplementation(IChessBoard const &chessBoard, Team team) const {
+BoardMove AdvancedComputerPlayer::getMoveImpl(IChessBoard const &chessBoard, Team team) const {
     std::unique_ptr<IChessBoard> tempChessBoard = chessBoard.clone();
     return alphaBetaSearch(*tempChessBoard, depth, team, -1000, 1000).boardMove.value();
 }

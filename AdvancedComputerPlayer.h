@@ -19,7 +19,7 @@ struct ScoredBoardMove {
 
 class AdvancedComputerPlayer : public ComputerPlayer {
 private:
-    BoardMove getMoveImplementation(IChessBoard const &chessBoard, Team team) const override;
+    BoardMove getMoveImpl(IChessBoard const &chessBoard, Team team) const override;
 
     ScoredBoardMove alphaBetaSearch(IChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const;
     int getAlphaBetaBoardScore(IChessBoard const &chessBoard, Team team) const;

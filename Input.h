@@ -8,8 +8,8 @@
 
 class Input {
 private:
-    virtual std::string acceptInput() = 0;
-    virtual bool isInputAvailableImplementation() const = 0;
+    virtual std::string getInputImpl() = 0;
+    virtual bool isInputAvailableImpl() const = 0;
 public:
     Input() = default;
     virtual ~Input() = default;

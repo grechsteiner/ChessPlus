@@ -14,7 +14,7 @@ class TextObserver : public Observer {
 private:
     std::ostream& out;
     Game *game;
-    void notifyImplementation() override;
+    void notifyImpl() override;
     void printPiece(const std::string& str, Team color);
     void printBoard(IChessBoard const &chessBoard, int turn);
 public:

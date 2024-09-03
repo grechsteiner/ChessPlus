@@ -13,7 +13,7 @@ class GraphicObserver : public Observer {
 private:
     Game *game;
     Xwindow window;
-    void notifyImplementation() override;
+    void notifyImpl() override;
     void printPiece(const std::string& str, Team team, int x, int y);
     void printBoard(const IChessBoard& chessBoard, int turn);
 

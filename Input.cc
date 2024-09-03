@@ -5,9 +5,9 @@
 #include "Input.h"
 
 std::string Input::getInput() {
-    return acceptInput();
+    return getInputImpl();
 }
 
 bool Input::isInputAvailable() const {
-    return isInputAvailableImplementation();
+    return isInputAvailableImpl();
 }

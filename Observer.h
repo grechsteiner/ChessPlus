@@ -5,7 +5,7 @@
 
 class Observer {
 private:
-    virtual void notifyImplementation() = 0;
+    virtual void notifyImpl() = 0;
 public:
     void notify();
     virtual ~Observer() = default;

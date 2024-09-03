@@ -8,7 +8,7 @@
 
 class ErrorReporter {
 private:
-    virtual void outputError(std::string const &errorMessage) = 0;
+    virtual void reportErrorImpl(std::string const &errorMessage) = 0;
 public:
     ErrorReporter() = default;
     virtual ~ErrorReporter() = default;

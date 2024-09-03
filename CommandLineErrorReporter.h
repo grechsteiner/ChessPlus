@@ -12,7 +12,7 @@
 class CommandLineErrorReporter : public ErrorReporter {
 private:
     std::ostream &out;
-    void outputError(std::string const &errorMessage) override;
+    void reportErrorImpl(std::string const &errorMessage) override;
 public:
     CommandLineErrorReporter(std::ostream &out);
 };

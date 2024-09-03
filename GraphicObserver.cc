@@ -11,7 +11,7 @@ GraphicObserver::~GraphicObserver() {
     game->detach(this);
 }
 
-void GraphicObserver::notifyImplementation() {
+void GraphicObserver::notifyImpl() {
     /*
     GameState gameState = game->getGameState();
 

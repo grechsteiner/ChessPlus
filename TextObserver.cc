@@ -13,7 +13,7 @@ TextObserver::~TextObserver() {
     game->detach(this);
 }
 
-void TextObserver::notifyImplementation() {
+void TextObserver::notifyImpl() {
 
     GameState gameState = game->getGameState();
 
