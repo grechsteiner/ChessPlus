@@ -28,14 +28,11 @@
 
 #include "ChessBoard.h"
 
-Game::Game(IChessBoard &chessBoard, std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    chessBoard(chessBoard),
-    input(std::make_unique<CommandLineInput>(in)), 
-    errorReporter(std::make_unique<CommandLineErrorReporter>(errorOut)),
-    out(out)
-    {
-        applyStandardSetup();
-    }
+
+Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
+    chessBoard(std::make_unique<ChessBoard>(ChessBoard(8, 8))), out(out), input(std::make_unique<CommandLineInput>(in)), errorReporter(std::make_unique<CommandLineErrorReporter>(errorOut)) {
+    applyStandardSetup();
+}
 
 void Game::outputError(std::string const &errorMessage) const {
     errorReporter->reportError(errorMessage);
@@ -81,12 +78,12 @@ const std::tuple<PlayerTuple, PlayerTuple>& Game::getMainMenuState() const {
     return players;
 }
 
-std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
-    return std::make_tuple(std::ref(chessBoard), std::cref(players), currentTurn);
+std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
+    return std::make_tuple(std::ref(*chessBoard), std::cref(players), currentTurn);
 }
 
-std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
-    return std::make_tuple(std::ref(chessBoard), std::cref(players), currentTurn, showingStandardOpenings);
+std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
+    return std::make_tuple(std::ref(*chessBoard), std::cref(players), currentTurn, showingStandardOpenings);
 }
 
 void Game::resetComputerPlayers() {
@@ -157,9 +154,9 @@ void Game::runGame() {
                     setGameState(GameState::GAME_ACTIVE);
                     notifyObservers();
                     
-                    if (chessBoard.isInStaleMate(Team::TEAM_ONE) || chessBoard.isInStaleMate(Team::TEAM_TWO)) {
+                    if (chessBoard->isInStaleMate(Team::TEAM_ONE) || chessBoard->isInStaleMate(Team::TEAM_TWO)) {
                         applyStalematePoints();
-                        chessBoard.clearBoard();
+                        chessBoard->clearBoard();
                         // board.setBoardSize(8, 8);
                         applyStandardSetup();
 
@@ -181,7 +178,7 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");
             } else {
                 gameState = GameState::SETUP;
-                chessBoard.clearBoard();
+                chessBoard->clearBoard();
                 notifyObservers();
             }
 
@@ -203,8 +200,8 @@ void Game::runGame() {
                         outputError("The current player is not a computer, specify move details for human player");
                     } else {
                         // Gauranteed to get valid move
-                        BoardMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(chessBoard, std::get<0>(getPlayerWithTurn(currentTurn)));
-                        chessBoard.makeMove(compMove);
+                        BoardMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(*chessBoard, std::get<0>(getPlayerWithTurn(currentTurn)));
+                        chessBoard->makeMove(compMove);
                         incrementTurn();
                         moveMade = true;
                     }
@@ -218,14 +215,14 @@ void Game::runGame() {
                         std::string promotionPiece = tokens.size() == 3 ? "" : tokens[3];
                         if (UserSquare::isValidUserSquare(fromSquare) && UserSquare::isValidUserSquare(toSquare) && isValidPieceType(promotionPiece)) {
 
-                            BoardSquare fromBoardSquare = createBoardSquare(UserSquare(fromSquare), chessBoard.getNumRows(), chessBoard.getNumCols());
-                            BoardSquare toBoardSquare = createBoardSquare(UserSquare(toSquare), chessBoard.getNumRows(), chessBoard.getNumCols());
+                            BoardSquare fromBoardSquare = createBoardSquare(UserSquare(fromSquare), chessBoard->getNumRows(), chessBoard->getNumCols());
+                            BoardSquare toBoardSquare = createBoardSquare(UserSquare(toSquare), chessBoard->getNumRows(), chessBoard->getNumCols());
                             std::optional<PieceType> promotion = promotionPiece == "" ? std::nullopt : std::make_optional(stringToPieceType(promotionPiece));
-                            std::optional<BoardMove> boardMove = chessBoard.createBoardMove(fromBoardSquare, toBoardSquare, promotion);
+                            std::optional<BoardMove> boardMove = chessBoard->createBoardMove(fromBoardSquare, toBoardSquare, promotion);
 
                             // Nullptr if invalid move
                             if (boardMove.has_value()) {
-                                chessBoard.makeMove(boardMove.value());
+                                chessBoard->makeMove(boardMove.value());
                                 incrementTurn();
                                 moveMade = true;
                             } else {
@@ -241,10 +238,10 @@ void Game::runGame() {
                 if (moveMade) {
                     notifyObservers();
 
-                    if (chessBoard.isInCheckMate(Team::TEAM_ONE) || chessBoard.isInCheckMate(Team::TEAM_TWO) || chessBoard.isInStaleMate(Team::TEAM_ONE) || chessBoard.isInStaleMate(Team::TEAM_TWO)) {
+                    if (chessBoard->isInCheckMate(Team::TEAM_ONE) || chessBoard->isInCheckMate(Team::TEAM_TWO) || chessBoard->isInStaleMate(Team::TEAM_ONE) || chessBoard->isInStaleMate(Team::TEAM_TWO)) {
                         
                         // Update points
-                        if (chessBoard.isInStaleMate(Team::TEAM_ONE) || chessBoard.isInStaleMate(Team::TEAM_TWO)) {
+                        if (chessBoard->isInStaleMate(Team::TEAM_ONE) || chessBoard->isInStaleMate(Team::TEAM_TWO)) {
                             applyStalematePoints();
                         } else {
                             Team winner = currentTurn == 0 ? Team::TEAM_TWO : Team::TEAM_ONE;
@@ -252,7 +249,7 @@ void Game::runGame() {
                         }
 
                         // Reset board for next run through
-                        chessBoard.clearBoard();
+                        chessBoard->clearBoard();
                         // board.setBoardSize(8, 8);
                         applyStandardSetup();
 
@@ -283,7 +280,7 @@ void Game::runGame() {
                 }
 
                 // Reset board for next run through
-                chessBoard.clearBoard();
+                chessBoard->clearBoard();
                 // board.setBoardSize(8, 8);
                 applyStandardSetup();
 
@@ -304,7 +301,7 @@ void Game::runGame() {
             } else if (tokens.size() >= 2) {
                 outputError("Too many input tokens on line");
             } else {
-                if (chessBoard.undoMove()) {
+                if (chessBoard->undoMove()) {
                     decrementTurn();
                     notifyObservers();
                 }
@@ -338,7 +335,7 @@ void Game::runGame() {
 
                 if (!isValidPieceType(piece)) {
                     outputError("Input piece is not valid");
-                } else if (!UserSquare::isValidUserSquare(square) || !chessBoard.isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard.getNumRows(), chessBoard.getNumCols()))) {
+                } else if (!UserSquare::isValidUserSquare(square) || !chessBoard->isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
                     outputError("Input square is not valid on board");
                 } else {
 
@@ -346,13 +343,13 @@ void Game::runGame() {
                     Team team = std::isupper(piece.front()) ? Team::TEAM_ONE : Team::TEAM_TWO;
                     PieceDirection pieceDirection = team == Team::TEAM_ONE ? PieceDirection::NORTH : PieceDirection::SOUTH;
 
-                    BoardSquare boardSquare = createBoardSquare(UserSquare(square), chessBoard.getNumRows(), chessBoard.getNumCols());
+                    BoardSquare boardSquare = createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols());
                     if (tokens.size() == 3) {
-                        chessBoard.setPosition(boardSquare, team, pieceType, pieceDirection, false);
+                        chessBoard->setPosition(boardSquare, team, pieceType, pieceDirection, false);
                         notifyObservers();
                     } else if (tokens.size() == 4) {
                         if (isValidPieceDirection(tokens[3])) {
-                            chessBoard.setPosition(boardSquare, team, pieceType, stringToPieceDirection(tokens[3]), false);
+                            chessBoard->setPosition(boardSquare, team, pieceType, stringToPieceDirection(tokens[3]), false);
                             notifyObservers();
                         } else {
                             outputError("Invalid direction");
@@ -374,9 +371,9 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");
             } else {
                 std::string square = tokens[1];
-                if (!UserSquare::isValidUserSquare(square) || chessBoard.isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard.getNumRows(), chessBoard.getNumCols()))) {
+                if (!UserSquare::isValidUserSquare(square) || chessBoard->isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
                     outputError("Input square is not valid on board");
-                } else if (chessBoard.clearPosition(createBoardSquare(UserSquare(square), chessBoard.getNumRows(), chessBoard.getNumCols()))) {
+                } else if (chessBoard->clearPosition(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
                     notifyObservers();
                 }
             }
@@ -454,24 +451,16 @@ void Game::runGame() {
             outputError("Invalid command entered");
         }
     }
-
-    if (std::cin.eof()) {
-        out << "Exiting Game Interface" << std::endl;
-        out << std::endl;
-        out << "Final Score:" << std::endl;
-        out << "White: " << std::get<1>(std::get<0>(players)) << std::endl;
-        out << "Black: " << std::get<1>(std::get<1>(players)) << std::endl;
-    }
     
 }
 
 void Game::applyStandardSetup() {
-    chessBoard.clearBoard();
+    chessBoard->clearBoard();
  
-    int startCol = (chessBoard.getNumCols() - 8) / 2;
+    int startCol = (chessBoard->getNumCols() - 8) / 2;
 
     int topRow = 0;                     // Black
-    int bottomRow = chessBoard.getNumRows() - 1;    // White
+    int bottomRow = chessBoard->getNumRows() - 1;    // White
     for (int col = startCol; col < startCol + 8; ++col) {
         
         // Normal Pieces
@@ -494,14 +483,14 @@ void Game::applyStandardSetup() {
         }
         BoardSquare blackPieceSquare(topRow, col);
         BoardSquare whitePieceSquare(bottomRow, col);
-        chessBoard.setPosition(blackPieceSquare, Team::TEAM_TWO, pieceType, PieceDirection::SOUTH, false);               // Black
-        chessBoard.setPosition(whitePieceSquare, Team::TEAM_ONE, pieceType, PieceDirection::NORTH, false);            // White
+        chessBoard->setPosition(blackPieceSquare, Team::TEAM_TWO, pieceType, PieceDirection::SOUTH, false);               // Black
+        chessBoard->setPosition(whitePieceSquare, Team::TEAM_ONE, pieceType, PieceDirection::NORTH, false);            // White
 
         // Pawns
         BoardSquare blackPawnSquare(topRow + 1, col);
         BoardSquare whitePawnSquare(bottomRow - 1, col);
-        chessBoard.setPosition(blackPawnSquare, Team::TEAM_TWO, PieceType::PAWN, PieceDirection::SOUTH, false);     // Black
-        chessBoard.setPosition(whitePawnSquare, Team::TEAM_ONE, PieceType::PAWN, PieceDirection::NORTH, false);  // Black
+        chessBoard->setPosition(blackPawnSquare, Team::TEAM_TWO, PieceType::PAWN, PieceDirection::SOUTH, false);     // Black
+        chessBoard->setPosition(whitePawnSquare, Team::TEAM_ONE, PieceType::PAWN, PieceDirection::NORTH, false);  // Black
     }
 }
 
@@ -510,19 +499,19 @@ bool Game::isBoardInProperSetup() const {
     int blackKingCount = 0;
 
     int topRow = 0;
-    int bottomRow = chessBoard.getNumRows() - 1;
+    int bottomRow = chessBoard->getNumRows() - 1;
 
-    for (BoardSquare const &boardSquare : chessBoard.getAllBoardSquares()) {
-        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(boardSquare);
+    for (BoardSquare const &boardSquare : chessBoard->getAllBoardSquares()) {
+        std::optional<PieceInfo> pieceInfo = chessBoard->getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value()) {
             if (pieceInfo.value().getPieceType() == PieceType::KING) {
                 Team team = pieceInfo.value().getTeam();
-                if (chessBoard.isSquareAttacked(boardSquare, team)) {
+                if (chessBoard->isSquareAttacked(boardSquare, team)) {
                     return false;
                 }
-                if (team == chessBoard.getTeamOne()) {
+                if (team == chessBoard->getTeamOne()) {
                     whiteKingCount++;
-                } else if (team == chessBoard.getTeamTwo()) {
+                } else if (team == chessBoard->getTeamTwo()) {
                     blackKingCount++;
                 }
             }

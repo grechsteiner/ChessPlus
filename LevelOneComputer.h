@@ -10,7 +10,7 @@
 
 class LevelOneComputer : public BasicComputerPlayer {
 private:
-    std::vector<BoardMove> getPossibleMoves(IChessBoard &chessBoard, Team team) const override;
+    std::vector<BoardMove> getPossibleMoves(IChessBoard const &chessBoard, Team team) const override;
 public:
     LevelOneComputer();
 };

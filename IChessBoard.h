@@ -62,7 +62,7 @@ private:
 
 public:
     std::unique_ptr<IChessBoard> clone() const;
-    ~IChessBoard() = default;
+    virtual ~IChessBoard() = default;
 
     std::optional<PieceInfo> getPieceInfoAt(BoardSquare const &boardSquare) const;
     std::vector<BoardSquare> getAllBoardSquares() const;

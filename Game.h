@@ -21,14 +21,15 @@ using PlayerTuple = std::tuple<Team, double, std::unique_ptr<ComputerPlayer>>;
 
 class Game : public Subject {
 private:
-    IChessBoard &chessBoard;      // TODO: Make owning unique_ptr
+    std::unique_ptr<IChessBoard> chessBoard;
+
+    std::ostream &out;
     std::unique_ptr<Input> input;
     std::unique_ptr<ErrorReporter> errorReporter;
-    std::ostream &out;
+    
 
     GameState gameState = GameState::MAIN_MENU;
     
-
     bool showingStandardOpenings = false;
 
     std::tuple<PlayerTuple, PlayerTuple> players = std::make_tuple(
@@ -57,15 +58,14 @@ private:
 
 
 public:
-    Game(IChessBoard &chessBoard, std::istream &in, std::ostream &out, std::ostream &errorOut);
+    Game(std::istream &in, std::ostream &out, std::ostream &errorOut);
     void runGame();
-
 
     // Get state (observer pattern)
     GameState getGameState() const;
     const std::tuple<PlayerTuple, PlayerTuple>& getMainMenuState() const;
-    std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
-    std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
+    std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
+    std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
 };
 
 #endif /* Game_h */

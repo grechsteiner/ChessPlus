@@ -10,7 +10,7 @@
 
 LevelTwoComputer::LevelTwoComputer() : BasicComputerPlayer() {}
 
-std::vector<BoardMove> LevelTwoComputer::getPossibleMoves(IChessBoard &chessBoard, Team team) const {
+std::vector<BoardMove> LevelTwoComputer::getPossibleMoves(IChessBoard const &chessBoard, Team team) const {
     std::vector<BoardMove> allMoves;
     std::vector<BoardMove> capturingMoves = chessBoard.generateCapturingMoves(team);
     std::vector<BoardMove> checkApplyingMoves = chessBoard.generateCheckApplyingMoves(team);

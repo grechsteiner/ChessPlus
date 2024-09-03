@@ -3,6 +3,8 @@
 #ifndef ComputerPlayer_h
 #define ComputerPlayer_h
 
+#include <memory>
+
 #include "Constants.h"
 #include "ChessBoard.h"
 #include "BoardMove.h"
@@ -11,9 +13,9 @@
 class ComputerPlayer {
 
 private:
-    virtual BoardMove getMoveImplementation(IChessBoard &chessBoard, Team team) const = 0;
+    virtual BoardMove getMoveImplementation(IChessBoard const &chessBoard, Team team) const = 0;
 public:
-    BoardMove getMove(IChessBoard &chessBoard, Team team) const;
+    BoardMove getMove(IChessBoard const &chessBoard, Team team) const;
     ComputerPlayer();
     virtual ~ComputerPlayer() = default;
 };

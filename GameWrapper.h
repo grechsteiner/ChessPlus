@@ -12,7 +12,6 @@
 
 class GameWrapper {
 private:
-    ChessBoard chessBoard;
     Game game;                                                  // Subject    
     std::vector<std::unique_ptr<Observer>> observers;           // Observers  
 

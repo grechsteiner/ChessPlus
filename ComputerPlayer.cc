@@ -7,6 +7,6 @@
 
 ComputerPlayer::ComputerPlayer() {}
 
-BoardMove ComputerPlayer::getMove(IChessBoard &chessBoard, Team team) const {
+BoardMove ComputerPlayer::getMove(IChessBoard const &chessBoard, Team team) const {
     return getMoveImplementation(chessBoard, team);
 }

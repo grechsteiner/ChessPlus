@@ -5,17 +5,19 @@
 #include <tuple>
 #include <algorithm>
 #include <optional>
+#include <memory>
 
 #include "AdvancedComputerPlayer.h"
 #include "MoveShuffler.h"
 #include "PieceInfo.h"
 
 
-BoardMove AdvancedComputerPlayer::getMoveImplementation(IChessBoard &chessBoard, Team team) const {
-    return alphaBetaSearch(chessBoard, depth, team, -1000, 1000).boardMove.value();
+BoardMove AdvancedComputerPlayer::getMoveImplementation(IChessBoard const &chessBoard, Team team) const {
+    std::unique_ptr<IChessBoard> tempChessBoard = chessBoard.clone();
+    return alphaBetaSearch(*tempChessBoard, depth, team, -1000, 1000).boardMove.value();
 }
 
-AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(IChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const {
+ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(IChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const {
 
     if (currentDepth == 0) {
         if (chessBoard.isInStaleMate(team)) {
@@ -72,7 +74,7 @@ AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(
     return ScoredBoardMove(bestScore, bestMove);
 }
 
-std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(IChessBoard& chessBoard, std::vector<BoardMove> const &moves) const {
+std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(IChessBoard const &chessBoard, std::vector<BoardMove> const &moves) const {
     std::vector<ScoredBoardMove> scoredBoardMoves;
 
     // Assign values to each move
@@ -120,7 +122,7 @@ std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(IChessBoard& chessBoard
     return finalOrder;
 }
 
-int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard& chessBoard, Team team) const {
+int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard const &chessBoard, Team team) const {
     int totalScore = 0;
 
     for (BoardSquare const &boardSquare : chessBoard.getAllBoardSquares()) {

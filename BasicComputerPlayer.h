@@ -12,8 +12,8 @@
 
 class BasicComputerPlayer : public ComputerPlayer {
 private:
-    BoardMove getMoveImplementation(IChessBoard &chessBoard, Team team) const override;
-    virtual std::vector<BoardMove> getPossibleMoves(IChessBoard &chessBoard, Team team) const = 0;
+    BoardMove getMoveImplementation(IChessBoard const &chessBoard, Team team) const override;
+    virtual std::vector<BoardMove> getPossibleMoves(IChessBoard const &chessBoard, Team team) const = 0;
 public:
     BasicComputerPlayer();
     virtual ~BasicComputerPlayer() = default;
