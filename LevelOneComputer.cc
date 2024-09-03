@@ -11,6 +11,6 @@
 LevelOneComputer::LevelOneComputer() : BasicComputerPlayer() {}
 
 std::vector<BoardMove> LevelOneComputer::getPossibleMoves(ChessBoard &board, Team team) const {
-    std::vector<BoardMove> possibleMoves = board.getLegalMoves(team);
+    std::vector<BoardMove> possibleMoves = board.generateAllLegalMoves(team);
     return possibleMoves;
 }

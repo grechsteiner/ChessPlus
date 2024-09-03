@@ -26,12 +26,12 @@ AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(
 
     int bestScore = (team == board.getTeamOne()) ? -10000 : 10000;
     std::optional<BoardMove> bestMove;
-    std::vector<BoardMove> allMoves = board.getLegalMoves(team);
+    std::vector<BoardMove> allMoves = board.generateAllLegalMoves(team);
     allMoves = rankMoves(board, allMoves);
     if (team == board.getTeamOne()) {
         for (BoardMove const &move : allMoves) {
             board.makeMove(move);
-            int currentScore = alphaBetaSearch(board, currentDepth - 1, board.getOtherTeam(team), alpha, beta).score;
+            int currentScore = alphaBetaSearch(board, currentDepth - 1, board.getTeamTwo(), alpha, beta).score;
             board.undoMove();   
             if (currentScore > bestScore) {
                 bestScore = currentScore;
@@ -47,7 +47,7 @@ AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(
     } else {
         for (BoardMove const &move : allMoves) {
             board.makeMove(move);
-            int currentScore = alphaBetaSearch(board, currentDepth - 1, board.getOtherTeam(team), alpha, beta).score;
+            int currentScore = alphaBetaSearch(board, currentDepth - 1, board.getTeamOne(), alpha, beta).score;
             board.undoMove();    
             if (currentScore < bestScore) {
                 bestScore = currentScore;
@@ -123,7 +123,7 @@ std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(ChessBoard& board, std:
 int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team) const {
     int totalScore = 0;
 
-    for (BoardSquare const &boardSquare : board.allBoardSquares()) {
+    for (BoardSquare const &boardSquare : board.getAllBoardSquares()) {
         int numBoardRows = board.getNumRows();
         int numBoardCols = board.getNumCols();
 

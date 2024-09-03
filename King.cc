@@ -7,11 +7,13 @@
 #include "King.h"
 #include "Constants.h"
 #include "Piece.h"
+#include "PieceCloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
 
+// Static
 std::set<std::pair<int, int>> const King::kingDirections = { 
     {-1, -1}, 
     {-1, 0}, 
@@ -23,8 +25,33 @@ std::set<std::pair<int, int>> const King::kingDirections = {
     {1, 1} 
 };
 
+// Basic ctor
 King::King(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) : 
-    Piece(PieceType::KING, team, pieceDirection, hasMoved, pieceScore, "♚", "K") {}
+    Cloneable<Piece, King>(PieceType::KING, team, pieceDirection, hasMoved, pieceScore, "♚", "K") {}
+
+// Copy ctor
+King::King(King const &other) : 
+    Cloneable<Piece, King>(other) {}
+
+// Move ctor
+King::King(King &&other) noexcept : 
+    Cloneable<Piece, King>(std::move(other)) {}
+
+// Copy assignment
+King& King::operator=(King const &other) {
+    if (this != &other) {
+        Piece::operator=(other);
+    }
+    return *this;
+}
+
+// Move assignment
+King& King::operator=(King &&other) noexcept {
+    if (this != &other) {
+        Piece::operator=(std::move(other));
+    }
+    return *this;
+}
 
 std::vector<BoardMove> King::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;

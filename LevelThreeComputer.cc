@@ -13,10 +13,10 @@ LevelThreeComputer::LevelThreeComputer() : BasicComputerPlayer() {}
 
 std::vector<BoardMove> LevelThreeComputer::getPossibleMoves(ChessBoard &board, Team team) const {
 
-    std::vector<BoardMove> captureAvoidingMoves = board.getCaptureAvoidingMoves(team);
+    std::vector<BoardMove> captureAvoidingMoves = board.generateCaptureAvoidingMoves(team);
     if (!captureAvoidingMoves.empty()) {
-        std::vector<BoardMove> capturingMoves = board.getCapturingMoves(team);
-        std::vector<BoardMove> checkApplyMoves = board.getCheckApplyingMoves(team);
+        std::vector<BoardMove> capturingMoves = board.generateCapturingMoves(team);
+        std::vector<BoardMove> checkApplyMoves = board.generateCheckApplyingMoves(team);
 
         std::vector<BoardMove> topMoves;
         for (BoardMove const & move : captureAvoidingMoves) {
@@ -36,8 +36,8 @@ std::vector<BoardMove> LevelThreeComputer::getPossibleMoves(ChessBoard &board, T
         return !topMoves.empty() ? topMoves : captureAvoidingMoves;
     }
 
-    std::vector<BoardMove> moves = board.getCapturingMoves(team);
-    std::vector<BoardMove> checkApplyMoves = board.getCheckApplyingMoves(team);
+    std::vector<BoardMove> moves = board.generateCapturingMoves(team);
+    std::vector<BoardMove> checkApplyMoves = board.generateCheckApplyingMoves(team);
     moves.insert(moves.end(), checkApplyMoves.begin(), checkApplyMoves.end());
-    return moves.empty() ? board.getLegalMoves(team) : moves;
+    return moves.empty() ? board.generateAllLegalMoves(team) : moves;
 }

@@ -8,13 +8,15 @@
 #include "Pawn.h"
 #include "Constants.h"
 #include "Piece.h"
+#include "PieceCloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
 
+// Basic ctor
 Pawn::Pawn(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Piece(PieceType::PAWN, team, pieceDirection, hasMoved, pieceScore, "♟", "P") {
+    Cloneable<Piece, Pawn>(PieceType::PAWN, team, pieceDirection, hasMoved, pieceScore, "♟", "P") {
     switch(pieceDirection) {
         case PieceDirection::NORTH:
             pawnDirection = std::make_pair(-1, 0);
@@ -31,6 +33,30 @@ Pawn::Pawn(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceSco
         default:
             break;
     }
+}
+
+// Copy ctor
+Pawn::Pawn(Pawn const &other) : 
+    Cloneable<Piece, Pawn>(other) {}
+
+// Move ctor
+Pawn::Pawn(Pawn &&other) noexcept : 
+    Cloneable<Piece, Pawn>(std::move(other)) {}
+
+// Copy assignment
+Pawn& Pawn::operator=(Pawn const &other) {
+    if (this != &other) {
+        Piece::operator=(other);
+    }
+    return *this;
+}
+
+// Move assignment
+Pawn& Pawn::operator=(Pawn &&other) noexcept {
+    if (this != &other) {
+        Piece::operator=(std::move(other));
+    }
+    return *this;
 }
 
 std::vector<BoardMove> Pawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {

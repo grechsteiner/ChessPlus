@@ -1,90 +1,148 @@
 // Board.cc
 
-#include <cassert>
 #include <vector>
+#include <stack>
+#include <optional>
 #include <memory>
-#include <cctype>
-#include <utility>
+#include <cassert>
 #include <algorithm>
-#include <iostream>
+#include <utility>
 
 #include "Board.h"
-#include "Piece.h"
-#include "ChessPieceFactory.h"
-#include "BoardMove.h"
-#include "UserSquare.h"
+#include "Constants.h"
 #include "BoardSquare.h"
+#include "BoardMove.h"
+#include "Piece.h"
+#include "PieceInfo.h"
+#include "ChessPieceFactory.h"
 
 
+#pragma mark - Specific To Board Class
 
-#pragma mark - Internal Utility
+// Basic ctor
+SmartChessBoard::SmartChessBoard(int numRows, int numCols) : 
+    numRows(numRows), numCols(numCols) {
 
-Board::Board() 
-    : grid(8) {
-    for (auto& row : grid) {
-        row.resize(8);
+    grid.resize(numRows);
+    for (int row = 0; row < numRows; ++row) {
+        grid[row].resize(numCols);
     } 
-    initializeBoard(grid);
 }
 
-void Board::initializeBoard(std::vector<std::vector<std::unique_ptr<Piece>>> &grid) {
-    for (auto& row : grid) {
-        for (auto& piece : row) {
-            piece = nullptr;
+// Copy ctor
+SmartChessBoard::SmartChessBoard(SmartChessBoard const &other) : 
+    numRows(other.numRows), numCols(other.numCols), completedMoves(other.completedMoves), redoMoves(other.redoMoves) {
+
+    grid.resize(numRows);
+    for (int row = 0; row < numRows; ++row) {
+        grid[row].resize(numCols);
+        for (int col = 0; col < numCols; ++col) {
+            if (other.grid[row][col] != nullptr) {
+                grid[row][col] = other.grid[row][col]->clone();
+            }
+        }
+    } 
+}
+
+// Move ctor
+SmartChessBoard::SmartChessBoard(SmartChessBoard &&other) noexcept : 
+    numRows(other.numRows), numCols(other.numCols), completedMoves(std::move(other.completedMoves)), redoMoves(std::move(other.redoMoves)), grid(std::move(other.grid)) {}
+
+// Copy assignment
+SmartChessBoard& SmartChessBoard::operator=(SmartChessBoard const &other) {
+    if (this != &other) {
+        numRows = other.numRows;
+        numCols = other.numCols;
+        completedMoves = other.completedMoves;
+        redoMoves = other.redoMoves;
+        
+        grid.resize(numRows);
+        for (int row = 0; row < numRows; ++row) {
+            grid[row].resize(numCols);
+            for (int col = 0; col < numCols; ++col) {
+                if (other.grid[row][col] != nullptr) {
+                    grid[row][col] = other.grid[row][col]->clone();
+                }
+            }
         }
     }
+    return *this;
 }
 
-std::vector<BoardMove> Board::getPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
+// Move assignment
+SmartChessBoard& SmartChessBoard::operator=(SmartChessBoard &&other) noexcept {
+    if (this != &other) {
+        numRows = other.numRows;
+        numCols = other.numCols;
+        completedMoves = std::move(other.completedMoves);
+        redoMoves = std::move(other.redoMoves);
+        grid = std::move(other.grid);
+    }
+    return *this;
+}
+
+Team SmartChessBoard::getOtherTeam(Team team) const { 
+    return team == teamOne ? teamTwo : teamOne; 
+}
+
+void SmartChessBoard::clearCompletedMoves() {
+    completedMoves = std::stack<BoardMove>();
+}
+
+void SmartChessBoard::clearRedoMoves() {
+    redoMoves = std::stack<BoardMove>();
+}
+
+std::vector<BoardMove> SmartChessBoard::generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     return isSquareOnBoard(boardSquare) && !isSquareEmpty(boardSquare)
         ? grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getMoves(*this, boardSquare, onlyAttackingMoves) 
         : std::vector<BoardMove>();
 }
 
-std::vector<BoardMove> Board::getPseudoLegalMoves(Team team, bool onlyAttackingMoves) const {
+std::vector<BoardMove> SmartChessBoard::generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const {
     std::vector<BoardMove> boardMoves;
-    for (BoardSquare const &boardSquare : allBoardSquares()) {
+    for (BoardSquare const &boardSquare : getAllBoardSquares()) {
         std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value() && pieceInfo.value().getTeam() == team) {
-            std::vector<BoardMove> pieceMoves = getPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
-            boardMoves.insert(boardMoves.end(), pieceMoves.begin(), pieceMoves.end());
+            std::vector<BoardMove> pieceBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
+            boardMoves.insert(boardMoves.end(), pieceBoardMoves.begin(), pieceBoardMoves.end());
         }
     }
     return boardMoves;
 }
 
-void Board::performMove(BoardMove const &boardMove) {
-    boardMove.makeBoardMove(*this);                               // Apply the move
-    completedMoves.emplace_back(boardMove);                  // Track it for undoing 
-    redoMoves.clear();                                  // Clear redo moves (can't redo after making a move)
+bool SmartChessBoard::canMakeMove(Team team) const {
+    return !generateAllLegalMoves(team).empty();
 }
 
-bool Board::canMakeMove(Team team) const {
-    return !getLegalMoves(team).empty();
-}
-
-bool Board::isMoveValid(BoardMove const &boardMove) const {
+bool SmartChessBoard::isMoveValid(BoardMove const &boardMove) const {
     if (isSquareOnBoard(boardMove.getFromSquare())) {
-        std::vector<BoardMove> pieceMoves = getLegalMovesAtSquare(boardMove.getFromSquare());
-        if (std::find(pieceMoves.begin(), pieceMoves.end(), boardMove) != pieceMoves.end()) {
+        std::vector<BoardMove> pieceBoardMoves = generateAllLegalMovesAtSquare(boardMove.getFromSquare());
+        if (std::find(pieceBoardMoves.begin(), pieceBoardMoves.end(), boardMove) != pieceBoardMoves.end()) {
             return true;
         }
     }
     return false;
 }
 
-bool Board::doesMoveApplyCheck(BoardMove const &boardMove) const {
+void SmartChessBoard::performMove(BoardMove const &boardMove) {
+    boardMove.makeBoardMove(*this);         // Apply the move
+    completedMoves.push(boardMove);         // Track it for undoing 
+    clearRedoMoves();                       // Clear redo moves (can't redo after making a move)
+}
+
+bool SmartChessBoard::doesMoveApplyCheck(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<Board*>(this)->performMove(boardMove);
+        const_cast<SmartChessBoard*>(this)->performMove(boardMove);
         bool doesMoveApplyCheck = isInCheck(getOtherTeam(movedPieceInfo.value().getTeam()));
-        const_cast<Board*>(this)->undoMove();
+        const_cast<SmartChessBoard*>(this)->undoMove();
         return doesMoveApplyCheck;
     }
     assert(false);
 }
 
-bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
+bool SmartChessBoard::doesMoveCapturePiece(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     std::optional<PieceInfo> attackedPieceInfo = getPieceInfoAt(boardMove.getCaptureSquare());
     if (movedPieceInfo.has_value()) {
@@ -93,38 +151,23 @@ bool Board::doesMoveCapturePiece(BoardMove const &boardMove) const {
     assert(false);
 }
 
-bool Board::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
+bool SmartChessBoard::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<Board*>(this)->performMove(boardMove);
-        bool doesMoveLeavePieceAttacked = getCapturingMoves(getOtherTeam(movedPieceInfo.value().getTeam())).empty();
-        const_cast<Board*>(this)->undoMove();
+        const_cast<SmartChessBoard*>(this)->performMove(boardMove);
+        bool doesMoveLeavePieceAttacked = generateCapturingMoves(getOtherTeam(movedPieceInfo.value().getTeam())).empty();
+        const_cast<SmartChessBoard*>(this)->undoMove();
         return doesMoveLeavePieceAttacked;
     } 
     assert(false);
-
-    /*
-    std::vector<BoardMove> opponentMoves = getCapturingMoves(getOtherTeam(turnTeam));
-    // Don't need to try every move if just two colours (I think) --> just check if capturingMoves.size() == 0
-    for (BoardMove const &opponentMove : opponentMoves) {
-        std::optional<PieceInfo> attackedPieceInfo = getPieceInfoAt(opponentMove.getCaptureSquare());
-        if (attackedPieceInfo.has_value() && attackedPieceInfo.value().team == turnTeam) {
-            const_cast<Board*>(this)->undoMove();
-            return true;
-        }
-        
-    }
-    const_cast<Board*>(this)->undoMove();
-    return false;
-    */
 }
 
-bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
+bool SmartChessBoard::doesMoveLeaveTeamInCheck(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<Board*>(this)->performMove(boardMove);
+        const_cast<SmartChessBoard*>(this)->performMove(boardMove);
         bool isInCheckAfterMove = isInCheck(movedPieceInfo.value().getTeam());
-        const_cast<Board*>(this)->undoMove();
+        const_cast<SmartChessBoard*>(this)->undoMove();
         return isInCheckAfterMove;
     }
     assert(false);
@@ -133,43 +176,55 @@ bool Board::isInCheckAfterMove(BoardMove const &boardMove) const {
 
 #pragma mark - ChessBoard Interface
 
-std::optional<PieceInfo> Board::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
+std::optional<PieceInfo> SmartChessBoard::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
     return isSquareOnBoard(boardSquare) && grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] != nullptr
         ? std::make_optional<PieceInfo>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceInfo())
         : std::nullopt;
 }
 
-std::vector<BoardSquare> Board::allBoardSquaresImpl() const {
+std::vector<BoardSquare> SmartChessBoard::getAllBoardSquaresImpl() const {
     std::vector<BoardSquare> boardSquares;
-    for (int row = 0; row < grid.size(); ++row) {
-        for (int col = 0; col < grid[row].size(); ++col) {
+    for (int row = 0; row < numRows; ++row) {
+        for (int col = 0; col < numCols; ++col) {
             boardSquares.emplace_back(BoardSquare(row, col));
         }
     }
     return boardSquares;
 }
 
-bool Board::isSquareOnBoardImpl(BoardSquare const &boardSquare) const {
+bool SmartChessBoard::isSquareOnBoardImpl(BoardSquare const &boardSquare) const {
     int boardRow = boardSquare.getBoardRow();
     int boardCol = boardSquare.getBoardCol();
-    return boardRow >= 0 && boardRow < grid.size() && boardCol >= 0 && boardCol < grid[boardRow].size();
+    return 
+        boardRow >= 0 && 
+        boardRow < numRows && 
+        boardCol >= 0 && 
+        boardCol < numCols;
 }
 
-bool Board::isSquareEmptyImpl(BoardSquare const &boardSquare) const {
-    return isSquareOnBoard(boardSquare) && !getPieceInfoAt(boardSquare).has_value();
+bool SmartChessBoard::isSquareEmptyImpl(BoardSquare const &boardSquare) const {
+    return 
+        isSquareOnBoard(boardSquare) && 
+        !getPieceInfoAt(boardSquare).has_value();
 }
 
-bool Board::isSquareOwnTeamImpl(BoardSquare const &boardSquare, Team team) const {
-    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().getTeam() == team;
+bool SmartChessBoard::isSquareSameTeamImpl(BoardSquare const &boardSquare, Team ownTeam) const {
+    return 
+        isSquareOnBoard(boardSquare) && 
+        getPieceInfoAt(boardSquare).has_value() && 
+        getPieceInfoAt(boardSquare).value().getTeam() == ownTeam;
 }
 
-bool Board::isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team team) const {
-    return isSquareOnBoard(boardSquare) && getPieceInfoAt(boardSquare).has_value() && getPieceInfoAt(boardSquare).value().getTeam() == getOtherTeam(team);
+bool SmartChessBoard::isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team ownTeam) const {
+    return 
+        isSquareOnBoard(boardSquare) && 
+        getPieceInfoAt(boardSquare).has_value() && 
+        getPieceInfoAt(boardSquare).value().getTeam() == getOtherTeam(ownTeam);
 }
 
-bool Board::isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) const {
+bool SmartChessBoard::isSquareAttackedImpl(BoardSquare const &boardSquare, Team ownTeam) const {
     if (isSquareOnBoard(boardSquare)) {
-        std::vector<BoardMove> attackingBoardMoves = getPseudoLegalMoves(getOtherTeam(team), true);
+        std::vector<BoardMove> attackingBoardMoves = generateAllPseudoLegalMoves(getOtherTeam(ownTeam), true);
         for (BoardMove const& boardMove : attackingBoardMoves) {
             if (boardMove.getCaptureSquare() == boardSquare) {
                 return true;
@@ -179,201 +234,8 @@ bool Board::isSquareAttackedImpl(BoardSquare const &boardSquare, Team team) cons
     return false;
 }
 
-bool Board::setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) {
-    if (isSquareOnBoard(boardSquare)) {
-        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(team, pieceType, pieceDirection, hasMoved, pieceScore);
-        return true;
-    }
-    return false;
-}
-
-bool Board::clearPositionImpl(BoardSquare const &boardSquare) {
-    if (!isSquareOnBoard(boardSquare) || !getPieceInfoAt(boardSquare).has_value()) {
-        return false;
-    } else {
-        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = nullptr;
-        return true;
-    }
-}
-
-void Board::clearBoardImpl() {
-    for (BoardSquare const &boardSquare : allBoardSquares()) {
-        clearPosition(boardSquare);
-    }
-    completedMoves.clear();     // TODO: Is this needed?
-    redoMoves.clear();          // TODO: Is this needed?
-}
-
-bool Board::setBoardSizeImpl(int newNumRows, int newNumCols) { 
-    if (newNumRows >= minNumRows && newNumRows <= maxNumRows && newNumCols >= minNumCols && newNumCols <= maxNumCols) {
-        int oldNumRows = getNumRows();
-        int oldNumCols = getNumCols();
-
-        // Create new grid
-        std::vector<std::vector<std::unique_ptr<Piece>>> newGrid(newNumRows);
-        for (int boardRow = 0; boardRow < newNumRows; ++boardRow) {
-            newGrid[boardRow].resize(newNumCols);
-        }
-        initializeBoard(newGrid);
-
-        for (BoardSquare const &boardSquare : allBoardSquares()) {
-            int oldRow = boardSquare.getBoardRow();
-            int oldCol = boardSquare.getBoardCol();
-            int newRow = oldRow + (newNumRows - oldNumRows);
-            int newCol = oldCol;
-            if (newRow >= 0 && newRow < newNumRows && newCol >= 0 && newCol < newNumCols) {
-                newGrid[newRow][newCol] = std::move(grid[oldRow][oldCol]);
-            }
-        }
-
-        // Replace the old grid with the new grid
-        grid = std::move(newGrid);
-    
-        return true;
-    } else {
-        return false;
-    }
-}
-
-std::vector<BoardMove> Board::getLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const {
-    std::vector<BoardMove> boardMoves = getPseudoLegalMovesAtSquare(boardSquare, false);
-    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
-        if (isInCheckAfterMove(*it)) {
-            it = boardMoves.erase(it);
-        } else {
-            ++it;
-        }
-    }
-    return boardMoves;
-}
-
-std::vector<BoardMove> Board::getLegalMovesImpl(Team team) const { 
-    std::vector<BoardMove> boardMoves = getPseudoLegalMoves(team, false);
-    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
-        if (isInCheckAfterMove(*it)) {
-            it = boardMoves.erase(it);
-        } else {
-            ++it;
-        }
-    }
-    return boardMoves;
-}
-
-std::vector<BoardMove> Board::getCapturingMovesImpl(Team team) const { 
-    std::vector<BoardMove> boardMoves = getLegalMoves(team);
-    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
-        if (!doesMoveCapturePiece(*it)) {
-            it = boardMoves.erase(it);
-        } else {
-            ++it;
-        }
-    }
-    return boardMoves;
-}
-
-std::vector<BoardMove> Board::getCheckApplyingMovesImpl(Team team) const {
-    std::vector<BoardMove> boardMoves = getLegalMoves(team);
-    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
-        if (!doesMoveApplyCheck(*it)) {
-            it = boardMoves.erase(it);
-        } else {
-            ++it;
-        }
-    }
-    return boardMoves;
-}
-
-std::vector<BoardMove> Board::getCaptureAvoidingMovesImpl(Team team) const { 
-    std::vector<BoardMove> boardMoves = getLegalMoves(team);
-    for (auto it = boardMoves.begin(); it != boardMoves.end();) {
-        if (doesMoveLeavePieceAttacked(*it)) {
-            it = boardMoves.erase(it);
-        } else {
-            ++it;
-        }
-    }
-    return boardMoves;
-}
-
-Team Board::getTeamOneImpl() const { 
-    return teamOne;
-}
-
-Team Board::getTeamTwoImpl() const  { 
-    return teamTwo;
-}
-
-Team Board::getOtherTeamImpl(Team team) const { 
-    return team == teamOne ? teamTwo : teamOne; 
-}
-
-std::optional<BoardMove> Board::createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { 
-    if (!isSquareOnBoard(fromSquare)) {
-        return std::nullopt;
-    }
-
-    std::vector<BoardMove> legalMoves = getLegalMovesAtSquare(fromSquare);
-    auto it = std::find_if(legalMoves.begin(), legalMoves.end(), [&fromSquare, &toSquare, &promotionPieceType](BoardMove const &boardMove) {
-        return
-            fromSquare == boardMove.getFromSquare() &&
-            toSquare == boardMove.getToSquare() &&
-            promotionPieceType == boardMove.getPromotionPieceType();
-    });
-    return it != legalMoves.end() ? std::make_optional<BoardMove>(*it) : std::nullopt;
-}
-
-std::optional<BoardMove> Board::getLastCompletedMoveImpl() const {
-    return completedMoves.empty() ? std::nullopt : std::make_optional<BoardMove>(completedMoves.back());
-}
-
-std::vector<BoardMove> const& Board::getAllCompletedMovesImpl() const {
-    return completedMoves;
-}
-
-bool Board::makeMoveImpl(BoardMove const &move) {
-    if (isMoveValid(move)) {
-        performMove(move);
-        return true;
-    }
-    return false;                              
-}
-
-bool Board::undoMoveImpl() {
-    // Check if there is a move to undo
-    if (completedMoves.size() == 0) {
-        return false;
-    }
-
-    BoardMove lastMove = completedMoves.back();      // Get the last made move
-    completedMoves.pop_back();                      // Pop it off the completed moves stack
-    lastMove.undoBoardMove(*this);                       // Undo the move
-    redoMoves.emplace_back(lastMove);               // Push it to the redo moves stack
-    return true;      
-}
-
-bool Board::redoMoveImpl() {
-    // Check if there is a move to redo
-    if (redoMoves.size() == 0) {
-        return false;
-    }
-
-    BoardMove lastUndoneMove = redoMoves.back();     // Get the last move to be undone
-    redoMoves.pop_back();                           // Pop it off the redo moves stack
-    lastUndoneMove.makeBoardMove(*this);                 // Apply the move
-    completedMoves.emplace_back(lastUndoneMove);    // Push it to the completed moves stack
-    return true;                                    // Success
-}
-
-int Board::getNumRowsImpl() const {
-    return grid.size();
-}
-
-int Board::getNumColsImpl() const {
-    return grid[0].size();
-}
-
-bool Board::isInCheckImpl(Team team) const {
-    for (BoardSquare const &boardSquare : allBoardSquares()) {
+bool SmartChessBoard::isInCheckImpl(Team team) const {
+    for (BoardSquare const &boardSquare : getAllBoardSquares()) {
         std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value() && pieceInfo.value().getPieceType() == PieceType::KING && pieceInfo.value().getTeam() == team) {
             if (isSquareAttacked(boardSquare, team)) {
@@ -384,10 +246,165 @@ bool Board::isInCheckImpl(Team team) const {
     return false;
 }
 
-bool Board::isInCheckMateImpl(Team team) const {
+bool SmartChessBoard::isInCheckMateImpl(Team team) const {
     return isInCheck(team) && !canMakeMove(team);
 }
 
-bool Board::isInStaleMateImpl(Team team) const {
+bool SmartChessBoard::isInStaleMateImpl(Team team) const {
     return !canMakeMove(team) && !isInCheck(team);
+}
+
+std::vector<BoardMove> SmartChessBoard::generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const {
+    std::vector<BoardMove> legalBoardMoves;
+    std::vector<BoardMove> pseudoLegalBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, false);
+    for (BoardMove const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
+        if (!doesMoveLeaveTeamInCheck(pseudoLegalBoardMove)) {
+            legalBoardMoves.emplace_back(pseudoLegalBoardMove);
+        }
+    }
+    return legalBoardMoves;
+}
+
+std::vector<BoardMove> SmartChessBoard::generateAllLegalMovesImpl(Team team) const { 
+    std::vector<BoardMove> legalBoardMoves;
+    std::vector<BoardMove> pseudoLegalBoardMoves = generateAllPseudoLegalMoves(team, false);
+    for (BoardMove const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
+        if (!doesMoveLeaveTeamInCheck(pseudoLegalBoardMove)) {
+            legalBoardMoves.emplace_back(pseudoLegalBoardMove);
+        }
+    }
+    return legalBoardMoves;
+}
+
+std::vector<BoardMove> SmartChessBoard::generateCapturingMovesImpl(Team team) const { 
+    std::vector<BoardMove> capturingBoardMoves;
+    std::vector<BoardMove> legalBoardMoves = generateAllLegalMoves(team);
+    for (BoardMove const &legalBoardMove : legalBoardMoves) {
+        if (doesMoveCapturePiece(legalBoardMove)) {
+            capturingBoardMoves.emplace_back(legalBoardMove);
+        }
+    }
+    return capturingBoardMoves;
+}
+
+std::vector<BoardMove> SmartChessBoard::generateCheckApplyingMovesImpl(Team team) const {
+    std::vector<BoardMove> checkApplyingBoardMoves;
+    std::vector<BoardMove> legalBoardMoves = generateAllLegalMoves(team);
+    for (BoardMove const &legalBoardMove : legalBoardMoves) {
+        if (doesMoveApplyCheck(legalBoardMove)) {
+            checkApplyingBoardMoves.emplace_back(legalBoardMove);
+        }
+    }
+    return checkApplyingBoardMoves;
+}
+
+std::vector<BoardMove> SmartChessBoard::generateCaptureAvoidingMovesImpl(Team team) const {
+    std::vector<BoardMove> captureAvoidingBoardMoves;
+    std::vector<BoardMove> legalBoardMoves = generateAllLegalMoves(team);
+    for (BoardMove const &legalBoardMove : legalBoardMoves) {
+        if (!doesMoveLeavePieceAttacked(legalBoardMove)) {
+            captureAvoidingBoardMoves.emplace_back(legalBoardMove);
+        }
+    }
+    return captureAvoidingBoardMoves;
+}
+
+bool SmartChessBoard::setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) {
+    if (isSquareOnBoard(boardSquare)) {
+        clearCompletedMoves();
+        clearRedoMoves();
+        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(team, pieceType, pieceDirection, hasMoved, pieceScore);
+        return true;
+    }
+    return false;
+}
+
+bool SmartChessBoard::clearPositionImpl(BoardSquare const &boardSquare) {
+    if (isSquareOnBoard(boardSquare)) {
+        clearCompletedMoves();
+        clearRedoMoves();
+        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = nullptr;
+        return true;
+    }
+    return false;
+}
+
+void SmartChessBoard::clearBoardImpl() {
+    for (BoardSquare const &boardSquare : getAllBoardSquares()) {
+        clearPosition(boardSquare);
+    }
+    clearCompletedMoves();
+    clearRedoMoves();
+}
+
+std::optional<BoardMove> SmartChessBoard::createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { 
+    if (!isSquareOnBoard(fromSquare)) {
+        return std::nullopt;
+    }
+
+    // Try to match "fromSquare toSquare promotionPieceType" to a legal BoardMove
+    std::vector<BoardMove> legalBoardMoves = generateAllLegalMovesAtSquare(fromSquare);
+    auto it = std::find_if(legalBoardMoves.begin(), legalBoardMoves.end(), [&fromSquare, &toSquare, &promotionPieceType](BoardMove const &boardMove) {
+        return
+            fromSquare == boardMove.getFromSquare() &&
+            toSquare == boardMove.getToSquare() &&
+            promotionPieceType == boardMove.getPromotionPieceType();
+    });
+    return it != legalBoardMoves.end() ? std::make_optional<BoardMove>(*it) : std::nullopt;
+}
+
+bool SmartChessBoard::makeMoveImpl(BoardMove const &boardMove) {
+    if (isMoveValid(boardMove)) {
+        performMove(boardMove);
+        return true;
+    }
+    return false;                              
+}
+
+bool SmartChessBoard::undoMoveImpl() {
+    if (completedMoves.empty()) {
+        return false;
+    }
+
+    BoardMove lastMove = completedMoves.top();      // Get the last made move
+    completedMoves.pop();                           // Pop it off the completed moves stack
+    lastMove.undoBoardMove(*this);                  // Undo the move
+    redoMoves.push(lastMove);                       // Push it to the redo moves stack
+    return true;
+}
+
+bool SmartChessBoard::redoMoveImpl() {
+    if (redoMoves.empty()) {
+        return false;
+    }
+
+    BoardMove lastUndoneMove = redoMoves.top();     // Get the last move to be undone
+    redoMoves.pop();                                // Pop it off the redo moves stack
+    lastUndoneMove.makeBoardMove(*this);            // Apply the move
+    completedMoves.push(lastUndoneMove);            // Push it to the completed moves stack
+    return true;
+}
+
+std::optional<BoardMove> SmartChessBoard::getLastCompletedMoveImpl() const {
+    return completedMoves.empty() ? std::nullopt : std::make_optional<BoardMove>(completedMoves.top());
+}
+
+std::stack<BoardMove> const& SmartChessBoard::getAllCompletedMovesImpl() const {
+    return completedMoves;
+}
+
+Team SmartChessBoard::getTeamOneImpl() const { 
+    return teamOne;
+}
+
+Team SmartChessBoard::getTeamTwoImpl() const  { 
+    return teamTwo;
+}
+
+int SmartChessBoard::getNumRowsImpl() const {
+    return numRows;
+}
+
+int SmartChessBoard::getNumColsImpl() const {
+    return numCols;
 }

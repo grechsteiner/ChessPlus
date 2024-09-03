@@ -9,6 +9,7 @@
 
 #include "Constants.h"
 #include "Piece.h"
+#include "PieceCloneable.h"
 
 class ChessBoard;
 class BoardSquare;
@@ -18,12 +19,17 @@ class BoardMove;
 /**
  * Rook Piece Class
  */
-class Rook : public Piece {
+class Rook : public Cloneable<Piece, Rook> {
 private:
     static std::set<std::pair<int, int>> const rookDirections;
     std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
-    Rook(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 5);
+    explicit Rook(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 5);
+    Rook(Rook const &other);
+    Rook(Rook &&other) noexcept;
+    Rook& operator=(Rook const &other);
+    Rook& operator=(Rook &&other) noexcept;
+    virtual ~Rook() = default;
 };
 
 

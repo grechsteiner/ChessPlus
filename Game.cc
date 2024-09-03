@@ -160,7 +160,7 @@ void Game::runGame() {
                     if (board.isInStaleMate(Team::TEAM_ONE) || board.isInStaleMate(Team::TEAM_TWO)) {
                         applyStalematePoints();
                         board.clearBoard();
-                        board.setBoardSize(8, 8);
+                        // board.setBoardSize(8, 8);
                         applyStandardSetup();
 
                         // Reset players for next run through
@@ -253,7 +253,7 @@ void Game::runGame() {
 
                         // Reset board for next run through
                         board.clearBoard();
-                        board.setBoardSize(8, 8);
+                        // board.setBoardSize(8, 8);
                         applyStandardSetup();
 
                         // Reset players for next run through
@@ -284,7 +284,7 @@ void Game::runGame() {
 
                 // Reset board for next run through
                 board.clearBoard();
-                board.setBoardSize(8, 8);
+                // board.setBoardSize(8, 8);
                 applyStandardSetup();
 
                 // Reset players for next run through
@@ -429,6 +429,7 @@ void Game::runGame() {
                 notifyObservers();
             }
 
+        /*
         } else if (firstToken == "set") {
             if (isInMainMenu()) {
                 outputError("Can't set board size in main menu");
@@ -448,6 +449,7 @@ void Game::runGame() {
                     notifyObservers();
                 }
             }
+        */
         } else if (tokens.size() != 0) {
             outputError("Invalid command entered");
         }
@@ -510,7 +512,7 @@ bool Game::isBoardInProperSetup() const {
     int topRow = 0;
     int bottomRow = board.getNumRows() - 1;
 
-    for (BoardSquare const &boardSquare : board.allBoardSquares()) {
+    for (BoardSquare const &boardSquare : board.getAllBoardSquares()) {
         std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value()) {
             if (pieceInfo.value().getPieceType() == PieceType::KING) {
@@ -534,3 +536,40 @@ bool Game::isBoardInProperSetup() const {
 
     return (whiteKingCount != 1 || blackKingCount != 1) ? false : true;
 }
+
+/*
+bool Board::setBoardSizeImpl(int newNumRows, int newNumCols) { 
+    static int const maxNumRows = 26;
+    static int const maxNumCols = 26;
+    static int const minNumRows = 4;
+    static int const minNumCols = 8;
+    if (newNumRows >= minNumRows && newNumRows <= maxNumRows && newNumCols >= minNumCols && newNumCols <= maxNumCols) {
+        int oldNumRows = getNumRows();
+        int oldNumCols = getNumCols();
+
+        // Create new grid
+        std::vector<std::vector<std::unique_ptr<Piece>>> newGrid(newNumRows);
+        for (int boardRow = 0; boardRow < newNumRows; ++boardRow) {
+            newGrid[boardRow].resize(newNumCols);
+        }
+        initializeBoard(newGrid);
+
+        for (BoardSquare const &boardSquare : allBoardSquares()) {
+            int oldRow = boardSquare.getBoardRow();
+            int oldCol = boardSquare.getBoardCol();
+            int newRow = oldRow + (newNumRows - oldNumRows);
+            int newCol = oldCol;
+            if (newRow >= 0 && newRow < newNumRows && newCol >= 0 && newCol < newNumCols) {
+                newGrid[newRow][newCol] = std::move(grid[oldRow][oldCol]);
+            }
+        }
+
+        // Replace the old grid with the new grid
+        grid = std::move(newGrid);
+    
+        return true;
+    } else {
+        return false;
+    }
+}
+*/

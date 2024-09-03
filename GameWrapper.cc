@@ -8,6 +8,7 @@
 #include "GraphicObserver.h"
 
 GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
+    board(SmartChessBoard(8, 8)),
     game(board, in, out, errorOut), 
     observers() 
     {
