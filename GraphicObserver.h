@@ -7,7 +7,7 @@
 #include "Game.h"
 #include "Window.h"
 
-#include "ChessBoard.h"
+#include "IChessBoard.h"
 
 class GraphicObserver : public Observer {
 private:
@@ -15,7 +15,7 @@ private:
     Xwindow window;
     void notifyImplementation() override;
     void printPiece(const std::string& str, Team team, int x, int y);
-    void printBoard(const ChessBoard& board, int turn);
+    void printBoard(const IChessBoard& chessBoard, int turn);
 
 public:
     GraphicObserver(Game *game);

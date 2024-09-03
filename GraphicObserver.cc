@@ -39,9 +39,9 @@ void GraphicObserver::printPiece(const std::string& str, Team team, int x, int y
     window.drawString(x, y, str, pieceColor);
 }
 
-void GraphicObserver::printBoard(const ChessBoard& board, int turn) {
-    int numRows = board.getNumRows();
-    int numCols = board.getNumCols();
+void GraphicObserver::printBoard(const IChessBoard& chessBoard, int turn) {
+    int numRows = chessBoard.getNumRows();
+    int numCols = chessBoard.getNumCols();
     int windowWidth = 600;  // Width of the window
     int windowHeight = 600; // Height of the window
 
@@ -54,7 +54,7 @@ void GraphicObserver::printBoard(const ChessBoard& board, int turn) {
             int color = ((row + col) % 2 == 0) ? 3 : 4; // Alternate colors for squares
             window.fillRectangle(x, y, squareSize, squareSize, color);
 
-            std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(BoardSquare(row, col));
+            std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(BoardSquare(row, col));
             if (pieceInfo.has_value()) {
                 printPiece(pieceInfo.value().getDisplay(), pieceInfo.value().getTeam(), x + squareSize / 2, y + squareSize / 2);
             }            

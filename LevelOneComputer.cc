@@ -5,12 +5,12 @@
 
 #include "Constants.h"
 #include "LevelOneComputer.h"
-#include "Board.h"
+#include "ChessBoard.h"
 
 
 LevelOneComputer::LevelOneComputer() : BasicComputerPlayer() {}
 
-std::vector<BoardMove> LevelOneComputer::getPossibleMoves(ChessBoard &board, Team team) const {
-    std::vector<BoardMove> possibleMoves = board.generateAllLegalMoves(team);
+std::vector<BoardMove> LevelOneComputer::getPossibleMoves(IChessBoard &chessBoard, Team team) const {
+    std::vector<BoardMove> possibleMoves = chessBoard.generateAllLegalMoves(team);
     return possibleMoves;
 }

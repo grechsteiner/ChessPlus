@@ -8,9 +8,9 @@
 
 #include "Constants.h"
 #include "Piece.h"
-#include "PieceCloneable.h"
+#include "Cloneable.h"
 
-class ChessBoard;
+class IChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -21,7 +21,7 @@ class BoardMove;
 class Pawn : public Cloneable<Piece, Pawn> {
 private:
     std::pair<int, int> pawnDirection;
-    std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     std::vector<BoardMove> createPromotionMoves(BoardMove const &move) const;
 public:
     explicit Pawn(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 1);

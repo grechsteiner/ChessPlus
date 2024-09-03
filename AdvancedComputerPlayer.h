@@ -8,15 +8,15 @@
 
 #include "ComputerPlayer.h"
 #include "Constants.h"
-#include "Board.h"
+#include "IChessBoard.h"
 
 
 
 class AdvancedComputerPlayer : public ComputerPlayer {
 private:
-    int getAlphaBetaBoardScore(ChessBoard& board, Team team) const;
-    std::vector<BoardMove> rankMoves(ChessBoard& board, std::vector<BoardMove> const &moves) const;
-    BoardMove getMoveImplementation(ChessBoard &board, Team team) const override;
+    int getAlphaBetaBoardScore(IChessBoard& chessBoard, Team team) const;
+    std::vector<BoardMove> rankMoves(IChessBoard& chessBoard, std::vector<BoardMove> const &moves) const;
+    BoardMove getMoveImplementation(IChessBoard &chessBoard, Team team) const override;
     int depth = 4;
 
 
@@ -27,7 +27,7 @@ private:
         ScoredBoardMove(int score, std::optional<BoardMove> boardMove = std::nullopt) : score(score), boardMove(boardMove) {}
     };
 
-    ScoredBoardMove alphaBetaSearch(ChessBoard &board, int currentDepth, Team team, int alpha, int beta) const;
+    ScoredBoardMove alphaBetaSearch(IChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const;
 public:
     AdvancedComputerPlayer() = default;
 };

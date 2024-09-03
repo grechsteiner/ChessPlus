@@ -11,28 +11,28 @@
 #include "PieceInfo.h"
 
 
-BoardMove AdvancedComputerPlayer::getMoveImplementation(ChessBoard &board, Team team) const {
-    return alphaBetaSearch(board, depth, team, -1000, 1000).boardMove.value();
+BoardMove AdvancedComputerPlayer::getMoveImplementation(IChessBoard &chessBoard, Team team) const {
+    return alphaBetaSearch(chessBoard, depth, team, -1000, 1000).boardMove.value();
 }
 
-AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &board, int currentDepth, Team team, int alpha, int beta) const {
+AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(IChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const {
 
     if (currentDepth == 0) {
-        if (board.isInStaleMate(team)) {
+        if (chessBoard.isInStaleMate(team)) {
             return ScoredBoardMove(0);
         }
-        return ScoredBoardMove(getAlphaBetaBoardScore(board, team));
+        return ScoredBoardMove(getAlphaBetaBoardScore(chessBoard, team));
     }
 
-    int bestScore = (team == board.getTeamOne()) ? -10000 : 10000;
+    int bestScore = (team == chessBoard.getTeamOne()) ? -10000 : 10000;
     std::optional<BoardMove> bestMove;
-    std::vector<BoardMove> allMoves = board.generateAllLegalMoves(team);
-    allMoves = rankMoves(board, allMoves);
-    if (team == board.getTeamOne()) {
+    std::vector<BoardMove> allMoves = chessBoard.generateAllLegalMoves(team);
+    allMoves = rankMoves(chessBoard, allMoves);
+    if (team == chessBoard.getTeamOne()) {
         for (BoardMove const &move : allMoves) {
-            board.makeMove(move);
-            int currentScore = alphaBetaSearch(board, currentDepth - 1, board.getTeamTwo(), alpha, beta).score;
-            board.undoMove();   
+            chessBoard.makeMove(move);
+            int currentScore = alphaBetaSearch(chessBoard, currentDepth - 1, chessBoard.getTeamTwo(), alpha, beta).score;
+            chessBoard.undoMove();   
             if (currentScore > bestScore) {
                 bestScore = currentScore;
                 bestMove = move;
@@ -46,9 +46,9 @@ AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(
 
     } else {
         for (BoardMove const &move : allMoves) {
-            board.makeMove(move);
-            int currentScore = alphaBetaSearch(board, currentDepth - 1, board.getTeamOne(), alpha, beta).score;
-            board.undoMove();    
+            chessBoard.makeMove(move);
+            int currentScore = alphaBetaSearch(chessBoard, currentDepth - 1, chessBoard.getTeamOne(), alpha, beta).score;
+            chessBoard.undoMove();    
             if (currentScore < bestScore) {
                 bestScore = currentScore;
                 bestMove = move;
@@ -63,22 +63,22 @@ AdvancedComputerPlayer::ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(
     }
 
     if (bestScore == 10000 || bestScore == -10000) {
-        if (board.isInStaleMate(team)) {
+        if (chessBoard.isInStaleMate(team)) {
             return ScoredBoardMove(0);
         }
-        return ScoredBoardMove(getAlphaBetaBoardScore(board, team));
+        return ScoredBoardMove(getAlphaBetaBoardScore(chessBoard, team));
     }
 
     return ScoredBoardMove(bestScore, bestMove);
 }
 
-std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(ChessBoard& board, std::vector<BoardMove> const &moves) const {
+std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(IChessBoard& chessBoard, std::vector<BoardMove> const &moves) const {
     std::vector<ScoredBoardMove> scoredBoardMoves;
 
     // Assign values to each move
     for (BoardMove const &move : moves) {
         int score = 0;
-        std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(move.getCaptureSquare());
+        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(move.getCaptureSquare());
         if (pieceInfo.has_value()) {
             score += pieceInfo.value().getPieceScore();
         }
@@ -120,17 +120,17 @@ std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(ChessBoard& board, std:
     return finalOrder;
 }
 
-int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team) const {
+int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard& chessBoard, Team team) const {
     int totalScore = 0;
 
-    for (BoardSquare const &boardSquare : board.getAllBoardSquares()) {
-        int numBoardRows = board.getNumRows();
-        int numBoardCols = board.getNumCols();
+    for (BoardSquare const &boardSquare : chessBoard.getAllBoardSquares()) {
+        int numBoardRows = chessBoard.getNumRows();
+        int numBoardCols = chessBoard.getNumCols();
 
 
-        std::optional<PieceInfo> pieceInfo = board.getPieceInfoAt(boardSquare);
+        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value()) {
-            if (pieceInfo.value().getTeam() == board.getTeamOne()) {
+            if (pieceInfo.value().getTeam() == chessBoard.getTeamOne()) {
                 totalScore += pieceInfo.value().getPieceScore() * 10;
                 // Advance bonus, only until row before pawns so no stupid sacrifice
                 switch (pieceInfo.value().getPieceDirection()) {
@@ -149,7 +149,7 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team)
                     default:
                         break;
                 }
-            } else if (pieceInfo.value().getTeam() == board.getTeamTwo()) {
+            } else if (pieceInfo.value().getTeam() == chessBoard.getTeamTwo()) {
                 totalScore -= pieceInfo.value().getPieceScore() * 10;
                 // Advance bonus, only until row before pawns so no stupid sacrifice
                 switch (pieceInfo.value().getPieceDirection()) {
@@ -175,8 +175,8 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard& board, Team team)
     }
 
     // Checkmate
-    if (board.isInCheckMate(team)) {
-        if (team == board.getTeamTwo()) {
+    if (chessBoard.isInCheckMate(team)) {
+        if (team == chessBoard.getTeamTwo()) {
             totalScore += 1000;
         } else {
             totalScore -= 1000;

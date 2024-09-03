@@ -7,16 +7,16 @@
 #include "LevelThreeComputer.h"
 #include "Constants.h"
 
-#include "Board.h"
+#include "ChessBoard.h"
 
 LevelThreeComputer::LevelThreeComputer() : BasicComputerPlayer() {}
 
-std::vector<BoardMove> LevelThreeComputer::getPossibleMoves(ChessBoard &board, Team team) const {
+std::vector<BoardMove> LevelThreeComputer::getPossibleMoves(IChessBoard &chessBoard, Team team) const {
 
-    std::vector<BoardMove> captureAvoidingMoves = board.generateCaptureAvoidingMoves(team);
+    std::vector<BoardMove> captureAvoidingMoves = chessBoard.generateCaptureAvoidingMoves(team);
     if (!captureAvoidingMoves.empty()) {
-        std::vector<BoardMove> capturingMoves = board.generateCapturingMoves(team);
-        std::vector<BoardMove> checkApplyMoves = board.generateCheckApplyingMoves(team);
+        std::vector<BoardMove> capturingMoves = chessBoard.generateCapturingMoves(team);
+        std::vector<BoardMove> checkApplyMoves = chessBoard.generateCheckApplyingMoves(team);
 
         std::vector<BoardMove> topMoves;
         for (BoardMove const & move : captureAvoidingMoves) {
@@ -36,8 +36,8 @@ std::vector<BoardMove> LevelThreeComputer::getPossibleMoves(ChessBoard &board, T
         return !topMoves.empty() ? topMoves : captureAvoidingMoves;
     }
 
-    std::vector<BoardMove> moves = board.generateCapturingMoves(team);
-    std::vector<BoardMove> checkApplyMoves = board.generateCheckApplyingMoves(team);
+    std::vector<BoardMove> moves = chessBoard.generateCapturingMoves(team);
+    std::vector<BoardMove> checkApplyMoves = chessBoard.generateCheckApplyingMoves(team);
     moves.insert(moves.end(), checkApplyMoves.begin(), checkApplyMoves.end());
-    return moves.empty() ? board.generateAllLegalMoves(team) : moves;
+    return moves.empty() ? chessBoard.generateAllLegalMoves(team) : moves;
 }

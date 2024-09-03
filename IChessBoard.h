@@ -1,7 +1,7 @@
-// ChessBoard.h
+// IChessBoard.h
 
-#ifndef ChessBoard_h
-#define ChessBoard_h
+#ifndef IChessBoard_h
+#define IChessBoard_h
 
 #include <vector>
 #include <stack>
@@ -17,7 +17,7 @@ class PieceInfo;
 /**
  * ChessBoard Interface
  */
-class ChessBoard {
+class IChessBoard {
 
 private:
     virtual std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
@@ -97,4 +97,4 @@ public:
 };
 
 
-#endif /* ChessBoard_h */
+#endif /* IChessBoard_h */

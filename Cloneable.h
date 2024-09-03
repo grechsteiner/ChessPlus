@@ -1,7 +1,7 @@
-// PieceCloneable.h
+// Cloneable.h
 
-#ifndef PieceCloneable_h
-#define PieceCloneable_h
+#ifndef Cloneable_h
+#define Cloneable_h
 
 #include <memory>
 
@@ -16,4 +16,4 @@ public:
     using Base::Base;
 };
 
-#endif /* PieceCloneable */
+#endif /* Cloneable */

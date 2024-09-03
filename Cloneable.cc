@@ -1,3 +1,3 @@
-// PieceCloneable.cc
+// Cloneable.cc
 
-#include "PieceCloneable.h"
+#include "Cloneable.h"

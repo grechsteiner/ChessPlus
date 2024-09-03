@@ -8,8 +8,8 @@
 #include "Pawn.h"
 #include "Constants.h"
 #include "Piece.h"
-#include "PieceCloneable.h"
-#include "ChessBoard.h"
+#include "Cloneable.h"
+#include "IChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
@@ -59,7 +59,7 @@ Pawn& Pawn::operator=(Pawn &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> Pawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)){
         int fromRow = fromSquare.getBoardRow();

@@ -7,8 +7,8 @@
 #include "Queen.h"
 #include "Constants.h"
 #include "Piece.h"
-#include "PieceCloneable.h"
-#include "ChessBoard.h"
+#include "Cloneable.h"
+#include "IChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
@@ -53,7 +53,7 @@ Queen& Queen::operator=(Queen &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> Queen::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Queen::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &queenDirection : queenDirections) {

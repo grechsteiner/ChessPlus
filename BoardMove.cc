@@ -7,7 +7,7 @@
 #include "BoardSquare.h"
 #include "Constants.h"
 #include "PieceInfo.h"
-#include "ChessBoard.h"
+#include "IChessBoard.h"
 
 
 // Basic ctor
@@ -89,25 +89,25 @@ bool BoardMove::operator==(BoardMove const &other) const {
         rookToSquare == other.rookToSquare;
 }
 
-void BoardMove::performRookCastle(ChessBoard &board, bool isUndo) const {
+void BoardMove::performRookCastle(IChessBoard &chessBoard, bool isUndo) const {
     if (moveType == MoveType::CASTLE && rookFromSquare.has_value() && rookToSquare.has_value()) {
         std::optional<PieceInfo> rookPieceInfo = isUndo 
-            ? board.getPieceInfoAt(rookToSquare.value()) 
-            : board.getPieceInfoAt(rookFromSquare.value());
+            ? chessBoard.getPieceInfoAt(rookToSquare.value()) 
+            : chessBoard.getPieceInfoAt(rookFromSquare.value());
         if (rookPieceInfo.has_value()) {
             bool hasRookMoved = isUndo ? false : true;
             if (isUndo) {
-                board.setPosition(rookFromSquare.value(), rookPieceInfo.value().getTeam(), rookPieceInfo.value().getPieceType(), rookPieceInfo.value().getPieceDirection(), hasRookMoved, rookPieceInfo.value().getPieceScore());
-                board.clearPosition(rookToSquare.value());
+                chessBoard.setPosition(rookFromSquare.value(), rookPieceInfo.value().getTeam(), rookPieceInfo.value().getPieceType(), rookPieceInfo.value().getPieceDirection(), hasRookMoved, rookPieceInfo.value().getPieceScore());
+                chessBoard.clearPosition(rookToSquare.value());
             } else {
-                board.setPosition(rookToSquare.value(), rookPieceInfo.value().getTeam(), rookPieceInfo.value().getPieceType(), rookPieceInfo.value().getPieceDirection(), hasRookMoved, rookPieceInfo.value().getPieceScore());
-                board.clearPosition(rookFromSquare.value());
+                chessBoard.setPosition(rookToSquare.value(), rookPieceInfo.value().getTeam(), rookPieceInfo.value().getPieceType(), rookPieceInfo.value().getPieceDirection(), hasRookMoved, rookPieceInfo.value().getPieceScore());
+                chessBoard.clearPosition(rookFromSquare.value());
             }
         }
     }
 }
 
-void BoardMove::makeBoardMove(ChessBoard &board) const {
+void BoardMove::makeBoardMove(IChessBoard &chessBoard) const {
 
     /*
      * Basic Stuff:
@@ -115,46 +115,46 @@ void BoardMove::makeBoardMove(ChessBoard &board) const {
      * Move piece to toSquare and set hasMoved = true
      * Clear fromSquare after moving piece
      */
-    board.clearPosition(captureSquare);
-    board.setPosition(toSquare, movedPieceInfo.getTeam(), movedPieceInfo.getPieceType(), movedPieceInfo.getPieceDirection(), true, movedPieceInfo.getPieceScore());
-    board.clearPosition(fromSquare);
+    chessBoard.clearPosition(captureSquare);
+    chessBoard.setPosition(toSquare, movedPieceInfo.getTeam(), movedPieceInfo.getPieceType(), movedPieceInfo.getPieceDirection(), true, movedPieceInfo.getPieceScore());
+    chessBoard.clearPosition(fromSquare);
 
     // Apply Promotion (default piece score for promoted piece, and set hasMoved = true)
     if (promotionPieceType.has_value()) {
-        board.setPosition(toSquare, movedPieceInfo.getTeam(), promotionPieceType.value(), movedPieceInfo.getPieceDirection(), true);                          
+        chessBoard.setPosition(toSquare, movedPieceInfo.getTeam(), promotionPieceType.value(), movedPieceInfo.getPieceDirection(), true);                          
     }
 
     // Apply Castle (rook part)
     if (moveType == MoveType::CASTLE) {
-        performRookCastle(board, false);
+        performRookCastle(chessBoard, false);
     }
 }
 
-void BoardMove::undoBoardMove(ChessBoard &board) const {
+void BoardMove::undoBoardMove(IChessBoard &chessBoard) const {
 
     /*
      * Basic Stuff
      * Move piece back (use saved movedPieceInfo)
      * Clear toSquare after moving piece back
      */
-    board.setPosition(fromSquare, movedPieceInfo.getTeam(), movedPieceInfo.getPieceType(), movedPieceInfo.getPieceDirection(), movedPieceInfo.getHasMoved(), movedPieceInfo.getPieceScore());
-    board.clearPosition(toSquare);
+    chessBoard.setPosition(fromSquare, movedPieceInfo.getTeam(), movedPieceInfo.getPieceType(), movedPieceInfo.getPieceDirection(), movedPieceInfo.getHasMoved(), movedPieceInfo.getPieceScore());
+    chessBoard.clearPosition(toSquare);
 
     // Place Captured Piece Back
     if (capturedPieceInfo.has_value()) {
-        board.setPosition(captureSquare, capturedPieceInfo.value().getTeam(), capturedPieceInfo.value().getPieceType(), capturedPieceInfo.value().getPieceDirection(), capturedPieceInfo.value().getHasMoved(), capturedPieceInfo.value().getPieceScore());    
+        chessBoard.setPosition(captureSquare, capturedPieceInfo.value().getTeam(), capturedPieceInfo.value().getPieceType(), capturedPieceInfo.value().getPieceDirection(), capturedPieceInfo.value().getHasMoved(), capturedPieceInfo.value().getPieceScore());    
     } else {
-        board.clearPosition(captureSquare);
+        chessBoard.clearPosition(captureSquare);
     }
     
     // Undo Promotion
     if (promotionPieceType.has_value()) {
-        board.setPosition(fromSquare, movedPieceInfo.getTeam(), movedPieceInfo.getPieceType(), movedPieceInfo.getPieceDirection(), movedPieceInfo.getHasMoved(), movedPieceInfo.getPieceScore());
+        chessBoard.setPosition(fromSquare, movedPieceInfo.getTeam(), movedPieceInfo.getPieceType(), movedPieceInfo.getPieceDirection(), movedPieceInfo.getHasMoved(), movedPieceInfo.getPieceScore());
     }
 
     // Undo Castle (rook part)
     if (moveType == MoveType::CASTLE) {
-        performRookCastle(board, true);
+        performRookCastle(chessBoard, true);
     }
 }
 

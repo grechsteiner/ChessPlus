@@ -8,7 +8,7 @@
 #include "Observer.h"
 #include "Game.h"
 
-#include "ChessBoard.h"
+#include "IChessBoard.h"
 
 class TextObserver : public Observer {
 private:
@@ -16,7 +16,7 @@ private:
     Game *game;
     void notifyImplementation() override;
     void printPiece(const std::string& str, Team color);
-    void printBoard(ChessBoard const& board, int turn);
+    void printBoard(IChessBoard const &chessBoard, int turn);
 public:
     TextObserver(std::ostream &out, Game *game);
     ~TextObserver();

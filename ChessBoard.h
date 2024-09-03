@@ -1,14 +1,14 @@
-// Board.h
+// ChessBoard.h
 
-#ifndef Board_h
-#define Board_h
+#ifndef ChessBoard_h
+#define ChessBoard_h
 
 #include <vector>
 #include <stack>
 #include <optional>
 #include <memory>
 
-#include "ChessBoard.h"
+#include "IChessBoard.h"
 #include "Constants.h"
 #include "BoardMove.h"
 #include "Piece.h"
@@ -18,9 +18,9 @@ class PieceInfo;
 
 
 /**
- * SmartChessBoard ChessBoard Class
+ * ChessBoard IChessBoard Class
  */
-class SmartChessBoard : public ChessBoard {
+class ChessBoard : public IChessBoard {
 
 private:
     int numRows;    // Initialize at construction time to avoid constantly getting size of vector
@@ -94,13 +94,13 @@ private:
     int getNumColsImpl() const override;
 
 public:
-    explicit SmartChessBoard(int numRows, int numCols);     // Behaviour undefined if either are negative
-    SmartChessBoard(SmartChessBoard const &other);
-    SmartChessBoard(SmartChessBoard &&other) noexcept;
-    SmartChessBoard& operator=(SmartChessBoard const &other);
-    SmartChessBoard& operator=(SmartChessBoard &&other) noexcept;
-    virtual ~SmartChessBoard() = default;
+    explicit ChessBoard(int numRows, int numCols);     // Behaviour undefined if either are negative
+    ChessBoard(ChessBoard const &other);
+    ChessBoard(ChessBoard &&other) noexcept;
+    ChessBoard& operator=(ChessBoard const &other);
+    ChessBoard& operator=(ChessBoard &&other) noexcept;
+    virtual ~ChessBoard() = default;
 };
 
 
-#endif /* Board_h */
+#endif /* ChessBoard_h */

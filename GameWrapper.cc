@@ -8,8 +8,8 @@
 #include "GraphicObserver.h"
 
 GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    board(SmartChessBoard(8, 8)),
-    game(board, in, out, errorOut), 
+    chessBoard(ChessBoard(8, 8)),
+    game(chessBoard, in, out, errorOut), 
     observers() 
     {
         observers.push_back(std::make_unique<TextObserver>(out, &game));

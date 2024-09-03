@@ -10,19 +10,18 @@
 
 #include "Constants.h"
 #include "Subject.h"
-#include "Board.h"
+#include "ChessBoard.h"
 #include "Input.h"
 #include "ErrorReporter.h"
 #include "ComputerPlayer.h"
-#include "ChessBoard.h"
-#include "ChessBoard.h"
+#include "IChessBoard.h"
 
 // (Color, totalScore, ComputerPlayer)
 using PlayerTuple = std::tuple<Team, double, std::unique_ptr<ComputerPlayer>>;
 
 class Game : public Subject {
 private:
-    ChessBoard &board;      // TODO: Can be smart pointer too
+    IChessBoard &chessBoard;      // TODO: Make owning unique_ptr
     std::unique_ptr<Input> input;
     std::unique_ptr<ErrorReporter> errorReporter;
     std::ostream &out;
@@ -58,15 +57,15 @@ private:
 
 
 public:
-    Game(ChessBoard &board, std::istream &in, std::ostream &out, std::ostream &errorOut);
+    Game(IChessBoard &chessBoard, std::istream &in, std::ostream &out, std::ostream &errorOut);
     void runGame();
 
 
     // Get state (observer pattern)
     GameState getGameState() const;
     const std::tuple<PlayerTuple, PlayerTuple>& getMainMenuState() const;
-    std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
-    std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
+    std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
+    std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
 };
 
 #endif /* Game_h */

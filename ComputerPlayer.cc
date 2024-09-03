@@ -3,11 +3,10 @@
 #include "Constants.h"
 #include "ComputerPlayer.h"
 #include "BoardMove.h"
-#include "Board.h"
-#include "ChessBoard.h"
+#include "IChessBoard.h"
 
 ComputerPlayer::ComputerPlayer() {}
 
-BoardMove ComputerPlayer::getMove(ChessBoard &board, Team team) const {
-    return getMoveImplementation(board, team);
+BoardMove ComputerPlayer::getMove(IChessBoard &chessBoard, Team team) const {
+    return getMoveImplementation(chessBoard, team);
 }

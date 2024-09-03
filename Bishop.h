@@ -9,9 +9,9 @@
 
 #include "Constants.h"
 #include "Piece.h"
-#include "PieceCloneable.h"
+#include "Cloneable.h"
 
-class ChessBoard;
+class IChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -22,7 +22,7 @@ class BoardMove;
 class Bishop : public Cloneable<Piece, Bishop> {
 private:
     static std::set<std::pair<int, int>> const bishopDirections;
-    std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
     explicit Bishop(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 3);
     Bishop(Bishop const &other);
