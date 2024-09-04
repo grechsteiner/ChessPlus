@@ -11,7 +11,7 @@
 #include "Constants.h"
 #include "Subject.h"
 #include "ChessBoard.h"
-#include "IInput.h"
+#include "IInputGetter.h"
 #include "IInvalidCommandReporter.h"
 #include "ComputerPlayer.h"
 #include "IChessBoard.h"

@@ -15,7 +15,7 @@
 
 #include "Constants.h"
 #include "Game.h"
-#include "ConsoleInput.h"
+#include "ConsoleInputGetter.h"
 #include "ConsoleInvalidCommandReporter.h"
 
 #include "ComputerPlayerFactory.h"
