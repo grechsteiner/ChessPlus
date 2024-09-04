@@ -6,15 +6,20 @@
 #include <string>
 
 
+/**
+ * Input Class
+ * Abstract base class for retrieving input to the program
+ */
 class Input {
 private:
-    virtual std::string getInputImpl() = 0;
     virtual bool isInputAvailableImpl() const = 0;
+    virtual std::string getInputImpl() const = 0;
+    
 public:
-    Input() = default;
-    virtual ~Input() = default;
-    std::string getInput();
     bool isInputAvailable() const;
+    std::string getInput() const;
+
+    virtual ~Input() = default;
 };
 
 #endif /* Input_h */

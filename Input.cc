@@ -4,10 +4,6 @@
 
 #include "Input.h"
 
-std::string Input::getInput() {
-    return getInputImpl();
-}
 
-bool Input::isInputAvailable() const {
-    return isInputAvailableImpl();
-}
+bool Input::isInputAvailable() const { return isInputAvailableImpl(); }
+std::string Input::getInput() const { return getInputImpl(); }

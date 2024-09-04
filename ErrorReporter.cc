@@ -4,6 +4,5 @@
 
 #include "ErrorReporter.h"
 
-void ErrorReporter::reportError(std::string const &errorMessage) {
-    reportErrorImpl(errorMessage);
-}
+
+void ErrorReporter::reportError(std::string const &errorMessage) { reportErrorImpl(errorMessage); }

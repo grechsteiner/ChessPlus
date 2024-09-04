@@ -23,7 +23,6 @@ class Game : public Subject {
 private:
     std::unique_ptr<IChessBoard> chessBoard;
 
-    std::ostream &out;
     std::unique_ptr<Input> input;
     std::unique_ptr<ErrorReporter> errorReporter;
     

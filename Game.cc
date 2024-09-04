@@ -30,7 +30,7 @@
 
 
 Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    chessBoard(std::make_unique<ChessBoard>(ChessBoard(8, 8))), out(out), input(std::make_unique<CommandLineInput>(in)), errorReporter(std::make_unique<CommandLineErrorReporter>(errorOut)) {
+    chessBoard(std::make_unique<ChessBoard>(ChessBoard(8, 8))), input(std::make_unique<CommandLineInput>(in)), errorReporter(std::make_unique<CommandLineErrorReporter>(errorOut)) {
     applyStandardSetup();
 }
 

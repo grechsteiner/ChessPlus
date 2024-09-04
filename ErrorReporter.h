@@ -6,13 +6,17 @@
 #include <string>
 
 
+/**
+ * 
+ * Abstract base class for reporting invalid commands
+ */
 class ErrorReporter {
 private:
     virtual void reportErrorImpl(std::string const &errorMessage) = 0;
 public:
-    ErrorReporter() = default;
-    virtual ~ErrorReporter() = default;
     void reportError(std::string const &errorMessage);
+
+    virtual ~ErrorReporter() = default;
 };
 
 

@@ -3,18 +3,22 @@
 #ifndef CommandLineErrorReporter_h
 #define CommandLineErrorReporter_h
 
-#include <string>
 #include <iostream>
+#include <string>
 
 #include "ErrorReporter.h"
 
 
-class CommandLineErrorReporter : public ErrorReporter {
+/**
+ * CommandLineErrorReporter ErrorReporter Class
+ * Derived ErrorReporter Class for reporting errors to the console
+ */
+class CommandLineErrorReporter final : public ErrorReporter {
 private:
     std::ostream &out;
     void reportErrorImpl(std::string const &errorMessage) override;
 public:
-    CommandLineErrorReporter(std::ostream &out);
+    explicit CommandLineErrorReporter(std::ostream &out);
 };
 
 

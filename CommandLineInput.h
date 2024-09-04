@@ -3,19 +3,24 @@
 #ifndef CommandLineInput_h
 #define CommandLineInput_h
 
-#include <iostream>
 #include <string>
+#include <iostream>
 
 #include "Input.h"
 
 
-class CommandLineInput : public Input {
+/**
+ * CommandLineInput Input Class
+ * Derived Input Class for getting input from the console
+ */
+class CommandLineInput final : public Input {
 private:
     std::istream &in;
-    std::string getInputImpl() override;
     bool isInputAvailableImpl() const override;
+    std::string getInputImpl() const override;
+    
 public:
-    CommandLineInput(std::istream &in);
+    explicit CommandLineInput(std::istream &in);
 };
 
 

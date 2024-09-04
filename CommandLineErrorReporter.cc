@@ -1,10 +1,13 @@
 // CommandLineErrorReporter.cc
 
+#include <iostream>
 #include <string>
 
 #include "CommandLineErrorReporter.h"
 
-CommandLineErrorReporter::CommandLineErrorReporter(std::ostream &out) : ErrorReporter(), out(out) {}
+
+// Basic ctor
+CommandLineErrorReporter::CommandLineErrorReporter(std::ostream &out) : out(out) {}
 
 void CommandLineErrorReporter::reportErrorImpl(std::string const &errorMessage) {
     out << "Error: " << errorMessage << std::endl;
