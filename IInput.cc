@@ -1,9 +1,9 @@
-// Input.cc
+// IInputGetter.cc
 
 #include <string>
 
-#include "Input.h"
+#include "IInputGetter.h"
 
 
-bool Input::isInputAvailable() const { return isInputAvailableImpl(); }
-std::string Input::getInput() const { return getInputImpl(); }
+bool IInputGetter::isInputAvailable() const { return isInputAvailableImpl(); }
+std::string IInputGetter::getInput() const { return getInputImpl(); }

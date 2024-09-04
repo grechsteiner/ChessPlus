@@ -1,16 +1,15 @@
-// Input.h
+// IInputGetter.h
 
-#ifndef Input_h
-#define Input_h
+#ifndef IInputGetter_h
+#define IInputGetter_h
 
 #include <string>
 
 
 /**
- * Input Class
- * Abstract base class for retrieving input to the program
+ * InputGetter Interface Class
  */
-class Input {
+class IInputGetter {
 private:
     virtual bool isInputAvailableImpl() const = 0;
     virtual std::string getInputImpl() const = 0;
@@ -19,7 +18,7 @@ public:
     bool isInputAvailable() const;
     std::string getInput() const;
 
-    virtual ~Input() = default;
+    virtual ~IInputGetter() = default;
 };
 
-#endif /* Input_h */
+#endif /* IInputGetter_h */

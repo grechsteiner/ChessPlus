@@ -1,25 +1,24 @@
-// CommandLineErrorReporter.h
+// ConsoleInvalidCommandReporter.h
 
-#ifndef CommandLineErrorReporter_h
-#define CommandLineErrorReporter_h
+#ifndef ConsoleInvalidCommandReporter_h
+#define ConsoleInvalidCommandReporter_h
 
 #include <iostream>
 #include <string>
 
-#include "ErrorReporter.h"
+#include "IInvalidCommandReporter.h"
 
 
 /**
- * CommandLineErrorReporter ErrorReporter Class
- * Derived ErrorReporter Class for reporting errors to the console
+ * ConsoleInvalidCommandReporter InvalidCommandReporter  Class
  */
-class CommandLineErrorReporter final : public ErrorReporter {
+class ConsoleInvalidCommandReporter final : public IInvalidCommandReporter {
 private:
     std::ostream &out;
     void reportErrorImpl(std::string const &errorMessage) override;
 public:
-    explicit CommandLineErrorReporter(std::ostream &out);
+    explicit ConsoleInvalidCommandReporter(std::ostream &out);
 };
 
 
-#endif /* CommandLineErrorReporter_h */
+#endif /* ConsoleInvalidCommandReporter_h */

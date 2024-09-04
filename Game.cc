@@ -15,8 +15,8 @@
 
 #include "Constants.h"
 #include "Game.h"
-#include "CommandLineInput.h"
-#include "CommandLineErrorReporter.h"
+#include "ConsoleInput.h"
+#include "ConsoleInvalidCommandReporter.h"
 
 #include "ComputerPlayerFactory.h"
 #include "ComputerPlayer.h"
@@ -30,7 +30,7 @@
 
 
 Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    chessBoard(std::make_unique<ChessBoard>(ChessBoard(8, 8))), input(std::make_unique<CommandLineInput>(in)), errorReporter(std::make_unique<CommandLineErrorReporter>(errorOut)) {
+    chessBoard(std::make_unique<ChessBoard>(ChessBoard(8, 8))), input(std::make_unique<ConsoleInputGetter>(in)), errorReporter(std::make_unique<ConsoleInvalidCommandReporter>(errorOut)) {
     applyStandardSetup();
 }
 

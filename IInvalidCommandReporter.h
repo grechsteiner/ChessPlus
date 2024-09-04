@@ -1,23 +1,22 @@
-// ErrorReporter.h
+// IInvalidCommandReporter.h
 
-#ifndef ErrorReporter_h
-#define ErrorReporter_h
+#ifndef IInvalidCommandReporter_h
+#define IInvalidCommandReporter_h
 
 #include <string>
 
 
 /**
- * 
- * Abstract base class for reporting invalid commands
+ * InvalidCommandReporter Interface Class
  */
-class ErrorReporter {
+class IInvalidCommandReporter {
 private:
     virtual void reportErrorImpl(std::string const &errorMessage) = 0;
 public:
     void reportError(std::string const &errorMessage);
 
-    virtual ~ErrorReporter() = default;
+    virtual ~IInvalidCommandReporter() = default;
 };
 
 
-#endif /* ErrorReporter_h */
+#endif /* IInvalidCommandReporter_h */

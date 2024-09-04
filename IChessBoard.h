@@ -16,7 +16,7 @@ class PieceInfo;
 
 
 /**
- * ChessBoard Interface
+ * ChessBoard Interface Class
  */
 class IChessBoard {
 

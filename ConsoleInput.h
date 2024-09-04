@@ -1,27 +1,26 @@
-// CommandLineInput.h
+// ConsoleInputGetter.h
 
-#ifndef CommandLineInput_h
-#define CommandLineInput_h
+#ifndef ConsoleInputGetter_h
+#define ConsoleInputGetter_h
 
 #include <string>
 #include <iostream>
 
-#include "Input.h"
+#include "IInputGetter.h"
 
 
 /**
- * CommandLineInput Input Class
- * Derived Input Class for getting input from the console
+ * ConsoleInputGetter Input Class
  */
-class CommandLineInput final : public Input {
+class ConsoleInputGetter final : public IInputGetter {
 private:
     std::istream &in;
     bool isInputAvailableImpl() const override;
     std::string getInputImpl() const override;
     
 public:
-    explicit CommandLineInput(std::istream &in);
+    explicit ConsoleInputGetter(std::istream &in);
 };
 
 
-#endif /* CommandLineInput_h */
+#endif /* ConsoleInputGetter_h */

@@ -11,8 +11,8 @@
 #include "Constants.h"
 #include "Subject.h"
 #include "ChessBoard.h"
-#include "Input.h"
-#include "ErrorReporter.h"
+#include "IInput.h"
+#include "IInvalidCommandReporter.h"
 #include "ComputerPlayer.h"
 #include "IChessBoard.h"
 
@@ -23,8 +23,8 @@ class Game : public Subject {
 private:
     std::unique_ptr<IChessBoard> chessBoard;
 
-    std::unique_ptr<Input> input;
-    std::unique_ptr<ErrorReporter> errorReporter;
+    std::unique_ptr<IInputGetter> input;
+    std::unique_ptr<IInvalidCommandReporter> errorReporter;
     
 
     GameState gameState = GameState::MAIN_MENU;
