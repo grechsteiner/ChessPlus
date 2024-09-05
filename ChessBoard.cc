@@ -136,10 +136,9 @@ void ChessBoard::performMove(BoardMove const &boardMove) {
 bool ChessBoard::doesMoveApplyCheck(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<ChessBoard*>(this)->performMove(boardMove);
-        bool doesMoveApplyCheck = isInCheck(getOtherTeam(movedPieceInfo.value().getTeam()));
-        const_cast<ChessBoard*>(this)->undoMove();
-        return doesMoveApplyCheck;
+        ChessBoard temp(*this);
+        temp.performMove(boardMove);
+        return temp.isInCheck(getOtherTeam(movedPieceInfo.value().getTeam()));
     }
     assert(false);
 }
@@ -156,10 +155,9 @@ bool ChessBoard::doesMoveCapturePiece(BoardMove const &boardMove) const {
 bool ChessBoard::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<ChessBoard*>(this)->performMove(boardMove);
-        bool doesMoveLeavePieceAttacked = generateCapturingMoves(getOtherTeam(movedPieceInfo.value().getTeam())).empty();
-        const_cast<ChessBoard*>(this)->undoMove();
-        return doesMoveLeavePieceAttacked;
+        ChessBoard temp(*this);
+        temp.performMove(boardMove);
+        return temp.generateCapturingMoves(getOtherTeam(movedPieceInfo.value().getTeam())).empty();
     } 
     assert(false);
 }
@@ -167,10 +165,9 @@ bool ChessBoard::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
 bool ChessBoard::doesMoveLeaveTeamInCheck(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
-        const_cast<ChessBoard*>(this)->performMove(boardMove);
-        bool isInCheckAfterMove = isInCheck(movedPieceInfo.value().getTeam());
-        const_cast<ChessBoard*>(this)->undoMove();
-        return isInCheckAfterMove;
+        ChessBoard temp(*this);
+        temp.performMove(boardMove);
+        return temp.isInCheck(movedPieceInfo.value().getTeam());
     }
     assert(false);
 } 
