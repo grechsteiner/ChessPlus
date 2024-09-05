@@ -133,6 +133,20 @@ void ChessBoard::performMove(BoardMove const &boardMove) {
     clearRedoMoves();                       // Clear redo moves (can't redo after making a move)
 }
 
+void ChessBoard::performUndoMove() {
+    BoardMove lastMove = completedMoves.top();      // Get the last made move
+    completedMoves.pop();                           // Pop it off the completed moves stack
+    lastMove.undoBoardMove(*this);                  // Undo the move
+    redoMoves.push(lastMove);                       // Push it to the redo moves stack
+}
+
+void ChessBoard::performRedoMove() {
+    BoardMove lastUndoneMove = redoMoves.top();     // Get the last move to be undone
+    redoMoves.pop();                                // Pop it off the redo moves stack
+    lastUndoneMove.makeBoardMove(*this);            // Apply the move
+    completedMoves.push(lastUndoneMove);            // Push it to the completed moves stack
+}
+
 bool ChessBoard::doesMoveApplyCheck(BoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
@@ -363,25 +377,19 @@ bool ChessBoard::makeMoveImpl(BoardMove const &boardMove) {
 bool ChessBoard::undoMoveImpl() {
     if (completedMoves.empty()) {
         return false;
+    } else {
+        performUndoMove();
+        return true;
     }
-
-    BoardMove lastMove = completedMoves.top();      // Get the last made move
-    completedMoves.pop();                           // Pop it off the completed moves stack
-    lastMove.undoBoardMove(*this);                  // Undo the move
-    redoMoves.push(lastMove);                       // Push it to the redo moves stack
-    return true;
 }
 
 bool ChessBoard::redoMoveImpl() {
     if (redoMoves.empty()) {
         return false;
+    } else {
+        performRedoMove();
+        return true;
     }
-
-    BoardMove lastUndoneMove = redoMoves.top();     // Get the last move to be undone
-    redoMoves.pop();                                // Pop it off the redo moves stack
-    lastUndoneMove.makeBoardMove(*this);            // Apply the move
-    completedMoves.push(lastUndoneMove);            // Push it to the completed moves stack
-    return true;
 }
 
 std::optional<BoardMove> ChessBoard::getLastCompletedMoveImpl() const {

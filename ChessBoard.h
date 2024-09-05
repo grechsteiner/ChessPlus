@@ -47,7 +47,10 @@ private:
 
     bool canMakeMove(Team team) const;
     bool isMoveValid(BoardMove const &boardMove) const;
+
     void performMove(BoardMove const &boardMove);   // Does not perform any checks of whether of not move is legal
+    void performUndoMove();                         // Does not perform any checks on if move is available to be undone
+    void performRedoMove();                         // Does not perform any checks on if move is available to be redone
 
     bool doesMoveApplyCheck(BoardMove const &boardMove) const;
     bool doesMoveCapturePiece(BoardMove const &boardMove) const;
@@ -82,8 +85,8 @@ private:
 
     std::optional<BoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const override;
     bool makeMoveImpl(BoardMove const &boardMove) override;     // True if move is legal move on board (only performs move if legal)         
-    bool undoMoveImpl() override;                               // True if move is available to be undone
-    bool redoMoveImpl() override;                               // True if move is available to be redone
+    bool undoMoveImpl() override;                               // True if move is available to be undone (only performs undo if move available to be undone)
+    bool redoMoveImpl() override;                               // True if move is available to be redone (only performs redo if move available to be redone)
 
     std::optional<BoardMove> getLastCompletedMoveImpl() const override;
     std::stack<BoardMove> const& getAllCompletedMovesImpl() const override;
