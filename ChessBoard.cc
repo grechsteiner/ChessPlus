@@ -128,9 +128,9 @@ bool ChessBoard::isMoveValid(BoardMove const &boardMove) const {
 }
 
 void ChessBoard::performMove(BoardMove const &boardMove) {
-    boardMove.makeBoardMove(*this);         // Apply the move
-    completedMoves.push(boardMove);         // Track it for undoing 
-    clearRedoMoves();                       // Clear redo moves (can't redo after making a move)
+    boardMove.makeBoardMove(*this);                 // Apply the move
+    completedMoves.push(boardMove);                 // Track it for undoing 
+    clearRedoMoves();                               // Clear redo moves (can't redo after making a move)
 }
 
 void ChessBoard::performUndoMove() {
