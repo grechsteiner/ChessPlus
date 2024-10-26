@@ -106,5 +106,6 @@
     "**/*.exe": true,
     "**/*.out": true,
     "**/*.app": true
-}
+},
+"C_Cpp.default.compilerPath": "/usr/bin/clang"
 }
