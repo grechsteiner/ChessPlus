@@ -350,6 +350,7 @@ void ChessBoard::clearBoardImpl() {
     clearRedoMoves();
 }
 
+// TODO: This will need to be changed with the upcoming changes to BoadMove class
 std::optional<BoardMove> ChessBoard::createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { 
     if (!isSquareOnBoard(fromSquare)) {
         return std::nullopt;
