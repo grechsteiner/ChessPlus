@@ -6,14 +6,14 @@
 #include "BoardMove.h"
 #include "BoardSquare.h"
 #include "Constants.h"
-#include "PieceInfo.h"
+#include "PieceData.h"
 #include "IChessBoard.h"
 
 
 // Basic ctor
 BoardMove::BoardMove(
-    MoveType moveType, PieceInfo const &movedPieceInfo,
-    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo,
+    MoveType moveType, PieceData const &movedPieceInfo,
+    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo,
     std::optional<PieceType> promotionPieceType, std::optional<BoardSquare> const &rookFromSquare, std::optional<BoardSquare> const &rookToSquare) :
     moveType(moveType), movedPieceInfo(movedPieceInfo),
     fromSquare(fromSquare), toSquare(toSquare), captureSquare(captureSquare), capturedPieceInfo(capturedPieceInfo),
@@ -22,8 +22,8 @@ BoardMove::BoardMove(
 
 // Static
 BoardMove BoardMove::createBasicMove(
-    MoveType moveType, PieceInfo const &movedPieceInfo, 
-    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo) {
+    MoveType moveType, PieceData const &movedPieceInfo, 
+    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo) {
     return BoardMove(
         moveType, movedPieceInfo,
         fromSquare, toSquare, captureSquare, capturedPieceInfo,
@@ -33,8 +33,8 @@ BoardMove BoardMove::createBasicMove(
 // Static
 BoardMove BoardMove::createPromotionMove(
     PieceType promotionPieceType, 
-    MoveType moveType, PieceInfo const &movedPieceInfo, 
-    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo) {
+    MoveType moveType, PieceData const &movedPieceInfo, 
+    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo) {
     return BoardMove(
         moveType, movedPieceInfo,
         fromSquare, toSquare, captureSquare, capturedPieceInfo,
@@ -44,8 +44,8 @@ BoardMove BoardMove::createPromotionMove(
 // Static
 BoardMove BoardMove::createCastleMove(
     BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare, 
-    MoveType moveType, PieceInfo const &movedPieceInfo, 
-    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo) {
+    MoveType moveType, PieceData const &movedPieceInfo, 
+    BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo) {
     return BoardMove(
         moveType, movedPieceInfo,
         fromSquare, toSquare, captureSquare, capturedPieceInfo,
@@ -91,7 +91,7 @@ bool BoardMove::operator==(BoardMove const &other) const {
 
 void BoardMove::performRookCastle(IChessBoard &chessBoard, bool isUndo) const {
     if (moveType == MoveType::CASTLE && rookFromSquare.has_value() && rookToSquare.has_value()) {
-        std::optional<PieceInfo> rookPieceInfo = isUndo 
+        std::optional<PieceData> rookPieceInfo = isUndo 
             ? chessBoard.getPieceInfoAt(rookToSquare.value()) 
             : chessBoard.getPieceInfoAt(rookFromSquare.value());
         if (rookPieceInfo.has_value()) {
@@ -159,12 +159,12 @@ void BoardMove::undoBoardMove(IChessBoard &chessBoard) const {
 }
 
 MoveType BoardMove::getMoveType() const { return moveType; }
-PieceInfo const& BoardMove::getMovedPieceInfo() const { return movedPieceInfo; }
+PieceData const& BoardMove::getMovedPieceInfo() const { return movedPieceInfo; }
 
 BoardSquare const& BoardMove::getFromSquare() const { return fromSquare; }
 BoardSquare const& BoardMove::getToSquare() const { return toSquare; }
 BoardSquare const& BoardMove::getCaptureSquare() const { return captureSquare; }
-std::optional<PieceInfo> BoardMove::getCapturedPieceInfo() const { return capturedPieceInfo; }
+std::optional<PieceData> BoardMove::getCapturedPieceInfo() const { return capturedPieceInfo; }
 
 std::optional<PieceType> BoardMove::getPromotionPieceType() const { return promotionPieceType; }
 std::optional<BoardSquare> BoardMove::getRookFromSquare() const { return rookFromSquare; }

@@ -12,7 +12,7 @@
 
 class BoardSquare;
 class BoardMove;
-class PieceInfo;
+class PieceData;
 
 
 /**
@@ -23,7 +23,7 @@ class IChessBoard {
 private:
     virtual std::unique_ptr<IChessBoard> cloneImpl() const = 0;
 
-    virtual std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
+    virtual std::optional<PieceData> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
     virtual std::vector<BoardSquare> getAllBoardSquaresImpl() const = 0;
 
     virtual bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const = 0;
@@ -64,7 +64,7 @@ public:
     std::unique_ptr<IChessBoard> clone() const;
     virtual ~IChessBoard() = default;
 
-    std::optional<PieceInfo> getPieceInfoAt(BoardSquare const &boardSquare) const;
+    std::optional<PieceData> getPieceInfoAt(BoardSquare const &boardSquare) const;
     std::vector<BoardSquare> getAllBoardSquares() const;
 
     bool isSquareOnBoard(BoardSquare const &boardSquare) const;

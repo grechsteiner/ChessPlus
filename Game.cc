@@ -502,7 +502,7 @@ bool Game::isBoardInProperSetup() const {
     int bottomRow = chessBoard->getNumRows() - 1;
 
     for (BoardSquare const &boardSquare : chessBoard->getAllBoardSquares()) {
-        std::optional<PieceInfo> pieceInfo = chessBoard->getPieceInfoAt(boardSquare);
+        std::optional<PieceData> pieceInfo = chessBoard->getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value()) {
             if (pieceInfo.value().getPieceType() == PieceType::KING) {
                 Team team = pieceInfo.value().getTeam();

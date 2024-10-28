@@ -1,4 +1,4 @@
-// PieceInfo.h
+// PieceData.h
 
 #ifndef PieceInfo_h
 #define PieceInfo_h
@@ -9,10 +9,10 @@
 
 
 /**
- * PieceInfo Class
+ * PieceData Class
  * Represents all the data pertaining to a piece
  */
-class PieceInfo final {
+class PieceData final {
 
 private:
     PieceType pieceType;
@@ -24,14 +24,14 @@ private:
     std::string display;
 
 public:
-    explicit PieceInfo(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display);
-    PieceInfo(PieceInfo const &other) = default;
-    PieceInfo(PieceInfo &&other) noexcept;
-    PieceInfo& operator=(const PieceInfo& other) = default;
-    PieceInfo& operator=(PieceInfo&& other) noexcept;
-    ~PieceInfo() = default;
+    explicit PieceData(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display);
+    PieceData(PieceData const &other) = default;
+    PieceData(PieceData &&other) noexcept;
+    PieceData& operator=(const PieceData& other) = default;
+    PieceData& operator=(PieceData&& other) noexcept;
+    ~PieceData() = default;
 
-    bool operator==(PieceInfo const &other) const;
+    bool operator==(PieceData const &other) const;
 
     PieceType getPieceType() const;
     Team getTeam() const;
@@ -43,4 +43,4 @@ public:
 };
 
 
-#endif /* PieceInfo_h */
+#endif /* PieceData_h */

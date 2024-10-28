@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "Constants.h"
-#include "PieceInfo.h"
+#include "PieceData.h"
 
 class IChessBoard;
 class BoardSquare;
@@ -31,13 +31,13 @@ protected:
     Piece& operator=(Piece const &other) = default;
     Piece& operator=(Piece &&other) noexcept;
 
-    PieceInfo pieceInfo;
+    PieceData pieceInfo;
 
 public:
     std::vector<BoardMove> getMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
     std::unique_ptr<Piece> clone() const;
     
-    PieceInfo const& getPieceInfo() const;
+    PieceData const& getPieceInfo() const;
 
     virtual ~Piece() = default;
 };

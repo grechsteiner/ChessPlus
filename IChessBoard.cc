@@ -9,12 +9,12 @@
 #include "Constants.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
-#include "PieceInfo.h"
+#include "PieceData.h"
 
 
 std::unique_ptr<IChessBoard> IChessBoard::clone() const { return cloneImpl(); }
 
-std::optional<PieceInfo> IChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
+std::optional<PieceData> IChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
 std::vector<BoardSquare> IChessBoard::getAllBoardSquares() const { return getAllBoardSquaresImpl(); }
 
 bool IChessBoard::isSquareOnBoard(BoardSquare const &boardSquare) const { return isSquareOnBoardImpl(boardSquare); }

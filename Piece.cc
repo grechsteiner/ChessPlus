@@ -6,7 +6,7 @@
 
 #include "Piece.h"
 #include "Constants.h"
-#include "PieceInfo.h"
+#include "PieceData.h"
 #include "IChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
@@ -14,7 +14,7 @@
 
 // Basic ctor
 Piece::Piece(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display) :
-    pieceInfo(PieceInfo(pieceType, team, pieceDirection, hasMoved, pieceScore, image, display)) {}
+    pieceInfo(PieceData(pieceType, team, pieceDirection, hasMoved, pieceScore, image, display)) {}
 
 // Move ctor
 Piece::Piece(Piece &&other) noexcept :
@@ -31,4 +31,4 @@ Piece& Piece::operator=(Piece &&other) noexcept {
 std::vector<BoardMove> Piece::getMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const { return getMovesImpl(chessBoard, fromSquare, onlyAttackingMoves); }
 std::unique_ptr<Piece> Piece::clone() const { return cloneImpl(); }
 
-PieceInfo const& Piece::getPieceInfo() const { return pieceInfo; }
+PieceData const& Piece::getPieceInfo() const { return pieceInfo; }

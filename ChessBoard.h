@@ -15,7 +15,7 @@
 #include "Piece.h"
 
 class BoardSquare;
-class PieceInfo;
+class PieceData;
 
 
 /**
@@ -59,7 +59,7 @@ private:
 
 
     /* ChessBoard Interface */
-    std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
+    std::optional<PieceData> getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
     std::vector<BoardSquare> getAllBoardSquaresImpl() const override;
 
     bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const override;

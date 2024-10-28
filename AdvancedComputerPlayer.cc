@@ -10,7 +10,7 @@
 
 #include "AdvancedComputerPlayer.h"
 #include "MoveShuffler.h"
-#include "PieceInfo.h"
+#include "PieceData.h"
 
 
 BoardMove AdvancedComputerPlayer::getMoveImpl(IChessBoard const &chessBoard, Team team) const {
@@ -81,7 +81,7 @@ std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(IChessBoard const &ches
     // Assign values to each move
     for (BoardMove const &move : moves) {
         int score = 0;
-        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(move.getCaptureSquare());
+        std::optional<PieceData> pieceInfo = chessBoard.getPieceInfoAt(move.getCaptureSquare());
         if (pieceInfo.has_value()) {
             score += pieceInfo.value().getPieceScore();
         }
@@ -131,7 +131,7 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard const &chessBoard
         int numBoardCols = chessBoard.getNumCols();
 
 
-        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(boardSquare);
+        std::optional<PieceData> pieceInfo = chessBoard.getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value()) {
             if (pieceInfo.value().getTeam() == chessBoard.getTeamOne()) {
                 totalScore += pieceInfo.value().getPieceScore() * 10;

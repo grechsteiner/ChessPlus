@@ -15,7 +15,7 @@
 #include "BoardSquare.h"
 #include "BoardMove.h"
 #include "Piece.h"
-#include "PieceInfo.h"
+#include "PieceData.h"
 #include "ChessPieceFactory.h"
 
 
@@ -104,7 +104,7 @@ std::vector<BoardMove> ChessBoard::generateAllPseudoLegalMovesAtSquare(BoardSqua
 std::vector<BoardMove> ChessBoard::generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const {
     std::vector<BoardMove> boardMoves;
     for (BoardSquare const &boardSquare : getAllBoardSquares()) {
-        std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
+        std::optional<PieceData> pieceInfo = getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value() && pieceInfo.value().getTeam() == team) {
             std::vector<BoardMove> pieceBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
             boardMoves.insert(boardMoves.end(), pieceBoardMoves.begin(), pieceBoardMoves.end());
@@ -148,7 +148,7 @@ void ChessBoard::performRedoMove() {
 }
 
 bool ChessBoard::doesMoveApplyCheck(BoardMove const &boardMove) const {
-    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    std::optional<PieceData> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         ChessBoard temp(*this);
         temp.performMove(boardMove);
@@ -158,8 +158,8 @@ bool ChessBoard::doesMoveApplyCheck(BoardMove const &boardMove) const {
 }
 
 bool ChessBoard::doesMoveCapturePiece(BoardMove const &boardMove) const {
-    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
-    std::optional<PieceInfo> attackedPieceInfo = getPieceInfoAt(boardMove.getCaptureSquare());
+    std::optional<PieceData> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    std::optional<PieceData> attackedPieceInfo = getPieceInfoAt(boardMove.getCaptureSquare());
     if (movedPieceInfo.has_value()) {
         return attackedPieceInfo.has_value() && attackedPieceInfo.value().getTeam() != movedPieceInfo.value().getTeam();
     }
@@ -167,7 +167,7 @@ bool ChessBoard::doesMoveCapturePiece(BoardMove const &boardMove) const {
 }
 
 bool ChessBoard::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
-    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    std::optional<PieceData> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         ChessBoard temp(*this);
         temp.performMove(boardMove);
@@ -177,7 +177,7 @@ bool ChessBoard::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
 }
 
 bool ChessBoard::doesMoveLeaveTeamInCheck(BoardMove const &boardMove) const {
-    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    std::optional<PieceData> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         ChessBoard temp(*this);
         temp.performMove(boardMove);
@@ -189,9 +189,9 @@ bool ChessBoard::doesMoveLeaveTeamInCheck(BoardMove const &boardMove) const {
 
 #pragma mark - ChessBoard Interface
 
-std::optional<PieceInfo> ChessBoard::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
+std::optional<PieceData> ChessBoard::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
     return isSquareOnBoard(boardSquare) && grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] != nullptr
-        ? std::make_optional<PieceInfo>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceInfo())
+        ? std::make_optional<PieceData>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceInfo())
         : std::nullopt;
 }
 
@@ -249,7 +249,7 @@ bool ChessBoard::isSquareAttackedImpl(BoardSquare const &boardSquare, Team ownTe
 
 bool ChessBoard::isInCheckImpl(Team team) const {
     for (BoardSquare const &boardSquare : getAllBoardSquares()) {
-        std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
+        std::optional<PieceData> pieceInfo = getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value() && pieceInfo.value().getPieceType() == PieceType::KING && pieceInfo.value().getTeam() == team) {
             if (isSquareAttacked(boardSquare, team)) {
                 return true;

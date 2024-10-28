@@ -54,7 +54,7 @@ void GraphicObserver::printBoard(const IChessBoard& chessBoard, int turn) {
             int color = ((row + col) % 2 == 0) ? 3 : 4; // Alternate colors for squares
             window.fillRectangle(x, y, squareSize, squareSize, color);
 
-            std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(BoardSquare(row, col));
+            std::optional<PieceData> pieceInfo = chessBoard.getPieceInfoAt(BoardSquare(row, col));
             if (pieceInfo.has_value()) {
                 printPiece(pieceInfo.value().getDisplay(), pieceInfo.value().getTeam(), x + squareSize / 2, y + squareSize / 2);
             }            

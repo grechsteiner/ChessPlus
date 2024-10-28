@@ -137,7 +137,7 @@ std::vector<BoardMove> King::getMovesImpl(IChessBoard const &chessBoard, BoardSq
 
 bool King::checkCommonCastleInfo(IChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const {
     if (chessBoard.getPieceInfoAt(rookFromSquare).has_value()) {
-        PieceInfo rookPieceInfo = chessBoard.getPieceInfoAt(rookFromSquare).value();
+        PieceData rookPieceInfo = chessBoard.getPieceInfoAt(rookFromSquare).value();
         return
             rookPieceInfo.getPieceType() == PieceType::ROOK &&
             rookPieceInfo.getTeam() == pieceInfo.getTeam() &&
