@@ -24,7 +24,7 @@ private:
     static std::set<std::pair<int, int>> const rookDirections;
     std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
-    explicit Rook(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 5);
+    explicit Rook(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved);
     Rook(Rook const &other);
     Rook(Rook &&other) noexcept;
     Rook& operator=(Rook const &other);

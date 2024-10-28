@@ -24,7 +24,7 @@ private:
     static std::set<std::pair<int, int>> const queenDirections;
     std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
-    explicit Queen(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore = 9);
+    explicit Queen(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved);
     Queen(Queen const &other);
     Queen(Queen &&other) noexcept;
     Queen& operator=(Queen const &other);

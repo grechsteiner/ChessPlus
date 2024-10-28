@@ -5,25 +5,24 @@
 #include <utility>
 
 #include "Piece.h"
-#include "Constants.h"
-#include "PieceData.h"
+#include "PieceInfo.h"
 #include "IChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
 
 // Basic ctor
-Piece::Piece(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display) :
-    pieceData(PieceData(pieceType, team, pieceDirection, hasMoved, pieceScore, image, display)) {}
+Piece::Piece(PieceInfo const &pieceInfo) :
+    pieceInfo(pieceInfo) {}
 
 // Move ctor
 Piece::Piece(Piece &&other) noexcept :
-    pieceData(std::move(other.pieceData)) {}
+    pieceInfo(std::move(other.pieceInfo)) {}
 
 // Move assignment
 Piece& Piece::operator=(Piece &&other) noexcept {
     if (this != &other) {
-        pieceData = std::move(other.pieceData);
+        pieceInfo = std::move(other.pieceInfo);
     }
     return *this;
 }
@@ -31,4 +30,4 @@ Piece& Piece::operator=(Piece &&other) noexcept {
 std::vector<BoardMove> Piece::getMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const { return getMovesImpl(chessBoard, fromSquare, onlyAttackingMoves); }
 std::unique_ptr<Piece> Piece::clone() const { return cloneImpl(); }
 
-PieceData const& Piece::getPieceData() const { return pieceData; }
+PieceInfo const& Piece::getPieceInfo() const { return pieceInfo; }

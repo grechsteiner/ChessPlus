@@ -8,23 +8,21 @@
 
 
 // Basic ctor
-PieceData::PieceData(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display) :
-    pieceType(pieceType), team(team), pieceDirection(pieceDirection), hasMoved(hasMoved), pieceScore(pieceScore), image(image), display(display) {}
+PieceData::PieceData(PieceType pieceType, PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
+    pieceType(pieceType), pieceLevel(pieceLevel), team(team), pieceDirection(pieceDirection), hasMoved(hasMoved) {}
 
 // Move ctor
 PieceData::PieceData(PieceData &&other) noexcept : 
-    pieceType(other.pieceType), team(other.team), pieceDirection(other.pieceDirection), hasMoved(other.hasMoved), pieceScore(other.pieceScore), image(std::move(other.image)), display(std::move(other.display)) {}
+    pieceType(other.pieceType), pieceLevel(other.pieceLevel), team(other.team), pieceDirection(other.pieceDirection), hasMoved(other.hasMoved) {}
 
 // Move assignment
 PieceData& PieceData::operator=(PieceData&& other) noexcept {
     if (this != &other) {
         pieceType = other.pieceType;
+        pieceLevel = other.pieceLevel;
         team = other.team;
         pieceDirection = other.pieceDirection;
         hasMoved = other.hasMoved;
-        pieceScore = other.pieceScore;
-        image = std::move(other.image);
-        display = std::move(other.display);
     }
     return *this;
 }
@@ -33,18 +31,8 @@ PieceData& PieceData::operator=(PieceData&& other) noexcept {
 bool PieceData::operator==(PieceData const &other) const {
     return
         pieceType == other.pieceType &&
+        pieceLevel == other.pieceLevel &&
         team == other.team &&
         pieceDirection == other.pieceDirection &&
-        hasMoved == other.hasMoved &&
-        pieceScore == other.pieceScore &&
-        image == other.image &&
-        display == other.display;
+        hasMoved == other.hasMoved;
 }
-
-PieceType PieceData::getPieceType() const { return pieceType; }
-Team PieceData::getTeam() const { return team; }
-PieceDirection PieceData::getPieceDirection() const { return pieceDirection; }
-bool PieceData::getHasMoved() const { return hasMoved; }
-int PieceData::getPieceScore() const { return pieceScore; }
-std::string const& PieceData::getImage() const { return image; }
-std::string const& PieceData::getDisplay() const { return display; }

@@ -6,8 +6,7 @@
 #include <vector>
 #include <memory>
 
-#include "Constants.h"
-#include "PieceData.h"
+#include "PieceInfo.h"
 
 class IChessBoard;
 class BoardSquare;
@@ -25,19 +24,19 @@ private:
     virtual std::unique_ptr<Piece> cloneImpl() const = 0;
     
 protected:
-    explicit Piece(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display);
+    explicit Piece(PieceInfo const &pieceInfo);
     Piece(Piece const &other) = default;
     Piece(Piece &&other) noexcept;
     Piece& operator=(Piece const &other) = default;
     Piece& operator=(Piece &&other) noexcept;
 
-    PieceData pieceData;
+    PieceInfo pieceInfo;
 
 public:
     std::vector<BoardMove> getMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
     std::unique_ptr<Piece> clone() const;
     
-    PieceData const& getPieceData() const;
+    PieceInfo const& getPieceInfo() const;
 
     virtual ~Piece() = default;
 };

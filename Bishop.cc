@@ -12,7 +12,6 @@
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
-
 // Static
 std::set<std::pair<int, int>> const Bishop::bishopDirections = { 
     {-1, -1},  
@@ -22,8 +21,8 @@ std::set<std::pair<int, int>> const Bishop::bishopDirections = {
 };
 
 // Basic ctor
-Bishop::Bishop(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Cloneable<Piece, Bishop>(PieceType::BISHOP, team, pieceDirection, hasMoved, pieceScore, "♝", "B") {}
+Bishop::Bishop(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved) :
+    Cloneable<Piece, Bishop>(PieceInfo(PieceData(PieceType::BISHOP, PieceLevel::BASIC, team, pieceDirection, hasMoved), 3, "♝", "B")) {}
 
 // Copy ctor
 Bishop::Bishop(Bishop const &other) : 
@@ -54,9 +53,9 @@ std::vector<BoardMove> Bishop::getMovesImpl(IChessBoard const &chessBoard, Board
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &bishopDirection : bishopDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + bishopDirection.first, fromSquare.getBoardCol() + bishopDirection.second);
-            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.getTeam())) {
-                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceDataAt(toSquare)));
-                if (chessBoard.isSquareOtherTeam(toSquare, pieceData.getTeam())) {
+            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceDataAt(toSquare)));
+                if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
                     break;
                 }
                 toSquare = BoardSquare(toSquare.getBoardRow() + bishopDirection.first, toSquare.getBoardCol() + bishopDirection.second);

@@ -22,8 +22,8 @@ std::set<std::pair<int, int>> const Rook::rookDirections = {
 };
 
 // Basic ctor
-Rook::Rook(Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore) :
-    Cloneable<Piece, Rook>(PieceType::ROOK, team, pieceDirection, hasMoved, pieceScore, "♜", "R") {}
+Rook::Rook(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved) :
+    Cloneable<Piece, Rook>(PieceInfo(PieceData(PieceType::ROOK, PieceLevel::BASIC, team, pieceDirection, hasMoved), 5, "♜", "R")) {}
 
 // Copy ctor
 Rook::Rook(Rook const &other) : 
@@ -54,9 +54,9 @@ std::vector<BoardMove> Rook::getMovesImpl(IChessBoard const &chessBoard, BoardSq
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &rookDirection : rookDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + rookDirection.first, fromSquare.getBoardCol() + rookDirection.second);
-            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.getTeam())) {
-                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceDataAt(toSquare)));
-                if (chessBoard.isSquareOtherTeam(toSquare, pieceData.getTeam())) {
+            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceDataAt(toSquare)));
+                if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
                     break;
                 }
                 toSquare = BoardSquare(toSquare.getBoardRow() + rookDirection.first, toSquare.getBoardCol() + rookDirection.second);

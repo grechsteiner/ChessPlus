@@ -9,22 +9,17 @@
 
 
 /**
- * PieceData Class
- * Represents all the data pertaining to a piece
+ * PieceData Struct
+ * Represents all the data pertaining to a piece that is modifiable at construction time
  */
-class PieceData final {
-
-private:
+struct PieceData final {
     PieceType pieceType;
+    PieceLevel pieceLevel;
     Team team;
     PieceDirection pieceDirection;
     bool hasMoved;
-    int pieceScore;
-    std::string image;
-    std::string display;
 
-public:
-    explicit PieceData(PieceType pieceType, Team team, PieceDirection pieceDirection, bool hasMoved, int pieceScore, std::string const &image, std::string const &display);
+    explicit PieceData(PieceType pieceType, PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     PieceData(PieceData const &other) = default;
     PieceData(PieceData &&other) noexcept;
     PieceData& operator=(const PieceData& other) = default;
@@ -32,14 +27,6 @@ public:
     ~PieceData() = default;
 
     bool operator==(PieceData const &other) const;
-
-    PieceType getPieceType() const;
-    Team getTeam() const;
-    PieceDirection getPieceDirection() const;
-    bool getHasMoved() const;
-    int getPieceScore() const;
-    std::string const& getImage() const;
-    std::string const& getDisplay() const;
 };
 
 

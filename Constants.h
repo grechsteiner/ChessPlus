@@ -13,6 +13,15 @@ class UserSquare;
 class UserMove;
 
 
+// TODO
+enum class PieceLevel {
+    BASIC,
+    ADVANCED,
+};
+
+
+
+
 enum class GameState {
     MAIN_MENU,
     SETUP,
