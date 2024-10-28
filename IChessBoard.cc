@@ -14,7 +14,7 @@
 
 std::unique_ptr<IChessBoard> IChessBoard::clone() const { return cloneImpl(); }
 
-std::optional<PieceData> IChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
+std::optional<PieceData> IChessBoard::getPieceDataAt(BoardSquare const &boardSquare) const { return getPieceDataAtImpl(boardSquare); }
 std::vector<BoardSquare> IChessBoard::getAllBoardSquares() const { return getAllBoardSquaresImpl(); }
 
 bool IChessBoard::isSquareOnBoard(BoardSquare const &boardSquare) const { return isSquareOnBoardImpl(boardSquare); }

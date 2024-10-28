@@ -502,10 +502,10 @@ bool Game::isBoardInProperSetup() const {
     int bottomRow = chessBoard->getNumRows() - 1;
 
     for (BoardSquare const &boardSquare : chessBoard->getAllBoardSquares()) {
-        std::optional<PieceData> pieceInfo = chessBoard->getPieceInfoAt(boardSquare);
-        if (pieceInfo.has_value()) {
-            if (pieceInfo.value().getPieceType() == PieceType::KING) {
-                Team team = pieceInfo.value().getTeam();
+        std::optional<PieceData> pieceData = chessBoard->getPieceDataAt(boardSquare);
+        if (pieceData.has_value()) {
+            if (pieceData.value().getPieceType() == PieceType::KING) {
+                Team team = pieceData.value().getTeam();
                 if (chessBoard->isSquareAttacked(boardSquare, team)) {
                     return false;
                 }
@@ -516,7 +516,7 @@ bool Game::isBoardInProperSetup() const {
                 }
             }
 
-            if (pieceInfo.value().getPieceType() == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
+            if (pieceData.value().getPieceType() == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
                 return false;
             }
         }

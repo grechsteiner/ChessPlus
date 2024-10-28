@@ -1,7 +1,7 @@
 // PieceData.h
 
-#ifndef PieceInfo_h
-#define PieceInfo_h
+#ifndef PieceData_h
+#define PieceData_h
 
 #include <string>
 

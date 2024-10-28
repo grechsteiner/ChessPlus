@@ -30,12 +30,12 @@ class BoardMove final {
 
 private:
     MoveType moveType;
-    PieceData movedPieceInfo;                       // PieceInfo of moved Piece (needed for undoing promotion)
+    PieceData movedPieceData;                       // PieceData of moved Piece (needed for undoing promotion)
 
     BoardSquare fromSquare;
     BoardSquare toSquare;
     BoardSquare captureSquare;
-    std::optional<PieceData> capturedPieceInfo;     // PieceInfo of captured Piece (needed for undoing capture)
+    std::optional<PieceData> capturedPieceData;     // PieceData of captured Piece (needed for undoing capture)
 
     // Promotion move
     std::optional<PieceType> promotionPieceType;
@@ -49,22 +49,22 @@ private:
 
     // Private to prevent construction
     explicit BoardMove(
-        MoveType moveType, PieceData const &movedPieceInfo,
-        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo,
+        MoveType moveType, PieceData const &movedPieceData,
+        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData,
         std::optional<PieceType> promotionPieceType, std::optional<BoardSquare> const &rookFromSquare, std::optional<BoardSquare> const &rookToSquare);
 
 public:
     static BoardMove createBasicMove(
-        MoveType moveType, PieceData const &movedPieceInfo, 
-        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo = std::nullopt);
+        MoveType moveType, PieceData const &movedPieceData, 
+        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData = std::nullopt);
     static BoardMove createPromotionMove(
         PieceType promotionPieceType, 
-        MoveType moveType, PieceData const &movedPieceInfo, 
-        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo = std::nullopt);
+        MoveType moveType, PieceData const &movedPieceData, 
+        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData = std::nullopt);
     static BoardMove createCastleMove(
         BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare, 
-        MoveType moveType, PieceData const &movedPieceInfo, 
-        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceInfo = std::nullopt);
+        MoveType moveType, PieceData const &movedPieceData, 
+        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData = std::nullopt);
 
     BoardMove(BoardMove const &other) = default;
     BoardMove(BoardMove &&other) noexcept;
@@ -78,12 +78,12 @@ public:
     void undoBoardMove(IChessBoard &chessBoard) const;
 
     MoveType getMoveType() const;
-    PieceData const& getMovedPieceInfo() const;
+    PieceData const& getMovedPieceData() const;
 
     BoardSquare const& getFromSquare() const;
     BoardSquare const& getToSquare() const;
     BoardSquare const& getCaptureSquare() const;
-    std::optional<PieceData> getCapturedPieceInfo() const;
+    std::optional<PieceData> getCapturedPieceData() const;
 
     std::optional<PieceType> getPromotionPieceType() const;
     std::optional<BoardSquare> getRookFromSquare() const;

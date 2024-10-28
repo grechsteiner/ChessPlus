@@ -31,13 +31,13 @@ protected:
     Piece& operator=(Piece const &other) = default;
     Piece& operator=(Piece &&other) noexcept;
 
-    PieceData pieceInfo;
+    PieceData pieceData;
 
 public:
     std::vector<BoardMove> getMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
     std::unique_ptr<Piece> clone() const;
     
-    PieceData const& getPieceInfo() const;
+    PieceData const& getPieceData() const;
 
     virtual ~Piece() = default;
 };
