@@ -26,7 +26,7 @@ std::set<std::pair<int, int>> const Queen::queenDirections = {
 };
 
 // Basic ctor
-Queen::Queen(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved) :
+Queen::Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
     Cloneable<Piece, Queen>(PieceInfo(PieceData(PieceType::QUEEN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 9, "♛", "Q")) {}
 
 // Copy ctor
@@ -59,7 +59,7 @@ std::vector<BoardMove> Queen::getMovesImpl(IChessBoard const &chessBoard, BoardS
         for (std::pair<int, int> const &queenDirection : queenDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + queenDirection.first, fromSquare.getBoardCol() + queenDirection.second);
             while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceDataAt(toSquare)));
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
                 if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
                     break;
                 }

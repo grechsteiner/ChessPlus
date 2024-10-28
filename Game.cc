@@ -345,11 +345,11 @@ void Game::runGame() {
 
                     BoardSquare boardSquare = createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols());
                     if (tokens.size() == 3) {
-                        chessBoard->setPosition(boardSquare, team, pieceType, pieceDirection, false);
+                        chessBoard->setPosition(boardSquare, PieceData(pieceType, PieceLevel::BASIC, team, pieceDirection, false));
                         notifyObservers();
                     } else if (tokens.size() == 4) {
                         if (isValidPieceDirection(tokens[3])) {
-                            chessBoard->setPosition(boardSquare, team, pieceType, stringToPieceDirection(tokens[3]), false);
+                            chessBoard->setPosition(boardSquare, PieceData(pieceType, PieceLevel::BASIC, team, stringToPieceDirection(tokens[3]), false));
                             notifyObservers();
                         } else {
                             outputError("Invalid direction");
@@ -483,14 +483,14 @@ void Game::applyStandardSetup() {
         }
         BoardSquare blackPieceSquare(topRow, col);
         BoardSquare whitePieceSquare(bottomRow, col);
-        chessBoard->setPosition(blackPieceSquare, Team::TEAM_TWO, pieceType, PieceDirection::SOUTH, false);               // Black
-        chessBoard->setPosition(whitePieceSquare, Team::TEAM_ONE, pieceType, PieceDirection::NORTH, false);            // White
+        chessBoard->setPosition(blackPieceSquare, PieceData(pieceType, PieceLevel::BASIC, Team::TEAM_TWO, PieceDirection::SOUTH, false));               // Black
+        chessBoard->setPosition(whitePieceSquare, PieceData(pieceType, PieceLevel::BASIC, Team::TEAM_ONE, PieceDirection::NORTH, false));            // White
 
         // Pawns
         BoardSquare blackPawnSquare(topRow + 1, col);
         BoardSquare whitePawnSquare(bottomRow - 1, col);
-        chessBoard->setPosition(blackPawnSquare, Team::TEAM_TWO, PieceType::PAWN, PieceDirection::SOUTH, false);     // Black
-        chessBoard->setPosition(whitePawnSquare, Team::TEAM_ONE, PieceType::PAWN, PieceDirection::NORTH, false);  // Black
+        chessBoard->setPosition(blackPawnSquare, PieceData(PieceType::PAWN, PieceLevel::BASIC, Team::TEAM_TWO, PieceDirection::SOUTH, false));     // Black
+        chessBoard->setPosition(whitePawnSquare, PieceData(PieceType::PAWN, PieceLevel::BASIC, Team::TEAM_ONE, PieceDirection::NORTH, false));  // Black
     }
 }
 
@@ -502,10 +502,11 @@ bool Game::isBoardInProperSetup() const {
     int bottomRow = chessBoard->getNumRows() - 1;
 
     for (BoardSquare const &boardSquare : chessBoard->getAllBoardSquares()) {
-        std::optional<PieceData> pieceData = chessBoard->getPieceDataAt(boardSquare);
-        if (pieceData.has_value()) {
-            if (pieceData.value().getPieceType() == PieceType::KING) {
-                Team team = pieceData.value().getTeam();
+        std::optional<PieceInfo> pieceInfo = chessBoard->getPieceInfoAt(boardSquare);
+        if (pieceInfo.has_value()) {
+            PieceData pieceData = pieceInfo.value().pieceData;
+            if (pieceData.pieceType == PieceType::KING) {
+                Team team = pieceData.team;
                 if (chessBoard->isSquareAttacked(boardSquare, team)) {
                     return false;
                 }
@@ -516,7 +517,7 @@ bool Game::isBoardInProperSetup() const {
                 }
             }
 
-            if (pieceData.value().getPieceType() == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
+            if (pieceData.pieceType == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
                 return false;
             }
         }

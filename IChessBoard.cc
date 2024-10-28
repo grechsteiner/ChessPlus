@@ -9,12 +9,13 @@
 #include "Constants.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
+#include "PieceInfo.h"
 #include "PieceData.h"
 
 
 std::unique_ptr<IChessBoard> IChessBoard::clone() const { return cloneImpl(); }
 
-std::optional<PieceData> IChessBoard::getPieceDataAt(BoardSquare const &boardSquare) const { return getPieceDataAtImpl(boardSquare); }
+std::optional<PieceInfo> IChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
 std::vector<BoardSquare> IChessBoard::getAllBoardSquares() const { return getAllBoardSquaresImpl(); }
 
 bool IChessBoard::isSquareOnBoard(BoardSquare const &boardSquare) const { return isSquareOnBoardImpl(boardSquare); }
@@ -33,7 +34,7 @@ std::vector<BoardMove> IChessBoard::generateCapturingMoves(Team team) const { re
 std::vector<BoardMove> IChessBoard::generateCheckApplyingMoves(Team team) const { return generateCheckApplyingMovesImpl(team); }
 std::vector<BoardMove> IChessBoard::generateCaptureAvoidingMoves(Team team) const { return generateCaptureAvoidingMovesImpl(team); }
 
-bool IChessBoard::setPosition(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) { return setPositionImpl(boardSquare, team, pieceType, pieceDirection, hasMoved, pieceScore); }
+bool IChessBoard::setPosition(BoardSquare const &boardSquare, PieceData const &pieceData) { return setPositionImpl(boardSquare, pieceData); }
 bool IChessBoard::clearPosition(BoardSquare const &boardSquare) { return clearPositionImpl(boardSquare); }
 void IChessBoard::clearBoard() { clearBoardImpl(); }
 

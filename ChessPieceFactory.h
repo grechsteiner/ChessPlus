@@ -7,11 +7,12 @@
 #include <optional>
 
 #include "Piece.h"
+#include "PieceData.h"
 
 
 class ChessPieceFactory {
 public:
-    static std::unique_ptr<Piece> createPiece(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt);
+    static std::unique_ptr<Piece> createPiece(PieceData const &pieceData);
 };
 
 

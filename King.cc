@@ -27,7 +27,7 @@ std::set<std::pair<int, int>> const King::kingDirections = {
 };
 
 // Basic ctor
-King::King(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved) : 
+King::King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) : 
     Cloneable<Piece, King>(PieceInfo(PieceData(PieceType::KING, PieceLevel::BASIC, team, pieceDirection, hasMoved), 1000, "♚", "K")) {}
 
 // Copy ctor
@@ -64,7 +64,7 @@ std::vector<BoardMove> King::getMovesImpl(IChessBoard const &chessBoard, BoardSq
         for (std::pair<int, int> const &kingDirection : kingDirections) {
             BoardSquare toSquare(fromRow + kingDirection.first, fromCol + kingDirection.second);
             if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceDataAt(toSquare)));
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
             }
         }
 
@@ -136,8 +136,8 @@ std::vector<BoardMove> King::getMovesImpl(IChessBoard const &chessBoard, BoardSq
 }
 
 bool King::checkCommonCastleInfo(IChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const {
-    if (chessBoard.getPieceDataAt(rookFromSquare).has_value()) {
-        PieceData rookPieceData = chessBoard.getPieceDataAt(rookFromSquare).value();
+    if (chessBoard.getPieceInfoAt(rookFromSquare).has_value()) {
+        PieceData rookPieceData = chessBoard.getPieceInfoAt(rookFromSquare).value().pieceData;
         return
             rookPieceData.pieceType == PieceType::ROOK &&
             rookPieceData.team == pieceInfo.pieceData.team &&

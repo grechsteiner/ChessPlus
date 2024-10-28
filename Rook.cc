@@ -22,7 +22,7 @@ std::set<std::pair<int, int>> const Rook::rookDirections = {
 };
 
 // Basic ctor
-Rook::Rook(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved) :
+Rook::Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
     Cloneable<Piece, Rook>(PieceInfo(PieceData(PieceType::ROOK, PieceLevel::BASIC, team, pieceDirection, hasMoved), 5, "♜", "R")) {}
 
 // Copy ctor
@@ -55,7 +55,7 @@ std::vector<BoardMove> Rook::getMovesImpl(IChessBoard const &chessBoard, BoardSq
         for (std::pair<int, int> const &rookDirection : rookDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + rookDirection.first, fromSquare.getBoardCol() + rookDirection.second);
             while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceDataAt(toSquare)));
+                moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
                 if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
                     break;
                 }

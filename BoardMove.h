@@ -8,6 +8,7 @@
 #include "BoardSquare.h"
 #include "Constants.h"
 #include "PieceData.h"
+#include "PieceInfo.h"
 
 class IChessBoard;
 
@@ -56,15 +57,15 @@ private:
 public:
     static BoardMove createBasicMove(
         MoveType moveType, PieceData const &movedPieceData, 
-        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData = std::nullopt);
+        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo = std::nullopt);
     static BoardMove createPromotionMove(
         PieceType promotionPieceType, 
         MoveType moveType, PieceData const &movedPieceData, 
-        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData = std::nullopt);
+        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo = std::nullopt);
     static BoardMove createCastleMove(
         BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare, 
         MoveType moveType, PieceData const &movedPieceData, 
-        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData = std::nullopt);
+        BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo = std::nullopt);
 
     BoardMove(BoardMove const &other) = default;
     BoardMove(BoardMove &&other) noexcept;

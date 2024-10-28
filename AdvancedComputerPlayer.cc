@@ -10,7 +10,7 @@
 
 #include "AdvancedComputerPlayer.h"
 #include "MoveShuffler.h"
-#include "PieceData.h"
+#include "PieceInfo.h"
 
 
 BoardMove AdvancedComputerPlayer::getMoveImpl(IChessBoard const &chessBoard, Team team) const {
@@ -81,9 +81,9 @@ std::vector<BoardMove> AdvancedComputerPlayer::rankMoves(IChessBoard const &ches
     // Assign values to each move
     for (BoardMove const &move : moves) {
         int score = 0;
-        std::optional<PieceData> pieceData = chessBoard.getPieceDataAt(move.getCaptureSquare());
-        if (pieceData.has_value()) {
-            score += pieceData.value().getPieceScore();
+        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(move.getCaptureSquare());
+        if (pieceInfo.has_value()) {
+            score += pieceInfo.value().pieceScore;
         }
         scoredBoardMoves.emplace_back(ScoredBoardMove(score, move));
     }
@@ -131,12 +131,12 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard const &chessBoard
         int numBoardCols = chessBoard.getNumCols();
 
 
-        std::optional<PieceData> pieceData = chessBoard.getPieceDataAt(boardSquare);
-        if (pieceData.has_value()) {
-            if (pieceData.value().getTeam() == chessBoard.getTeamOne()) {
-                totalScore += pieceData.value().getPieceScore() * 10;
+        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(boardSquare);
+        if (pieceInfo.has_value()) {
+            if (pieceInfo.value().pieceData.team == chessBoard.getTeamOne()) {
+                totalScore += pieceInfo.value().pieceScore * 10;
                 // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (pieceData.value().getPieceDirection()) {
+                switch (pieceInfo.value().pieceData.pieceDirection) {
                     case PieceDirection::NORTH:
                         totalScore += min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
                         break;
@@ -152,10 +152,10 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(IChessBoard const &chessBoard
                     default:
                         assert(false);
                 }
-            } else if (pieceData.value().getTeam() == chessBoard.getTeamTwo()) {
-                totalScore -= pieceData.value().getPieceScore() * 10;
+            } else if (pieceInfo.value().pieceData.team == chessBoard.getTeamTwo()) {
+                totalScore -= pieceInfo.value().pieceScore * 10;
                 // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (pieceData.value().getPieceDirection()) {
+                switch (pieceInfo.value().pieceData.pieceDirection) {
                     case PieceDirection::NORTH:
                         totalScore -= min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
                         break;

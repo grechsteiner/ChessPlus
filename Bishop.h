@@ -25,7 +25,7 @@ private:
     static std::set<std::pair<int, int>> const bishopDirections;
     std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
-    explicit Bishop(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved);
+    explicit Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Bishop(Bishop const &other);
     Bishop(Bishop &&other) noexcept;
     Bishop& operator=(Bishop const &other);

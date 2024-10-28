@@ -24,7 +24,7 @@ private:
     std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     std::vector<BoardMove> createPromotionMoves(BoardMove const &move) const;
 public:
-    explicit Pawn(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved);
+    explicit Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Pawn(Pawn const &other);
     Pawn(Pawn &&other) noexcept;
     Pawn& operator=(Pawn const &other);

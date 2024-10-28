@@ -14,32 +14,20 @@
 #include "Pawn.h"
 
 // Static
-std::unique_ptr<Piece> ChessPieceFactory::createPiece(Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) {
-    switch (pieceType) {
+std::unique_ptr<Piece> ChessPieceFactory::createPiece(PieceData const &pieceData) {
+    switch (pieceData.pieceType) {
         case PieceType::KING:
-            return pieceScore.has_value()
-                ? std::make_unique<King>(team, pieceDirection, hasMoved, pieceScore.value())
-                : std::make_unique<King>(team, pieceDirection, hasMoved);
+            return std::make_unique<King>(pieceData.pieceLevel, pieceData.team, pieceData.pieceDirection, pieceData.hasMoved);
         case PieceType::QUEEN:
-            return pieceScore.has_value()
-                ? std::make_unique<Queen>(team, pieceDirection, hasMoved, pieceScore.value())
-                : std::make_unique<Queen>(team, pieceDirection, hasMoved);
+            return std::make_unique<Queen>(pieceData.pieceLevel, pieceData.team, pieceData.pieceDirection, pieceData.hasMoved);
         case PieceType::ROOK:
-            return pieceScore.has_value()
-                ? std::make_unique<Rook>(team, pieceDirection, hasMoved, pieceScore.value())
-                : std::make_unique<Rook>(team, pieceDirection, hasMoved);
+            return std::make_unique<Rook>(pieceData.pieceLevel, pieceData.team, pieceData.pieceDirection, pieceData.hasMoved);
         case PieceType::BISHOP:
-            return pieceScore.has_value()
-                ? std::make_unique<Bishop>(team, pieceDirection, hasMoved, pieceScore.value())
-                : std::make_unique<Bishop>(team, pieceDirection, hasMoved);
+            return std::make_unique<Bishop>(pieceData.pieceLevel, pieceData.team, pieceData.pieceDirection, pieceData.hasMoved);
         case PieceType::KNIGHT:
-            return pieceScore.has_value()
-                ? std::make_unique<Knight>(team, pieceDirection, hasMoved, pieceScore.value())
-                : std::make_unique<Knight>(team, pieceDirection, hasMoved);
+            return std::make_unique<Knight>(pieceData.pieceLevel, pieceData.team, pieceData.pieceDirection, pieceData.hasMoved);
         case PieceType::PAWN:
-            return pieceScore.has_value()
-                ? std::make_unique<Pawn>(team, pieceDirection, hasMoved, pieceScore.value())
-                : std::make_unique<Pawn>(team, pieceDirection, hasMoved);
+            return std::make_unique<Pawn>(pieceData.pieceLevel, pieceData.team, pieceData.pieceDirection, pieceData.hasMoved);
         default:
             assert(false);
     }

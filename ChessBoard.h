@@ -15,7 +15,8 @@
 #include "Piece.h"
 
 class BoardSquare;
-class PieceData;
+struct PieceInfo;
+struct PieceData;
 
 
 /**
@@ -59,7 +60,7 @@ private:
 
 
     /* ChessBoard Interface */
-    std::optional<PieceData> getPieceDataAtImpl(BoardSquare const &boardSquare) const override;
+    std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
     std::vector<BoardSquare> getAllBoardSquaresImpl() const override;
 
     bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const override;
@@ -79,7 +80,7 @@ private:
     std::vector<BoardMove> generateCaptureAvoidingMovesImpl(Team team) const override;
 
     // If BoardSquare is on board, completedMoves and redoMoves are erased
-    bool setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt) override;
+    bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) override;
     bool clearPositionImpl(BoardSquare const &boardSquare) override;
     void clearBoardImpl() override;
 

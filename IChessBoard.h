@@ -12,7 +12,8 @@
 
 class BoardSquare;
 class BoardMove;
-class PieceData;
+struct PieceInfo;
+struct PieceData;
 
 
 /**
@@ -23,7 +24,7 @@ class IChessBoard {
 private:
     virtual std::unique_ptr<IChessBoard> cloneImpl() const = 0;
 
-    virtual std::optional<PieceData> getPieceDataAtImpl(BoardSquare const &boardSquare) const = 0;
+    virtual std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
     virtual std::vector<BoardSquare> getAllBoardSquaresImpl() const = 0;
 
     virtual bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const = 0;
@@ -42,7 +43,7 @@ private:
     virtual std::vector<BoardMove> generateCheckApplyingMovesImpl(Team team) const = 0;
     virtual std::vector<BoardMove> generateCaptureAvoidingMovesImpl(Team team) const = 0;
 
-    virtual bool setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt) = 0;
+    virtual bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) = 0;
     virtual bool clearPositionImpl(BoardSquare const &boardSquare) = 0;
     virtual void clearBoardImpl() = 0;
 
@@ -64,7 +65,7 @@ public:
     std::unique_ptr<IChessBoard> clone() const;
     virtual ~IChessBoard() = default;
 
-    std::optional<PieceData> getPieceDataAt(BoardSquare const &boardSquare) const;
+    std::optional<PieceInfo> getPieceInfoAt(BoardSquare const &boardSquare) const;
     std::vector<BoardSquare> getAllBoardSquares() const;
 
     bool isSquareOnBoard(BoardSquare const &boardSquare) const;
@@ -83,7 +84,7 @@ public:
     std::vector<BoardMove> generateCheckApplyingMoves(Team team) const;
     std::vector<BoardMove> generateCaptureAvoidingMoves(Team team) const;
 
-    bool setPosition(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore = std::nullopt);    
+    bool setPosition(BoardSquare const &boardSquare, PieceData const &pieceData);    
     bool clearPosition(BoardSquare const &boardSquare);
     void clearBoard();
 

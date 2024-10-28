@@ -25,7 +25,7 @@ private:
     std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     bool checkCommonCastleInfo(IChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const;
 public:
-    explicit King(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved);
+    explicit King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     King(King const &other);
     King(King &&other) noexcept;
     King& operator=(King const &other);

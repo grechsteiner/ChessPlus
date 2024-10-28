@@ -104,8 +104,8 @@ std::vector<BoardMove> ChessBoard::generateAllPseudoLegalMovesAtSquare(BoardSqua
 std::vector<BoardMove> ChessBoard::generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const {
     std::vector<BoardMove> boardMoves;
     for (BoardSquare const &boardSquare : getAllBoardSquares()) {
-        std::optional<PieceData> pieceData = getPieceDataAt(boardSquare);
-        if (pieceData.has_value() && pieceData.value().getTeam() == team) {
+        std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
+        if (pieceInfo.has_value() && pieceInfo.value().pieceData.team == team) {
             std::vector<BoardMove> pieceBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
             boardMoves.insert(boardMoves.end(), pieceBoardMoves.begin(), pieceBoardMoves.end());
         }
@@ -148,40 +148,40 @@ void ChessBoard::performRedoMove() {
 }
 
 bool ChessBoard::doesMoveApplyCheck(BoardMove const &boardMove) const {
-    std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove.getFromSquare());
-    if (movedPieceData.has_value()) {
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    if (movedPieceInfo.has_value()) {
         ChessBoard temp(*this);
         temp.performMove(boardMove);
-        return temp.isInCheck(getOtherTeam(movedPieceData.value().getTeam()));
+        return temp.isInCheck(getOtherTeam(movedPieceInfo.value().pieceData.team));
     }
     assert(false);
 }
 
 bool ChessBoard::doesMoveCapturePiece(BoardMove const &boardMove) const {
-    std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove.getFromSquare());
-    std::optional<PieceData> attackedPieceData = getPieceDataAt(boardMove.getCaptureSquare());
-    if (movedPieceData.has_value()) {
-        return attackedPieceData.has_value() && attackedPieceData.value().getTeam() != movedPieceData.value().getTeam();
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    std::optional<PieceInfo> attackedPieceInfo = getPieceInfoAt(boardMove.getCaptureSquare());
+    if (movedPieceInfo.has_value()) {
+        return attackedPieceInfo.has_value() && attackedPieceInfo.value().pieceData.team != movedPieceInfo.value().pieceData.team;
     }
     assert(false);
 }
 
 bool ChessBoard::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
-    std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove.getFromSquare());
-    if (movedPieceData.has_value()) {
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    if (movedPieceInfo.has_value()) {
         ChessBoard temp(*this);
         temp.performMove(boardMove);
-        return temp.generateCapturingMoves(getOtherTeam(movedPieceData.value().getTeam())).empty();
+        return temp.generateCapturingMoves(getOtherTeam(movedPieceInfo.value().pieceData.team)).empty();
     } 
     assert(false);
 }
 
 bool ChessBoard::doesMoveLeaveTeamInCheck(BoardMove const &boardMove) const {
-    std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove.getFromSquare());
-    if (movedPieceData.has_value()) {
+    std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
+    if (movedPieceInfo.has_value()) {
         ChessBoard temp(*this);
         temp.performMove(boardMove);
-        return temp.isInCheck(movedPieceData.value().getTeam());
+        return temp.isInCheck(movedPieceInfo.value().pieceData.team);
     }
     assert(false);
 } 
@@ -189,9 +189,9 @@ bool ChessBoard::doesMoveLeaveTeamInCheck(BoardMove const &boardMove) const {
 
 #pragma mark - ChessBoard Interface
 
-std::optional<PieceData> ChessBoard::getPieceDataAtImpl(BoardSquare const &boardSquare) const {
+std::optional<PieceInfo> ChessBoard::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
     return isSquareOnBoard(boardSquare) && grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] != nullptr
-        ? std::make_optional<PieceData>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceData())
+        ? std::make_optional<PieceInfo>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceInfo())
         : std::nullopt;
 }
 
@@ -218,21 +218,27 @@ bool ChessBoard::isSquareOnBoardImpl(BoardSquare const &boardSquare) const {
 bool ChessBoard::isSquareEmptyImpl(BoardSquare const &boardSquare) const {
     return 
         isSquareOnBoard(boardSquare) && 
-        !getPieceDataAt(boardSquare).has_value();
+        !getPieceInfoAt(boardSquare).has_value();
 }
 
 bool ChessBoard::isSquareSameTeamImpl(BoardSquare const &boardSquare, Team ownTeam) const {
-    return 
-        isSquareOnBoard(boardSquare) && 
-        getPieceDataAt(boardSquare).has_value() && 
-        getPieceDataAt(boardSquare).value().getTeam() == ownTeam;
+    if (isSquareOnBoard(boardSquare)) {
+        std::optional<PieceInfo> pieceInfoAtSquare = getPieceInfoAt(boardSquare);
+        if (pieceInfoAtSquare.has_value() && pieceInfoAtSquare.value().pieceData.team == ownTeam) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool ChessBoard::isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team ownTeam) const {
-    return 
-        isSquareOnBoard(boardSquare) && 
-        getPieceDataAt(boardSquare).has_value() && 
-        getPieceDataAt(boardSquare).value().getTeam() == getOtherTeam(ownTeam);
+    if (isSquareOnBoard(boardSquare)) {
+        std::optional<PieceInfo> pieceInfoAtSquare = getPieceInfoAt(boardSquare);
+        if (pieceInfoAtSquare && pieceInfoAtSquare.value().pieceData.team == getOtherTeam(ownTeam)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool ChessBoard::isSquareAttackedImpl(BoardSquare const &boardSquare, Team ownTeam) const {
@@ -249,8 +255,8 @@ bool ChessBoard::isSquareAttackedImpl(BoardSquare const &boardSquare, Team ownTe
 
 bool ChessBoard::isInCheckImpl(Team team) const {
     for (BoardSquare const &boardSquare : getAllBoardSquares()) {
-        std::optional<PieceData> pieceData = getPieceDataAt(boardSquare);
-        if (pieceData.has_value() && pieceData.value().getPieceType() == PieceType::KING && pieceData.value().getTeam() == team) {
+        std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
+        if (pieceInfo.has_value() && pieceInfo.value().pieceData.pieceType == PieceType::KING && pieceInfo.value().pieceData.team == team) {
             if (isSquareAttacked(boardSquare, team)) {
                 return true;
             }
@@ -322,11 +328,11 @@ std::vector<BoardMove> ChessBoard::generateCaptureAvoidingMovesImpl(Team team) c
     return captureAvoidingBoardMoves;
 }
 
-bool ChessBoard::setPositionImpl(BoardSquare const &boardSquare, Team team, PieceType pieceType, PieceDirection pieceDirection, bool hasMoved, std::optional<int> pieceScore) {
+bool ChessBoard::setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) {
     if (isSquareOnBoard(boardSquare)) {
         clearCompletedMoves();
         clearRedoMoves();
-        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(team, pieceType, pieceDirection, hasMoved, pieceScore);
+        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(pieceData);
         return true;
     }
     return false;

@@ -16,7 +16,7 @@
 
 
 // Basic ctor
-Pawn::Pawn(Team team, PieceLevel pieceLevel, PieceDirection pieceDirection, bool hasMoved) :
+Pawn::Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
     Cloneable<Piece, Pawn>(PieceInfo(PieceData(PieceType::PAWN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 1, "♟", "P")) {}
 
 // Copy ctor
@@ -87,7 +87,7 @@ std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSq
                     if (lastMoveToRow == fromRow && std::abs(lastMoveToCol - fromCol) == 1) {
                         BoardSquare toSquare(fromRow + pawnDirection.first, lastMoveToCol);
                         BoardSquare captureSquare = lastMove.value().getToSquare();
-                        moves.emplace_back(BoardMove::createBasicMove(MoveType::ENPASSANT, pieceInfo.pieceData, fromSquare, toSquare, captureSquare, chessBoard.getPieceDataAt(captureSquare)));
+                        moves.emplace_back(BoardMove::createBasicMove(MoveType::ENPASSANT, pieceInfo.pieceData, fromSquare, toSquare, captureSquare, chessBoard.getPieceInfoAt(captureSquare)));
                     }
                     break;
                 }
@@ -96,7 +96,7 @@ std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSq
                     if (lastMoveToCol == fromCol && std::abs(lastMoveToRow - fromRow) == 1) {
                         BoardSquare toSquare(lastMoveToRow, fromCol + pawnDirection.second);
                         BoardSquare captureSquare = lastMove.value().getToSquare();
-                        moves.emplace_back(BoardMove::createBasicMove(MoveType::ENPASSANT, pieceInfo.pieceData, fromSquare, toSquare, captureSquare, chessBoard.getPieceDataAt(captureSquare)));
+                        moves.emplace_back(BoardMove::createBasicMove(MoveType::ENPASSANT, pieceInfo.pieceData, fromSquare, toSquare, captureSquare, chessBoard.getPieceInfoAt(captureSquare)));
                     }
                     break;
                 }
@@ -112,10 +112,10 @@ std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSq
                 BoardSquare leftToSquare(fromRow + pawnDirection.first, fromCol - 1);
                 BoardSquare rightToSquare(fromRow + pawnDirection.first, fromCol + 1);
                 if (chessBoard.isSquareOtherTeam(leftToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, leftToSquare, leftToSquare, chessBoard.getPieceDataAt(leftToSquare)));
+                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, leftToSquare, leftToSquare, chessBoard.getPieceInfoAt(leftToSquare)));
                 }
                 if (chessBoard.isSquareOtherTeam(rightToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, rightToSquare, rightToSquare, chessBoard.getPieceDataAt(rightToSquare)));
+                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, rightToSquare, rightToSquare, chessBoard.getPieceInfoAt(rightToSquare)));
                 }
                 break;
             }
@@ -124,10 +124,10 @@ std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSq
                 BoardSquare upToSquare(fromRow - 1, fromCol + pawnDirection.second);
                 BoardSquare downToSquare(fromRow + 1, fromCol + pawnDirection.second);
                 if (chessBoard.isSquareOtherTeam(upToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, upToSquare, upToSquare, chessBoard.getPieceDataAt(upToSquare)));
+                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, upToSquare, upToSquare, chessBoard.getPieceInfoAt(upToSquare)));
                 }
                 if (chessBoard.isSquareOtherTeam(downToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, downToSquare, downToSquare, chessBoard.getPieceDataAt(downToSquare)));
+                    moves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, downToSquare, downToSquare, chessBoard.getPieceInfoAt(downToSquare)));
                 }
                 break;
             }
@@ -161,7 +161,11 @@ std::vector<BoardMove> Pawn::createPromotionMoves(BoardMove const &move) const {
     static std::set<PieceType> promotionPieceTypes = { PieceType::QUEEN, PieceType::ROOK, PieceType::KNIGHT, PieceType::BISHOP };
     std::vector<BoardMove> promotionMoves;
     for (PieceType const &promotionPieceType : promotionPieceTypes) {
-        promotionMoves.emplace_back(BoardMove::createPromotionMove(promotionPieceType, move.getMoveType(), move.getMovedPieceData(), move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), move.getCapturedPieceData()));
+        if (move.getCapturedPieceData().has_value()) {
+            promotionMoves.emplace_back(BoardMove::createPromotionMove(promotionPieceType, move.getMoveType(), move.getMovedPieceData(), move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), PieceInfo(move.getCapturedPieceData().value(), 0, "", "")));
+        } else {
+            promotionMoves.emplace_back(BoardMove::createPromotionMove(promotionPieceType, move.getMoveType(), move.getMovedPieceData(), move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), std::nullopt));
+        }
     }
     return promotionMoves;
 }
