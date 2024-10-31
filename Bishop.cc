@@ -22,15 +22,15 @@ std::set<std::pair<int, int>> const Bishop::bishopDirections = {
 
 // Basic ctor
 Bishop::Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Cloneable<Piece, Bishop>(PieceInfo(PieceData(PieceType::BISHOP, PieceLevel::BASIC, team, pieceDirection, hasMoved), 3, "♝", "B")) {}
+    Piece(PieceInfo(PieceData(PieceType::BISHOP, PieceLevel::BASIC, team, pieceDirection, hasMoved), 3, "♝", "B")) {}
 
 // Copy ctor
 Bishop::Bishop(Bishop const &other) : 
-    Cloneable<Piece, Bishop>(other) {}
+    Piece(other) {}
 
 // Move ctor
 Bishop::Bishop(Bishop &&other) noexcept : 
-    Cloneable<Piece, Bishop>(std::move(other)) {}
+    Piece(std::move(other)) {}
 
 // Copy assignment
 Bishop& Bishop::operator=(Bishop const &other) {
@@ -48,7 +48,7 @@ Bishop& Bishop::operator=(Bishop &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> Bishop::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Bishop::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &bishopDirection : bishopDirections) {

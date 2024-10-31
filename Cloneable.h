@@ -5,7 +5,9 @@
 
 #include <memory>
 
-
+/**
+ * Used with direct inheritence
+ */
 template <typename Base, typename Derived>
 class Cloneable : public Base {
 private:
@@ -21,4 +23,4 @@ template <typename Base, typename Derived>
 Cloneable<Base, Derived>::~Cloneable() {}
 
 
-#endif /* Cloneable */
+#endif /* Cloneable_h */

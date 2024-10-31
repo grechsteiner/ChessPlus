@@ -28,15 +28,15 @@ std::set<std::pair<int, int>> const King::kingDirections = {
 
 // Basic ctor
 King::King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) : 
-    Cloneable<Piece, King>(PieceInfo(PieceData(PieceType::KING, PieceLevel::BASIC, team, pieceDirection, hasMoved), 1000, "♚", "K")) {}
+    Piece(PieceInfo(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), 1000, "♚", "K")) {}
 
 // Copy ctor
 King::King(King const &other) : 
-    Cloneable<Piece, King>(other) {}
+    Piece(other) {}
 
 // Move ctor
 King::King(King &&other) noexcept : 
-    Cloneable<Piece, King>(std::move(other)) {}
+    Piece(std::move(other)) {}
 
 // Copy assignment
 King& King::operator=(King const &other) {
@@ -54,7 +54,7 @@ King& King::operator=(King &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> King::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> King::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         int fromRow = fromSquare.getBoardRow();

@@ -17,20 +17,22 @@ class BoardMove;
 
 
 /**
- * King Piece Class
+ * Abstract King Piece Class
  */
-class King : public Cloneable<Piece, King> {
+class King : public Piece {
 private:
-    static std::set<std::pair<int, int>> const kingDirections;
-    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     bool checkCommonCastleInfo(IChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const;
-public:
+protected:
+    static std::set<std::pair<int, int>> const kingDirections;
+
     explicit King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     King(King const &other);
     King(King &&other) noexcept;
     King& operator=(King const &other);
     King& operator=(King &&other) noexcept;
     virtual ~King() = default;
+
+    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
 };
 
 

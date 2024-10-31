@@ -18,19 +18,20 @@ class BoardMove;
 
 
 /**
- * Bishop Piece Class
+ * Abstract Bishop Piece Class
  */
-class Bishop : public Cloneable<Piece, Bishop> {
-private:
+class Bishop : public Piece {
+protected:
     static std::set<std::pair<int, int>> const bishopDirections;
-    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
-public:
+    
     explicit Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Bishop(Bishop const &other);
     Bishop(Bishop &&other) noexcept;
     Bishop& operator=(Bishop const &other);
     Bishop& operator=(Bishop &&other) noexcept;
     virtual ~Bishop() = default;
+
+    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
 };
 
 
