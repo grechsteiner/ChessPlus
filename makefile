@@ -1,8 +1,8 @@
 CXX=g++
-CXXFLAGS=-std=c++17 -Wall -g -MMD -I/opt/homebrew/include
+CXXFLAGS=-std=c++17 -Wall -g -MMD -I/opt/homebrew/include $(shell find . -name '*.h' -exec dirname {} \; | sort -u | sed 's/^/-I/')
 LDFLAGS=-L/opt/homebrew/lib -lX11
 EXEC=chess
-CCFILES=$(wildcard *.cc)
+CCFILES=$(shell find . -name '*.cc')
 OBJECTS=${CCFILES:.cc=.o}
 DEPENDS=${CCFILES:.cc=.d}
 
