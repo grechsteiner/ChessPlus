@@ -27,15 +27,15 @@ std::set<std::pair<int, int>> const Queen::queenDirections = {
 
 // Basic ctor
 Queen::Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Cloneable<Piece, Queen>(PieceInfo(PieceData(PieceType::QUEEN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 9, "♛", "Q")) {}
+    Piece(PieceInfo(PieceData(PieceType::QUEEN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 9, "♛", "Q")) {}
 
 // Copy ctor
 Queen::Queen(Queen const &other) : 
-    Cloneable<Piece, Queen>(other) {}
+    Piece(other) {}
 
 // Move ctor
 Queen::Queen(Queen &&other) noexcept : 
-    Cloneable<Piece, Queen>(std::move(other)) {}
+    Piece(std::move(other)) {}
 
 // Copy assignment
 Queen& Queen::operator=(Queen const &other) {
@@ -53,7 +53,7 @@ Queen& Queen::operator=(Queen &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> Queen::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Queen::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &queenDirection : queenDirections) {

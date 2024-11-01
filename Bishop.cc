@@ -22,7 +22,7 @@ std::set<std::pair<int, int>> const Bishop::bishopDirections = {
 
 // Basic ctor
 Bishop::Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceInfo(PieceData(PieceType::BISHOP, PieceLevel::BASIC, team, pieceDirection, hasMoved), 3, "♝", "B")) {}
+    Piece(PieceInfo(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), 3, "♝", "B")) {}
 
 // Copy ctor
 Bishop::Bishop(Bishop const &other) : 

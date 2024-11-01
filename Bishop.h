@@ -21,9 +21,10 @@ class BoardMove;
  * Abstract Bishop Piece Class
  */
 class Bishop : public Piece {
-protected:
+private:
     static std::set<std::pair<int, int>> const bishopDirections;
-    
+
+protected:
     explicit Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Bishop(Bishop const &other);
     Bishop(Bishop &&other) noexcept;
@@ -31,7 +32,7 @@ protected:
     Bishop& operator=(Bishop &&other) noexcept;
     virtual ~Bishop() = default;
 
-    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
+    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

@@ -19,17 +19,18 @@ class BoardMove;
 /**
  * Rook Piece Class
  */
-class Rook : public Cloneable<Piece, Rook> {
+class Rook : public Piece {
 private:
     static std::set<std::pair<int, int>> const rookDirections;
-    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
-public:
+protected:
     explicit Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Rook(Rook const &other);
     Rook(Rook &&other) noexcept;
     Rook& operator=(Rook const &other);
     Rook& operator=(Rook &&other) noexcept;
     virtual ~Rook() = default;
+
+    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

@@ -19,17 +19,19 @@ class BoardMove;
 /**
  * Queen Piece Class
  */
-class Queen : public Cloneable<Piece, Queen> {
+class Queen : public Piece {
 private:
     static std::set<std::pair<int, int>> const queenDirections;
-    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
-public:
+
+protected:
     explicit Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Queen(Queen const &other);
     Queen(Queen &&other) noexcept;
     Queen& operator=(Queen const &other);
     Queen& operator=(Queen &&other) noexcept;
     virtual ~Queen() = default;
+
+    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

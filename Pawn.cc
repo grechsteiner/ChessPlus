@@ -17,15 +17,15 @@
 
 // Basic ctor
 Pawn::Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Cloneable<Piece, Pawn>(PieceInfo(PieceData(PieceType::PAWN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 1, "♟", "P")) {}
+    Piece(PieceInfo(PieceData(PieceType::PAWN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 1, "♟", "P")) {}
 
 // Copy ctor
 Pawn::Pawn(Pawn const &other) : 
-    Cloneable<Piece, Pawn>(other) {}
+    Piece(other) {}
 
 // Move ctor
 Pawn::Pawn(Pawn &&other) noexcept : 
-    Cloneable<Piece, Pawn>(std::move(other)) {}
+    Piece(std::move(other)) {}
 
 // Copy assignment
 Pawn& Pawn::operator=(Pawn const &other) {
@@ -54,7 +54,7 @@ std::pair<int, int> Pawn::getPawnDirection() const {
     }
 }
 
-std::vector<BoardMove> Pawn::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Pawn::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)){
         int fromRow = fromSquare.getBoardRow();

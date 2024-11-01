@@ -32,6 +32,8 @@ protected:
 
     PieceInfo pieceInfo;
 
+    virtual std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
+
 public:
     std::vector<BoardMove> getMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
     std::unique_ptr<Piece> clone() const;

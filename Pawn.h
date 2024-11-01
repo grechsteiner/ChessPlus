@@ -18,18 +18,19 @@ class BoardMove;
 /**
  * Pawn Piece Class
  */
-class Pawn : public Cloneable<Piece, Pawn> {
+class Pawn : public Piece {
 private:
-    std::pair<int, int> getPawnDirection() const;
-    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     std::vector<BoardMove> createPromotionMoves(BoardMove const &move) const;
-public:
+protected:
     explicit Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Pawn(Pawn const &other);
     Pawn(Pawn &&other) noexcept;
     Pawn& operator=(Pawn const &other);
     Pawn& operator=(Pawn &&other) noexcept;
     virtual ~Pawn() = default;
+
+    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::pair<int, int> getPawnDirection() const;
 };
 
 
