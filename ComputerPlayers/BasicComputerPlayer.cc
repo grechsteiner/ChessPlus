@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "BasicComputerPlayer.h"
-#include "ChessBoard.h"
+#include "ChessBoardImpl.h"
 
 #include "MoveShuffler.h"
 

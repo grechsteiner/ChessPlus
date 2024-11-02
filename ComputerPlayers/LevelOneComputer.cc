@@ -5,7 +5,7 @@
 
 #include "Constants.h"
 #include "LevelOneComputer.h"
-#include "ChessBoard.h"
+#include "ChessBoardImpl.h"
 
 
 LevelOneComputer::LevelOneComputer() : BasicComputerPlayer() {}

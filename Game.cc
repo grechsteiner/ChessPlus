@@ -26,11 +26,11 @@
 
 #include "IChessBoard.h"
 
-#include "ChessBoard.h"
+#include "ChessBoardImpl.h"
 
 
 Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    chessBoard(std::make_unique<ChessBoard>(ChessBoard(8, 8))), input(std::make_unique<ConsoleInputGetter>(in)), errorReporter(std::make_unique<ConsoleInvalidCommandReporter>(errorOut)) {
+    chessBoard(std::make_unique<ChessBoardImpl>(ChessBoardImpl(8, 8))), input(std::make_unique<ConsoleInputGetter>(in)), errorReporter(std::make_unique<ConsoleInvalidCommandReporter>(errorOut)) {
     applyStandardSetup();
 }
 

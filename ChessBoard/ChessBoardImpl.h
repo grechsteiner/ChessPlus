@@ -1,4 +1,4 @@
-// ChessBoard.h
+// ChessBoardImpl.h
 
 #ifndef ChessBoard_h
 #define ChessBoard_h
@@ -20,9 +20,9 @@ struct PieceData;
 
 
 /**
- * ChessBoard IChessBoard Class
+ * ChessBoardImpl ChessBoard Class
  */
-class ChessBoard : public Cloneable<IChessBoard, ChessBoard> {
+class ChessBoardImpl : public Cloneable<IChessBoard, ChessBoardImpl> {
 
 private:
     int numRows;    // Initialize at construction time to avoid constantly getting size of vector
@@ -99,12 +99,12 @@ private:
     int getNumColsImpl() const override;
 
 public:
-    explicit ChessBoard(int numRows, int numCols);     // Behaviour undefined if either are negative
-    ChessBoard(ChessBoard const &other);
-    ChessBoard(ChessBoard &&other) noexcept;
-    ChessBoard& operator=(ChessBoard const &other);
-    ChessBoard& operator=(ChessBoard &&other) noexcept;
-    virtual ~ChessBoard() = default;
+    explicit ChessBoardImpl(int numRows, int numCols);     // Behaviour undefined if either are negative
+    ChessBoardImpl(ChessBoardImpl const &other);
+    ChessBoardImpl(ChessBoardImpl &&other) noexcept;
+    ChessBoardImpl& operator=(ChessBoardImpl const &other);
+    ChessBoardImpl& operator=(ChessBoardImpl &&other) noexcept;
+    virtual ~ChessBoardImpl() = default;
 };
 
 

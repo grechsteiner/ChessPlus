@@ -8,7 +8,7 @@
 
 #include "Game.h"
 #include "Observer.h"
-#include "ChessBoard.h"
+#include "ChessBoardImpl.h"
 
 class GameWrapper {
 private:

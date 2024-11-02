@@ -10,7 +10,7 @@
 
 #include "Constants.h"
 #include "Subject.h"
-#include "ChessBoard.h"
+#include "ChessBoardImpl.h"
 #include "IInputGetter.h"
 #include "IInvalidCommandReporter.h"
 #include "ComputerPlayer.h"

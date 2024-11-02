@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "Constants.h"
-#include "ChessBoard.h"
+#include "ChessBoardImpl.h"
 #include "BoardMove.h"
 #include "IChessBoard.h"
 
