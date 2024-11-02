@@ -12,16 +12,17 @@
 
 
 // Basic ctor
-Piece::Piece(PieceInfo const &pieceInfo) :
-    pieceInfo(pieceInfo) {}
+Piece::Piece(PieceData const &pieceData, PieceInfo const &pieceInfo) :
+    pieceData(pieceData), pieceInfo(pieceInfo) {}
 
 // Move ctor
 Piece::Piece(Piece &&other) noexcept :
-    pieceInfo(std::move(other.pieceInfo)) {}
+    pieceData(std::move(other.pieceData)), pieceInfo(std::move(other.pieceInfo)) {}
 
 // Move assignment
 Piece& Piece::operator=(Piece &&other) noexcept {
     if (this != &other) {
+        pieceData = std::move(other.pieceData);
         pieceInfo = std::move(other.pieceInfo);
     }
     return *this;
@@ -30,4 +31,5 @@ Piece& Piece::operator=(Piece &&other) noexcept {
 std::vector<std::unique_ptr<BoardMove>> Piece::getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const { return getMovesImpl(chessBoard, fromSquare, onlyAttackingMoves); }
 std::unique_ptr<Piece> Piece::clone() const { return cloneImpl(); }
 
+PieceData const& Piece::getPieceData() const { return pieceData; }
 PieceInfo const& Piece::getPieceInfo() const { return pieceInfo; }

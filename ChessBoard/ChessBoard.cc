@@ -15,6 +15,7 @@
 
 std::unique_ptr<ChessBoard> ChessBoard::clone() const { return cloneImpl(); }
 
+std::optional<PieceData> ChessBoard::getPieceDataAtImpl(BoardSquare const &boardSquare) const { return getPieceDataAtImpl(boardSquare); }
 std::optional<PieceInfo> ChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
 std::vector<BoardSquare> ChessBoard::getAllBoardSquares() const { return getAllBoardSquaresImpl(); }
 

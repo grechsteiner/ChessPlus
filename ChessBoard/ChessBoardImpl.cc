@@ -13,7 +13,7 @@
 #include "Cloneable.h"
 #include "Constants.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
 #include "Piece.h"
 #include "PieceData.h"
 #include "PieceFactory.h"
@@ -188,6 +188,12 @@ bool ChessBoardImpl::doesMoveLeaveTeamInCheck(OldBoardMove const &boardMove) con
 
 
 #pragma mark - ChessBoard Interface
+
+std::optional<PieceData> ChessBoardImpl::getPieceDataAtImpl(BoardSquare const &boardSquare) const {
+    return isSquareOnBoard(boardSquare) && grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] != nullptr
+        ? std::make_optional<PieceData>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceData())
+        : std::nullopt;
+}
 
 std::optional<PieceInfo> ChessBoardImpl::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
     return isSquareOnBoard(boardSquare) && grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] != nullptr
