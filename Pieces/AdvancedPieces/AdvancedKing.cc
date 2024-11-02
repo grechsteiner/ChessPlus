@@ -4,7 +4,7 @@
 
 #include "AdvancedKing.h"
 #include "BoardMove.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 // Basic ctor
 AdvancedKing::AdvancedKing(Team team, PieceDirection pieceDirection, bool hasMoved) :
@@ -34,7 +34,7 @@ AdvancedKing& AdvancedKing::operator=(AdvancedKing &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> AdvancedKing::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> AdvancedKing::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.getBoardRow() + 2, fromSquare.getBoardCol() + 2),
         BoardSquare(fromSquare.getBoardRow() + 2, fromSquare.getBoardCol() - 2),

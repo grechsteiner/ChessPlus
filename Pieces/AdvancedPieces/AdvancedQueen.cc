@@ -4,7 +4,7 @@
 
 #include "AdvancedQueen.h"
 #include "BoardMove.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 
 // Basic ctor
@@ -35,7 +35,7 @@ AdvancedQueen& AdvancedQueen::operator=(AdvancedQueen &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> AdvancedQueen::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> AdvancedQueen::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() + 2),
         BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() - 2),

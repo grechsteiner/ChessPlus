@@ -33,6 +33,6 @@ BasicBishop& BasicBishop::operator=(BasicBishop &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> BasicBishop::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> BasicBishop::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }

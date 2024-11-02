@@ -4,7 +4,7 @@
 
 #include "AdvancedPawn.h"
 #include "BoardMove.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 
 // Basic ctor
@@ -35,7 +35,7 @@ AdvancedPawn& AdvancedPawn::operator=(AdvancedPawn &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> AdvancedPawn::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     int fromRow = fromSquare.getBoardRow();
     int fromCol = fromSquare.getBoardCol();
     std::pair<int, int> pawnDirection = getPawnDirection();

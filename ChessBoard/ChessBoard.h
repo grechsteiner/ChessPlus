@@ -1,4 +1,4 @@
-// IChessBoard.h
+// ChessBoard.h
 
 #ifndef IChessBoard_h
 #define IChessBoard_h
@@ -19,10 +19,10 @@ struct PieceData;
 /**
  * ChessBoard Interface Class
  */
-class IChessBoard {
+class ChessBoard {
 
 private:
-    virtual std::unique_ptr<IChessBoard> cloneImpl() const = 0;
+    virtual std::unique_ptr<ChessBoard> cloneImpl() const = 0;
 
     virtual std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
     virtual std::vector<BoardSquare> getAllBoardSquaresImpl() const = 0;
@@ -62,8 +62,8 @@ private:
     virtual int getNumColsImpl() const = 0;
 
 public:
-    std::unique_ptr<IChessBoard> clone() const;
-    virtual ~IChessBoard() = default;
+    std::unique_ptr<ChessBoard> clone() const;
+    virtual ~ChessBoard() = default;
 
     std::optional<PieceInfo> getPieceInfoAt(BoardSquare const &boardSquare) const;
     std::vector<BoardSquare> getAllBoardSquares() const;

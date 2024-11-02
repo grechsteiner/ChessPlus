@@ -5,7 +5,7 @@
 #include <optional>
 #include <memory>
 
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 #include "Constants.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"

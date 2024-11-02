@@ -8,7 +8,7 @@
 #include "Constants.h"
 #include "Piece.h"
 #include "Cloneable.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
@@ -49,7 +49,7 @@ Rook& Rook::operator=(Rook &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> Rook::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Rook::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &rookDirection : rookDirections) {

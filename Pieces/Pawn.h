@@ -10,7 +10,7 @@
 #include "Piece.h"
 #include "Cloneable.h"
 
-class IChessBoard;
+class ChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -29,7 +29,7 @@ protected:
     Pawn& operator=(Pawn &&other) noexcept;
     virtual ~Pawn() = default;
 
-    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     std::pair<int, int> getPawnDirection() const;
 };
 

@@ -11,7 +11,7 @@
 #include "Piece.h"
 #include "Cloneable.h"
 
-class IChessBoard;
+class ChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -30,7 +30,7 @@ protected:
     Rook& operator=(Rook &&other) noexcept;
     virtual ~Rook() = default;
 
-    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

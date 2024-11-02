@@ -8,7 +8,7 @@
 #include "Constants.h"
 #include "Piece.h"
 #include "Cloneable.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
@@ -48,7 +48,7 @@ Bishop& Bishop::operator=(Bishop &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> Bishop::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Bishop::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &bishopDirection : bishopDirections) {

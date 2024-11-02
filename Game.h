@@ -14,14 +14,14 @@
 #include "IInputGetter.h"
 #include "IInvalidCommandReporter.h"
 #include "ComputerPlayer.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 // (Color, totalScore, ComputerPlayer)
 using PlayerTuple = std::tuple<Team, double, std::unique_ptr<ComputerPlayer>>;
 
 class Game : public Subject {
 private:
-    std::unique_ptr<IChessBoard> chessBoard;
+    std::unique_ptr<ChessBoard> chessBoard;
 
     std::unique_ptr<IInputGetter> input;
     std::unique_ptr<IInvalidCommandReporter> errorReporter;
@@ -63,8 +63,8 @@ public:
     // Get state (observer pattern)
     GameState getGameState() const;
     const std::tuple<PlayerTuple, PlayerTuple>& getMainMenuState() const;
-    std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
-    std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
+    std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
+    std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
 };
 
 #endif /* Game_h */

@@ -8,7 +8,7 @@
 #include "Constants.h"
 #include "PieceInfo.h"
 #include "PieceData.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 
 // Basic ctor

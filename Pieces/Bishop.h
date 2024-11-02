@@ -12,7 +12,7 @@
 #include "Cloneable.h"
 #include "PieceData.h"
 
-class IChessBoard;
+class ChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -32,7 +32,7 @@ protected:
     Bishop& operator=(Bishop &&other) noexcept;
     virtual ~Bishop() = default;
 
-    std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

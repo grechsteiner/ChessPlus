@@ -11,7 +11,7 @@
 
 LevelThreeComputer::LevelThreeComputer() : BasicComputerPlayer() {}
 
-std::vector<BoardMove> LevelThreeComputer::getPossibleMoves(IChessBoard const &chessBoard, Team team) const {
+std::vector<BoardMove> LevelThreeComputer::getPossibleMoves(ChessBoard const &chessBoard, Team team) const {
 
     std::vector<BoardMove> captureAvoidingMoves = chessBoard.generateCaptureAvoidingMoves(team);
     if (!captureAvoidingMoves.empty()) {

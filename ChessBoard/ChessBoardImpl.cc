@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "ChessBoardImpl.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 #include "Cloneable.h"
 #include "Constants.h"
 #include "BoardSquare.h"

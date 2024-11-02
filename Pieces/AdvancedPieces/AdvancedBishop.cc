@@ -4,7 +4,7 @@
 
 #include "AdvancedBishop.h"
 #include "BoardMove.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 
 // Basic ctor
@@ -35,7 +35,7 @@ AdvancedBishop& AdvancedBishop::operator=(AdvancedBishop &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> AdvancedBishop::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> AdvancedBishop::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.getBoardRow() + 0, fromSquare.getBoardCol() + 1),
         BoardSquare(fromSquare.getBoardRow() + 0, fromSquare.getBoardCol() - 1),

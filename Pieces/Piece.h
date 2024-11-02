@@ -8,7 +8,7 @@
 
 #include "PieceInfo.h"
 
-class IChessBoard;
+class ChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -20,7 +20,7 @@ class BoardMove;
 class Piece {
 
 private:
-    virtual std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
+    virtual std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
     virtual std::unique_ptr<Piece> cloneImpl() const = 0;
     
 protected:
@@ -32,10 +32,10 @@ protected:
 
     PieceInfo pieceInfo;
 
-    virtual std::vector<BoardMove> getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
+    virtual std::vector<BoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
 
 public:
-    std::vector<BoardMove> getMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
+    std::vector<BoardMove> getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
     std::unique_ptr<Piece> clone() const;
     
     PieceInfo const& getPieceInfo() const;

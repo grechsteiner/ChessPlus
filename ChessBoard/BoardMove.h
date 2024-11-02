@@ -10,7 +10,7 @@
 #include "PieceData.h"
 #include "PieceInfo.h"
 
-class IChessBoard;
+class ChessBoard;
 
 
 enum class MoveType {
@@ -46,7 +46,7 @@ private:
     std::optional<BoardSquare> rookToSquare;
 
     // Utility method for performing the rook logic for castle moves
-    void performRookCastle(IChessBoard &chessBoard, bool isUndo) const;
+    void performRookCastle(ChessBoard &chessBoard, bool isUndo) const;
 
     // Private to prevent construction
     explicit BoardMove(
@@ -75,8 +75,8 @@ public:
 
     bool operator==(BoardMove const &other) const;
         
-    void makeBoardMove(IChessBoard &chessBoard) const;
-    void undoBoardMove(IChessBoard &chessBoard) const;
+    void makeBoardMove(ChessBoard &chessBoard) const;
+    void undoBoardMove(ChessBoard &chessBoard) const;
 
     MoveType getMoveType() const;
     PieceData const& getMovedPieceData() const;

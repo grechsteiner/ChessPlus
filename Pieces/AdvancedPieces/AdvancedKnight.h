@@ -14,7 +14,7 @@
 #include "PieceData.h"
 #include "Knight.h"
 
-class IChessBoard;
+class ChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -24,7 +24,7 @@ class BoardMove;
  */
 class AdvancedKnight final : public ComplicatedCloneable<Piece, Knight, AdvancedKnight> {
 private:
-    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
     explicit AdvancedKnight(Team team, PieceDirection pieceDirection, bool hasMoved);
     AdvancedKnight(AdvancedKnight const &other);

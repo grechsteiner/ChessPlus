@@ -8,7 +8,7 @@
 
 #include "ComputerPlayer.h"
 #include "Constants.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 struct ScoredBoardMove {
     int score;
@@ -19,11 +19,11 @@ struct ScoredBoardMove {
 
 class AdvancedComputerPlayer : public ComputerPlayer {
 private:
-    BoardMove getMoveImpl(IChessBoard const &chessBoard, Team team) const override;
+    BoardMove getMoveImpl(ChessBoard const &chessBoard, Team team) const override;
 
-    ScoredBoardMove alphaBetaSearch(IChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const;
-    int getAlphaBetaBoardScore(IChessBoard const &chessBoard, Team team) const;
-    std::vector<BoardMove> rankMoves(IChessBoard const &chessBoard, std::vector<BoardMove> const &moves) const;
+    ScoredBoardMove alphaBetaSearch(ChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const;
+    int getAlphaBetaBoardScore(ChessBoard const &chessBoard, Team team) const;
+    std::vector<BoardMove> rankMoves(ChessBoard const &chessBoard, std::vector<BoardMove> const &moves) const;
     
     int depth = 4;
    

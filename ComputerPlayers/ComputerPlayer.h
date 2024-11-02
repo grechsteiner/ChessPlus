@@ -8,14 +8,14 @@
 #include "Constants.h"
 #include "ChessBoardImpl.h"
 #include "BoardMove.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 class ComputerPlayer {
 
 private:
-    virtual BoardMove getMoveImpl(IChessBoard const &chessBoard, Team team) const = 0;
+    virtual BoardMove getMoveImpl(ChessBoard const &chessBoard, Team team) const = 0;
 public:
-    BoardMove getMove(IChessBoard const &chessBoard, Team team) const;
+    BoardMove getMove(ChessBoard const &chessBoard, Team team) const;
     ComputerPlayer();
     virtual ~ComputerPlayer() = default;
 };

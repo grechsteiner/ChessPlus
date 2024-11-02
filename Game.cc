@@ -24,7 +24,7 @@
 #include "BoardMove.h"
 #include "UserMove.h"
 
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 
 #include "ChessBoardImpl.h"
 
@@ -78,11 +78,11 @@ const std::tuple<PlayerTuple, PlayerTuple>& Game::getMainMenuState() const {
     return players;
 }
 
-std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
+std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
     return std::make_tuple(std::ref(*chessBoard), std::cref(players), currentTurn);
 }
 
-std::tuple<IChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
+std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
     return std::make_tuple(std::ref(*chessBoard), std::cref(players), currentTurn, showingStandardOpenings);
 }
 

@@ -10,7 +10,7 @@
 #include "Constants.h"
 #include "Piece.h"
 #include "Cloneable.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
@@ -54,7 +54,7 @@ std::pair<int, int> Pawn::getPawnDirection() const {
     }
 }
 
-std::vector<BoardMove> Pawn::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> Pawn::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)){
         int fromRow = fromSquare.getBoardRow();

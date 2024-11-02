@@ -9,7 +9,7 @@
 #include "Constants.h"
 #include "Piece.h"
 #include "Cloneable.h"
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 #include "BoardSquare.h"
 #include "BoardMove.h"
 
@@ -54,7 +54,7 @@ King& King::operator=(King &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> King::getStandardMoves(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> King::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardMove> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         int fromRow = fromSquare.getBoardRow();
@@ -135,7 +135,7 @@ std::vector<BoardMove> King::getStandardMoves(IChessBoard const &chessBoard, Boa
     return moves;
 }
 
-bool King::checkCommonCastleInfo(IChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const {
+bool King::checkCommonCastleInfo(ChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const {
     if (chessBoard.getPieceInfoAt(rookFromSquare).has_value()) {
         PieceData rookPieceData = chessBoard.getPieceInfoAt(rookFromSquare).value().pieceData;
         return

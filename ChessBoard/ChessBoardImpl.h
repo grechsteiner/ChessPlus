@@ -8,7 +8,7 @@
 #include <optional>
 #include <memory>
 
-#include "IChessBoard.h"
+#include "ChessBoard.h"
 #include "Cloneable.h"
 #include "Constants.h"
 #include "BoardMove.h"
@@ -22,7 +22,7 @@ struct PieceData;
 /**
  * ChessBoardImpl ChessBoard Class
  */
-class ChessBoardImpl : public Cloneable<IChessBoard, ChessBoardImpl> {
+class ChessBoardImpl : public Cloneable<ChessBoard, ChessBoardImpl> {
 
 private:
     int numRows;    // Initialize at construction time to avoid constantly getting size of vector

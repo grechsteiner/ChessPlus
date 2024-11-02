@@ -14,7 +14,7 @@
 #include "PieceData.h"
 #include "Rook.h"
 
-class IChessBoard;
+class ChessBoard;
 class BoardSquare;
 class BoardMove;
 
@@ -24,7 +24,7 @@ class BoardMove;
  */
 class BasicRook final : public ComplicatedCloneable<Piece, Rook, BasicRook> {
 private:
-    std::vector<BoardMove> getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
     explicit BasicRook(Team team, PieceDirection pieceDirection, bool hasMoved);
     BasicRook(BasicRook const &other);

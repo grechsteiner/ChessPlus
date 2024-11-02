@@ -33,6 +33,6 @@ BasicQueen& BasicQueen::operator=(BasicQueen &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> BasicQueen::getMovesImpl(IChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<BoardMove> BasicQueen::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }
