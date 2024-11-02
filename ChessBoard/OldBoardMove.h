@@ -1,7 +1,7 @@
 // OldBoardMove.h
 
-#ifndef BoardMove_h
-#define BoardMove_h
+#ifndef OldBoardMove_h
+#define OldBoardMove_h
 
 #include <optional>
 
@@ -92,4 +92,4 @@ public:
 };
 
 
-#endif /* BoardMove */
+#endif /* OldBoardMove_h */
