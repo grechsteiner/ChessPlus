@@ -22,9 +22,9 @@ void TextObserver::notifyImpl() {
         out << "|Main Menu|" << std::endl;
         out << "+---------+" << std::endl;
     } else if (gameState == GameState::SETUP) {
-        std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> state = game->getSetupState();
+        std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> state = game->getSetupState();
 
-        const IChessBoard& chessBoard = std::get<0>(state);
+        const ChessBoard& chessBoard = std::get<0>(state);
 
 
         out << "+";
@@ -49,10 +49,10 @@ void TextObserver::notifyImpl() {
         out << "-----+" << std::endl;
 
     } else {
-        std::tuple<const IChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> state = game->getActiveGameState();
+        std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> state = game->getActiveGameState();
         
 
-        const IChessBoard& chessBoard = std::get<0>(state);
+        const ChessBoard& chessBoard = std::get<0>(state);
 
         out << "+";
         for (int col = 0; col < chessBoard.getNumCols(); ++col) {
@@ -119,7 +119,7 @@ void TextObserver::printPiece(const std::string& str, Team team) {
     }
 }
 
-void TextObserver::printBoard(IChessBoard const &chessBoard, int turn) {
+void TextObserver::printBoard(ChessBoard const &chessBoard, int turn) {
     // Top line
     out << "|  ╔";
     for (int col = 0; col < chessBoard.getNumCols(); ++col) {

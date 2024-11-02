@@ -1,9 +1,9 @@
-// BoardMoves.cc
+// OldBoardMove.cc
 
 #include <optional>
 #include <utility>
 
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "BoardSquare.h"
 #include "Constants.h"
 #include "PieceInfo.h"
@@ -12,7 +12,7 @@
 
 
 // Basic ctor
-BoardMove::BoardMove(
+OldBoardMove::OldBoardMove(
     MoveType moveType, PieceData const &movedPieceData,
     BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData,
     std::optional<PieceType> promotionPieceType, std::optional<BoardSquare> const &rookFromSquare, std::optional<BoardSquare> const &rookToSquare) :
@@ -22,16 +22,16 @@ BoardMove::BoardMove(
 {}
 
 // Static
-BoardMove BoardMove::createBasicMove(
+OldBoardMove OldBoardMove::createBasicMove(
     MoveType moveType, PieceData const &movedPieceData, 
     BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo) {
     if (capturedPieceInfo.has_value()) {
-        return BoardMove(
+        return OldBoardMove(
             moveType, movedPieceData,
             fromSquare, toSquare, captureSquare, capturedPieceInfo.value().pieceData,
             std::nullopt, std::nullopt, std::nullopt);
     } else {
-        return BoardMove(
+        return OldBoardMove(
             moveType, movedPieceData,
             fromSquare, toSquare, captureSquare, std::nullopt,
             std::nullopt, std::nullopt, std::nullopt);
@@ -40,17 +40,17 @@ BoardMove BoardMove::createBasicMove(
 }
 
 // Static
-BoardMove BoardMove::createPromotionMove(
+OldBoardMove OldBoardMove::createPromotionMove(
     PieceType promotionPieceType, 
     MoveType moveType, PieceData const &movedPieceData, 
     BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo) {
     if (capturedPieceInfo.has_value()) {
-        return BoardMove(
+        return OldBoardMove(
         moveType, movedPieceData,
         fromSquare, toSquare, captureSquare, capturedPieceInfo.value().pieceData,
         promotionPieceType, std::nullopt, std::nullopt);
     } else {
-        return BoardMove(
+        return OldBoardMove(
         moveType, movedPieceData,
         fromSquare, toSquare, captureSquare, std::nullopt,
         promotionPieceType, std::nullopt, std::nullopt);
@@ -59,17 +59,17 @@ BoardMove BoardMove::createPromotionMove(
 }
 
 // Static
-BoardMove BoardMove::createCastleMove(
+OldBoardMove OldBoardMove::createCastleMove(
     BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare, 
     MoveType moveType, PieceData const &movedPieceData, 
     BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo) {
     if (capturedPieceInfo.has_value()) {
-        return BoardMove(
+        return OldBoardMove(
             moveType, movedPieceData,
             fromSquare, toSquare, captureSquare, capturedPieceInfo.value().pieceData,
             std::nullopt, rookFromSquare, rookToSquare);
     } else {
-        return BoardMove(
+        return OldBoardMove(
             moveType, movedPieceData,
             fromSquare, toSquare, captureSquare, std::nullopt,
             std::nullopt, rookFromSquare, rookToSquare); 
@@ -77,14 +77,14 @@ BoardMove BoardMove::createCastleMove(
 }
 
 // Move ctor
-BoardMove::BoardMove(BoardMove &&other) noexcept :
+OldBoardMove::OldBoardMove(OldBoardMove &&other) noexcept :
     moveType(other.moveType), movedPieceData(std::move(other.movedPieceData)), 
     fromSquare(std::move(other.fromSquare)), toSquare(std::move(other.toSquare)), captureSquare(std::move(other.captureSquare)), capturedPieceData(std::move(other.capturedPieceData)),
     promotionPieceType(other.promotionPieceType), rookFromSquare(std::move(other.rookFromSquare)), rookToSquare(std::move(other.rookToSquare))
 {}
 
 // Move assignment
-BoardMove& BoardMove::operator=(BoardMove&& other) noexcept {
+OldBoardMove& OldBoardMove::operator=(OldBoardMove&& other) noexcept {
     if (this != &other) {
         moveType = other.moveType;
         movedPieceData = std::move(other.movedPieceData);
@@ -100,7 +100,7 @@ BoardMove& BoardMove::operator=(BoardMove&& other) noexcept {
 }
 
 // Equality operator
-bool BoardMove::operator==(BoardMove const &other) const {
+bool OldBoardMove::operator==(OldBoardMove const &other) const {
     return 
         moveType == other.moveType &&
         movedPieceData == other.movedPieceData &&
@@ -113,7 +113,7 @@ bool BoardMove::operator==(BoardMove const &other) const {
         rookToSquare == other.rookToSquare;
 }
 
-void BoardMove::performRookCastle(IChessBoard &chessBoard, bool isUndo) const {
+void OldBoardMove::performRookCastle(ChessBoard &chessBoard, bool isUndo) const {
     if (moveType == MoveType::CASTLE && rookFromSquare.has_value() && rookToSquare.has_value()) {
         std::optional<PieceInfo> rookPieceInfo = isUndo 
             ? chessBoard.getPieceInfoAt(rookToSquare.value()) 
@@ -132,7 +132,7 @@ void BoardMove::performRookCastle(IChessBoard &chessBoard, bool isUndo) const {
     }
 }
 
-void BoardMove::makeBoardMove(IChessBoard &chessBoard) const {
+void OldBoardMove::makeBoardMove(ChessBoard &chessBoard) const {
 
     /*
      * Basic Stuff:
@@ -155,7 +155,7 @@ void BoardMove::makeBoardMove(IChessBoard &chessBoard) const {
     }
 }
 
-void BoardMove::undoBoardMove(IChessBoard &chessBoard) const {
+void OldBoardMove::undoBoardMove(ChessBoard &chessBoard) const {
 
     /*
      * Basic Stuff
@@ -183,14 +183,14 @@ void BoardMove::undoBoardMove(IChessBoard &chessBoard) const {
     }
 }
 
-MoveType BoardMove::getMoveType() const { return moveType; }
-PieceData const& BoardMove::getMovedPieceData() const { return movedPieceData; }
+MoveType OldBoardMove::getMoveType() const { return moveType; }
+PieceData const& OldBoardMove::getMovedPieceData() const { return movedPieceData; }
 
-BoardSquare const& BoardMove::getFromSquare() const { return fromSquare; }
-BoardSquare const& BoardMove::getToSquare() const { return toSquare; }
-BoardSquare const& BoardMove::getCaptureSquare() const { return captureSquare; }
-std::optional<PieceData> BoardMove::getCapturedPieceData() const { return capturedPieceData; }
+BoardSquare const& OldBoardMove::getFromSquare() const { return fromSquare; }
+BoardSquare const& OldBoardMove::getToSquare() const { return toSquare; }
+BoardSquare const& OldBoardMove::getCaptureSquare() const { return captureSquare; }
+std::optional<PieceData> OldBoardMove::getCapturedPieceData() const { return capturedPieceData; }
 
-std::optional<PieceType> BoardMove::getPromotionPieceType() const { return promotionPieceType; }
-std::optional<BoardSquare> BoardMove::getRookFromSquare() const { return rookFromSquare; }
-std::optional<BoardSquare> BoardMove::getRookToSquare() const { return rookToSquare; }
+std::optional<PieceType> OldBoardMove::getPromotionPieceType() const { return promotionPieceType; }
+std::optional<BoardSquare> OldBoardMove::getRookFromSquare() const { return rookFromSquare; }
+std::optional<BoardSquare> OldBoardMove::getRookToSquare() const { return rookToSquare; }

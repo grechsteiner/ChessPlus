@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "AdvancedKnight.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "ChessBoard.h"
 
 // Basic ctor
@@ -34,7 +34,7 @@ AdvancedKnight& AdvancedKnight::operator=(AdvancedKnight &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> AdvancedKnight::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<OldBoardMove> AdvancedKnight::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() + 3),
         BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() - 3),
@@ -46,16 +46,16 @@ std::vector<BoardMove> AdvancedKnight::getMovesImpl(ChessBoard const &chessBoard
         BoardSquare(fromSquare.getBoardRow() - 3, fromSquare.getBoardCol() - 1)
     };
 
-    std::vector<BoardMove> additionalMoves;
+    std::vector<OldBoardMove> additionalMoves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (BoardSquare const &toSquare : additionalToSquares) {
             if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                additionalMoves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+                additionalMoves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
             }
         }
     }
 
-    std::vector<BoardMove> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
+    std::vector<OldBoardMove> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
     moves.insert(moves.end(), additionalMoves.begin(), additionalMoves.end());
     return moves;
 }

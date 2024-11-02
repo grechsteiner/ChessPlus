@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "BasicBishop.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 
 // Basic ctor
 BasicBishop::BasicBishop(Team team, PieceDirection pieceDirection, bool hasMoved) :
@@ -33,6 +33,6 @@ BasicBishop& BasicBishop::operator=(BasicBishop &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> BasicBishop::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<OldBoardMove> BasicBishop::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }

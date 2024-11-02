@@ -7,7 +7,7 @@
 
 #include "Constants.h"
 #include "BoardSquare.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "UserSquare.h"
 #include "UserMove.h"
 
@@ -192,7 +192,7 @@ bool areEqual(UserSquare const &userSquare, BoardSquare const &boardSquare, int 
     return createBoardSquare(userSquare, numRowsOnBoard, numColsOnBoard) == boardSquare;
 }
 
-bool areEqual(UserMove const &userMove, BoardMove const &boardMove, int numRowsOnBoard, int numColsOnBoard) {
+bool areEqual(UserMove const &userMove, OldBoardMove const &boardMove, int numRowsOnBoard, int numColsOnBoard) {
     return 
         createBoardSquare(userMove.getFromSquare(), numRowsOnBoard, numColsOnBoard) == boardMove.getFromSquare() &&
         createBoardSquare(userMove.getToSquare(), numRowsOnBoard, numColsOnBoard) == boardMove.getToSquare() &&

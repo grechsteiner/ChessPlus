@@ -21,7 +21,7 @@
 #include "ComputerPlayerFactory.h"
 #include "ComputerPlayer.h"
 
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "UserMove.h"
 
 #include "ChessBoard.h"
@@ -200,7 +200,7 @@ void Game::runGame() {
                         outputError("The current player is not a computer, specify move details for human player");
                     } else {
                         // Gauranteed to get valid move
-                        BoardMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(*chessBoard, std::get<0>(getPlayerWithTurn(currentTurn)));
+                        OldBoardMove compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(*chessBoard, std::get<0>(getPlayerWithTurn(currentTurn)));
                         chessBoard->makeMove(compMove);
                         incrementTurn();
                         moveMade = true;
@@ -218,7 +218,7 @@ void Game::runGame() {
                             BoardSquare fromBoardSquare = createBoardSquare(UserSquare(fromSquare), chessBoard->getNumRows(), chessBoard->getNumCols());
                             BoardSquare toBoardSquare = createBoardSquare(UserSquare(toSquare), chessBoard->getNumRows(), chessBoard->getNumCols());
                             std::optional<PieceType> promotion = promotionPiece == "" ? std::nullopt : std::make_optional(stringToPieceType(promotionPiece));
-                            std::optional<BoardMove> boardMove = chessBoard->createBoardMove(fromBoardSquare, toBoardSquare, promotion);
+                            std::optional<OldBoardMove> boardMove = chessBoard->createBoardMove(fromBoardSquare, toBoardSquare, promotion);
 
                             // Nullptr if invalid move
                             if (boardMove.has_value()) {

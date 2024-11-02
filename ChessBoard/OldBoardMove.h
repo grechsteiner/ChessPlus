@@ -1,4 +1,4 @@
-// BoardMove.h
+// OldBoardMove.h
 
 #ifndef BoardMove_h
 #define BoardMove_h
@@ -22,12 +22,12 @@ enum class MoveType {
 
 
 /**
- * BoardMove Class
+ * OldBoardMove Class
  * Represents a move to be performed on a ChessBoard
  * Includes logic for making & undoing itself on a provided ChessBoard (command pattern)
- * If BoardMove is not valid for provided board (i.e. fromSquare doesn't exist) behaviour is undefined
+ * If OldBoardMove is not valid for provided board (i.e. fromSquare doesn't exist) behaviour is undefined
  */
-class BoardMove final {
+class OldBoardMove final {
 
 private:
     MoveType moveType;
@@ -49,31 +49,31 @@ private:
     void performRookCastle(ChessBoard &chessBoard, bool isUndo) const;
 
     // Private to prevent construction
-    explicit BoardMove(
+    explicit OldBoardMove(
         MoveType moveType, PieceData const &movedPieceData,
         BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceData> const &capturedPieceData,
         std::optional<PieceType> promotionPieceType, std::optional<BoardSquare> const &rookFromSquare, std::optional<BoardSquare> const &rookToSquare);
 
 public:
-    static BoardMove createBasicMove(
+    static OldBoardMove createBasicMove(
         MoveType moveType, PieceData const &movedPieceData, 
         BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo = std::nullopt);
-    static BoardMove createPromotionMove(
+    static OldBoardMove createPromotionMove(
         PieceType promotionPieceType, 
         MoveType moveType, PieceData const &movedPieceData, 
         BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo = std::nullopt);
-    static BoardMove createCastleMove(
+    static OldBoardMove createCastleMove(
         BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare, 
         MoveType moveType, PieceData const &movedPieceData, 
         BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, std::optional<PieceInfo> const &capturedPieceInfo = std::nullopt);
 
-    BoardMove(BoardMove const &other) = default;
-    BoardMove(BoardMove &&other) noexcept;
-    BoardMove& operator=(const BoardMove& other) = default;
-    BoardMove& operator=(BoardMove&& other) noexcept;
-    ~BoardMove() = default;
+    OldBoardMove(OldBoardMove const &other) = default;
+    OldBoardMove(OldBoardMove &&other) noexcept;
+    OldBoardMove& operator=(const OldBoardMove& other) = default;
+    OldBoardMove& operator=(OldBoardMove&& other) noexcept;
+    ~OldBoardMove() = default;
 
-    bool operator==(BoardMove const &other) const;
+    bool operator==(OldBoardMove const &other) const;
         
     void makeBoardMove(ChessBoard &chessBoard) const;
     void undoBoardMove(ChessBoard &chessBoard) const;

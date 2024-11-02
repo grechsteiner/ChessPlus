@@ -12,7 +12,7 @@
 
 class ChessBoard;
 class BoardSquare;
-class BoardMove;
+class OldBoardMove;
 
 
 /**
@@ -20,7 +20,7 @@ class BoardMove;
  */
 class Pawn : public Piece {
 private:
-    std::vector<BoardMove> createPromotionMoves(BoardMove const &move) const;
+    std::vector<OldBoardMove> createPromotionMoves(OldBoardMove const &move) const;
 protected:
     explicit Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Pawn(Pawn const &other);
@@ -29,7 +29,7 @@ protected:
     Pawn& operator=(Pawn &&other) noexcept;
     virtual ~Pawn() = default;
 
-    std::vector<BoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<OldBoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     std::pair<int, int> getPawnDirection() const;
 };
 

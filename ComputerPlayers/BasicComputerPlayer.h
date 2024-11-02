@@ -7,13 +7,13 @@
 
 #include "Constants.h"
 #include "ChessBoardImpl.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "ComputerPlayer.h"
 
 class BasicComputerPlayer : public ComputerPlayer {
 private:
-    BoardMove getMoveImpl(ChessBoard const &chessBoard, Team team) const override;
-    virtual std::vector<BoardMove> getPossibleMoves(ChessBoard const &chessBoard, Team team) const = 0;
+    OldBoardMove getMoveImpl(ChessBoard const &chessBoard, Team team) const override;
+    virtual std::vector<OldBoardMove> getPossibleMoves(ChessBoard const &chessBoard, Team team) const = 0;
 public:
     BasicComputerPlayer();
     virtual ~BasicComputerPlayer() = default;

@@ -39,7 +39,7 @@ void GraphicObserver::printPiece(const std::string& str, Team team, int x, int y
     window.drawString(x, y, str, pieceColor);
 }
 
-void GraphicObserver::printBoard(const IChessBoard& chessBoard, int turn) {
+void GraphicObserver::printBoard(const ChessBoard& chessBoard, int turn) {
     int numRows = chessBoard.getNumRows();
     int numCols = chessBoard.getNumCols();
     int windowWidth = 600;  // Width of the window

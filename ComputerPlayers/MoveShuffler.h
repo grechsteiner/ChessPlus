@@ -5,12 +5,12 @@
 
 #include <vector>
 
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 
 
 class MoveShuffler {
 public:
-    static void shuffle(std::vector<BoardMove> &moves);
+    static void shuffle(std::vector<OldBoardMove> &moves);
 };
 
 

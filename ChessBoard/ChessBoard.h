@@ -1,7 +1,7 @@
 // ChessBoard.h
 
-#ifndef IChessBoard_h
-#define IChessBoard_h
+#ifndef ChessBoard_h
+#define ChessBoard_h
 
 #include <vector>
 #include <stack>
@@ -11,7 +11,7 @@
 #include "Constants.h"
 
 class BoardSquare;
-class BoardMove;
+class OldBoardMove;
 struct PieceInfo;
 struct PieceData;
 
@@ -37,23 +37,23 @@ private:
     virtual bool isInCheckMateImpl(Team team) const = 0;
     virtual bool isInStaleMateImpl(Team team) const = 0;
 
-    virtual std::vector<BoardMove> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const = 0;
-    virtual std::vector<BoardMove> generateAllLegalMovesImpl(Team team) const = 0; 
-    virtual std::vector<BoardMove> generateCapturingMovesImpl(Team team) const = 0;
-    virtual std::vector<BoardMove> generateCheckApplyingMovesImpl(Team team) const = 0;
-    virtual std::vector<BoardMove> generateCaptureAvoidingMovesImpl(Team team) const = 0;
+    virtual std::vector<OldBoardMove> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const = 0;
+    virtual std::vector<OldBoardMove> generateAllLegalMovesImpl(Team team) const = 0; 
+    virtual std::vector<OldBoardMove> generateCapturingMovesImpl(Team team) const = 0;
+    virtual std::vector<OldBoardMove> generateCheckApplyingMovesImpl(Team team) const = 0;
+    virtual std::vector<OldBoardMove> generateCaptureAvoidingMovesImpl(Team team) const = 0;
 
     virtual bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) = 0;
     virtual bool clearPositionImpl(BoardSquare const &boardSquare) = 0;
     virtual void clearBoardImpl() = 0;
 
-    virtual std::optional<BoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const = 0;
-    virtual bool makeMoveImpl(BoardMove const &boardMove) = 0;                    
+    virtual std::optional<OldBoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const = 0;
+    virtual bool makeMoveImpl(OldBoardMove const &boardMove) = 0;                    
     virtual bool undoMoveImpl() = 0;  
     virtual bool redoMoveImpl() = 0; 
 
-    virtual std::optional<BoardMove> getLastCompletedMoveImpl() const = 0;
-    virtual std::stack<BoardMove> const& getAllCompletedMovesImpl() const = 0;
+    virtual std::optional<OldBoardMove> getLastCompletedMoveImpl() const = 0;
+    virtual std::stack<OldBoardMove> const& getAllCompletedMovesImpl() const = 0;
 
     virtual Team getTeamOneImpl() const = 0;
     virtual Team getTeamTwoImpl() const = 0;
@@ -78,23 +78,23 @@ public:
     bool isInCheckMate(Team team) const;
     bool isInStaleMate(Team team) const;
 
-    std::vector<BoardMove> generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const;
-    std::vector<BoardMove> generateAllLegalMoves(Team team) const; 
-    std::vector<BoardMove> generateCapturingMoves(Team team) const;
-    std::vector<BoardMove> generateCheckApplyingMoves(Team team) const;
-    std::vector<BoardMove> generateCaptureAvoidingMoves(Team team) const;
+    std::vector<OldBoardMove> generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const;
+    std::vector<OldBoardMove> generateAllLegalMoves(Team team) const; 
+    std::vector<OldBoardMove> generateCapturingMoves(Team team) const;
+    std::vector<OldBoardMove> generateCheckApplyingMoves(Team team) const;
+    std::vector<OldBoardMove> generateCaptureAvoidingMoves(Team team) const;
 
     bool setPosition(BoardSquare const &boardSquare, PieceData const &pieceData);    
     bool clearPosition(BoardSquare const &boardSquare);
     void clearBoard();
 
-    std::optional<BoardMove> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const;
-    bool makeMove(BoardMove const &boardMove);
+    std::optional<OldBoardMove> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const;
+    bool makeMove(OldBoardMove const &boardMove);
     bool undoMove();  
     bool redoMove(); 
 
-    std::optional<BoardMove> getLastCompletedMove() const;
-    std::stack<BoardMove> const& getAllCompletedMoves() const;
+    std::optional<OldBoardMove> getLastCompletedMove() const;
+    std::stack<OldBoardMove> const& getAllCompletedMoves() const;
 
     Team getTeamOne() const;
     Team getTeamTwo() const;
@@ -104,4 +104,4 @@ public:
 };
 
 
-#endif /* IChessBoard_h */
+#endif /* ChessBoard_h */

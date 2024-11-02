@@ -5,12 +5,12 @@
 
 #include <vector>
 
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "BasicComputerPlayer.h"
 
 class LevelOneComputer : public BasicComputerPlayer {
 private:
-    std::vector<BoardMove> getPossibleMoves(ChessBoard const &chessBoard, Team team) const override;
+    std::vector<OldBoardMove> getPossibleMoves(ChessBoard const &chessBoard, Team team) const override;
 public:
     LevelOneComputer();
 };

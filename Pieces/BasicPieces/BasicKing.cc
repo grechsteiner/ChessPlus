@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "BasicKing.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 
 // Basic ctor
 BasicKing::BasicKing(Team team, PieceDirection pieceDirection, bool hasMoved) :
@@ -33,6 +33,6 @@ BasicKing& BasicKing::operator=(BasicKing &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> BasicKing::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<OldBoardMove> BasicKing::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }

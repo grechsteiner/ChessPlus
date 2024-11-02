@@ -16,7 +16,7 @@
 
 class ChessBoard;
 class BoardSquare;
-class BoardMove;
+class OldBoardMove;
 
 
 /**
@@ -24,7 +24,7 @@ class BoardMove;
  */
 class AdvancedRook final : public ComplicatedCloneable<Piece, Rook, AdvancedRook> {
 private:
-    std::vector<BoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<OldBoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
     explicit AdvancedRook(Team team, PieceDirection pieceDirection, bool hasMoved);
     AdvancedRook(AdvancedRook const &other);

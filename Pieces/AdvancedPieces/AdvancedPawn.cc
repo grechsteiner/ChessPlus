@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "AdvancedPawn.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "ChessBoard.h"
 
 
@@ -35,12 +35,12 @@ AdvancedPawn& AdvancedPawn::operator=(AdvancedPawn &&other) noexcept {
     return *this;
 }
 
-std::vector<BoardMove> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<OldBoardMove> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     int fromRow = fromSquare.getBoardRow();
     int fromCol = fromSquare.getBoardCol();
     std::pair<int, int> pawnDirection = getPawnDirection();
 
-    std::vector<BoardMove> additionalMoves;
+    std::vector<OldBoardMove> additionalMoves;
 
     // Non Attacking Moves 
     if (!onlyAttackingMoves) {
@@ -50,11 +50,11 @@ std::vector<BoardMove> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, 
         BoardSquare doubleMoveToSquare(fromRow + 2 * pawnDirection.first, fromCol + 2 * pawnDirection.second);
         BoardSquare tripleMoveToSquare(fromRow + 3 * pawnDirection.first, fromCol + 3 * pawnDirection.second);
         if (!pieceInfo.pieceData.hasMoved && chessBoard.isSquareEmpty(normalMoveToSquare) && chessBoard.isSquareEmpty(doubleMoveToSquare) && chessBoard.isSquareEmpty(tripleMoveToSquare)) {
-            additionalMoves.emplace_back(BoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, tripleMoveToSquare, tripleMoveToSquare));
+            additionalMoves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, tripleMoveToSquare, tripleMoveToSquare));
         }
     }
 
-    std::vector<BoardMove> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
+    std::vector<OldBoardMove> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
     moves.insert(moves.end(), additionalMoves.begin(), additionalMoves.end());
     return moves;
 }

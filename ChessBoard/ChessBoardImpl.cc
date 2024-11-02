@@ -13,7 +13,7 @@
 #include "Cloneable.h"
 #include "Constants.h"
 #include "BoardSquare.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "Piece.h"
 #include "PieceData.h"
 #include "PieceFactory.h"
@@ -88,25 +88,25 @@ Team ChessBoardImpl::getOtherTeam(Team team) const {
 }
 
 void ChessBoardImpl::clearCompletedMoves() {
-    completedMoves = std::stack<BoardMove>();
+    completedMoves = std::stack<OldBoardMove>();
 }
 
 void ChessBoardImpl::clearRedoMoves() {
-    redoMoves = std::stack<BoardMove>();
+    redoMoves = std::stack<OldBoardMove>();
 }
 
-std::vector<BoardMove> ChessBoardImpl::generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
+std::vector<OldBoardMove> ChessBoardImpl::generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     return isSquareOnBoard(boardSquare) && !isSquareEmpty(boardSquare)
         ? grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getMoves(*this, boardSquare, onlyAttackingMoves) 
-        : std::vector<BoardMove>();
+        : std::vector<OldBoardMove>();
 }
 
-std::vector<BoardMove> ChessBoardImpl::generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const {
-    std::vector<BoardMove> boardMoves;
+std::vector<OldBoardMove> ChessBoardImpl::generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const {
+    std::vector<OldBoardMove> boardMoves;
     for (BoardSquare const &boardSquare : getAllBoardSquares()) {
         std::optional<PieceInfo> pieceInfo = getPieceInfoAt(boardSquare);
         if (pieceInfo.has_value() && pieceInfo.value().pieceData.team == team) {
-            std::vector<BoardMove> pieceBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
+            std::vector<OldBoardMove> pieceBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
             boardMoves.insert(boardMoves.end(), pieceBoardMoves.begin(), pieceBoardMoves.end());
         }
     }
@@ -117,9 +117,9 @@ bool ChessBoardImpl::canMakeMove(Team team) const {
     return !generateAllLegalMoves(team).empty();
 }
 
-bool ChessBoardImpl::isMoveValid(BoardMove const &boardMove) const {
+bool ChessBoardImpl::isMoveValid(OldBoardMove const &boardMove) const {
     if (isSquareOnBoard(boardMove.getFromSquare())) {
-        std::vector<BoardMove> pieceBoardMoves = generateAllLegalMovesAtSquare(boardMove.getFromSquare());
+        std::vector<OldBoardMove> pieceBoardMoves = generateAllLegalMovesAtSquare(boardMove.getFromSquare());
         if (std::find(pieceBoardMoves.begin(), pieceBoardMoves.end(), boardMove) != pieceBoardMoves.end()) {
             return true;
         }
@@ -127,27 +127,27 @@ bool ChessBoardImpl::isMoveValid(BoardMove const &boardMove) const {
     return false;
 }
 
-void ChessBoardImpl::performMove(BoardMove const &boardMove) {
+void ChessBoardImpl::performMove(OldBoardMove const &boardMove) {
     boardMove.makeBoardMove(*this);                 // Apply the move
     completedMoves.push(boardMove);                 // Track it for undoing 
     clearRedoMoves();                               // Clear redo moves (can't redo after making a move)
 }
 
 void ChessBoardImpl::performUndoMove() {
-    BoardMove lastMove = completedMoves.top();      // Get the last made move
+    OldBoardMove lastMove = completedMoves.top();      // Get the last made move
     completedMoves.pop();                           // Pop it off the completed moves stack
     lastMove.undoBoardMove(*this);                  // Undo the move
     redoMoves.push(lastMove);                       // Push it to the redo moves stack
 }
 
 void ChessBoardImpl::performRedoMove() {
-    BoardMove lastUndoneMove = redoMoves.top();     // Get the last move to be undone
+    OldBoardMove lastUndoneMove = redoMoves.top();     // Get the last move to be undone
     redoMoves.pop();                                // Pop it off the redo moves stack
     lastUndoneMove.makeBoardMove(*this);            // Apply the move
     completedMoves.push(lastUndoneMove);            // Push it to the completed moves stack
 }
 
-bool ChessBoardImpl::doesMoveApplyCheck(BoardMove const &boardMove) const {
+bool ChessBoardImpl::doesMoveApplyCheck(OldBoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         ChessBoardImpl temp(*this);
@@ -157,7 +157,7 @@ bool ChessBoardImpl::doesMoveApplyCheck(BoardMove const &boardMove) const {
     assert(false);
 }
 
-bool ChessBoardImpl::doesMoveCapturePiece(BoardMove const &boardMove) const {
+bool ChessBoardImpl::doesMoveCapturePiece(OldBoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     std::optional<PieceInfo> attackedPieceInfo = getPieceInfoAt(boardMove.getCaptureSquare());
     if (movedPieceInfo.has_value()) {
@@ -166,7 +166,7 @@ bool ChessBoardImpl::doesMoveCapturePiece(BoardMove const &boardMove) const {
     assert(false);
 }
 
-bool ChessBoardImpl::doesMoveLeavePieceAttacked(BoardMove const &boardMove) const {
+bool ChessBoardImpl::doesMoveLeavePieceAttacked(OldBoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         ChessBoardImpl temp(*this);
@@ -176,7 +176,7 @@ bool ChessBoardImpl::doesMoveLeavePieceAttacked(BoardMove const &boardMove) cons
     assert(false);
 }
 
-bool ChessBoardImpl::doesMoveLeaveTeamInCheck(BoardMove const &boardMove) const {
+bool ChessBoardImpl::doesMoveLeaveTeamInCheck(OldBoardMove const &boardMove) const {
     std::optional<PieceInfo> movedPieceInfo = getPieceInfoAt(boardMove.getFromSquare());
     if (movedPieceInfo.has_value()) {
         ChessBoardImpl temp(*this);
@@ -243,8 +243,8 @@ bool ChessBoardImpl::isSquareOtherTeamImpl(BoardSquare const &boardSquare, Team 
 
 bool ChessBoardImpl::isSquareAttackedImpl(BoardSquare const &boardSquare, Team ownTeam) const {
     if (isSquareOnBoard(boardSquare)) {
-        std::vector<BoardMove> attackingBoardMoves = generateAllPseudoLegalMoves(getOtherTeam(ownTeam), true);
-        for (BoardMove const& boardMove : attackingBoardMoves) {
+        std::vector<OldBoardMove> attackingBoardMoves = generateAllPseudoLegalMoves(getOtherTeam(ownTeam), true);
+        for (OldBoardMove const& boardMove : attackingBoardMoves) {
             if (boardMove.getCaptureSquare() == boardSquare) {
                 return true;
             }
@@ -273,10 +273,10 @@ bool ChessBoardImpl::isInStaleMateImpl(Team team) const {
     return !canMakeMove(team) && !isInCheck(team);
 }
 
-std::vector<BoardMove> ChessBoardImpl::generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const {
-    std::vector<BoardMove> legalBoardMoves;
-    std::vector<BoardMove> pseudoLegalBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, false);
-    for (BoardMove const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
+std::vector<OldBoardMove> ChessBoardImpl::generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const {
+    std::vector<OldBoardMove> legalBoardMoves;
+    std::vector<OldBoardMove> pseudoLegalBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, false);
+    for (OldBoardMove const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
         if (!doesMoveLeaveTeamInCheck(pseudoLegalBoardMove)) {
             legalBoardMoves.emplace_back(pseudoLegalBoardMove);
         }
@@ -284,10 +284,10 @@ std::vector<BoardMove> ChessBoardImpl::generateAllLegalMovesAtSquareImpl(BoardSq
     return legalBoardMoves;
 }
 
-std::vector<BoardMove> ChessBoardImpl::generateAllLegalMovesImpl(Team team) const { 
-    std::vector<BoardMove> legalBoardMoves;
-    std::vector<BoardMove> pseudoLegalBoardMoves = generateAllPseudoLegalMoves(team, false);
-    for (BoardMove const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
+std::vector<OldBoardMove> ChessBoardImpl::generateAllLegalMovesImpl(Team team) const { 
+    std::vector<OldBoardMove> legalBoardMoves;
+    std::vector<OldBoardMove> pseudoLegalBoardMoves = generateAllPseudoLegalMoves(team, false);
+    for (OldBoardMove const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
         if (!doesMoveLeaveTeamInCheck(pseudoLegalBoardMove)) {
             legalBoardMoves.emplace_back(pseudoLegalBoardMove);
         }
@@ -295,10 +295,10 @@ std::vector<BoardMove> ChessBoardImpl::generateAllLegalMovesImpl(Team team) cons
     return legalBoardMoves;
 }
 
-std::vector<BoardMove> ChessBoardImpl::generateCapturingMovesImpl(Team team) const { 
-    std::vector<BoardMove> capturingBoardMoves;
-    std::vector<BoardMove> legalBoardMoves = generateAllLegalMoves(team);
-    for (BoardMove const &legalBoardMove : legalBoardMoves) {
+std::vector<OldBoardMove> ChessBoardImpl::generateCapturingMovesImpl(Team team) const { 
+    std::vector<OldBoardMove> capturingBoardMoves;
+    std::vector<OldBoardMove> legalBoardMoves = generateAllLegalMoves(team);
+    for (OldBoardMove const &legalBoardMove : legalBoardMoves) {
         if (doesMoveCapturePiece(legalBoardMove)) {
             capturingBoardMoves.emplace_back(legalBoardMove);
         }
@@ -306,10 +306,10 @@ std::vector<BoardMove> ChessBoardImpl::generateCapturingMovesImpl(Team team) con
     return capturingBoardMoves;
 }
 
-std::vector<BoardMove> ChessBoardImpl::generateCheckApplyingMovesImpl(Team team) const {
-    std::vector<BoardMove> checkApplyingBoardMoves;
-    std::vector<BoardMove> legalBoardMoves = generateAllLegalMoves(team);
-    for (BoardMove const &legalBoardMove : legalBoardMoves) {
+std::vector<OldBoardMove> ChessBoardImpl::generateCheckApplyingMovesImpl(Team team) const {
+    std::vector<OldBoardMove> checkApplyingBoardMoves;
+    std::vector<OldBoardMove> legalBoardMoves = generateAllLegalMoves(team);
+    for (OldBoardMove const &legalBoardMove : legalBoardMoves) {
         if (doesMoveApplyCheck(legalBoardMove)) {
             checkApplyingBoardMoves.emplace_back(legalBoardMove);
         }
@@ -317,10 +317,10 @@ std::vector<BoardMove> ChessBoardImpl::generateCheckApplyingMovesImpl(Team team)
     return checkApplyingBoardMoves;
 }
 
-std::vector<BoardMove> ChessBoardImpl::generateCaptureAvoidingMovesImpl(Team team) const {
-    std::vector<BoardMove> captureAvoidingBoardMoves;
-    std::vector<BoardMove> legalBoardMoves = generateAllLegalMoves(team);
-    for (BoardMove const &legalBoardMove : legalBoardMoves) {
+std::vector<OldBoardMove> ChessBoardImpl::generateCaptureAvoidingMovesImpl(Team team) const {
+    std::vector<OldBoardMove> captureAvoidingBoardMoves;
+    std::vector<OldBoardMove> legalBoardMoves = generateAllLegalMoves(team);
+    for (OldBoardMove const &legalBoardMove : legalBoardMoves) {
         if (!doesMoveLeavePieceAttacked(legalBoardMove)) {
             captureAvoidingBoardMoves.emplace_back(legalBoardMove);
         }
@@ -357,23 +357,23 @@ void ChessBoardImpl::clearBoardImpl() {
 }
 
 // TODO: This will need to be changed with the upcoming changes to BoadMove class
-std::optional<BoardMove> ChessBoardImpl::createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { 
+std::optional<OldBoardMove> ChessBoardImpl::createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { 
     if (!isSquareOnBoard(fromSquare)) {
         return std::nullopt;
     }
 
     // Try to match "fromSquare toSquare promotionPieceType" to a legal BoardMove
-    std::vector<BoardMove> legalBoardMoves = generateAllLegalMovesAtSquare(fromSquare);
-    auto it = std::find_if(legalBoardMoves.begin(), legalBoardMoves.end(), [&fromSquare, &toSquare, &promotionPieceType](BoardMove const &boardMove) {
+    std::vector<OldBoardMove> legalBoardMoves = generateAllLegalMovesAtSquare(fromSquare);
+    auto it = std::find_if(legalBoardMoves.begin(), legalBoardMoves.end(), [&fromSquare, &toSquare, &promotionPieceType](OldBoardMove const &boardMove) {
         return
             fromSquare == boardMove.getFromSquare() &&
             toSquare == boardMove.getToSquare() &&
             promotionPieceType == boardMove.getPromotionPieceType();
     });
-    return it != legalBoardMoves.end() ? std::make_optional<BoardMove>(*it) : std::nullopt;
+    return it != legalBoardMoves.end() ? std::make_optional<OldBoardMove>(*it) : std::nullopt;
 }
 
-bool ChessBoardImpl::makeMoveImpl(BoardMove const &boardMove) {
+bool ChessBoardImpl::makeMoveImpl(OldBoardMove const &boardMove) {
     if (isMoveValid(boardMove)) {
         performMove(boardMove);
         return true;
@@ -399,11 +399,11 @@ bool ChessBoardImpl::redoMoveImpl() {
     }
 }
 
-std::optional<BoardMove> ChessBoardImpl::getLastCompletedMoveImpl() const {
-    return completedMoves.empty() ? std::nullopt : std::make_optional<BoardMove>(completedMoves.top());
+std::optional<OldBoardMove> ChessBoardImpl::getLastCompletedMoveImpl() const {
+    return completedMoves.empty() ? std::nullopt : std::make_optional<OldBoardMove>(completedMoves.top());
 }
 
-std::stack<BoardMove> const& ChessBoardImpl::getAllCompletedMovesImpl() const {
+std::stack<OldBoardMove> const& ChessBoardImpl::getAllCompletedMovesImpl() const {
     return completedMoves;
 }
 

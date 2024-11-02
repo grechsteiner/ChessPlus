@@ -8,7 +8,7 @@
 
 #include "StandardOpeningTrie.h"
 #include "UserMove.h"
-#include "BoardMove.h"
+#include "OldBoardMove.h"
 #include "UserSquare.h"
 
 using std::string;
@@ -51,7 +51,7 @@ void StandardOpeningTrie::insert(const vector<UserMove>& userEnteredMoves, const
     }
 }
 
-vector<pair<string, string>> StandardOpeningTrie::getMatchingOpenings(const vector<BoardMove>& completedMoves) const {
+vector<pair<string, string>> StandardOpeningTrie::getMatchingOpenings(const vector<OldBoardMove>& completedMoves) const {
     vector<pair<string, string>> results;
     /*
     const StandardOpeningTrieNode* standardOpeningTrieNode = root.get();
