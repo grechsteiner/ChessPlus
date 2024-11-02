@@ -8,7 +8,7 @@
 #include "PieceInfo.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
 
 
 // Basic ctor
@@ -27,7 +27,7 @@ Piece& Piece::operator=(Piece &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> Piece::getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const { return getMovesImpl(chessBoard, fromSquare, onlyAttackingMoves); }
+std::vector<std::unique_ptr<BoardMove>> Piece::getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const { return getMovesImpl(chessBoard, fromSquare, onlyAttackingMoves); }
 std::unique_ptr<Piece> Piece::clone() const { return cloneImpl(); }
 
 PieceInfo const& Piece::getPieceInfo() const { return pieceInfo; }

@@ -10,7 +10,7 @@
 
 class ChessBoard;
 class BoardSquare;
-class OldBoardMove;
+class BoardMove;
 
 
 /**
@@ -20,7 +20,7 @@ class OldBoardMove;
 class Piece {
 
 private:
-    virtual std::vector<OldBoardMove> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
     virtual std::unique_ptr<Piece> cloneImpl() const = 0;
     
 protected:
@@ -32,10 +32,10 @@ protected:
 
     PieceInfo pieceInfo;
 
-    virtual std::vector<OldBoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
 
 public:
-    std::vector<OldBoardMove> getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
+    std::vector<std::unique_ptr<BoardMove>> getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const;
     std::unique_ptr<Piece> clone() const;
     
     PieceInfo const& getPieceInfo() const;
