@@ -16,7 +16,7 @@
 #include "BoardMove.h"
 #include "Piece.h"
 #include "PieceData.h"
-#include "ChessPieceFactory.h"
+#include "PieceFactory.h"
 
 
 #pragma mark - Specific To Board Class
@@ -332,7 +332,7 @@ bool ChessBoard::setPositionImpl(BoardSquare const &boardSquare, PieceData const
     if (isSquareOnBoard(boardSquare)) {
         clearCompletedMoves();
         clearRedoMoves();
-        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = ChessPieceFactory::createPiece(pieceData);
+        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = PieceFactory::createPiece(pieceData);
         return true;
     }
     return false;

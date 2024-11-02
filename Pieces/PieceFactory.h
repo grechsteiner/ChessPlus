@@ -1,19 +1,19 @@
-// ChessPieceFactory.h
+// PieceFactory.h
 
-#ifndef ChessPieceFactory_h
-#define ChessPieceFactory_h
+#ifndef PieceFactory_h
+#define PieceFactory_h
 
 #include <memory>
 #include <optional>
 
-#include "Piece.h"
-#include "PieceData.h"
+class Piece;
+struct PieceData;
 
 
-class ChessPieceFactory {
+class PieceFactory {
 public:
     static std::unique_ptr<Piece> createPiece(PieceData const &pieceData);
 };
 
 
-#endif /* ChessPieceFactory_h */
+#endif /* PieceFactory_u */
