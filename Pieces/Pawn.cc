@@ -77,9 +77,9 @@ std::vector<std::unique_ptr<BoardMove>> Pawn::getStandardMoves(ChessBoard const 
         }
         
         // En Passant
-        std::stack<std::unique_ptr<BoardMove>> const &completedMoves = chessBoard.getCompletedMoves();
+        std::vector<std::unique_ptr<BoardMove>> const &completedMoves = chessBoard.getCompletedMoves();
         if (!completedMoves.empty()) {
-            std::unique_ptr<BoardMove> const &lastCompletedMove = completedMoves.top();
+            std::unique_ptr<BoardMove> const &lastCompletedMove = completedMoves.back();
 
             if (lastCompletedMove->getDoesEnableEnpassant() == true && lastCompletedMove->getMovedPieceData().team != pieceData.team) {
                 int lastMoveToRow = lastCompletedMove->getToSquare().getBoardRow();

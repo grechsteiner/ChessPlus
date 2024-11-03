@@ -4,7 +4,6 @@
 #define ChessBoardImpl_h
 
 #include <vector>
-#include <stack>
 #include <optional>
 #include <memory>
 
@@ -30,8 +29,8 @@ private:
     Team teamOne = Team::TEAM_ONE;
     Team teamTwo = Team::TEAM_TWO;
 
-    std::stack<std::unique_ptr<BoardMove>> completedMoves;
-    std::stack<std::unique_ptr<BoardMove>> redoMoves;
+    std::vector<std::unique_ptr<BoardMove>> completedMoves;
+    std::vector<std::unique_ptr<BoardMove>> redoMoves;
 
     std::vector<std::vector<std::unique_ptr<Piece>>> grid;
 
@@ -89,7 +88,7 @@ private:
     bool undoMoveImpl() override;                               // True if move is available to be undone (only performs undo if move available to be undone)
     bool redoMoveImpl() override;                               // True if move is available to be redone (only performs redo if move available to be redone)
 
-    std::stack<std::unique_ptr<BoardMove>> const& getCompletedMovesImpl() const override;
+    std::vector<std::unique_ptr<BoardMove>> const& getCompletedMovesImpl() const override;
 
     Team getTeamOneImpl() const override;
     Team getTeamTwoImpl() const override;

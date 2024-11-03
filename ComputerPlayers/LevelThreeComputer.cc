@@ -21,19 +21,19 @@ std::vector<std::unique_ptr<BoardMove>> LevelThreeComputer::getPossibleMoves(Che
         std::vector<std::unique_ptr<BoardMove>> topMoves;
         for (std::unique_ptr<BoardMove> const & move : captureAvoidingMoves) {
             if (std::find(capturingMoves.begin(), capturingMoves.end(), move) != capturingMoves.end()) {
-                topMoves.push_back(move);
+                topMoves.emplace_back(move->clone());
             }
         }
 
         for (std::unique_ptr<BoardMove> const & move : captureAvoidingMoves) {
             if (std::find(checkApplyMoves.begin(), checkApplyMoves.end(), move) != checkApplyMoves.end()) {
                 if (std::find(topMoves.begin(), topMoves.end(), move) == topMoves.end()) {
-                    topMoves.push_back(move);
+                    topMoves.emplace_back(move->clone());
                 }
             }
         }
 
-        return !topMoves.empty() ? topMoves : captureAvoidingMoves;
+        return !topMoves.empty() ? std::move(topMoves) : std::move(captureAvoidingMoves);
     }
 
     std::vector<std::unique_ptr<BoardMove>> moves = chessBoard.generateCapturingMoves(team);
@@ -43,5 +43,6 @@ std::vector<std::unique_ptr<BoardMove>> LevelThreeComputer::getPossibleMoves(Che
     }
     checkApplyMoves.clear();
 
-    return moves.empty() ? chessBoard.generateAllLegalMoves(team) : moves;
+    std::vector<std::unique_ptr<BoardMove>> allMoves = chessBoard.generateAllLegalMoves(team);
+    return moves.empty() ? std::move(allMoves) : std::move(moves);
 }

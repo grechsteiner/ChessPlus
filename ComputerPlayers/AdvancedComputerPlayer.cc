@@ -11,6 +11,7 @@
 #include "AdvancedComputerPlayer.h"
 #include "MoveShuffler.h"
 #include "PieceInfo.h"
+#include "PieceData.h"
 
 
 std::unique_ptr<BoardMove> AdvancedComputerPlayer::getMoveImpl(ChessBoard const &chessBoard, Team team) const {
@@ -85,7 +86,8 @@ std::vector<std::unique_ptr<BoardMove>> AdvancedComputerPlayer::rankMoves(ChessB
         if (pieceInfo.has_value()) {
             score += pieceInfo.value().pieceScore;
         }
-        scoredBoardMoves.emplace_back(ScoredBoardMove(score, std::make_optional<std::unique_ptr<BoardMove>>(move)));
+        std::optional<std::unique_ptr<BoardMove>> temp = std::make_optional<std::unique_ptr<BoardMove>>(move->clone());
+        scoredBoardMoves.emplace_back(ScoredBoardMove(score, temp));
     }
 
     // Sort moves by score in descending order
@@ -105,19 +107,24 @@ std::vector<std::unique_ptr<BoardMove>> AdvancedComputerPlayer::rankMoves(ChessB
         if (scoredBoardMove.score != currentValue) {
             std::shuffle(tempOrder.begin(), tempOrder.end(), g);
             for (ScoredBoardMove const &tempScoredBoardMove : tempOrder) {
-                finalOrder.push_back(tempScoredBoardMove.boardMove.value());
+                finalOrder.push_back(tempScoredBoardMove.boardMove.value()->clone());
             }
 
             currentValue = scoredBoardMove.score;
             tempOrder.clear();
         }
-        tempOrder.push_back(scoredBoardMove);
+        if (scoredBoardMove.boardMove.has_value()) {
+            tempOrder.emplace_back(ScoredBoardMove(scoredBoardMove.score, scoredBoardMove.boardMove.value()->clone()));
+        } else {
+            tempOrder.emplace_back(ScoredBoardMove(scoredBoardMove.score, std::nullopt));
+        }
+        
     }
 
     // Shuffle and add the last set of moves
     std::shuffle(tempOrder.begin(), tempOrder.end(), g);
     for (ScoredBoardMove const &tempScoredBoardMove : tempOrder) {
-        finalOrder.push_back(tempScoredBoardMove.boardMove.value());
+        finalOrder.push_back(tempScoredBoardMove.boardMove.value()->clone());
     }
 
     return finalOrder;

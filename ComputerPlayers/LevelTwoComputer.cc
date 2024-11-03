@@ -19,5 +19,6 @@ std::vector<std::unique_ptr<BoardMove>> LevelTwoComputer::getPossibleMoves(Chess
     }
     checkApplyingMoves.clear();
 
-    return capturingMoves.size() > 0 ? capturingMoves : chessBoard.generateAllLegalMoves(team);
+    std::vector<std::unique_ptr<BoardMove>> allMoves = chessBoard.generateAllLegalMoves(team);
+    return capturingMoves.empty() ? std::move(allMoves) : std::move(capturingMoves);
 }

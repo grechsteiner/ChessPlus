@@ -4,7 +4,6 @@
 #define ChessBoard_h
 
 #include <vector>
-#include <stack>
 #include <optional>
 #include <memory>
 
@@ -53,7 +52,7 @@ private:
     virtual bool undoMoveImpl() = 0;  
     virtual bool redoMoveImpl() = 0; 
 
-    virtual std::stack<std::unique_ptr<BoardMove>> const& getCompletedMovesImpl() const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> const& getCompletedMovesImpl() const = 0;
 
     virtual Team getTeamOneImpl() const = 0;
     virtual Team getTeamTwoImpl() const = 0;
@@ -94,7 +93,7 @@ public:
     bool undoMove();  
     bool redoMove(); 
 
-    std::stack<std::unique_ptr<BoardMove>> const& getCompletedMoves() const;
+    std::vector<std::unique_ptr<BoardMove>> const& getCompletedMoves() const;
 
     Team getTeamOne() const;
     Team getTeamTwo() const;

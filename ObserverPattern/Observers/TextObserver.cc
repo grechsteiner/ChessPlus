@@ -137,7 +137,7 @@ void TextObserver::printBoard(ChessBoard const &chessBoard, int turn) {
 
             std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(BoardSquare(row, col));
             if (pieceInfo.has_value()) {
-                printPiece(pieceInfo.value().image, pieceInfo.value().pieceData.team);
+                printPiece(pieceInfo.value().image, chessBoard.getPieceDataAt(BoardSquare(row, col)).value().team);
             } else {
                 out << " ";
             }

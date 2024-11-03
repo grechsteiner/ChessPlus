@@ -5,6 +5,7 @@
 #include "StandardBoardMove.h"
 #include "PromotionBoardMove.h"
 #include "CastleBoardMove.h"
+#include "PieceData.h"
 
 
 // Static

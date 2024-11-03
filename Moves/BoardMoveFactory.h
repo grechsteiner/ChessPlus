@@ -7,10 +7,10 @@
 #include <optional>
 
 #include "Constants.h"
+#include "PieceData.h"
 
 class BoardMove;
 class BoardSquare;
-struct PieceData;
 
 
 class BoardMoveFactory {

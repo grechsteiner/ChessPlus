@@ -9,6 +9,9 @@
 #include "ComputerPlayer.h"
 #include "Constants.h"
 #include "ChessBoard.h"
+#include "BoardMove.h"
+#include "PieceData.h"
+
 
 struct ScoredBoardMove {
     int score;

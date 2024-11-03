@@ -56,7 +56,7 @@ void GraphicObserver::printBoard(const ChessBoard& chessBoard, int turn) {
 
             std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(BoardSquare(row, col));
             if (pieceInfo.has_value()) {
-                printPiece(pieceInfo.value().display, pieceInfo.value().pieceData.team, x + squareSize / 2, y + squareSize / 2);
+                printPiece(pieceInfo.value().display, chessBoard.getPieceDataAt(BoardSquare(row, col)).value().team, x + squareSize / 2, y + squareSize / 2);
             }            
         }
     }

@@ -1,7 +1,6 @@
 // ChessBoard.cc
 
 #include <vector>
-#include <stack>
 #include <optional>
 #include <memory>
 #include <cassert>
@@ -33,7 +32,17 @@ ChessBoardImpl::ChessBoardImpl(int numRows, int numCols) :
 
 // Copy ctor
 ChessBoardImpl::ChessBoardImpl(ChessBoardImpl const &other) : 
-    numRows(other.numRows), numCols(other.numCols), completedMoves(other.completedMoves), redoMoves(other.redoMoves) {
+    numRows(other.numRows), numCols(other.numCols) {
+
+    // Copy completed moves
+    for (std::unique_ptr<BoardMove> const &completedMove : other.completedMoves) {
+        completedMoves.emplace_back(completedMove->clone());
+    }
+
+    // Copy redo moves
+    for (std::unique_ptr<BoardMove> const &redoMove : other.redoMoves) {
+        redoMoves.emplace_back(redoMove->clone());
+    }
 
     grid.resize(numRows);
     for (int row = 0; row < numRows; ++row) {
@@ -55,8 +64,16 @@ ChessBoardImpl& ChessBoardImpl::operator=(ChessBoardImpl const &other) {
     if (this != &other) {
         numRows = other.numRows;
         numCols = other.numCols;
-        completedMoves = other.completedMoves;
-        redoMoves = other.redoMoves;
+        
+        // Copy completed moves
+        for (std::unique_ptr<BoardMove> const &completedMove : other.completedMoves) {
+            completedMoves.emplace_back(completedMove->clone());
+        }
+
+        // Copy redo moves
+        for (std::unique_ptr<BoardMove> const &redoMove : other.redoMoves) {
+            redoMoves.emplace_back(redoMove->clone());
+        }
         
         grid.resize(numRows);
         for (int row = 0; row < numRows; ++row) {
@@ -88,11 +105,11 @@ Team ChessBoardImpl::getOtherTeam(Team team) const {
 }
 
 void ChessBoardImpl::clearCompletedMoves() {
-    completedMoves = std::stack<std::unique_ptr<BoardMove>>();
+    completedMoves = std::vector<std::unique_ptr<BoardMove>>();
 }
 
 void ChessBoardImpl::clearRedoMoves() {
-    redoMoves = std::stack<std::unique_ptr<BoardMove>>();
+    redoMoves = std::vector<std::unique_ptr<BoardMove>>();
 }
 
 std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
@@ -132,22 +149,22 @@ bool ChessBoardImpl::isMoveValid(std::unique_ptr<BoardMove> const &boardMove) co
 
 void ChessBoardImpl::performMove(std::unique_ptr<BoardMove> const &boardMove) {
     boardMove->makeBoardMove(*this);                                        // Apply the move
-    completedMoves.push(boardMove);                                         // Track it for undoing 
+    completedMoves.emplace_back(boardMove->clone());                        // Track it for undoing 
     clearRedoMoves();                                                       // Clear redo moves (can't redo after making a move)
 }
 
 void ChessBoardImpl::performUndoMove() {
-    std::unique_ptr<BoardMove> lastMove = completedMoves.top()->clone();    // Get the last made move
-    completedMoves.pop();                                                   // Pop it off the completed moves stack
+    std::unique_ptr<BoardMove> lastMove = completedMoves.back()->clone();   // Get the last made move
+    completedMoves.pop_back();                                              // Pop it off the completed moves stack
     lastMove->undoBoardMove(*this);                                         // Undo the move
-    redoMoves.push(lastMove);                                               // Push it to the redo moves stack
+    redoMoves.emplace_back(lastMove->clone());                              // Push it to the redo moves stack
 }
 
 void ChessBoardImpl::performRedoMove() {
-    std::unique_ptr<BoardMove> lastUndoneMove = redoMoves.top()->clone();   // Get the last move to be undone
-    redoMoves.pop();                                                        // Pop it off the redo moves stack
+    std::unique_ptr<BoardMove> lastUndoneMove = redoMoves.back()->clone();  // Get the last move to be undone
+    redoMoves.pop_back();                                                   // Pop it off the redo moves stack
     lastUndoneMove->makeBoardMove(*this);                                   // Apply the move
-    completedMoves.push(lastUndoneMove);                                    // Push it to the completed moves stack
+    completedMoves.emplace_back(lastUndoneMove->clone());                   // Push it to the completed moves stack
 }
 
 bool ChessBoardImpl::doesMoveApplyCheck(std::unique_ptr<BoardMove> const &boardMove) const {
@@ -287,7 +304,7 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllLegalMovesAtS
     std::vector<std::unique_ptr<BoardMove>> pseudoLegalBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, false);
     for (std::unique_ptr<BoardMove> const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
         if (!doesMoveLeaveTeamInCheck(pseudoLegalBoardMove)) {
-            legalBoardMoves.emplace_back(pseudoLegalBoardMove);
+            legalBoardMoves.emplace_back(pseudoLegalBoardMove->clone());
         }
     }
     return legalBoardMoves;
@@ -298,7 +315,7 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllLegalMovesImp
     std::vector<std::unique_ptr<BoardMove>> pseudoLegalBoardMoves = generateAllPseudoLegalMoves(team, false);
     for (std::unique_ptr<BoardMove> const &pseudoLegalBoardMove : pseudoLegalBoardMoves) {
         if (!doesMoveLeaveTeamInCheck(pseudoLegalBoardMove)) {
-            legalBoardMoves.emplace_back(pseudoLegalBoardMove);
+            legalBoardMoves.emplace_back(pseudoLegalBoardMove->clone());
         }
     }
     return legalBoardMoves;
@@ -309,7 +326,7 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCapturingMovesIm
     std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
     for (std::unique_ptr<BoardMove> const &legalBoardMove : legalBoardMoves) {
         if (doesMoveCapturePiece(legalBoardMove)) {
-            capturingBoardMoves.emplace_back(legalBoardMove);
+            capturingBoardMoves.emplace_back(legalBoardMove->clone());
         }
     }
     return capturingBoardMoves;
@@ -320,7 +337,7 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCheckApplyingMov
     std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
     for (std::unique_ptr<BoardMove> const &legalBoardMove : legalBoardMoves) {
         if (doesMoveApplyCheck(legalBoardMove)) {
-            checkApplyingBoardMoves.emplace_back(legalBoardMove);
+            checkApplyingBoardMoves.emplace_back(legalBoardMove->clone());
         }
     }
     return checkApplyingBoardMoves;
@@ -331,7 +348,7 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCaptureAvoidingM
     std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
     for (std::unique_ptr<BoardMove> const &legalBoardMove : legalBoardMoves) {
         if (!doesMoveLeavePieceAttacked(legalBoardMove)) {
-            captureAvoidingBoardMoves.emplace_back(legalBoardMove);
+            captureAvoidingBoardMoves.emplace_back(legalBoardMove->clone());
         }
     }
     return captureAvoidingBoardMoves;
@@ -378,7 +395,7 @@ std::optional<std::unique_ptr<BoardMove>> ChessBoardImpl::createBoardMoveImpl(Bo
             toSquare == boardMove->getToSquare() &&
             promotionPieceType == boardMove->getPromotionPieceType();
     });
-    return it != legalBoardMoves.end() ? std::make_optional<std::unique_ptr<BoardMove>>(*it) : std::nullopt;
+    return it != legalBoardMoves.end() ? std::make_optional<std::unique_ptr<BoardMove>>(std::move(*it)) : std::nullopt;
 }
 
 bool ChessBoardImpl::makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) {
@@ -407,7 +424,7 @@ bool ChessBoardImpl::redoMoveImpl() {
     }
 }
 
-std::stack<std::unique_ptr<BoardMove>> const& ChessBoardImpl::getCompletedMovesImpl() const {
+std::vector<std::unique_ptr<BoardMove>> const& ChessBoardImpl::getCompletedMovesImpl() const {
     return completedMoves;
 }
 

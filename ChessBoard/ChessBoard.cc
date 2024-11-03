@@ -1,7 +1,6 @@
 // ChessBoard.cc
 
 #include <vector>
-#include <stack>
 #include <optional>
 #include <memory>
 
@@ -15,7 +14,7 @@
 
 std::unique_ptr<ChessBoard> ChessBoard::clone() const { return cloneImpl(); }
 
-std::optional<PieceData> ChessBoard::getPieceDataAtImpl(BoardSquare const &boardSquare) const { return getPieceDataAtImpl(boardSquare); }
+std::optional<PieceData> ChessBoard::getPieceDataAt(BoardSquare const &boardSquare) const { return getPieceDataAtImpl(boardSquare); }
 std::optional<PieceInfo> ChessBoard::getPieceInfoAt(BoardSquare const &boardSquare) const { return getPieceInfoAtImpl(boardSquare); }
 std::vector<BoardSquare> ChessBoard::getAllBoardSquares() const { return getAllBoardSquaresImpl(); }
 
@@ -44,7 +43,7 @@ bool ChessBoard::makeMove(std::unique_ptr<BoardMove> const &boardMove) { return 
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
 bool ChessBoard::redoMove() { return redoMoveImpl(); }
 
-std::stack<std::unique_ptr<BoardMove>> const& ChessBoard::getCompletedMoves() const { return getCompletedMovesImpl(); }
+std::vector<std::unique_ptr<BoardMove>> const& ChessBoard::getCompletedMoves() const { return getCompletedMovesImpl(); }
 
 Team ChessBoard::getTeamOne() const { return getTeamOneImpl(); }
 Team ChessBoard::getTeamTwo() const { return getTeamTwoImpl(); }
