@@ -15,7 +15,7 @@
 #include "King.h"
 
 class ChessBoard;
-class BoardSquare;
+struct BoardSquare;
 class BoardMove;
 
 

@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-class BoardSquare;
+struct BoardSquare;
 class BoardMove;
 class UserSquare;
 class UserMove;

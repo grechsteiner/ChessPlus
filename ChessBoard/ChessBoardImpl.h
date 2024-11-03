@@ -12,7 +12,7 @@
 #include "Constants.h"
 #include "Piece.h"
 
-class BoardSquare;
+struct BoardSquare;
 struct PieceInfo;
 struct PieceData;
 

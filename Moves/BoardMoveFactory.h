@@ -10,7 +10,7 @@
 #include "PieceData.h"
 
 class BoardMove;
-class BoardSquare;
+struct BoardSquare;
 
 
 class BoardMoveFactory {

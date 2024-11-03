@@ -9,7 +9,7 @@
 
 #include "Constants.h"
 
-class BoardSquare;
+struct BoardSquare;
 class BoardMove;
 struct PieceInfo;
 struct PieceData;

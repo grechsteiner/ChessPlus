@@ -15,7 +15,7 @@
 #include "Bishop.h"
 
 class ChessBoard;
-class BoardSquare;
+struct BoardSquare;
 class BoardMove;
 
 

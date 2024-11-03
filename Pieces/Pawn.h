@@ -11,7 +11,7 @@
 #include "Cloneable.h"
 
 class ChessBoard;
-class BoardSquare;
+struct BoardSquare;
 class BoardMove;
 
 
