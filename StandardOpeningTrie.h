@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 #include "UserMove.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
 
 
 class StandardOpeningTrie {
@@ -28,7 +28,7 @@ private:
 public:
     StandardOpeningTrie();
     void insert(std::vector<UserMove> const &userEnteredMoves, std::string const &openingName);
-    std::vector<std::pair<std::string, std::string>> getMatchingOpenings(std::vector<OldBoardMove> const &completedMoves) const;
+    std::vector<std::pair<std::string, std::string>> getMatchingOpenings(std::vector<std::unique_ptr<BoardMove>> const &completedMoves) const;
 
     // TODO: Ideally read in from text file
     static const StandardOpeningTrie Hardcoded;
