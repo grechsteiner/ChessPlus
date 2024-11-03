@@ -20,7 +20,7 @@ struct PieceData;
 /**
  * ChessBoardImpl ChessBoard Class
  */
-class ChessBoardImpl : public Cloneable<ChessBoard, ChessBoardImpl> {
+class ChessBoardImpl final : public Cloneable<ChessBoard, ChessBoardImpl> {
 
 private:
     int numRows;    // Initialize at construction time to avoid constantly getting size of vector
