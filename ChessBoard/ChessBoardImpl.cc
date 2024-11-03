@@ -389,13 +389,15 @@ std::optional<std::unique_ptr<BoardMove>> ChessBoardImpl::createBoardMoveImpl(Bo
 
     // Try to match "fromSquare toSquare promotionPieceType" to a legal BoardMove
     std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMovesAtSquare(fromSquare);
-    auto it = std::find_if(legalBoardMoves.begin(), legalBoardMoves.end(), [&fromSquare, &toSquare, &promotionPieceType](std::unique_ptr<BoardMove> const &boardMove) {
-        return
-            fromSquare == boardMove->getFromSquare() &&
-            toSquare == boardMove->getToSquare() &&
-            promotionPieceType == boardMove->getPromotionPieceType();
-    });
-    return it != legalBoardMoves.end() ? std::make_optional<std::unique_ptr<BoardMove>>(std::move(*it)) : std::nullopt;
+    for (std::unique_ptr<BoardMove> &legalBoardMove : legalBoardMoves) {
+        if (fromSquare == legalBoardMove->getFromSquare() && 
+            toSquare == legalBoardMove->getToSquare() && 
+            promotionPieceType == legalBoardMove->getPromotionPieceType()) {
+
+            return std::move(legalBoardMove);
+        }
+    }
+    return std::nullopt;
 }
 
 bool ChessBoardImpl::makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) {
