@@ -45,8 +45,6 @@ public:
     void makeBoardMove(ChessBoard &chessBoard) const;
     void undoBoardMove(ChessBoard &chessBoard) const;
 
-    // TODO: Needed?
-    /*
     BoardSquare const& getFromSquare() const;
     BoardSquare const& getToSquare() const;
     BoardSquare const& getCaptureSquare() const;
@@ -54,7 +52,6 @@ public:
     bool getDoesEnableEnpassant() const;
     PieceData const& getMovedPieceData() const;
     std::optional<PieceData> getCapturedPieceData() const;
-    */
 };
 
 

@@ -13,7 +13,7 @@
 
 class ChessBoard;
 class BoardSquare;
-class OldBoardMove;
+class BoardMove;
 
 
 /**
@@ -30,7 +30,7 @@ protected:
     Rook& operator=(Rook &&other) noexcept;
     virtual ~Rook() = default;
 
-    std::vector<OldBoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<std::unique_ptr<BoardMove>> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

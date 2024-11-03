@@ -405,11 +405,7 @@ bool ChessBoardImpl::redoMoveImpl() {
     }
 }
 
-std::optional<OldBoardMove> ChessBoardImpl::getLastCompletedMoveImpl() const {
-    return completedMoves.empty() ? std::nullopt : std::make_optional<OldBoardMove>(completedMoves.top());
-}
-
-std::stack<OldBoardMove> const& ChessBoardImpl::getAllCompletedMovesImpl() const {
+std::stack<std::unique_ptr<BoardMove>> const& ChessBoardImpl::getCompletedMovesImpl() const {
     return completedMoves;
 }
 

@@ -12,12 +12,13 @@
 #include "Cloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 
 
 // Basic ctor
 Pawn::Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceInfo(PieceData(PieceType::PAWN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 1, "♟", "P")) {}
+    Piece(PieceData(PieceType::PAWN, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(1, "♟", "P")) {}
 
 // Copy ctor
 Pawn::Pawn(Pawn const &other) : 
@@ -44,7 +45,7 @@ Pawn& Pawn::operator=(Pawn &&other) noexcept {
 }
 
 std::pair<int, int> Pawn::getPawnDirection() const {
-    switch (pieceInfo.pieceData.pieceDirection) {
+    switch (pieceData.pieceDirection) {
         case PieceDirection::NORTH: return std::make_pair(-1, 0);
         case PieceDirection::SOUTH: return std::make_pair(1, 0);
         case PieceDirection::EAST: return std::make_pair(0, 1);
@@ -54,8 +55,8 @@ std::pair<int, int> Pawn::getPawnDirection() const {
     }
 }
 
-std::vector<OldBoardMove> Pawn::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
-    std::vector<OldBoardMove> moves;
+std::vector<std::unique_ptr<BoardMove>> Pawn::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+    std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)){
         int fromRow = fromSquare.getBoardRow();
         int fromCol = fromSquare.getBoardCol();
@@ -68,54 +69,58 @@ std::vector<OldBoardMove> Pawn::getStandardMoves(ChessBoard const &chessBoard, B
             BoardSquare normalMoveToSquare(fromRow + pawnDirection.first, fromCol + pawnDirection.second);
             BoardSquare doubleMoveToSquare(fromRow + 2 * pawnDirection.first, fromCol + 2 * pawnDirection.second);
             if (chessBoard.isSquareEmpty(normalMoveToSquare)) {
-                moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, normalMoveToSquare, normalMoveToSquare));
-                if (!pieceInfo.pieceData.hasMoved && chessBoard.isSquareEmpty(doubleMoveToSquare)) {
-                    moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, doubleMoveToSquare, doubleMoveToSquare));
+                addMoves(moves, chessBoard, fromSquare, normalMoveToSquare, normalMoveToSquare, false);
+                if (!pieceData.hasMoved && chessBoard.isSquareEmpty(doubleMoveToSquare)) {
+                    addMoves(moves, chessBoard, fromSquare, doubleMoveToSquare, doubleMoveToSquare, true);
                 }
             }
         }
         
         // En Passant
-        std::optional<OldBoardMove> const &lastMove = chessBoard.getLastCompletedMove();
-        if (lastMove.has_value() && lastMove.value().getMoveType() == MoveType::DOUBLE_PAWN && lastMove.value().getMovedPieceData().team != pieceInfo.pieceData.team) {
-            int lastMoveToRow = lastMove.value().getToSquare().getBoardRow();
-            int lastMoveToCol = lastMove.value().getToSquare().getBoardCol();
+        std::stack<std::unique_ptr<BoardMove>> const &completedMoves = chessBoard.getCompletedMoves();
+        if (!completedMoves.empty()) {
+            std::unique_ptr<BoardMove> const &lastCompletedMove = completedMoves.top();
 
-            switch (pieceInfo.pieceData.pieceDirection) {
-                case PieceDirection::NORTH:
-                case PieceDirection::SOUTH: {
-                    if (lastMoveToRow == fromRow && std::abs(lastMoveToCol - fromCol) == 1) {
-                        BoardSquare toSquare(fromRow + pawnDirection.first, lastMoveToCol);
-                        BoardSquare captureSquare = lastMove.value().getToSquare();
-                        moves.emplace_back(OldBoardMove::createBasicMove(MoveType::ENPASSANT, pieceInfo.pieceData, fromSquare, toSquare, captureSquare, chessBoard.getPieceInfoAt(captureSquare)));
+            if (lastCompletedMove->getDoesEnableEnpassant() == true && lastCompletedMove->getMovedPieceData().team != pieceData.team) {
+                int lastMoveToRow = lastCompletedMove->getToSquare().getBoardRow();
+                int lastMoveToCol = lastCompletedMove->getToSquare().getBoardCol();
+
+                switch (pieceData.pieceDirection) {
+                    case PieceDirection::NORTH:
+                    case PieceDirection::SOUTH: {
+                        if (lastMoveToRow == fromRow && std::abs(lastMoveToCol - fromCol) == 1) {
+                            BoardSquare toSquare(fromRow + pawnDirection.first, lastMoveToCol);
+                            BoardSquare captureSquare = lastCompletedMove->getToSquare();
+                            addMoves(moves, chessBoard, fromSquare, toSquare, captureSquare, false);
+                        }
+                        break;
                     }
-                    break;
-                }
-                case PieceDirection::EAST:
-                case PieceDirection::WEST: {
-                    if (lastMoveToCol == fromCol && std::abs(lastMoveToRow - fromRow) == 1) {
-                        BoardSquare toSquare(lastMoveToRow, fromCol + pawnDirection.second);
-                        BoardSquare captureSquare = lastMove.value().getToSquare();
-                        moves.emplace_back(OldBoardMove::createBasicMove(MoveType::ENPASSANT, pieceInfo.pieceData, fromSquare, toSquare, captureSquare, chessBoard.getPieceInfoAt(captureSquare)));
+                    case PieceDirection::EAST:
+                    case PieceDirection::WEST: {
+                        if (lastMoveToCol == fromCol && std::abs(lastMoveToRow - fromRow) == 1) {
+                            BoardSquare toSquare(lastMoveToRow, fromCol + pawnDirection.second);
+                            BoardSquare captureSquare = lastCompletedMove->getToSquare();
+                            addMoves(moves, chessBoard, fromSquare, toSquare, captureSquare, false);
+                        }
+                        break;
                     }
-                    break;
+                    default:
+                        assert(false);
                 }
-                default:
-                    assert(false);
             }
         }
 
         // Attack
-        switch (pieceInfo.pieceData.pieceDirection) {
+        switch (pieceData.pieceDirection) {
             case PieceDirection::NORTH:
             case PieceDirection::SOUTH: {
                 BoardSquare leftToSquare(fromRow + pawnDirection.first, fromCol - 1);
                 BoardSquare rightToSquare(fromRow + pawnDirection.first, fromCol + 1);
-                if (chessBoard.isSquareOtherTeam(leftToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, leftToSquare, leftToSquare, chessBoard.getPieceInfoAt(leftToSquare)));
+                if (chessBoard.isSquareOtherTeam(leftToSquare, pieceData.team)) {
+                    addMoves(moves, chessBoard, fromSquare, leftToSquare, leftToSquare, false);
                 }
-                if (chessBoard.isSquareOtherTeam(rightToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, rightToSquare, rightToSquare, chessBoard.getPieceInfoAt(rightToSquare)));
+                if (chessBoard.isSquareOtherTeam(rightToSquare, pieceData.team)) {
+                    addMoves(moves, chessBoard, fromSquare, rightToSquare, rightToSquare, false);
                 }
                 break;
             }
@@ -123,49 +128,37 @@ std::vector<OldBoardMove> Pawn::getStandardMoves(ChessBoard const &chessBoard, B
             case PieceDirection::WEST: {
                 BoardSquare upToSquare(fromRow - 1, fromCol + pawnDirection.second);
                 BoardSquare downToSquare(fromRow + 1, fromCol + pawnDirection.second);
-                if (chessBoard.isSquareOtherTeam(upToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, upToSquare, upToSquare, chessBoard.getPieceInfoAt(upToSquare)));
+                if (chessBoard.isSquareOtherTeam(upToSquare, pieceData.team)) {
+                    addMoves(moves, chessBoard, fromSquare, upToSquare, upToSquare, false);
                 }
-                if (chessBoard.isSquareOtherTeam(downToSquare, pieceInfo.pieceData.team)) {
-                    moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, downToSquare, downToSquare, chessBoard.getPieceInfoAt(downToSquare)));
+                if (chessBoard.isSquareOtherTeam(downToSquare, pieceData.team)) {
+                    addMoves(moves, chessBoard, fromSquare, downToSquare, downToSquare, false);
                 }
                 break;
             }
             default:
                 assert(false);
         }
-
-        // Promotion (fix any moves that got to the end of the board)
-        for (std::vector<OldBoardMove>::iterator it = moves.begin(); it != moves.end(); ) {
-            int toRow = it->getToSquare().getBoardRow();
-            int toCol = it->getToSquare().getBoardCol();
-            PieceDirection pieceDirection = pieceInfo.pieceData.pieceDirection;
-            if ((pieceDirection == PieceDirection::NORTH && toRow == 0) ||
-                (pieceDirection == PieceDirection::SOUTH && toRow == chessBoard.getNumRows() - 1) ||
-                (pieceDirection == PieceDirection::EAST && toCol == chessBoard.getNumCols() - 1) ||
-                (pieceDirection == PieceDirection::WEST && toCol == 0)) {
-                
-                std::vector<OldBoardMove> promotionMoves = createPromotionMoves(*it);
-                it = moves.erase(it);
-                moves.insert(moves.end(), promotionMoves.begin(), promotionMoves.end());
-            } else {
-                ++it;
-            }
-        }
     }
     return moves;
 }
 
-
-std::vector<OldBoardMove> Pawn::createPromotionMoves(OldBoardMove const &move) const {
-    static std::set<PieceType> promotionPieceTypes = { PieceType::QUEEN, PieceType::ROOK, PieceType::KNIGHT, PieceType::BISHOP };
-    std::vector<OldBoardMove> promotionMoves;
-    for (PieceType const &promotionPieceType : promotionPieceTypes) {
-        if (move.getCapturedPieceData().has_value()) {
-            promotionMoves.emplace_back(OldBoardMove::createPromotionMove(promotionPieceType, move.getMoveType(), move.getMovedPieceData(), move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), PieceInfo(move.getCapturedPieceData().value(), 0, "", "")));
-        } else {
-            promotionMoves.emplace_back(OldBoardMove::createPromotionMove(promotionPieceType, move.getMoveType(), move.getMovedPieceData(), move.getFromSquare(), move.getToSquare(), move.getCaptureSquare(), std::nullopt));
+void Pawn::addMoves(std::vector<std::unique_ptr<BoardMove>> &moves, ChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant) const {
+    int toRow = toSquare.getBoardRow();
+    int toCol = toSquare.getBoardCol();
+    PieceDirection pieceDirection = pieceData.pieceDirection;
+    bool isPromotionMove = 
+        (pieceDirection == PieceDirection::NORTH && toRow == 0) ||
+        (pieceDirection == PieceDirection::SOUTH && toRow == chessBoard.getNumRows() - 1) ||
+        (pieceDirection == PieceDirection::EAST && toCol == chessBoard.getNumCols() - 1) ||
+        (pieceDirection == PieceDirection::WEST && toCol == 0);
+    if (isPromotionMove) {
+        static std::set<PieceType> promotionPieceTypes = { PieceType::QUEEN, PieceType::ROOK, PieceType::KNIGHT, PieceType::BISHOP };
+        for (PieceType const &promotionPieceType : promotionPieceTypes) {
+            PieceData promotedPieceData(promotionPieceType, pieceData.pieceLevel, pieceData.team, pieceData.pieceDirection, pieceData.hasMoved);
+            moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, captureSquare, doesEnableEnpassant, promotedPieceData, chessBoard.getPieceDataAt(captureSquare)));
         }
+    } else {
+        moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, captureSquare, doesEnableEnpassant, pieceData, chessBoard.getPieceDataAt(captureSquare)));
     }
-    return promotionMoves;
 }

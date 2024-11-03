@@ -37,8 +37,6 @@ std::unique_ptr<BoardMove> BoardMove::clone() const { return cloneImpl(); }
 void BoardMove::makeBoardMove(ChessBoard &chessBoard) const { return makeBoardMoveImpl(chessBoard); }
 void BoardMove::undoBoardMove(ChessBoard &chessBoard) const { return undoBoardMoveImpl(chessBoard); }
 
-// TODO: Needed?
-/*
 BoardSquare const& BoardMove::getFromSquare() const { return fromSquare; }
 BoardSquare const& BoardMove::getToSquare() const { return toSquare; }
 BoardSquare const& BoardMove::getCaptureSquare() const { return captureSquare; }
@@ -46,4 +44,3 @@ BoardSquare const& BoardMove::getCaptureSquare() const { return captureSquare; }
 bool BoardMove::getDoesEnableEnpassant() const { return doesEnableEnpassant; }
 PieceData const& BoardMove::getMovedPieceData() const { return movedPieceData; }
 std::optional<PieceData> BoardMove::getCapturedPieceData() const { return capturedPieceData; }
-*/

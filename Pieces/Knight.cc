@@ -10,7 +10,8 @@
 #include "Cloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 
 
 // Static
@@ -27,7 +28,7 @@ std::set<std::pair<int, int>> const Knight::knightDirections = {
 
 // Basic ctor
 Knight::Knight(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceInfo(PieceData(PieceType::KNIGHT, pieceLevel, team, pieceDirection, hasMoved), 3, "♞", "N")) {}
+    Piece(PieceData(PieceType::KNIGHT, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, "♞", "N")) {}
 
 // Copy ctor
 Knight::Knight(Knight const &other) : 
@@ -53,13 +54,13 @@ Knight& Knight::operator=(Knight &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> Knight::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
-    std::vector<OldBoardMove> moves;
+std::vector<std::unique_ptr<BoardMove>> Knight::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+    std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &knightDirection : knightDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + knightDirection.first, fromSquare.getBoardCol() + knightDirection.second);
-            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
             }
         }
     }

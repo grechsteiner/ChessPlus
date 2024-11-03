@@ -10,7 +10,8 @@
 #include "Cloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 
 
 // Static
@@ -23,7 +24,7 @@ std::set<std::pair<int, int>> const Rook::rookDirections = {
 
 // Basic ctor
 Rook::Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceInfo(PieceData(PieceType::ROOK, PieceLevel::BASIC, team, pieceDirection, hasMoved), 5, "♜", "R")) {}
+    Piece(PieceData(PieceType::ROOK, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(5, "♜", "R")) {}
 
 // Copy ctor
 Rook::Rook(Rook const &other) : 
@@ -49,14 +50,14 @@ Rook& Rook::operator=(Rook &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> Rook::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
-    std::vector<OldBoardMove> moves;
+std::vector<std::unique_ptr<BoardMove>> Rook::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+    std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &rookDirection : rookDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + rookDirection.first, fromSquare.getBoardCol() + rookDirection.second);
-            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
-                if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
+            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
+                if (chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
                 toSquare = BoardSquare(toSquare.getBoardRow() + rookDirection.first, toSquare.getBoardCol() + rookDirection.second);

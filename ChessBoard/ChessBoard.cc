@@ -8,7 +8,7 @@
 #include "ChessBoard.h"
 #include "Constants.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
 #include "PieceInfo.h"
 #include "PieceData.h"
 
@@ -44,8 +44,7 @@ bool ChessBoard::makeMove(OldBoardMove const &boardMove) { return makeMoveImpl(b
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
 bool ChessBoard::redoMove() { return redoMoveImpl(); }
 
-std::optional<OldBoardMove> ChessBoard::getLastCompletedMove() const { return getLastCompletedMoveImpl(); }
-std::stack<OldBoardMove> const& ChessBoard::getAllCompletedMoves() const { return getAllCompletedMovesImpl(); }
+std::stack<std::unique_ptr<BoardMove>> const& ChessBoard::getCompletedMoves() const { return getCompletedMovesImpl(); }
 
 Team ChessBoard::getTeamOne() const { return getTeamOneImpl(); }
 Team ChessBoard::getTeamTwo() const { return getTeamTwoImpl(); }

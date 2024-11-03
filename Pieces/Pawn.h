@@ -12,15 +12,13 @@
 
 class ChessBoard;
 class BoardSquare;
-class OldBoardMove;
+class BoardMove;
 
 
 /**
  * Pawn Piece Class
  */
-class Pawn : public Piece {
-private:
-    std::vector<OldBoardMove> createPromotionMoves(OldBoardMove const &move) const;
+class Pawn : public Piece {    
 protected:
     explicit Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
     Pawn(Pawn const &other);
@@ -29,8 +27,12 @@ protected:
     Pawn& operator=(Pawn &&other) noexcept;
     virtual ~Pawn() = default;
 
-    std::vector<OldBoardMove> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<std::unique_ptr<BoardMove>> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
     std::pair<int, int> getPawnDirection() const;
+
+    // Appends new move to moves
+    // Creates all variants if promotion needed
+    void addMoves(std::vector<std::unique_ptr<BoardMove>> &moves, ChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant) const;
 };
 
 

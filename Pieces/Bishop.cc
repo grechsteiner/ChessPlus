@@ -10,7 +10,8 @@
 #include "Cloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 
 // Static
 std::set<std::pair<int, int>> const Bishop::bishopDirections = { 
@@ -22,7 +23,7 @@ std::set<std::pair<int, int>> const Bishop::bishopDirections = {
 
 // Basic ctor
 Bishop::Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceInfo(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), 3, "♝", "B")) {}
+    Piece(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, "♝", "B")) {}
 
 // Copy ctor
 Bishop::Bishop(Bishop const &other) : 
@@ -48,14 +49,14 @@ Bishop& Bishop::operator=(Bishop &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> Bishop::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
-    std::vector<OldBoardMove> moves;
+std::vector<std::unique_ptr<BoardMove>> Bishop::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+    std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &bishopDirection : bishopDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + bishopDirection.first, fromSquare.getBoardCol() + bishopDirection.second);
-            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
-                if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
+            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
+                if (chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
                 toSquare = BoardSquare(toSquare.getBoardRow() + bishopDirection.first, toSquare.getBoardCol() + bishopDirection.second);

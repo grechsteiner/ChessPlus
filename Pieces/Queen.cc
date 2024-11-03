@@ -10,7 +10,8 @@
 #include "Cloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 
 
 // Static
@@ -27,7 +28,7 @@ std::set<std::pair<int, int>> const Queen::queenDirections = {
 
 // Basic ctor
 Queen::Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceInfo(PieceData(PieceType::QUEEN, PieceLevel::BASIC, team, pieceDirection, hasMoved), 9, "♛", "Q")) {}
+    Piece(PieceData(PieceType::QUEEN, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(9, "♛", "Q")) {}
 
 // Copy ctor
 Queen::Queen(Queen const &other) : 
@@ -53,14 +54,14 @@ Queen& Queen::operator=(Queen &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> Queen::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
-    std::vector<OldBoardMove> moves;
+std::vector<std::unique_ptr<BoardMove>> Queen::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+    std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &queenDirection : queenDirections) {
             BoardSquare toSquare(fromSquare.getBoardRow() + queenDirection.first, fromSquare.getBoardCol() + queenDirection.second);
-            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
-                if (chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
+            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
+                if (chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
                 toSquare = BoardSquare(toSquare.getBoardRow() + queenDirection.first, toSquare.getBoardCol() + queenDirection.second);

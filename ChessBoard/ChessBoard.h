@@ -11,7 +11,7 @@
 #include "Constants.h"
 
 class BoardSquare;
-class OldBoardMove;
+class BoardMove;
 struct PieceInfo;
 struct PieceData;
 
@@ -53,8 +53,7 @@ private:
     virtual bool undoMoveImpl() = 0;  
     virtual bool redoMoveImpl() = 0; 
 
-    virtual std::optional<OldBoardMove> getLastCompletedMoveImpl() const = 0;
-    virtual std::stack<OldBoardMove> const& getAllCompletedMovesImpl() const = 0;
+    virtual std::stack<std::unique_ptr<BoardMove>> const& getCompletedMovesImpl() const = 0;
 
     virtual Team getTeamOneImpl() const = 0;
     virtual Team getTeamTwoImpl() const = 0;
@@ -95,8 +94,7 @@ public:
     bool undoMove();  
     bool redoMove(); 
 
-    std::optional<OldBoardMove> getLastCompletedMove() const;
-    std::stack<OldBoardMove> const& getAllCompletedMoves() const;
+    std::stack<std::unique_ptr<BoardMove>> const& getCompletedMoves() const;
 
     Team getTeamOne() const;
     Team getTeamTwo() const;

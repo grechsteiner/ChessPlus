@@ -11,7 +11,8 @@
 #include "Cloneable.h"
 #include "ChessBoard.h"
 #include "BoardSquare.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 
 
 // Static
@@ -28,7 +29,7 @@ std::set<std::pair<int, int>> const King::kingDirections = {
 
 // Basic ctor
 King::King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) : 
-    Piece(PieceInfo(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), 1000, "♚", "K")) {}
+    Piece(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(1000, "♚", "K")) {}
 
 // Copy ctor
 King::King(King const &other) : 
@@ -54,8 +55,8 @@ King& King::operator=(King &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
-    std::vector<OldBoardMove> moves;
+std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+    std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         int fromRow = fromSquare.getBoardRow();
         int fromCol = fromSquare.getBoardCol();
@@ -63,8 +64,8 @@ std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, B
         // Standard Moves
         for (std::pair<int, int> const &kingDirection : kingDirections) {
             BoardSquare toSquare(fromRow + kingDirection.first, fromCol + kingDirection.second);
-            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                moves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
             }
         }
 
@@ -72,8 +73,8 @@ std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, B
         if (!onlyAttackingMoves) {
 
             // Castle
-            if (!pieceInfo.pieceData.hasMoved && !chessBoard.isSquareAttacked(fromSquare, pieceInfo.pieceData.team)) {
-                switch (pieceInfo.pieceData.pieceDirection) {
+            if (!pieceData.hasMoved && !chessBoard.isSquareAttacked(fromSquare, pieceData.team)) {
+                switch (pieceData.pieceDirection) {
                     case PieceDirection::NORTH:
                     case PieceDirection::SOUTH: {
                         if (fromRow == 0 || fromRow == chessBoard.getNumRows() - 1) {
@@ -84,7 +85,7 @@ std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, B
                                 BoardSquare toSquare(fromRow, fromCol - 2);
                                 BoardSquare rookToSquare(fromRow, fromCol - 1);
                                 if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
-                                    moves.emplace_back(OldBoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo.pieceData, fromSquare, toSquare, toSquare));
+                                    moves.emplace_back(BoardMoveFactory::createCastleMove(fromSquare, toSquare, toSquare, rookFromSquare, rookToSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
                                 }
                             }
 
@@ -94,7 +95,7 @@ std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, B
                                 BoardSquare toSquare(fromRow, fromCol + 2);
                                 BoardSquare rookToSquare(fromRow, fromCol + 1);
                                 if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
-                                    moves.emplace_back(OldBoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo.pieceData, fromSquare, toSquare, toSquare));
+                                    moves.emplace_back(BoardMoveFactory::createCastleMove(fromSquare, toSquare, toSquare, rookFromSquare, rookToSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
                                 }
                             }
                         }
@@ -110,7 +111,7 @@ std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, B
                                 BoardSquare toSquare(fromRow - 2, fromCol);
                                 BoardSquare rookToSquare(fromRow - 1, fromCol);
                                 if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
-                                    moves.emplace_back(OldBoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo.pieceData, fromSquare, toSquare, toSquare));
+                                    moves.emplace_back(BoardMoveFactory::createCastleMove(fromSquare, toSquare, toSquare, rookFromSquare, rookToSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
                                 }
                             }
 
@@ -120,7 +121,7 @@ std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, B
                                 BoardSquare toSquare(fromRow + 2, fromCol);
                                 BoardSquare rookToSquare(fromRow + 1, fromCol);
                                 if (checkCommonCastleInfo(chessBoard, fromSquare, toSquare, rookFromSquare, rookToSquare)) {
-                                    moves.emplace_back(OldBoardMove::createCastleMove(rookFromSquare, rookToSquare, MoveType::CASTLE, pieceInfo.pieceData, fromSquare, toSquare, toSquare));
+                                    moves.emplace_back(BoardMoveFactory::createCastleMove(fromSquare, toSquare, toSquare, rookFromSquare, rookToSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
                                 }
                             }
                         }
@@ -136,15 +137,15 @@ std::vector<OldBoardMove> King::getStandardMoves(ChessBoard const &chessBoard, B
 }
 
 bool King::checkCommonCastleInfo(ChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const {
-    if (chessBoard.getPieceInfoAt(rookFromSquare).has_value()) {
-        PieceData rookPieceData = chessBoard.getPieceInfoAt(rookFromSquare).value().pieceData;
+    if (chessBoard.getPieceDataAt(rookFromSquare).has_value()) {
+        PieceData potentialRookPieceData = chessBoard.getPieceDataAt(rookFromSquare).value();
         return
-            rookPieceData.pieceType == PieceType::ROOK &&
-            rookPieceData.team == pieceInfo.pieceData.team &&
-            rookPieceData.pieceDirection == pieceInfo.pieceData.pieceDirection &&
-            rookPieceData.hasMoved == false &&
+            potentialRookPieceData.pieceType == PieceType::ROOK &&
+            potentialRookPieceData.team == pieceData.team &&
+            potentialRookPieceData.pieceDirection == pieceData.pieceDirection &&
+            potentialRookPieceData.hasMoved == false &&
             chessBoard.isSquareEmpty(toSquare) &&
-            chessBoard.isSquareEmpty(rookToSquare) && !chessBoard.isSquareAttacked(rookToSquare, pieceInfo.pieceData.team);
+            chessBoard.isSquareEmpty(rookToSquare) && !chessBoard.isSquareAttacked(rookToSquare, pieceData.team);
     } else {
         return false;
     }
