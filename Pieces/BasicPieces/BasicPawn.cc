@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "BasicPawn.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
 
 // Basic ctor
 BasicPawn::BasicPawn(Team team, PieceDirection pieceDirection, bool hasMoved) :
@@ -33,6 +33,6 @@ BasicPawn& BasicPawn::operator=(BasicPawn &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> BasicPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> BasicPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }
