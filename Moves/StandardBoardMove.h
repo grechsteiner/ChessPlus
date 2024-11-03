@@ -20,6 +20,8 @@ private:
     bool equals(BoardMove const &other) const override;
     void makeBoardMoveImpl(ChessBoard &chessBoard) const override;
     void undoBoardMoveImpl(ChessBoard &chessBoard) const override;
+
+    std::optional<PieceType> getPromotionPieceTypeImpl() const override { return std::nullopt; }
 public:
     explicit StandardBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData = std::nullopt);
     StandardBoardMove(StandardBoardMove const &other);

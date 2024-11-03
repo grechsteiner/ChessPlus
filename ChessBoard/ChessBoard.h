@@ -38,18 +38,18 @@ private:
     virtual bool isInCheckMateImpl(Team team) const = 0;
     virtual bool isInStaleMateImpl(Team team) const = 0;
 
-    virtual std::vector<OldBoardMove> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const = 0;
-    virtual std::vector<OldBoardMove> generateAllLegalMovesImpl(Team team) const = 0; 
-    virtual std::vector<OldBoardMove> generateCapturingMovesImpl(Team team) const = 0;
-    virtual std::vector<OldBoardMove> generateCheckApplyingMovesImpl(Team team) const = 0;
-    virtual std::vector<OldBoardMove> generateCaptureAvoidingMovesImpl(Team team) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesImpl(Team team) const = 0; 
+    virtual std::vector<std::unique_ptr<BoardMove>> generateCapturingMovesImpl(Team team) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> generateCheckApplyingMovesImpl(Team team) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMovesImpl(Team team) const = 0;
 
     virtual bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) = 0;
     virtual bool clearPositionImpl(BoardSquare const &boardSquare) = 0;
     virtual void clearBoardImpl() = 0;
 
-    virtual std::optional<OldBoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const = 0;
-    virtual bool makeMoveImpl(OldBoardMove const &boardMove) = 0;                    
+    virtual std::optional<std::unique_ptr<BoardMove>> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const = 0;
+    virtual bool makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) = 0;                    
     virtual bool undoMoveImpl() = 0;  
     virtual bool redoMoveImpl() = 0; 
 
@@ -79,18 +79,18 @@ public:
     bool isInCheckMate(Team team) const;
     bool isInStaleMate(Team team) const;
 
-    std::vector<OldBoardMove> generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const;
-    std::vector<OldBoardMove> generateAllLegalMoves(Team team) const; 
-    std::vector<OldBoardMove> generateCapturingMoves(Team team) const;
-    std::vector<OldBoardMove> generateCheckApplyingMoves(Team team) const;
-    std::vector<OldBoardMove> generateCaptureAvoidingMoves(Team team) const;
+    std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const;
+    std::vector<std::unique_ptr<BoardMove>> generateAllLegalMoves(Team team) const; 
+    std::vector<std::unique_ptr<BoardMove>> generateCapturingMoves(Team team) const;
+    std::vector<std::unique_ptr<BoardMove>> generateCheckApplyingMoves(Team team) const;
+    std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMoves(Team team) const;
 
     bool setPosition(BoardSquare const &boardSquare, PieceData const &pieceData);    
     bool clearPosition(BoardSquare const &boardSquare);
     void clearBoard();
 
-    std::optional<OldBoardMove> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const;
-    bool makeMove(OldBoardMove const &boardMove);
+    std::optional<std::unique_ptr<BoardMove>> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const;
+    bool makeMove(std::unique_ptr<BoardMove> const &boardMove);
     bool undoMove();  
     bool redoMove(); 
 

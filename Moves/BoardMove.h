@@ -21,6 +21,7 @@ private:
     virtual std::unique_ptr<BoardMove> cloneImpl() const = 0;
     virtual void makeBoardMoveImpl(ChessBoard &chessBoard) const = 0;
     virtual void undoBoardMoveImpl(ChessBoard &chessBoard) const = 0;
+    virtual std::optional<PieceType> getPromotionPieceTypeImpl() const = 0;
 
 protected:
     explicit BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData = std::nullopt);
@@ -52,6 +53,8 @@ public:
     bool getDoesEnableEnpassant() const;
     PieceData const& getMovedPieceData() const;
     std::optional<PieceData> getCapturedPieceData() const;
+
+    std::optional<PieceType> getPromotionPieceType() const;
 };
 
 

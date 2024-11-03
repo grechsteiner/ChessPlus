@@ -26,6 +26,8 @@ private:
 
     // Utility method for performing the rook logic of a castle move
     void performRookCastle(ChessBoard &chessBoard, bool isUndo) const;
+
+    std::optional<PieceType> getPromotionPieceTypeImpl() const override { return std::nullopt; }
 public:
     explicit CastleBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare,  bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData = std::nullopt);
     CastleBoardMove(CastleBoardMove const &other);
@@ -33,6 +35,9 @@ public:
     CastleBoardMove& operator=(CastleBoardMove const &other);
     CastleBoardMove& operator=(CastleBoardMove &&other) noexcept;
     virtual ~CastleBoardMove() = default;
+
+    BoardSquare const& getRookFromSquare() const;
+    BoardSquare const& getRookToSquare() const;
 };
 
 

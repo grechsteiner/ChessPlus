@@ -11,7 +11,6 @@
 #include "ChessBoard.h"
 #include "Cloneable.h"
 #include "Constants.h"
-#include "OldBoardMove.h"
 #include "Piece.h"
 
 class BoardSquare;
@@ -43,20 +42,20 @@ private:
     void clearCompletedMoves();
     void clearRedoMoves();
 
-    std::vector<OldBoardMove> generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
-    std::vector<OldBoardMove> generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const;   
+    std::vector<std::unique_ptr<BoardMove>> generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
+    std::vector<std::unique_ptr<BoardMove>> generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const;   
 
     bool canMakeMove(Team team) const;
-    bool isMoveValid(OldBoardMove const &boardMove) const;
+    bool isMoveValid(std::unique_ptr<BoardMove> const &boardMove) const;
 
-    void performMove(OldBoardMove const &boardMove);   // Does not perform any checks of whether of not move is legal
-    void performUndoMove();                         // Does not perform any checks on if move is available to be undone
-    void performRedoMove();                         // Does not perform any checks on if move is available to be redone
+    void performMove(std::unique_ptr<BoardMove> const &boardMove);      // Does not perform any checks of whether of not move is legal
+    void performUndoMove();                                             // Does not perform any checks on if move is available to be undone
+    void performRedoMove();                                             // Does not perform any checks on if move is available to be redone
 
-    bool doesMoveApplyCheck(OldBoardMove const &boardMove) const;
-    bool doesMoveCapturePiece(OldBoardMove const &boardMove) const;
-    bool doesMoveLeavePieceAttacked(OldBoardMove const &boardMove) const;
-    bool doesMoveLeaveTeamInCheck(OldBoardMove const &boardMove) const;   
+    bool doesMoveApplyCheck(std::unique_ptr<BoardMove> const &boardMove) const;
+    bool doesMoveCapturePiece(std::unique_ptr<BoardMove> const &boardMove) const;
+    bool doesMoveLeavePieceAttacked(std::unique_ptr<BoardMove> const &boardMove) const;
+    bool doesMoveLeaveTeamInCheck(std::unique_ptr<BoardMove> const &boardMove) const;   
 
 
     /* ChessBoard Interface */
@@ -74,19 +73,19 @@ private:
     bool isInCheckMateImpl(Team team) const override;
     bool isInStaleMateImpl(Team team) const override;
     
-    std::vector<OldBoardMove> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const override;
-    std::vector<OldBoardMove> generateAllLegalMovesImpl(Team team) const override; 
-    std::vector<OldBoardMove> generateCapturingMovesImpl(Team team) const override;
-    std::vector<OldBoardMove> generateCheckApplyingMovesImpl(Team team) const override;
-    std::vector<OldBoardMove> generateCaptureAvoidingMovesImpl(Team team) const override;
+    std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const override;
+    std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesImpl(Team team) const override; 
+    std::vector<std::unique_ptr<BoardMove>> generateCapturingMovesImpl(Team team) const override;
+    std::vector<std::unique_ptr<BoardMove>> generateCheckApplyingMovesImpl(Team team) const override;
+    std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMovesImpl(Team team) const override;
 
     // If BoardSquare is on board, completedMoves and redoMoves are erased
     bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) override;
     bool clearPositionImpl(BoardSquare const &boardSquare) override;
     void clearBoardImpl() override;
 
-    std::optional<OldBoardMove> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const override;
-    bool makeMoveImpl(OldBoardMove const &boardMove) override;     // True if move is legal move on board (only performs move if legal)         
+    std::optional<std::unique_ptr<BoardMove>> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const override;
+    bool makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) override;     // True if move is legal move on board (only performs move if legal)         
     bool undoMoveImpl() override;                               // True if move is available to be undone (only performs undo if move available to be undone)
     bool redoMoveImpl() override;                               // True if move is available to be redone (only performs redo if move available to be redone)
 

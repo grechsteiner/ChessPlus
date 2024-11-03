@@ -74,12 +74,12 @@ void CastleBoardMove::undoBoardMoveImpl(ChessBoard &chessBoard) const {
 }
 
 void CastleBoardMove::performRookCastle(ChessBoard &chessBoard, bool isUndo) const {
-    std::optional<PieceInfo> rookPieceInfo = isUndo 
-        ? chessBoard.getPieceInfoAt(rookToSquare) 
-        : chessBoard.getPieceInfoAt(rookFromSquare);
-    if (rookPieceInfo.has_value()) {
+    std::optional<PieceData> potentialRookPieceData = isUndo 
+        ? chessBoard.getPieceDataAt(rookToSquare) 
+        : chessBoard.getPieceDataAt(rookFromSquare);
+    if (potentialRookPieceData.has_value()) {
         bool hasRookMoved = isUndo ? false : true;
-        PieceData rookPieceData = rookPieceInfo.value().pieceData;
+        PieceData rookPieceData = potentialRookPieceData.value();
         if (isUndo) {
             chessBoard.setPosition(rookFromSquare, PieceData(rookPieceData.pieceType, rookPieceData.pieceLevel, rookPieceData.team, rookPieceData.pieceDirection, hasRookMoved));
             chessBoard.clearPosition(rookToSquare);
@@ -90,3 +90,6 @@ void CastleBoardMove::performRookCastle(ChessBoard &chessBoard, bool isUndo) con
     }
     
 }
+
+BoardSquare const& CastleBoardMove::getRookFromSquare() const { return rookFromSquare; }
+BoardSquare const& CastleBoardMove::getRookToSquare() const { return rookToSquare; }

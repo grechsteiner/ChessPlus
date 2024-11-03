@@ -29,18 +29,18 @@ bool ChessBoard::isInCheck(Team team) const { return isInCheckImpl(team); }
 bool ChessBoard::isInCheckMate(Team team) const { return isInCheckMateImpl(team); }
 bool ChessBoard::isInStaleMate(Team team) const { return isInStaleMateImpl(team); }
 
-std::vector<OldBoardMove> ChessBoard::generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const { return generateAllLegalMovesAtSquareImpl(boardSquare); }
-std::vector<OldBoardMove> ChessBoard::generateAllLegalMoves(Team team) const { return generateAllLegalMovesImpl(team); }
-std::vector<OldBoardMove> ChessBoard::generateCapturingMoves(Team team) const { return generateCapturingMovesImpl(team); }
-std::vector<OldBoardMove> ChessBoard::generateCheckApplyingMoves(Team team) const { return generateCheckApplyingMovesImpl(team); }
-std::vector<OldBoardMove> ChessBoard::generateCaptureAvoidingMoves(Team team) const { return generateCaptureAvoidingMovesImpl(team); }
+std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const { return generateAllLegalMovesAtSquareImpl(boardSquare); }
+std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateAllLegalMoves(Team team) const { return generateAllLegalMovesImpl(team); }
+std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateCapturingMoves(Team team) const { return generateCapturingMovesImpl(team); }
+std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateCheckApplyingMoves(Team team) const { return generateCheckApplyingMovesImpl(team); }
+std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateCaptureAvoidingMoves(Team team) const { return generateCaptureAvoidingMovesImpl(team); }
 
 bool ChessBoard::setPosition(BoardSquare const &boardSquare, PieceData const &pieceData) { return setPositionImpl(boardSquare, pieceData); }
 bool ChessBoard::clearPosition(BoardSquare const &boardSquare) { return clearPositionImpl(boardSquare); }
 void ChessBoard::clearBoard() { clearBoardImpl(); }
 
-std::optional<OldBoardMove> ChessBoard::createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { return createBoardMoveImpl(fromSquare, toSquare, promotionPieceType); }
-bool ChessBoard::makeMove(OldBoardMove const &boardMove) { return makeMoveImpl(boardMove); }
+std::optional<std::unique_ptr<BoardMove>> ChessBoard::createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { return createBoardMoveImpl(fromSquare, toSquare, promotionPieceType); }
+bool ChessBoard::makeMove(std::unique_ptr<BoardMove> const &boardMove) { return makeMoveImpl(boardMove); }
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
 bool ChessBoard::redoMove() { return redoMoveImpl(); }
 

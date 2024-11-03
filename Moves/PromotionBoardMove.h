@@ -29,6 +29,8 @@ public:
     PromotionBoardMove& operator=(PromotionBoardMove const &other);
     PromotionBoardMove& operator=(PromotionBoardMove &&other) noexcept;
     virtual ~PromotionBoardMove() = default;
+
+    std::optional<PieceType> getPromotionPieceTypeImpl() const override { return promotionPieceType; }
 };
 
 

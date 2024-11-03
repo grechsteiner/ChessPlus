@@ -44,3 +44,5 @@ BoardSquare const& BoardMove::getCaptureSquare() const { return captureSquare; }
 bool BoardMove::getDoesEnableEnpassant() const { return doesEnableEnpassant; }
 PieceData const& BoardMove::getMovedPieceData() const { return movedPieceData; }
 std::optional<PieceData> BoardMove::getCapturedPieceData() const { return capturedPieceData; }
+
+std::optional<PieceType> BoardMove::getPromotionPieceType() const { return getPromotionPieceTypeImpl(); }
