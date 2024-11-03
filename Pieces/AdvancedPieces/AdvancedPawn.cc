@@ -3,7 +3,8 @@
 #include <vector>
 
 #include "AdvancedPawn.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 #include "ChessBoard.h"
 
 
@@ -35,12 +36,12 @@ AdvancedPawn& AdvancedPawn::operator=(AdvancedPawn &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     int fromRow = fromSquare.getBoardRow();
     int fromCol = fromSquare.getBoardCol();
     std::pair<int, int> pawnDirection = getPawnDirection();
 
-    std::vector<OldBoardMove> additionalMoves;
+    std::vector<std::unique_ptr<BoardMove>> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 
     // Non Attacking Moves 
     if (!onlyAttackingMoves) {
@@ -49,12 +50,10 @@ std::vector<OldBoardMove> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoar
         BoardSquare normalMoveToSquare(fromRow + pawnDirection.first, fromCol + pawnDirection.second);
         BoardSquare doubleMoveToSquare(fromRow + 2 * pawnDirection.first, fromCol + 2 * pawnDirection.second);
         BoardSquare tripleMoveToSquare(fromRow + 3 * pawnDirection.first, fromCol + 3 * pawnDirection.second);
-        if (!pieceInfo.pieceData.hasMoved && chessBoard.isSquareEmpty(normalMoveToSquare) && chessBoard.isSquareEmpty(doubleMoveToSquare) && chessBoard.isSquareEmpty(tripleMoveToSquare)) {
-            additionalMoves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, tripleMoveToSquare, tripleMoveToSquare));
+        if (!pieceData.hasMoved && chessBoard.isSquareEmpty(normalMoveToSquare) && chessBoard.isSquareEmpty(doubleMoveToSquare) && chessBoard.isSquareEmpty(tripleMoveToSquare)) {
+            addMoves(moves, chessBoard, fromSquare, tripleMoveToSquare, tripleMoveToSquare, true);
         }
     }
 
-    std::vector<OldBoardMove> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
-    moves.insert(moves.end(), additionalMoves.begin(), additionalMoves.end());
     return moves;
 }

@@ -3,7 +3,8 @@
 #include <vector>
 
 #include "AdvancedBishop.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
+#include "BoardMoveFactory.h"
 #include "ChessBoard.h"
 
 
@@ -35,7 +36,7 @@ AdvancedBishop& AdvancedBishop::operator=(AdvancedBishop &&other) noexcept {
     return *this;
 }
 
-std::vector<OldBoardMove> AdvancedBishop::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> AdvancedBishop::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.getBoardRow() + 0, fromSquare.getBoardCol() + 1),
         BoardSquare(fromSquare.getBoardRow() + 0, fromSquare.getBoardCol() - 1),
@@ -43,16 +44,13 @@ std::vector<OldBoardMove> AdvancedBishop::getMovesImpl(ChessBoard const &chessBo
         BoardSquare(fromSquare.getBoardRow() - 1, fromSquare.getBoardCol() + 0)
     };
 
-    std::vector<OldBoardMove> additionalMoves;
+    std::vector<std::unique_ptr<BoardMove>> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (BoardSquare const &toSquare : additionalToSquares) {
-            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceInfo.pieceData.team)) {
-                additionalMoves.emplace_back(OldBoardMove::createBasicMove(MoveType::STANDARD, pieceInfo.pieceData, fromSquare, toSquare, toSquare, chessBoard.getPieceInfoAt(toSquare)));
+            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
             }
         }
     }
-
-    std::vector<OldBoardMove> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
-    moves.insert(moves.end(), additionalMoves.begin(), additionalMoves.end());
     return moves;
 }
