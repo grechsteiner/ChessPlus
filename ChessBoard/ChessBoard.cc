@@ -30,9 +30,10 @@ bool ChessBoard::isInStaleMate(Team team) const { return isInStaleMateImpl(team)
 
 std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const { return generateAllLegalMovesAtSquareImpl(boardSquare); }
 std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateAllLegalMoves(Team team) const { return generateAllLegalMovesImpl(team); }
-std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateCapturingMoves(Team team) const { return generateCapturingMovesImpl(team); }
 std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateCheckApplyingMoves(Team team) const { return generateCheckApplyingMovesImpl(team); }
+std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateCapturingMoves(Team team) const { return generateCapturingMovesImpl(team); }
 std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateCaptureAvoidingMoves(Team team) const { return generateCaptureAvoidingMovesImpl(team); }
+std::vector<std::unique_ptr<BoardMove>> ChessBoard::generateWinningMoves(Team team) const { return generateWinningMovesImpl(team); }
 
 bool ChessBoard::setPosition(BoardSquare const &boardSquare, PieceData const &pieceData) { return setPositionImpl(boardSquare, pieceData); }
 bool ChessBoard::clearPosition(BoardSquare const &boardSquare) { return clearPositionImpl(boardSquare); }

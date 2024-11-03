@@ -54,6 +54,7 @@ private:
     bool doesMoveApplyCheck(std::unique_ptr<BoardMove> const &boardMove) const;
     bool doesMoveCapturePiece(std::unique_ptr<BoardMove> const &boardMove) const;
     bool doesMoveLeavePieceAttacked(std::unique_ptr<BoardMove> const &boardMove) const;
+    bool doesMoveWinGame(std::unique_ptr<BoardMove> const &boardMove) const;
     bool doesMoveLeaveTeamInCheck(std::unique_ptr<BoardMove> const &boardMove) const;   
 
 
@@ -74,9 +75,10 @@ private:
     
     std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const override;
     std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesImpl(Team team) const override; 
-    std::vector<std::unique_ptr<BoardMove>> generateCapturingMovesImpl(Team team) const override;
     std::vector<std::unique_ptr<BoardMove>> generateCheckApplyingMovesImpl(Team team) const override;
+    std::vector<std::unique_ptr<BoardMove>> generateCapturingMovesImpl(Team team) const override;
     std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMovesImpl(Team team) const override;
+    std::vector<std::unique_ptr<BoardMove>> generateWinningMovesImpl(Team team) const override;
 
     // If BoardSquare is on board, completedMoves and redoMoves are erased
     bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) override;

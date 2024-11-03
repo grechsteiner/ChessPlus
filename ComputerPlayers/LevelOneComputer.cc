@@ -5,12 +5,22 @@
 
 #include "Constants.h"
 #include "LevelOneComputer.h"
-#include "ChessBoardImpl.h"
 
 
-LevelOneComputer::LevelOneComputer() : BasicComputerPlayer() {}
+// Basic ctor
+LevelOneComputer::LevelOneComputer(ChessBoard const &chessBoard, Team team) : 
+    Cloneable<ComputerPlayer, LevelOneComputer>(chessBoard, team) {}
 
-std::vector<std::unique_ptr<BoardMove>> LevelOneComputer::getPossibleMoves(ChessBoard const &chessBoard, Team team) const {
-    std::vector<std::unique_ptr<BoardMove>> possibleMoves = chessBoard.generateAllLegalMoves(team);
-    return possibleMoves;
+// Copy ctor
+LevelOneComputer::LevelOneComputer(LevelOneComputer const &other) :
+    Cloneable<ComputerPlayer, LevelOneComputer>(other) {}
+
+// Move ctor
+LevelOneComputer::LevelOneComputer(LevelOneComputer &&other) noexcept :
+    Cloneable<ComputerPlayer, LevelOneComputer>(std::move(other)) {}
+
+std::unique_ptr<BoardMove> LevelOneComputer::generateMoveImpl() const {
+    std::vector<std::unique_ptr<BoardMove>> allLegalMoves = chessBoard.generateAllLegalMoves(team);
+    shuffle(allLegalMoves);
+    return allLegalMoves.front()->clone();
 }

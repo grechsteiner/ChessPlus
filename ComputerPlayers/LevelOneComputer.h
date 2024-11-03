@@ -6,13 +6,18 @@
 #include <vector>
 
 #include "BoardMove.h"
-#include "BasicComputerPlayer.h"
+#include "ComputerPlayer.h"
+#include "Cloneable.h"
 
-class LevelOneComputer : public BasicComputerPlayer {
+class LevelOneComputer final : public Cloneable<ComputerPlayer, LevelOneComputer> {
 private:
-    std::vector<std::unique_ptr<BoardMove>> getPossibleMoves(ChessBoard const &chessBoard, Team team) const override;
+    std::unique_ptr<BoardMove> generateMoveImpl() const override;
 public:
-    LevelOneComputer();
+    explicit LevelOneComputer(ChessBoard const &chessBoard, Team team);
+    LevelOneComputer(LevelOneComputer const &other);
+    LevelOneComputer(LevelOneComputer &&other) noexcept;
+    // Copy and move assignment disabled
+    virtual ~LevelOneComputer() = default;
 };
 
 #endif /* LevelOneComputer_h */

@@ -196,6 +196,16 @@ bool ChessBoardImpl::doesMoveLeavePieceAttacked(std::unique_ptr<BoardMove> const
     assert(false);
 }
 
+bool ChessBoardImpl::doesMoveWinGame(std::unique_ptr<BoardMove> const &boardMove) const {
+     std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove->getFromSquare());
+    if (movedPieceData.has_value()) {
+        ChessBoardImpl temp(*this);
+        temp.performMove(boardMove);
+        return temp.isInCheckMate(getOtherTeam(movedPieceData.value().team));
+    }
+    assert(false);
+}
+
 bool ChessBoardImpl::doesMoveLeaveTeamInCheck(std::unique_ptr<BoardMove> const &boardMove) const {
     std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove->getFromSquare());
     if (movedPieceData.has_value()) {
@@ -321,17 +331,6 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllLegalMovesImp
     return legalBoardMoves;
 }
 
-std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCapturingMovesImpl(Team team) const { 
-    std::vector<std::unique_ptr<BoardMove>> capturingBoardMoves;
-    std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
-    for (std::unique_ptr<BoardMove> &legalBoardMove : legalBoardMoves) {
-        if (doesMoveCapturePiece(legalBoardMove)) {
-            capturingBoardMoves.emplace_back(std::move(legalBoardMove));
-        }
-    }
-    return capturingBoardMoves;
-}
-
 std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCheckApplyingMovesImpl(Team team) const {
     std::vector<std::unique_ptr<BoardMove>> checkApplyingBoardMoves;
     std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
@@ -343,6 +342,17 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCheckApplyingMov
     return checkApplyingBoardMoves;
 }
 
+std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCapturingMovesImpl(Team team) const { 
+    std::vector<std::unique_ptr<BoardMove>> capturingBoardMoves;
+    std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
+    for (std::unique_ptr<BoardMove> &legalBoardMove : legalBoardMoves) {
+        if (doesMoveCapturePiece(legalBoardMove)) {
+            capturingBoardMoves.emplace_back(std::move(legalBoardMove));
+        }
+    }
+    return capturingBoardMoves;
+}
+
 std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCaptureAvoidingMovesImpl(Team team) const {
     std::vector<std::unique_ptr<BoardMove>> captureAvoidingBoardMoves;
     std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
@@ -352,6 +362,17 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateCaptureAvoidingM
         }
     }
     return captureAvoidingBoardMoves;
+}
+
+std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateWinningMovesImpl(Team team) const {
+    std::vector<std::unique_ptr<BoardMove>> winningBoardMoves;
+    std::vector<std::unique_ptr<BoardMove>> legalBoardMoves = generateAllLegalMoves(team);
+    for (std::unique_ptr<BoardMove> &legalBoardMove : legalBoardMoves) {
+        if (doesMoveWinGame(legalBoardMove)) {
+            winningBoardMoves.emplace_back(std::move(legalBoardMove));
+        }
+    }
+    return winningBoardMoves;
 }
 
 bool ChessBoardImpl::setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) {

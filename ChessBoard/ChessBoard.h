@@ -39,9 +39,10 @@ private:
 
     virtual std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesAtSquareImpl(BoardSquare const &boardSquare) const = 0;
     virtual std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesImpl(Team team) const = 0; 
-    virtual std::vector<std::unique_ptr<BoardMove>> generateCapturingMovesImpl(Team team) const = 0;
     virtual std::vector<std::unique_ptr<BoardMove>> generateCheckApplyingMovesImpl(Team team) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> generateCapturingMovesImpl(Team team) const = 0;
     virtual std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMovesImpl(Team team) const = 0;
+    virtual std::vector<std::unique_ptr<BoardMove>> generateWinningMovesImpl(Team team) const = 0;
 
     virtual bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) = 0;
     virtual bool clearPositionImpl(BoardSquare const &boardSquare) = 0;
@@ -80,9 +81,10 @@ public:
 
     std::vector<std::unique_ptr<BoardMove>> generateAllLegalMovesAtSquare(BoardSquare const &boardSquare) const;
     std::vector<std::unique_ptr<BoardMove>> generateAllLegalMoves(Team team) const; 
-    std::vector<std::unique_ptr<BoardMove>> generateCapturingMoves(Team team) const;
     std::vector<std::unique_ptr<BoardMove>> generateCheckApplyingMoves(Team team) const;
+    std::vector<std::unique_ptr<BoardMove>> generateCapturingMoves(Team team) const;
     std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMoves(Team team) const;
+    std::vector<std::unique_ptr<BoardMove>> generateWinningMoves(Team team) const;
 
     bool setPosition(BoardSquare const &boardSquare, PieceData const &pieceData);    
     bool clearPosition(BoardSquare const &boardSquare);
