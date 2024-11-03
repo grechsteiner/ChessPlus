@@ -7,15 +7,15 @@
 
 #include "Constants.h"
 #include "ChessBoardImpl.h"
-#include "OldBoardMove.h"
+#include "BoardMove.h"
 #include "ChessBoard.h"
 
 class ComputerPlayer {
 
 private:
-    virtual OldBoardMove getMoveImpl(ChessBoard const &chessBoard, Team team) const = 0;
+    virtual std::unique_ptr<BoardMove> getMoveImpl(ChessBoard const &chessBoard, Team team) const = 0;
 public:
-    OldBoardMove getMove(ChessBoard const &chessBoard, Team team) const;
+    std::unique_ptr<BoardMove> getMove(ChessBoard const &chessBoard, Team team) const;
     ComputerPlayer();
     virtual ~ComputerPlayer() = default;
 };

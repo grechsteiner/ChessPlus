@@ -10,12 +10,14 @@
 
 LevelTwoComputer::LevelTwoComputer() : BasicComputerPlayer() {}
 
-std::vector<OldBoardMove> LevelTwoComputer::getPossibleMoves(ChessBoard const &chessBoard, Team team) const {
-    std::vector<OldBoardMove> allMoves;
-    std::vector<OldBoardMove> capturingMoves = chessBoard.generateCapturingMoves(team);
-    std::vector<OldBoardMove> checkApplyingMoves = chessBoard.generateCheckApplyingMoves(team);
-    allMoves.insert(allMoves.end(), capturingMoves.begin(), capturingMoves.end());
-    allMoves.insert(allMoves.end(), checkApplyingMoves.begin(), checkApplyingMoves.end());
+std::vector<std::unique_ptr<BoardMove>> LevelTwoComputer::getPossibleMoves(ChessBoard const &chessBoard, Team team) const {
+    std::vector<std::unique_ptr<BoardMove>> capturingMoves = chessBoard.generateCapturingMoves(team);
+    std::vector<std::unique_ptr<BoardMove>> checkApplyingMoves = chessBoard.generateCheckApplyingMoves(team);
 
-    return allMoves.size() > 0 ? allMoves : chessBoard.generateAllLegalMoves(team);
+    for (std::unique_ptr<BoardMove> &checkApplyMove : checkApplyingMoves) {
+        capturingMoves.emplace_back(std::move(checkApplyMove));
+    }
+    checkApplyingMoves.clear();
+
+    return capturingMoves.size() > 0 ? capturingMoves : chessBoard.generateAllLegalMoves(team);
 }

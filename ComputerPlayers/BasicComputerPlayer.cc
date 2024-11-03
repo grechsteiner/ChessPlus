@@ -9,8 +9,8 @@
 
 BasicComputerPlayer::BasicComputerPlayer() : ComputerPlayer() {}
 
-OldBoardMove BasicComputerPlayer::getMoveImpl(ChessBoard const &chessBoard, Team team) const {
-    std::vector<OldBoardMove> possibleMoves = getPossibleMoves(chessBoard, team);
+std::unique_ptr<BoardMove> BasicComputerPlayer::getMoveImpl(ChessBoard const &chessBoard, Team team) const {
+    std::vector<std::unique_ptr<BoardMove>> possibleMoves = getPossibleMoves(chessBoard, team);
     MoveShuffler::shuffle(possibleMoves);
-    return possibleMoves[0];
+    return possibleMoves[0]->clone();
 }

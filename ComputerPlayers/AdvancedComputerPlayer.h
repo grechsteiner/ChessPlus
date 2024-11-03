@@ -12,18 +12,24 @@
 
 struct ScoredBoardMove {
     int score;
-    std::optional<OldBoardMove> boardMove;
+    std::optional<std::unique_ptr<BoardMove>> boardMove;
 
-    ScoredBoardMove(int score, std::optional<OldBoardMove> boardMove = std::nullopt) : score(score), boardMove(boardMove) {}
+    ScoredBoardMove(int score, std::optional<std::unique_ptr<BoardMove>> const &boardMove = std::nullopt) : score(score) {
+        if (boardMove.has_value()) {
+            this->boardMove = boardMove.value()->clone();
+        } else {
+            this->boardMove = std::nullopt;
+        }
+    }
 };
 
 class AdvancedComputerPlayer : public ComputerPlayer {
 private:
-    OldBoardMove getMoveImpl(ChessBoard const &chessBoard, Team team) const override;
+    std::unique_ptr<BoardMove> getMoveImpl(ChessBoard const &chessBoard, Team team) const override;
 
     ScoredBoardMove alphaBetaSearch(ChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const;
     int getAlphaBetaBoardScore(ChessBoard const &chessBoard, Team team) const;
-    std::vector<OldBoardMove> rankMoves(ChessBoard const &chessBoard, std::vector<OldBoardMove> const &moves) const;
+    std::vector<std::unique_ptr<BoardMove>> rankMoves(ChessBoard const &chessBoard, std::vector<std::unique_ptr<BoardMove>> const &moves) const;
     
     int depth = 4;
    
