@@ -58,7 +58,7 @@ std::vector<std::unique_ptr<BoardMove>> Knight::getStandardMoves(ChessBoard cons
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &knightDirection : knightDirections) {
-            BoardSquare toSquare(fromSquare.getBoardRow() + knightDirection.first, fromSquare.getBoardCol() + knightDirection.second);
+            BoardSquare toSquare(fromSquare.boardRow + knightDirection.first, fromSquare.boardCol + knightDirection.second);
             if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                 moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
             }

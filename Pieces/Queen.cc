@@ -58,13 +58,13 @@ std::vector<std::unique_ptr<BoardMove>> Queen::getStandardMoves(ChessBoard const
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &queenDirection : queenDirections) {
-            BoardSquare toSquare(fromSquare.getBoardRow() + queenDirection.first, fromSquare.getBoardCol() + queenDirection.second);
+            BoardSquare toSquare(fromSquare.boardRow + queenDirection.first, fromSquare.boardCol + queenDirection.second);
             while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                 moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
                 if (chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
-                toSquare = BoardSquare(toSquare.getBoardRow() + queenDirection.first, toSquare.getBoardCol() + queenDirection.second);
+                toSquare = BoardSquare(toSquare.boardRow + queenDirection.first, toSquare.boardCol + queenDirection.second);
             }
         }
     }

@@ -37,14 +37,14 @@ AdvancedKnight& AdvancedKnight::operator=(AdvancedKnight &&other) noexcept {
 
 std::vector<std::unique_ptr<BoardMove>> AdvancedKnight::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
-        BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() + 3),
-        BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() - 3),
-        BoardSquare(fromSquare.getBoardRow() - 1, fromSquare.getBoardCol() + 3),
-        BoardSquare(fromSquare.getBoardRow() - 1, fromSquare.getBoardCol() - 3),
-        BoardSquare(fromSquare.getBoardRow() + 3, fromSquare.getBoardCol() + 1),
-        BoardSquare(fromSquare.getBoardRow() + 3, fromSquare.getBoardCol() - 1),
-        BoardSquare(fromSquare.getBoardRow() - 3, fromSquare.getBoardCol() + 1),
-        BoardSquare(fromSquare.getBoardRow() - 3, fromSquare.getBoardCol() - 1)
+        BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol + 3),
+        BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol - 3),
+        BoardSquare(fromSquare.boardRow - 1, fromSquare.boardCol + 3),
+        BoardSquare(fromSquare.boardRow - 1, fromSquare.boardCol - 3),
+        BoardSquare(fromSquare.boardRow + 3, fromSquare.boardCol + 1),
+        BoardSquare(fromSquare.boardRow + 3, fromSquare.boardCol - 1),
+        BoardSquare(fromSquare.boardRow - 3, fromSquare.boardCol + 1),
+        BoardSquare(fromSquare.boardRow - 3, fromSquare.boardCol - 1)
     };
 
     std::vector<std::unique_ptr<BoardMove>> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);

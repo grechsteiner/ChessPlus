@@ -12,7 +12,3 @@ bool BoardSquare::operator==(BoardSquare const &other) const {
         boardRow == other.boardRow &&
         boardCol == other.boardCol;
 }
-
-int BoardSquare::getBoardRow() const { return boardRow; }
-
-int BoardSquare::getBoardCol() const { return boardCol; }

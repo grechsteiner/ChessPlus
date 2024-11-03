@@ -175,10 +175,10 @@ BoardSquare createBoardSquare(UserSquare const &userSquare, int numRowsOnBoard, 
 }
 
 UserSquare createUserSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard) {
-    std::string userRow = std::to_string(numRowsOnBoard - boardSquare.getBoardRow());
+    std::string userRow = std::to_string(numRowsOnBoard - boardSquare.boardRow);
     
     std::string userCol = "";
-    int n = boardSquare.getBoardCol();
+    int n = boardSquare.boardCol;
     while (n >= 0) {
         int remainder = n % base;
         userCol = static_cast<char>('a' + remainder) + userCol;

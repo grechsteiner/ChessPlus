@@ -58,8 +58,8 @@ std::pair<int, int> Pawn::getPawnDirection() const {
 std::vector<std::unique_ptr<BoardMove>> Pawn::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)){
-        int fromRow = fromSquare.getBoardRow();
-        int fromCol = fromSquare.getBoardCol();
+        int fromRow = fromSquare.boardRow;
+        int fromCol = fromSquare.boardCol;
         std::pair<int, int> pawnDirection = getPawnDirection();
 
         // Non Attacking Moves 
@@ -82,8 +82,8 @@ std::vector<std::unique_ptr<BoardMove>> Pawn::getStandardMoves(ChessBoard const 
             std::unique_ptr<BoardMove> const &lastCompletedMove = completedMoves.back();
 
             if (lastCompletedMove->getDoesEnableEnpassant() == true && lastCompletedMove->getMovedPieceData().team != pieceData.team) {
-                int lastMoveToRow = lastCompletedMove->getToSquare().getBoardRow();
-                int lastMoveToCol = lastCompletedMove->getToSquare().getBoardCol();
+                int lastMoveToRow = lastCompletedMove->getToSquare().boardRow;
+                int lastMoveToCol = lastCompletedMove->getToSquare().boardCol;
 
                 switch (pieceData.pieceDirection) {
                     case PieceDirection::NORTH:
@@ -144,8 +144,8 @@ std::vector<std::unique_ptr<BoardMove>> Pawn::getStandardMoves(ChessBoard const 
 }
 
 void Pawn::addMoves(std::vector<std::unique_ptr<BoardMove>> &moves, ChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant) const {
-    int toRow = toSquare.getBoardRow();
-    int toCol = toSquare.getBoardCol();
+    int toRow = toSquare.boardRow;
+    int toCol = toSquare.boardCol;
     PieceDirection pieceDirection = pieceData.pieceDirection;
     bool isPromotionMove = 
         (pieceDirection == PieceDirection::NORTH && toRow == 0) ||

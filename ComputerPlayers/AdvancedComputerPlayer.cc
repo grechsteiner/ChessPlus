@@ -148,13 +148,13 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard const &chessBoard,
                 // Advance bonus, only until row before pawns so no stupid sacrifice
                 switch (pieceData.pieceDirection) {
                     case PieceDirection::NORTH:
-                        totalScore += min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
+                        totalScore += min(numBoardRows - 1 - boardSquare.boardRow, numBoardRows - 4);
                         break;
                     case PieceDirection::SOUTH:
                         totalScore += min(numBoardRows, numBoardRows - 4);
                         break;
                     case PieceDirection::EAST:
-                        totalScore += min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
+                        totalScore += min(numBoardCols - 1 - boardSquare.boardCol, numBoardCols - 4);
                         break;
                     case PieceDirection::WEST:
                         totalScore += min(numBoardCols, numBoardCols - 4);
@@ -167,13 +167,13 @@ int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard const &chessBoard,
                 // Advance bonus, only until row before pawns so no stupid sacrifice
                 switch (pieceData.pieceDirection) {
                     case PieceDirection::NORTH:
-                        totalScore -= min(numBoardRows - 1 - boardSquare.getBoardRow(), numBoardRows - 4);
+                        totalScore -= min(numBoardRows - 1 - boardSquare.boardRow, numBoardRows - 4);
                         break;
                     case PieceDirection::SOUTH:
                         totalScore -= min(numBoardRows, numBoardRows - 4);
                         break;
                     case PieceDirection::EAST:
-                        totalScore -= min(numBoardCols - 1 - boardSquare.getBoardCol(), numBoardCols - 4);
+                        totalScore -= min(numBoardCols - 1 - boardSquare.boardCol, numBoardCols - 4);
                         break;
                     case PieceDirection::WEST:
                         totalScore -= min(numBoardCols, numBoardCols - 4);

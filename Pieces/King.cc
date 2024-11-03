@@ -58,8 +58,8 @@ King& King::operator=(King &&other) noexcept {
 std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
-        int fromRow = fromSquare.getBoardRow();
-        int fromCol = fromSquare.getBoardCol();
+        int fromRow = fromSquare.boardRow;
+        int fromCol = fromSquare.boardCol;
 
         // Standard Moves
         for (std::pair<int, int> const &kingDirection : kingDirections) {

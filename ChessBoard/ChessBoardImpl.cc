@@ -114,7 +114,7 @@ void ChessBoardImpl::clearRedoMoves() {
 
 std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     return isSquareOnBoard(boardSquare) && !isSquareEmpty(boardSquare)
-        ? grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getMoves(*this, boardSquare, onlyAttackingMoves) 
+        ? grid[boardSquare.boardRow][boardSquare.boardCol]->getMoves(*this, boardSquare, onlyAttackingMoves) 
         : std::vector<std::unique_ptr<BoardMove>>();
 }
 
@@ -210,14 +210,14 @@ bool ChessBoardImpl::doesMoveLeaveTeamInCheck(std::unique_ptr<BoardMove> const &
 #pragma mark - ChessBoard Interface
 
 std::optional<PieceData> ChessBoardImpl::getPieceDataAtImpl(BoardSquare const &boardSquare) const {
-    return isSquareOnBoard(boardSquare) && grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] != nullptr
-        ? std::make_optional<PieceData>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceData())
+    return isSquareOnBoard(boardSquare) && grid[boardSquare.boardRow][boardSquare.boardCol] != nullptr
+        ? std::make_optional<PieceData>(grid[boardSquare.boardRow][boardSquare.boardCol]->getPieceData())
         : std::nullopt;
 }
 
 std::optional<PieceInfo> ChessBoardImpl::getPieceInfoAtImpl(BoardSquare const &boardSquare) const {
-    return isSquareOnBoard(boardSquare) && grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] != nullptr
-        ? std::make_optional<PieceInfo>(grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()]->getPieceInfo())
+    return isSquareOnBoard(boardSquare) && grid[boardSquare.boardRow][boardSquare.boardCol] != nullptr
+        ? std::make_optional<PieceInfo>(grid[boardSquare.boardRow][boardSquare.boardCol]->getPieceInfo())
         : std::nullopt;
 }
 
@@ -232,8 +232,8 @@ std::vector<BoardSquare> ChessBoardImpl::getAllBoardSquaresImpl() const {
 }
 
 bool ChessBoardImpl::isSquareOnBoardImpl(BoardSquare const &boardSquare) const {
-    int boardRow = boardSquare.getBoardRow();
-    int boardCol = boardSquare.getBoardCol();
+    int boardRow = boardSquare.boardRow;
+    int boardCol = boardSquare.boardCol;
     return 
         boardRow >= 0 && 
         boardRow < numRows && 
@@ -358,7 +358,7 @@ bool ChessBoardImpl::setPositionImpl(BoardSquare const &boardSquare, PieceData c
     if (isSquareOnBoard(boardSquare)) {
         clearCompletedMoves();
         clearRedoMoves();
-        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = PieceFactory::createPiece(pieceData);
+        grid[boardSquare.boardRow][boardSquare.boardCol] = PieceFactory::createPiece(pieceData);
         return true;
     }
     return false;
@@ -368,7 +368,7 @@ bool ChessBoardImpl::clearPositionImpl(BoardSquare const &boardSquare) {
     if (isSquareOnBoard(boardSquare)) {
         clearCompletedMoves();
         clearRedoMoves();
-        grid[boardSquare.getBoardRow()][boardSquare.getBoardCol()] = nullptr;
+        grid[boardSquare.boardRow][boardSquare.boardCol] = nullptr;
         return true;
     }
     return false;

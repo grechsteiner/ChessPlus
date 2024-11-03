@@ -516,7 +516,7 @@ bool Game::isBoardInProperSetup() const {
                 }
             }
 
-            if (pieceData.value().pieceType == PieceType::PAWN && (boardSquare.getBoardRow() == topRow || boardSquare.getBoardRow() == bottomRow)) {
+            if (pieceData.value().pieceType == PieceType::PAWN && (boardSquare.boardRow == topRow || boardSquare.boardRow == bottomRow)) {
                 return false;
             }
         }
@@ -544,8 +544,8 @@ bool Board::setBoardSizeImpl(int newNumRows, int newNumCols) {
         initializeBoard(newGrid);
 
         for (BoardSquare const &boardSquare : allBoardSquares()) {
-            int oldRow = boardSquare.getBoardRow();
-            int oldCol = boardSquare.getBoardCol();
+            int oldRow = boardSquare.boardRow;
+            int oldCol = boardSquare.boardCol;
             int newRow = oldRow + (newNumRows - oldNumRows);
             int newCol = oldCol;
             if (newRow >= 0 && newRow < newNumRows && newCol >= 0 && newCol < newNumCols) {

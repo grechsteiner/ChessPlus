@@ -37,10 +37,10 @@ AdvancedRook& AdvancedRook::operator=(AdvancedRook &&other) noexcept {
 
 std::vector<std::unique_ptr<BoardMove>> AdvancedRook::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
-        BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() + 1),
-        BoardSquare(fromSquare.getBoardRow() + 1, fromSquare.getBoardCol() - 1),
-        BoardSquare(fromSquare.getBoardRow() - 1, fromSquare.getBoardCol() + 1),
-        BoardSquare(fromSquare.getBoardRow() - 1, fromSquare.getBoardCol() - 1)
+        BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol + 1),
+        BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol - 1),
+        BoardSquare(fromSquare.boardRow - 1, fromSquare.boardCol + 1),
+        BoardSquare(fromSquare.boardRow - 1, fromSquare.boardCol - 1)
     };
 
     std::vector<std::unique_ptr<BoardMove>> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);

@@ -53,13 +53,13 @@ std::vector<std::unique_ptr<BoardMove>> Bishop::getStandardMoves(ChessBoard cons
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard.isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &bishopDirection : bishopDirections) {
-            BoardSquare toSquare(fromSquare.getBoardRow() + bishopDirection.first, fromSquare.getBoardCol() + bishopDirection.second);
+            BoardSquare toSquare(fromSquare.boardRow + bishopDirection.first, fromSquare.boardCol + bishopDirection.second);
             while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                 moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
                 if (chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
-                toSquare = BoardSquare(toSquare.getBoardRow() + bishopDirection.first, toSquare.getBoardCol() + bishopDirection.second);
+                toSquare = BoardSquare(toSquare.boardRow + bishopDirection.first, toSquare.boardCol + bishopDirection.second);
             }
         }
     }

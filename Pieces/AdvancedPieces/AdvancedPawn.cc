@@ -37,8 +37,8 @@ AdvancedPawn& AdvancedPawn::operator=(AdvancedPawn &&other) noexcept {
 }
 
 std::vector<std::unique_ptr<BoardMove>> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
-    int fromRow = fromSquare.getBoardRow();
-    int fromCol = fromSquare.getBoardCol();
+    int fromRow = fromSquare.boardRow;
+    int fromCol = fromSquare.boardCol;
     std::pair<int, int> pawnDirection = getPawnDirection();
 
     std::vector<std::unique_ptr<BoardMove>> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
