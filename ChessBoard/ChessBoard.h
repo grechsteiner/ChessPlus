@@ -8,8 +8,8 @@
 #include <memory>
 
 #include "Constants.h"
+#include "BoardSquare.h"
 
-struct BoardSquare;
 class BoardMove;
 struct PieceInfo;
 struct PieceData;
@@ -19,6 +19,41 @@ struct PieceData;
  * ChessBoard Interface Class
  */
 class ChessBoard {
+
+public:
+    class BoardSquareIterator final {
+    private:
+        explicit BoardSquareIterator(int row, int col, int numRows, int numCols);
+        BoardSquare boardSquare;
+        int numRows;
+        int numCols;
+
+        friend class ChessBoard;
+
+    public:
+        virtual ~BoardSquareIterator() = default;
+        BoardSquare operator*() const;
+        BoardSquareIterator& operator++();
+        bool operator==(BoardSquareIterator const &other) const;
+        bool operator!=(BoardSquareIterator const &other) const;
+    };
+
+    class ReverseBoardSquareIterator final {
+    private:
+        explicit ReverseBoardSquareIterator(int row, int col, int numRows, int numCols);
+        BoardSquare boardSquare;
+        int numRows;
+        int numCols;
+
+        friend class ChessBoard;
+
+    public:
+        virtual ~ReverseBoardSquareIterator() = default;
+        BoardSquare operator*() const;
+        ReverseBoardSquareIterator& operator++();
+        bool operator==(ReverseBoardSquareIterator const &other) const;
+        bool operator!=(ReverseBoardSquareIterator const &other) const;
+    };
 
 private:
     virtual std::unique_ptr<ChessBoard> cloneImpl() const = 0;
@@ -61,6 +96,24 @@ private:
     virtual int getNumRowsImpl() const = 0;
     virtual int getNumColsImpl() const = 0;
 
+    virtual BoardSquareIterator beginImpl() = 0;
+    virtual BoardSquareIterator beginImpl() const = 0;
+    virtual BoardSquareIterator cbeginImpl() const = 0;
+    virtual BoardSquareIterator endImpl() = 0;
+    virtual BoardSquareIterator endImpl() const = 0;
+    virtual BoardSquareIterator cendImpl() const = 0;
+
+    virtual ReverseBoardSquareIterator rbeginImpl() = 0;
+    virtual ReverseBoardSquareIterator rbeginImpl() const = 0;
+    virtual ReverseBoardSquareIterator crbeginImpl() const = 0;
+    virtual ReverseBoardSquareIterator rendImpl() = 0;
+    virtual ReverseBoardSquareIterator rendImpl() const = 0;
+    virtual ReverseBoardSquareIterator crendImpl() const = 0;
+
+protected:
+    BoardSquareIterator createBoardSquareIterator(int row, int col, int numRows, int numCols) const;
+    ReverseBoardSquareIterator createReverseBoardSquareIterator(int row, int col, int numRows, int numCols) const;
+
 public:
     std::unique_ptr<ChessBoard> clone() const;
     virtual ~ChessBoard() = default;
@@ -102,6 +155,20 @@ public:
 
     int getNumRows() const;
     int getNumCols() const;
+
+    BoardSquareIterator begin();
+    BoardSquareIterator begin() const;
+    BoardSquareIterator cbegin() const;
+    BoardSquareIterator end();
+    BoardSquareIterator end() const;
+    BoardSquareIterator cend() const;
+
+    ReverseBoardSquareIterator rbegin();
+    ReverseBoardSquareIterator rbegin() const;
+    ReverseBoardSquareIterator crbegin() const;
+    ReverseBoardSquareIterator rend();
+    ReverseBoardSquareIterator rend() const;
+    ReverseBoardSquareIterator crend() const;
 };
 
 

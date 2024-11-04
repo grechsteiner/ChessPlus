@@ -466,3 +466,17 @@ int ChessBoardImpl::getNumRowsImpl() const {
 int ChessBoardImpl::getNumColsImpl() const {
     return numCols;
 }
+
+ChessBoard::BoardSquareIterator ChessBoardImpl::beginImpl() { return createBoardSquareIterator(0, 0, numRows, numCols); }
+ChessBoard::BoardSquareIterator ChessBoardImpl::beginImpl() const { return createBoardSquareIterator(0, 0, numRows, numCols); }
+ChessBoard::BoardSquareIterator ChessBoardImpl::cbeginImpl() const { return createBoardSquareIterator(0, 0, numRows, numCols); }
+ChessBoard::BoardSquareIterator ChessBoardImpl::endImpl() { return createBoardSquareIterator(numRows, 0, numRows, numCols); }
+ChessBoard::BoardSquareIterator ChessBoardImpl::endImpl() const { return createBoardSquareIterator(numRows, 0, numRows, numCols); }
+ChessBoard::BoardSquareIterator ChessBoardImpl::cendImpl() const { return createBoardSquareIterator(numRows, 0, numRows, numCols); }
+
+ChessBoard::ReverseBoardSquareIterator ChessBoardImpl::rbeginImpl() { return createReverseBoardSquareIterator(numRows - 1, numCols - 1, numRows, numCols); }
+ChessBoard::ReverseBoardSquareIterator ChessBoardImpl::rbeginImpl() const { return createReverseBoardSquareIterator(numRows - 1, numCols - 1, numRows, numCols); }
+ChessBoard::ReverseBoardSquareIterator ChessBoardImpl::crbeginImpl() const { return createReverseBoardSquareIterator(numRows - 1, numCols - 1, numRows, numCols); }
+ChessBoard::ReverseBoardSquareIterator ChessBoardImpl::rendImpl() { return createReverseBoardSquareIterator(-1, numCols - 1, numRows, numCols); }
+ChessBoard::ReverseBoardSquareIterator ChessBoardImpl::rendImpl() const { return createReverseBoardSquareIterator(-1, numCols - 1, numRows, numCols); }
+ChessBoard::ReverseBoardSquareIterator ChessBoardImpl::crendImpl() const { return createReverseBoardSquareIterator(-1, numCols - 1, numRows, numCols); }

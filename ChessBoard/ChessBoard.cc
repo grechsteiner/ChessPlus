@@ -11,6 +11,75 @@
 #include "PieceInfo.h"
 #include "PieceData.h"
 
+#pragma mark - BoardSquareIterator
+
+ChessBoard::BoardSquareIterator ChessBoard::createBoardSquareIterator(int row, int col, int numRows, int numCols) const {
+    return BoardSquareIterator(row, col, numRows, numCols);
+}
+
+ChessBoard::BoardSquareIterator::BoardSquareIterator(int row, int col, int numRows, int numCols) :
+    boardSquare(BoardSquare(row, col)), numRows(numRows), numCols(numCols) {}
+
+BoardSquare ChessBoard::BoardSquareIterator::operator*() const {
+    return boardSquare;
+}
+
+ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator++() {
+    if (boardSquare.boardCol + 1 < numCols) {
+        ++boardSquare.boardCol;
+    } else {
+        boardSquare.boardCol = 0;
+        ++boardSquare.boardRow;
+    }
+    return *this;
+}
+
+bool ChessBoard::BoardSquareIterator::operator==(BoardSquareIterator const &other) const {
+    return 
+        boardSquare == other.boardSquare &&
+        numRows == other.numRows &&
+        numCols == other.numCols;
+}
+bool ChessBoard::BoardSquareIterator::operator!=(BoardSquareIterator const &other) const {
+    return !(*this ==other);
+}
+
+
+#pragma mark - ReverseBoardSquareIterator
+
+ChessBoard::ReverseBoardSquareIterator ChessBoard::createReverseBoardSquareIterator(int row, int col, int numRows, int numCols) const {
+    return ReverseBoardSquareIterator(row, col, numRows, numCols);
+}
+
+ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(int row, int col, int numRows, int numCols) :
+    boardSquare(BoardSquare(row, col)), numRows(numRows), numCols(numCols) {}
+
+BoardSquare ChessBoard::ReverseBoardSquareIterator::operator*() const {
+    return boardSquare;
+}
+
+ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::operator++() {
+    if (boardSquare.boardCol > 0) {
+        --boardSquare.boardCol;
+    } else {
+        boardSquare.boardCol = numCols - 1;
+        --boardSquare.boardRow;
+    }
+    return *this;
+}
+
+bool ChessBoard::ReverseBoardSquareIterator::operator==(ReverseBoardSquareIterator const &other) const {
+    return 
+        boardSquare == other.boardSquare &&
+        numRows == other.numRows &&
+        numCols == other.numCols;
+}
+bool ChessBoard::ReverseBoardSquareIterator::operator!=(ReverseBoardSquareIterator const &other) const {
+    return !(*this ==other);
+}
+
+
+#pragma mark - ChessBoard
 
 std::unique_ptr<ChessBoard> ChessBoard::clone() const { return cloneImpl(); }
 
@@ -51,3 +120,17 @@ Team ChessBoard::getTeamTwo() const { return getTeamTwoImpl(); }
 
 int ChessBoard::getNumRows() const { return getNumRowsImpl(); }
 int ChessBoard::getNumCols() const { return getNumColsImpl(); }
+
+ChessBoard::BoardSquareIterator ChessBoard::begin() { return beginImpl(); }
+ChessBoard::BoardSquareIterator ChessBoard::begin() const { return beginImpl(); }
+ChessBoard::BoardSquareIterator ChessBoard::cbegin() const { return cbeginImpl(); }
+ChessBoard::BoardSquareIterator ChessBoard::end() { return endImpl(); }
+ChessBoard::BoardSquareIterator ChessBoard::end() const { return endImpl(); }
+ChessBoard::BoardSquareIterator ChessBoard::cend() const { return cendImpl(); }
+
+ChessBoard::ReverseBoardSquareIterator ChessBoard::rbegin() { return rbeginImpl(); }
+ChessBoard::ReverseBoardSquareIterator ChessBoard::rbegin() const { return rbeginImpl(); }
+ChessBoard::ReverseBoardSquareIterator ChessBoard::crbegin() const { return crbeginImpl(); }
+ChessBoard::ReverseBoardSquareIterator ChessBoard::rend() { return rendImpl(); }
+ChessBoard::ReverseBoardSquareIterator ChessBoard::rend() const { return rendImpl(); }
+ChessBoard::ReverseBoardSquareIterator ChessBoard::crend() const { return crendImpl(); }

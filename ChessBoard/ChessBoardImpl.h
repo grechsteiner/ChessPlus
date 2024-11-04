@@ -98,6 +98,21 @@ private:
     int getNumRowsImpl() const override;
     int getNumColsImpl() const override;
 
+    BoardSquareIterator beginImpl() override;
+    BoardSquareIterator beginImpl() const override;
+    BoardSquareIterator cbeginImpl() const override;
+    BoardSquareIterator endImpl() override;
+    BoardSquareIterator endImpl() const override;
+    BoardSquareIterator cendImpl() const override;
+
+    ReverseBoardSquareIterator rbeginImpl() override;
+    ReverseBoardSquareIterator rbeginImpl() const override;
+    ReverseBoardSquareIterator crbeginImpl() const override;
+    ReverseBoardSquareIterator rendImpl() override;
+    ReverseBoardSquareIterator rendImpl() const override;
+    ReverseBoardSquareIterator crendImpl() const override;
+
+
 public:
     explicit ChessBoardImpl(int numRows, int numCols);     // Behaviour undefined if either are negative
     ChessBoardImpl(ChessBoardImpl const &other);
