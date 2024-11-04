@@ -1,45 +1,92 @@
 // AdvancedComputerPlayer.cc
 
-#include <random>
 #include <vector>
-#include <tuple>
-#include <algorithm>
-#include <optional>
-#include <memory>
 #include <cassert>
+#include <limits>
 
+#include "Constants.h"
 #include "AdvancedComputerPlayer.h"
-#include "MoveShuffler.h"
-#include "PieceInfo.h"
-#include "PieceData.h"
 
 
-std::unique_ptr<BoardMove> AdvancedComputerPlayer::getMoveImpl(ChessBoard const &chessBoard, Team team) const {
-    std::unique_ptr<ChessBoard> tempChessBoard = chessBoard.clone();
-    return alphaBetaSearch(*tempChessBoard, depth, team, -1000, 1000).boardMove.value();
+#pragma mark - ScoredBoardMove
+
+// Static
+const LevelFiveComputer::ScoredBoardMove LevelFiveComputer::emptyScoredBoardMove(0, std::nullopt);
+
+// Basic ctor
+ explicit LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(int score, std::optional<std::unique_ptr<BoardMove>> const &boardMove) :
+    score(score), boardMove(boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(boardMove.value()->clone()) : std::nullopt) {}
+
+// Copy ctor
+LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(ScoredBoardMove const &other) :
+    score(other.score), boardMove(other.boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(other.boardMove.value()->clone()) : std::nullopt) {}
+
+// Move ctor
+LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(ScoredBoardMove &&other) noexcept :
+    score(other.score), boardMove(std::move(other.boardMove)) {}
+
+// Copy assignment
+LevelFiveComputer::ScoredBoardMove& LevelFiveComputer::ScoredBoardMove::operator=(ScoredBoardMove const &other) {
+    if (this != &other) {
+        score = other.score;
+        boardMove = other.boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(other.boardMove.value()->clone()) : std::nullopt;
+    }
+    return *this;
 }
 
-ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const {
+// MoveAssignment
+LevelFiveComputer::ScoredBoardMove& LevelFiveComputer::ScoredBoardMove::operator=(ScoredBoardMove &&other) noexcept {
+    if (this != &other) {
+        score = other.score;
+        boardMove = std::move(other.boardMove);
+    }
+    return *this;
+}
 
+
+#pragma mark - LevelFiveComputer
+
+// Basic ctor
+LevelFiveComputer::LevelFiveComputer(ChessBoard const &chessBoard, Team team) : 
+    Cloneable<ComputerPlayer, LevelFiveComputer>(chessBoard, team) {}
+
+// Copy ctor
+LevelFiveComputer::LevelFiveComputer(LevelFiveComputer const &other) :
+    Cloneable<ComputerPlayer, LevelFiveComputer>(other) {}
+
+// Move ctor
+LevelFiveComputer::LevelFiveComputer(LevelFiveComputer &&other) noexcept :
+    Cloneable<ComputerPlayer, LevelFiveComputer>(std::move(other)) {}
+
+std::unique_ptr<BoardMove> LevelFiveComputer::generateMoveImpl() const {
+    return getBestAlphaBetaMove(*chessBoard.clone(), team, depth, -KingScore, KingScore).boardMove.value();
+}
+
+LevelFiveComputer::ScoredBoardMove LevelFiveComputer::getBestAlphaBetaMove(ChessBoard &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const {
+    static int const positiveInfinity = std::numeric_limits<int>::max();
+    static int const negativeInfinity = std::numeric_limits<int>::min();
+    
     if (currentDepth == 0) {
-        if (chessBoard.isInStaleMate(team)) {
-            return ScoredBoardMove(0);
-        }
-        return ScoredBoardMove(getAlphaBetaBoardScore(chessBoard, team));
+        return tempChessBoard.isInStaleMate(currentTeam)
+            ? emptyScoredBoardMove
+            : ScoredBoardMove(getAlphaBetaBoardScore(tempChessBoard, currentTeam));
     }
 
-    int bestScore = (team == chessBoard.getTeamOne()) ? -10000 : 10000;
-    std::optional<std::unique_ptr<BoardMove>> bestMove;
-    std::vector<std::unique_ptr<BoardMove>> allMoves = chessBoard.generateAllLegalMoves(team);
-    allMoves = rankMoves(chessBoard, allMoves);
-    if (team == chessBoard.getTeamOne()) {
-        for (std::unique_ptr<BoardMove> const &move : allMoves) {
-            chessBoard.makeMove(move);
-            int currentScore = alphaBetaSearch(chessBoard, currentDepth - 1, chessBoard.getTeamTwo(), alpha, beta).score;
-            chessBoard.undoMove();   
+    int bestScore = currentTeam == tempChessBoard.getTeamOne()
+        ? negativeInfinity 
+        : positiveInfinity;
+        
+    std::unique_ptr<BoardMove> bestMove;
+    std::vector<std::unique_ptr<BoardMove>> rankedMoves = generateRankedMoves(tempChessBoard, currentTeam);
+
+    if (currentTeam == tempChessBoard.getTeamOne()) {
+        for (std::unique_ptr<BoardMove> const &rankedMove : rankedMoves) {
+            tempChessBoard.makeMove(rankedMove);
+            int currentScore = getBestAlphaBetaMove(tempChessBoard, tempChessBoard.getTeamTwo(), currentDepth - 1, alpha, beta).score;
+            tempChessBoard.undoMove();
             if (currentScore > bestScore) {
                 bestScore = currentScore;
-                bestMove = move->clone();
+                bestMove = rankedMove->clone();
             }
             if (bestScore >= beta) {
                 break;
@@ -49,152 +96,123 @@ ScoredBoardMove AdvancedComputerPlayer::alphaBetaSearch(ChessBoard &chessBoard, 
         }
 
     } else {
-        for (std::unique_ptr<BoardMove> const &move : allMoves) {
-            chessBoard.makeMove(move);
-            int currentScore = alphaBetaSearch(chessBoard, currentDepth - 1, chessBoard.getTeamOne(), alpha, beta).score;
-            chessBoard.undoMove();    
+        std::reverse(rankedMoves.begin(), rankedMoves.end());   // Want moves from bottom of board first (alpha beta optimization)
+        for (std::unique_ptr<BoardMove> const &rankedMove : rankedMoves) {
+            tempChessBoard.makeMove(rankedMove);
+            int currentScore = getBestAlphaBetaMove(tempChessBoard, tempChessBoard.getTeamOne(), currentDepth - 1, alpha, beta).score;
+            tempChessBoard.undoMove();    
             if (currentScore < bestScore) {
                 bestScore = currentScore;
-                bestMove = move->clone();
+                bestMove = rankedMove->clone();
             }
             if (bestScore <= alpha) {
                 break;
             } else if (bestScore < beta) {
                 beta = bestScore;
             }
-            
         }
     }
 
-    if (bestScore == 10000 || bestScore == -10000) {
-        if (chessBoard.isInStaleMate(team)) {
-            return ScoredBoardMove(0);
-        }
-        return ScoredBoardMove(getAlphaBetaBoardScore(chessBoard, team));
+    if (bestScore == positiveInfinity || bestScore == negativeInfinity) {
+        return tempChessBoard.isInStaleMate(team)
+            ? emptyScoredBoardMove
+            : ScoredBoardMove(getAlphaBetaBoardScore(tempChessBoard, currentTeam));
     }
 
-    return ScoredBoardMove(bestScore, bestMove);
+    return ScoredBoardMove(bestScore, std::make_optional<std::unique_ptr<BoardMove>>(std::move(bestMove)));
 }
 
-std::vector<std::unique_ptr<BoardMove>> AdvancedComputerPlayer::rankMoves(ChessBoard const &chessBoard, std::vector<std::unique_ptr<BoardMove>> const &moves) const {
-    std::vector<ScoredBoardMove> scoredBoardMoves;
-
-    // Assign values to each move
-    for (std::unique_ptr<BoardMove> const &move : moves) {
-        int score = 0;
-        std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(move->getCaptureSquare());
-        if (pieceInfo.has_value()) {
-            score += pieceInfo.value().pieceScore;
-        }
-        std::optional<std::unique_ptr<BoardMove>> temp = std::make_optional<std::unique_ptr<BoardMove>>(move->clone());
-        scoredBoardMoves.emplace_back(ScoredBoardMove(score, temp));
-    }
-
-    // Sort moves by score in descending order
-    std::sort(scoredBoardMoves.begin(), scoredBoardMoves.end(), [](const ScoredBoardMove& a, const ScoredBoardMove& b) {
-        return a.score > b.score;
-    });
-
-    // Randomize moves with the same score
-    std::vector<std::unique_ptr<BoardMove>> finalOrder;
-    int currentValue = scoredBoardMoves[0].score;
-    std::vector<ScoredBoardMove> tempOrder;
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-
-    for (ScoredBoardMove const &scoredBoardMove : scoredBoardMoves) {
-        if (scoredBoardMove.score != currentValue) {
-            std::shuffle(tempOrder.begin(), tempOrder.end(), g);
-            for (ScoredBoardMove const &tempScoredBoardMove : tempOrder) {
-                finalOrder.push_back(tempScoredBoardMove.boardMove.value()->clone());
-            }
-
-            currentValue = scoredBoardMove.score;
-            tempOrder.clear();
-        }
-        if (scoredBoardMove.boardMove.has_value()) {
-            tempOrder.emplace_back(ScoredBoardMove(scoredBoardMove.score, scoredBoardMove.boardMove.value()->clone()));
-        } else {
-            tempOrder.emplace_back(ScoredBoardMove(scoredBoardMove.score, std::nullopt));
-        }
-        
-    }
-
-    // Shuffle and add the last set of moves
-    std::shuffle(tempOrder.begin(), tempOrder.end(), g);
-    for (ScoredBoardMove const &tempScoredBoardMove : tempOrder) {
-        finalOrder.push_back(tempScoredBoardMove.boardMove.value()->clone());
-    }
-
-    return finalOrder;
-}
-
-int AdvancedComputerPlayer::getAlphaBetaBoardScore(ChessBoard const &chessBoard, Team team) const {
+int LevelFiveComputer::getAlphaBetaBoardScore(ChessBoard const &currentChessBoard, Team currentTeam) const {
     int totalScore = 0;
 
+    // Standard score
     for (BoardSquare const &boardSquare : chessBoard.getAllBoardSquares()) {
         int numBoardRows = chessBoard.getNumRows();
         int numBoardCols = chessBoard.getNumCols();
 
+        if (!chessBoard.isSquareEmpty(boardSquare)) {
+            int pieceScore = chessBoard.getPieceInfoAt(boardSquare).value().pieceScore * 10;
 
-        std::optional<PieceInfo> potentialPieceInfo = chessBoard.getPieceInfoAt(boardSquare);
-        if (potentialPieceInfo.has_value()) {
-            PieceInfo pieceInfo = potentialPieceInfo.value();
-            PieceData pieceData = chessBoard.getPieceDataAt(boardSquare).value();
-
-            if (pieceData.team == chessBoard.getTeamOne()) {
-                totalScore += pieceInfo.pieceScore * 10;
-                // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (pieceData.pieceDirection) {
-                    case PieceDirection::NORTH:
-                        totalScore += min(numBoardRows - 1 - boardSquare.boardRow, numBoardRows - 4);
-                        break;
-                    case PieceDirection::SOUTH:
-                        totalScore += min(numBoardRows, numBoardRows - 4);
-                        break;
-                    case PieceDirection::EAST:
-                        totalScore += min(numBoardCols - 1 - boardSquare.boardCol, numBoardCols - 4);
-                        break;
-                    case PieceDirection::WEST:
-                        totalScore += min(numBoardCols, numBoardCols - 4);
-                        break;
-                    default:
-                        assert(false);
-                }
-            } else if (pieceData.team == chessBoard.getTeamTwo()) {
-                totalScore -= pieceInfo.pieceScore * 10;
-                // Advance bonus, only until row before pawns so no stupid sacrifice
-                switch (pieceData.pieceDirection) {
-                    case PieceDirection::NORTH:
-                        totalScore -= min(numBoardRows - 1 - boardSquare.boardRow, numBoardRows - 4);
-                        break;
-                    case PieceDirection::SOUTH:
-                        totalScore -= min(numBoardRows, numBoardRows - 4);
-                        break;
-                    case PieceDirection::EAST:
-                        totalScore -= min(numBoardCols - 1 - boardSquare.boardCol, numBoardCols - 4);
-                        break;
-                    case PieceDirection::WEST:
-                        totalScore -= min(numBoardCols, numBoardCols - 4);
-                        break;
-                    default:
-                        assert(false);
-                }
+            // Advancement bonus
+            int advancementBonus = 0;
+            switch (chessBoard.getPieceDataAt(boardSquare).value().pieceDirection) {
+                case PieceDirection::NORTH:
+                    advancementBonus = min(numBoardRows - 1 - boardSquare.boardRow, numBoardRows - 4);
+                    break;
+                case PieceDirection::SOUTH:
+                    advancementBonus = min(numBoardRows, numBoardRows - 4);
+                    break;
+                case PieceDirection::EAST:
+                    advancementBonus = min(numBoardCols - 1 - boardSquare.boardCol, numBoardCols - 4);
+                    break;
+                case PieceDirection::WEST:
+                    advancementBonus = min(numBoardCols, numBoardCols - 4);
+                    break;
+                default:
+                    assert(false);
+            }
+            
+            totalScore = pieceScore + advancementBonus;
+            if (currentTeam == chessBoard.getTeamTwo()) {
+                totalScore *= -1;
             }
         }
-
-        
     }
 
     // Checkmate
-    if (chessBoard.isInCheckMate(team)) {
-        if (team == chessBoard.getTeamTwo()) {
-            totalScore += 1000;
+    if (chessBoard.isInCheckMate(currentTeam)) {
+        if (currentTeam == chessBoard.getTeamTwo()) {
+            totalScore += KingScore;
         } else {
-            totalScore -= 1000;
+            totalScore -= KingScore;
         }
     }
 
     return totalScore;
+}
+
+std::vector<std::unique_ptr<BoardMove>> LevelFiveComputer::generateRankedMoves(ChessBoard const &currentChessBoard, Team currentTeam) const {
+    std::vector<std::unique_ptr<BoardMove>> moves = currentChessBoard.generateAllLegalMoves(currentTeam);
+
+    // Assign values to each move
+    std::vector<ScoredBoardMove> scoredBoardMoves;
+    for (std::unique_ptr<BoardMove> &move : moves) {
+        int score = 0;
+        std::optional<PieceInfo> capturedPieceInfo = chessBoard.getPieceInfoAt(move->getCaptureSquare());
+        if (capturedPieceInfo.has_value()) {
+            score += capturedPieceInfo.value().pieceScore;
+        }
+        scoredBoardMoves.emplace_back(ScoredBoardMove(score, std::make_optional<std::unique_ptr<BoardMove>>(std::move(move))));
+    }
+
+    // Sort moves by score in descending order
+    std::sort(scoredBoardMoves.begin(), scoredBoardMoves.end(), [](ScoredBoardMove const &a, ScoredBoardMove const &b) {
+        return a.score > b.score;
+    });
+
+    std::vector<std::unique_ptr<BoardMove>> rankedBoardMoves;
+
+    // Randomize order of moves with the same score
+    int scoreCurrentlyProcessing = scoredBoardMoves.front().score;
+    std::vector<std::unique_ptr<BoardMove>> boardMovesWithCurrentScore;
+    for (ScoredBoardMove &scoredBoardMove : scoredBoardMoves) {
+        if (scoredBoardMove.score == scoreCurrentlyProcessing) {
+            boardMovesWithCurrentScore.emplace_back(std::move(scoredBoardMove.boardMove));
+        } else {
+            shuffle(boardMovesWithCurrentScore);
+            for (std::unique_ptr<BoardMove> &boardMoveWithCurrentScore : boardMovesWithCurrentScore) {
+                rankedBoardMoves.emplace_back(std::move(boardMoveWithCurrentScore));
+            }
+            scoreCurrentlyProcessing = scoredBoardMove.score;
+            boardMovesWithCurrentScore.clear();
+            boardMovesWithCurrentScore.emplace_back(std::move(scoredBoardMove.boardMove));
+        }
+    }
+    // Randomize last group of moves (those with the lowest score)
+    shuffle(boardMovesWithCurrentScore);
+    for (std::unique_ptr<BoardMove> &boardMoveWithCurrentScore : boardMovesWithCurrentScore) {
+        rankedBoardMoves.emplace_back(std::move(boardMoveWithCurrentScore));
+    }
+
+    return rankedBoardMoves;
 }

@@ -20,7 +20,7 @@ enum class PieceLevel {
 };
 
 
-
+static int const KingScore = 1000;
 
 enum class GameState {
     MAIN_MENU,

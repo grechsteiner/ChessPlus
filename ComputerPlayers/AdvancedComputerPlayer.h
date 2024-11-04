@@ -1,44 +1,44 @@
-// AdvancedComputerPlayer.h
+// LevelFiveComputer.h
 
-#ifndef AdvancedComputerPlayer_h
-#define AdvancedComputerPlayer_h
+#ifndef LevelFiveComputer_h
+#define LevelFiveComputer_h
 
 #include <utility>
 #include <optional>
 
-#include "ComputerPlayer.h"
-#include "Constants.h"
-#include "ChessBoard.h"
 #include "BoardMove.h"
-#include "PieceData.h"
+#include "ComputerPlayer.h"
+#include "Cloneable.h"
 
 
-struct ScoredBoardMove {
-    int score;
-    std::optional<std::unique_ptr<BoardMove>> boardMove;
-
-    ScoredBoardMove(int score, std::optional<std::unique_ptr<BoardMove>> const &boardMove = std::nullopt) : score(score) {
-        if (boardMove.has_value()) {
-            this->boardMove = boardMove.value()->clone();
-        } else {
-            this->boardMove = std::nullopt;
-        }
-    }
-};
-
-class AdvancedComputerPlayer : public ComputerPlayer {
+class LevelFiveComputer final : public Cloneable<ComputerPlayer, LevelFiveComputer> {
 private:
-    std::unique_ptr<BoardMove> getMoveImpl(ChessBoard const &chessBoard, Team team) const override;
+    struct ScoredBoardMove final {
+        int score;
+        std::optional<std::unique_ptr<BoardMove>> boardMove;
+        explicit ScoredBoardMove(int score, std::optional<std::unique_ptr<BoardMove>> const &boardMove = std::nullopt);
+        ScoredBoardMove(ScoredBoardMove const &other);
+        ScoredBoardMove(ScoredBoardMove &&other) noexcept;  
+        ScoredBoardMove& operator=(ScoredBoardMove const &other);
+        ScoredBoardMove& operator=(ScoredBoardMove &&other) noexcept;
+        virtual ~ScoredBoardMove() = default;
+    };
+    static ScoredBoardMove const emptyScoredBoardMove;
 
-    ScoredBoardMove alphaBetaSearch(ChessBoard &chessBoard, int currentDepth, Team team, int alpha, int beta) const;
-    int getAlphaBetaBoardScore(ChessBoard const &chessBoard, Team team) const;
-    std::vector<std::unique_ptr<BoardMove>> rankMoves(ChessBoard const &chessBoard, std::vector<std::unique_ptr<BoardMove>> const &moves) const;
-    
-    int depth = 4;
-   
+    static int const depth = 4;
+    std::unique_ptr<BoardMove> generateMoveImpl() const override;
+
+    ScoredBoardMove getBestAlphaBetaMove(ChessBoard &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const;
+    int getAlphaBetaBoardScore(ChessBoard const &currentChessBoard, Team currentTeam) const;
+    std::vector<std::unique_ptr<BoardMove>> generateRankedMoves(ChessBoard const &currentChessBoard, Team currentTeam) const;
+
 public:
-    AdvancedComputerPlayer() = default;
+    explicit LevelFiveComputer(ChessBoard const &chessBoard, Team team);
+    LevelFiveComputer(LevelFiveComputer const &other);
+    LevelFiveComputer(LevelFiveComputer &&other) noexcept;
+    // Copy and move assignment disabled
+    virtual ~LevelFiveComputer() = default;
 };
 
 
-#endif /* AdvancedComputerPlayer_h */
+#endif /* LevelFiveComputer_h */
