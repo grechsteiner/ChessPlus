@@ -10,7 +10,7 @@
 
 class ComputerPlayerFactory {
 public:
-    static std::unique_ptr<ComputerPlayer> createComputerPlayer(int computerPlayerLevel);
+    static std::unique_ptr<ComputerPlayer> createComputerPlayer(ComputerPlayerLevel computerPlayerLevel);
 };
 
 

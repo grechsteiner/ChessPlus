@@ -20,6 +20,16 @@ enum class PieceLevel {
 };
 
 
+// TODO
+enum class ComputerPlayerLevel {
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE
+};
+
+
 static int const KingScore = 1000;
 
 enum class GameState {

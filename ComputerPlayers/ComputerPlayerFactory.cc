@@ -8,19 +8,22 @@
 #include "LevelOneComputer.h"
 #include "LevelTwoComputer.h"
 #include "LevelThreeComputer.h"
-#include "AdvancedComputerPlayer.h"
+#include "LevelFourComputer.h"
+#include "LevelFiveComputer.h"
 
 // Static
-std::unique_ptr<ComputerPlayer> ComputerPlayerFactory::createComputerPlayer(int computerPlayerLevel) {
+std::unique_ptr<ComputerPlayer> ComputerPlayerFactory::createComputerPlayer(ComputerPlayerLevel computerPlayerLevel) {
     switch (computerPlayerLevel) {
-        case 1:
+        case ComputerPlayerLevel::ONE:
             return std::make_unique<LevelOneComputer>();
-        case 2:
+        case ComputerPlayerLevel::TWO:
             return std::make_unique<LevelTwoComputer>();
-        case 3:
+        case ComputerPlayerLevel::THREE:
             return std::make_unique<LevelThreeComputer>();
-        case 4:
-            return std::make_unique<AdvancedComputerPlayer>();
+        case ComputerPlayerLevel::FOUR:
+            return std::make_unique<LevelFourComputer>();
+        case ComputerPlayerLevel::FIVE:
+            return std::make_unique<LevelFiveComputer>();
         default:
             assert(false);
     }
