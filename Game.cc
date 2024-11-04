@@ -144,13 +144,13 @@ void Game::runGame() {
                 outputError("Too many input tokens on line");            
             } else {
 
-                static std::regex const pattern("^(human|computer[1-4])$");
+                static std::regex const pattern("^(human|computer[1-5])$");
 
                 if (!std::regex_match(tokens[1], pattern) || !std::regex_match(tokens[2], pattern)) {
                     outputError("Invalid syntax, expecting (human|computer[1-4])");
                 } else {
-                    std::get<2>(std::get<0>(players)) = (tokens[1] == "human") ? nullptr : ComputerPlayerFactory::createComputerPlayer(std::stoi(std::string(1, tokens[1].back())));
-                    std::get<2>(std::get<1>(players)) = (tokens[2] == "human") ? nullptr : ComputerPlayerFactory::createComputerPlayer(std::stoi(std::string(1, tokens[2].back())));
+                    std::get<2>(std::get<0>(players)) = (tokens[1] == "human") ? nullptr : ComputerPlayerFactory::createComputerPlayer(stringToComputerPlayerLevel(std::string(1, tokens[1].back())), *chessBoard, Team::TEAM_ONE);
+                    std::get<2>(std::get<1>(players)) = (tokens[2] == "human") ? nullptr : ComputerPlayerFactory::createComputerPlayer(stringToComputerPlayerLevel(std::string(1, tokens[2].back())), *chessBoard, Team::TEAM_TWO);
                     setGameState(GameState::GAME_ACTIVE);
                     notifyObservers();
                     
@@ -200,7 +200,7 @@ void Game::runGame() {
                         outputError("The current player is not a computer, specify move details for human player");
                     } else {
                         // Gauranteed to get valid move
-                        std::unique_ptr<BoardMove> compMove = std::get<2>(getPlayerWithTurn(currentTurn))->getMove(*chessBoard, std::get<0>(getPlayerWithTurn(currentTurn)));
+                        std::unique_ptr<BoardMove> compMove = std::get<2>(getPlayerWithTurn(currentTurn))->generateMove();
                         chessBoard->makeMove(compMove);
                         incrementTurn();
                         moveMade = true;

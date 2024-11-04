@@ -14,6 +14,23 @@
 
 #pragma mark - Color
 
+ComputerPlayerLevel stringToComputerPlayerLevel(std::string const &str) {
+    if (str == "1") {
+        return ComputerPlayerLevel::ONE;
+    } else if (str == "2") {
+        return ComputerPlayerLevel::TWO;
+    } else if (str == "3") {
+        return ComputerPlayerLevel::THREE;
+    } else if (str == "4") {
+        return ComputerPlayerLevel::FOUR;
+    } else if (str == "5") {
+        return ComputerPlayerLevel::FIVE;
+    } else {
+        assert(false);
+    }
+}
+
+
 // Static
 const std::vector<std::pair<Team, std::string>> colorStringMap = {
     { Team::TEAM_ONE, "WHITE" },

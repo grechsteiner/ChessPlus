@@ -29,6 +29,8 @@ enum class ComputerPlayerLevel {
     FIVE
 };
 
+ComputerPlayerLevel stringToComputerPlayerLevel(std::string const &str);
+
 
 static int const KingScore = 1000;
 
