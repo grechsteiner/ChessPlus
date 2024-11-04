@@ -5,7 +5,7 @@
 #include <limits>
 
 #include "Constants.h"
-#include "AdvancedComputerPlayer.h"
+#include "LevelFiveComputer.h"
 
 
 #pragma mark - ScoredBoardMove
