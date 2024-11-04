@@ -8,18 +8,52 @@
 #include "LevelFiveComputer.h"
 
 
-#pragma mark - ScoredBoardMove
+#pragma mark - ScoredAlphaBetaMove
+
 
 // Static
-const LevelFiveComputer::ScoredBoardMove LevelFiveComputer::emptyScoredBoardMove(0, std::nullopt);
+const LevelFiveComputer::ScoredAlphaBetaMove LevelFiveComputer::emptyScoredAlphaBetaMove(0, std::nullopt);
 
 // Basic ctor
- explicit LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(int score, std::optional<std::unique_ptr<BoardMove>> const &boardMove) :
-    score(score), boardMove(boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(boardMove.value()->clone()) : std::nullopt) {}
+LevelFiveComputer::ScoredAlphaBetaMove::ScoredAlphaBetaMove(int alphaBetaScore, std::optional<std::unique_ptr<BoardMove>> const &boardMove) :
+    alphaBetaScore(alphaBetaScore), boardMove(boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(boardMove.value()->clone()) : std::nullopt) {}
+
+// Copy ctor
+LevelFiveComputer::ScoredAlphaBetaMove::ScoredAlphaBetaMove(ScoredAlphaBetaMove const &other) :
+    alphaBetaScore(other.alphaBetaScore), boardMove(other.boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(other.boardMove.value()->clone()) : std::nullopt) {}
+
+// Move ctor
+LevelFiveComputer::ScoredAlphaBetaMove::ScoredAlphaBetaMove(ScoredAlphaBetaMove &&other) noexcept :
+    alphaBetaScore(other.alphaBetaScore), boardMove(std::move(other.boardMove)) {}
+
+// Copy assignment
+LevelFiveComputer::ScoredAlphaBetaMove& LevelFiveComputer::ScoredAlphaBetaMove::operator=(ScoredAlphaBetaMove const &other) {
+    if (this != &other) {
+        alphaBetaScore = other.alphaBetaScore;
+        boardMove = other.boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(other.boardMove.value()->clone()) : std::nullopt;
+    }
+    return *this;
+}
+
+// MoveAssignment
+LevelFiveComputer::ScoredAlphaBetaMove& LevelFiveComputer::ScoredAlphaBetaMove::operator=(ScoredAlphaBetaMove &&other) noexcept {
+    if (this != &other) {
+        alphaBetaScore = other.alphaBetaScore;
+        boardMove = std::move(other.boardMove);
+    }
+    return *this;
+}
+
+
+#pragma mark - ScoredBoardMove
+
+// Basic ctor
+LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(int score, std::unique_ptr<BoardMove> const &boardMove) :
+    score(score), boardMove(boardMove->clone()) {}
 
 // Copy ctor
 LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(ScoredBoardMove const &other) :
-    score(other.score), boardMove(other.boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(other.boardMove.value()->clone()) : std::nullopt) {}
+    score(other.score), boardMove(other.boardMove->clone()) {}
 
 // Move ctor
 LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(ScoredBoardMove &&other) noexcept :
@@ -29,7 +63,7 @@ LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(ScoredBoardMove &&other) noe
 LevelFiveComputer::ScoredBoardMove& LevelFiveComputer::ScoredBoardMove::operator=(ScoredBoardMove const &other) {
     if (this != &other) {
         score = other.score;
-        boardMove = other.boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(other.boardMove.value()->clone()) : std::nullopt;
+        boardMove = other.boardMove->clone();
     }
     return *this;
 }
@@ -62,14 +96,14 @@ std::unique_ptr<BoardMove> LevelFiveComputer::generateMoveImpl() const {
     return getBestAlphaBetaMove(*chessBoard.clone(), team, depth, -KingScore, KingScore).boardMove.value();
 }
 
-LevelFiveComputer::ScoredBoardMove LevelFiveComputer::getBestAlphaBetaMove(ChessBoard &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const {
+LevelFiveComputer::ScoredAlphaBetaMove LevelFiveComputer::getBestAlphaBetaMove(ChessBoard &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const {
     static int const positiveInfinity = std::numeric_limits<int>::max();
     static int const negativeInfinity = std::numeric_limits<int>::min();
     
     if (currentDepth == 0) {
         return tempChessBoard.isInStaleMate(currentTeam)
-            ? emptyScoredBoardMove
-            : ScoredBoardMove(getAlphaBetaBoardScore(tempChessBoard, currentTeam));
+            ? emptyScoredAlphaBetaMove
+            : ScoredAlphaBetaMove(getAlphaBetaBoardScore(tempChessBoard, currentTeam));
     }
 
     int bestScore = currentTeam == tempChessBoard.getTeamOne()
@@ -82,7 +116,7 @@ LevelFiveComputer::ScoredBoardMove LevelFiveComputer::getBestAlphaBetaMove(Chess
     if (currentTeam == tempChessBoard.getTeamOne()) {
         for (std::unique_ptr<BoardMove> const &rankedMove : rankedMoves) {
             tempChessBoard.makeMove(rankedMove);
-            int currentScore = getBestAlphaBetaMove(tempChessBoard, tempChessBoard.getTeamTwo(), currentDepth - 1, alpha, beta).score;
+            int currentScore = getBestAlphaBetaMove(tempChessBoard, tempChessBoard.getTeamTwo(), currentDepth - 1, alpha, beta).alphaBetaScore;
             tempChessBoard.undoMove();
             if (currentScore > bestScore) {
                 bestScore = currentScore;
@@ -99,7 +133,7 @@ LevelFiveComputer::ScoredBoardMove LevelFiveComputer::getBestAlphaBetaMove(Chess
         std::reverse(rankedMoves.begin(), rankedMoves.end());   // Want moves from bottom of board first (alpha beta optimization)
         for (std::unique_ptr<BoardMove> const &rankedMove : rankedMoves) {
             tempChessBoard.makeMove(rankedMove);
-            int currentScore = getBestAlphaBetaMove(tempChessBoard, tempChessBoard.getTeamOne(), currentDepth - 1, alpha, beta).score;
+            int currentScore = getBestAlphaBetaMove(tempChessBoard, tempChessBoard.getTeamOne(), currentDepth - 1, alpha, beta).alphaBetaScore;
             tempChessBoard.undoMove();    
             if (currentScore < bestScore) {
                 bestScore = currentScore;
@@ -115,11 +149,11 @@ LevelFiveComputer::ScoredBoardMove LevelFiveComputer::getBestAlphaBetaMove(Chess
 
     if (bestScore == positiveInfinity || bestScore == negativeInfinity) {
         return tempChessBoard.isInStaleMate(team)
-            ? emptyScoredBoardMove
-            : ScoredBoardMove(getAlphaBetaBoardScore(tempChessBoard, currentTeam));
+            ? emptyScoredAlphaBetaMove
+            : ScoredAlphaBetaMove(getAlphaBetaBoardScore(tempChessBoard, currentTeam));
     }
 
-    return ScoredBoardMove(bestScore, std::make_optional<std::unique_ptr<BoardMove>>(std::move(bestMove)));
+    return ScoredAlphaBetaMove(bestScore, std::make_optional<std::unique_ptr<BoardMove>>(std::move(bestMove)));
 }
 
 int LevelFiveComputer::getAlphaBetaBoardScore(ChessBoard const &currentChessBoard, Team currentTeam) const {
@@ -182,7 +216,7 @@ std::vector<std::unique_ptr<BoardMove>> LevelFiveComputer::generateRankedMoves(C
         if (capturedPieceInfo.has_value()) {
             score += capturedPieceInfo.value().pieceScore;
         }
-        scoredBoardMoves.emplace_back(ScoredBoardMove(score, std::make_optional<std::unique_ptr<BoardMove>>(std::move(move))));
+        scoredBoardMoves.emplace_back(ScoredBoardMove(score, std::move(move)));
     }
 
     // Sort moves by score in descending order
