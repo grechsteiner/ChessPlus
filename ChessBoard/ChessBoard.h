@@ -60,7 +60,6 @@ private:
 
     virtual std::optional<PieceData> getPieceDataAtImpl(BoardSquare const &boardSquare) const = 0;
     virtual std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const = 0;
-    virtual std::vector<BoardSquare> getAllBoardSquaresImpl() const = 0;
 
     virtual bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const = 0;
     virtual bool isSquareEmptyImpl(BoardSquare const &boardSquare) const = 0;
@@ -120,7 +119,6 @@ public:
 
     std::optional<PieceData> getPieceDataAt(BoardSquare const &boardSquare) const;
     std::optional<PieceInfo> getPieceInfoAt(BoardSquare const &boardSquare) const;
-    std::vector<BoardSquare> getAllBoardSquares() const;
 
     bool isSquareOnBoard(BoardSquare const &boardSquare) const;
     bool isSquareEmpty(BoardSquare const &boardSquare) const;

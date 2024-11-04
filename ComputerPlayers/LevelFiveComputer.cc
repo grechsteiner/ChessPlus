@@ -4,6 +4,7 @@
 #include <cassert>
 #include <limits>
 
+#include "BoardSquare.h"
 #include "Constants.h"
 #include "LevelFiveComputer.h"
 
@@ -160,24 +161,24 @@ int LevelFiveComputer::getAlphaBetaBoardScore(ChessBoard const &currentChessBoar
     int totalScore = 0;
 
     // Standard score
-    for (BoardSquare const &boardSquare : chessBoard.getAllBoardSquares()) {
+    for (ChessBoard::BoardSquareIterator it = chessBoard.begin(); it != chessBoard.end(); ++it) {
         int numBoardRows = chessBoard.getNumRows();
         int numBoardCols = chessBoard.getNumCols();
 
-        if (!chessBoard.isSquareEmpty(boardSquare)) {
-            int pieceScore = chessBoard.getPieceInfoAt(boardSquare).value().pieceScore * 10;
+        if (!chessBoard.isSquareEmpty(*it)) {
+            int pieceScore = chessBoard.getPieceInfoAt(*it).value().pieceScore * 10;
 
             // Advancement bonus
             int advancementBonus = 0;
-            switch (chessBoard.getPieceDataAt(boardSquare).value().pieceDirection) {
+            switch (chessBoard.getPieceDataAt(*it).value().pieceDirection) {
                 case PieceDirection::NORTH:
-                    advancementBonus = min(numBoardRows - 1 - boardSquare.boardRow, numBoardRows - 4);
+                    advancementBonus = min(numBoardRows - 1 - (*it).boardRow, numBoardRows - 4);
                     break;
                 case PieceDirection::SOUTH:
                     advancementBonus = min(numBoardRows, numBoardRows - 4);
                     break;
                 case PieceDirection::EAST:
-                    advancementBonus = min(numBoardCols - 1 - boardSquare.boardCol, numBoardCols - 4);
+                    advancementBonus = min(numBoardCols - 1 - (*it).boardCol, numBoardCols - 4);
                     break;
                 case PieceDirection::WEST:
                     advancementBonus = min(numBoardCols, numBoardCols - 4);

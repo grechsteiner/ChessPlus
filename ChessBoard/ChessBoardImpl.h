@@ -61,7 +61,6 @@ private:
     /* ChessBoard Interface */
     std::optional<PieceData> getPieceDataAtImpl(BoardSquare const &boardSquare) const override;
     std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
-    std::vector<BoardSquare> getAllBoardSquaresImpl() const override;
 
     bool isSquareOnBoardImpl(BoardSquare const &boardSquare) const override;
     bool isSquareEmptyImpl(BoardSquare const &boardSquare) const override;

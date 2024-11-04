@@ -120,10 +120,10 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllPseudoLegalMo
 
 std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> boardMoves;
-    for (BoardSquare const &boardSquare : getAllBoardSquares()) {
-        std::optional<PieceData> pieceData = getPieceDataAt(boardSquare);
+    for (ChessBoard::BoardSquareIterator it = this->begin(); it != this->end(); ++it) {
+        std::optional<PieceData> pieceData = getPieceDataAt(*it);
         if (pieceData.has_value() && pieceData.value().team == team) {
-            std::vector<std::unique_ptr<BoardMove>> pieceBoardMoves = generateAllPseudoLegalMovesAtSquare(boardSquare, onlyAttackingMoves);
+            std::vector<std::unique_ptr<BoardMove>> pieceBoardMoves = generateAllPseudoLegalMovesAtSquare(*it, onlyAttackingMoves);
             for (std::unique_ptr<BoardMove> &pieceBoardMove : pieceBoardMoves) {
                 boardMoves.emplace_back(std::move(pieceBoardMove));
             }
@@ -231,16 +231,6 @@ std::optional<PieceInfo> ChessBoardImpl::getPieceInfoAtImpl(BoardSquare const &b
         : std::nullopt;
 }
 
-std::vector<BoardSquare> ChessBoardImpl::getAllBoardSquaresImpl() const {
-    std::vector<BoardSquare> boardSquares;
-    for (int row = 0; row < numRows; ++row) {
-        for (int col = 0; col < numCols; ++col) {
-            boardSquares.emplace_back(BoardSquare(row, col));
-        }
-    }
-    return boardSquares;
-}
-
 bool ChessBoardImpl::isSquareOnBoardImpl(BoardSquare const &boardSquare) const {
     int boardRow = boardSquare.boardRow;
     int boardCol = boardSquare.boardCol;
@@ -290,10 +280,10 @@ bool ChessBoardImpl::isSquareAttackedImpl(BoardSquare const &boardSquare, Team o
 }
 
 bool ChessBoardImpl::isInCheckImpl(Team team) const {
-    for (BoardSquare const &boardSquare : getAllBoardSquares()) {
-        std::optional<PieceData> pieceData = getPieceDataAt(boardSquare);
+    for (ChessBoard::BoardSquareIterator it = this->cbegin(); it != this->cend(); ++it) {
+        std::optional<PieceData> pieceData = getPieceDataAt(*it);
         if (pieceData.has_value() && pieceData.value().pieceType == PieceType::KING && pieceData.value().team == team) {
-            if (isSquareAttacked(boardSquare, team)) {
+            if (isSquareAttacked(*it, team)) {
                 return true;
             }
         }
@@ -396,8 +386,8 @@ bool ChessBoardImpl::clearPositionImpl(BoardSquare const &boardSquare) {
 }
 
 void ChessBoardImpl::clearBoardImpl() {
-    for (BoardSquare const &boardSquare : getAllBoardSquares()) {
-        clearPosition(boardSquare);
+    for (ChessBoard::BoardSquareIterator it = this->begin(); it != this->end(); ++it) {
+        clearPosition(*it);
     }
     clearCompletedMoves();
     clearRedoMoves();
