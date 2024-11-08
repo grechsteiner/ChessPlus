@@ -23,8 +23,8 @@ class Game : public Subject {
 private:
     std::unique_ptr<ChessBoard> chessBoard;
 
-    std::unique_ptr<CommandRetriever> input;
-    std::unique_ptr<IllegalCommandReporter> errorReporter;
+    std::unique_ptr<CommandRetriever> commandRetriever;
+    std::unique_ptr<IllegalCommandReporter> illegalCommandReporter;
     
 
     GameState gameState = GameState::MAIN_MENU;
@@ -57,7 +57,7 @@ private:
 
 
 public:
-    Game(std::istream &in, std::ostream &out, std::ostream &errorOut);
+    Game(std::unique_ptr<ChessBoard> chessBoard, std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
     void runGame();
 
     // Get state (observer pattern)

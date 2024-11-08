@@ -15,8 +15,8 @@
 
 #include "Constants.h"
 #include "Game.h"
-#include "ConsoleCommandRetriever.h"
-#include "ConsoleIllegalCommandReporter.h"
+#include "CommandRetriever.h"
+#include "IllegalCommandReporter.h"
 
 #include "ComputerPlayerFactory.h"
 #include "ComputerPlayer.h"
@@ -29,13 +29,13 @@
 #include "ChessBoardImpl.h"
 
 
-Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    chessBoard(std::make_unique<ChessBoardImpl>(ChessBoardImpl(8, 8))), input(std::make_unique<ConsoleCommandRetriever>(in)), errorReporter(std::make_unique<ConsoleIllegalCommandReporter>(errorOut)) {
+Game::Game(std::unique_ptr<ChessBoard> chessBoard, std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter) :
+    chessBoard(std::move(chessBoard)), commandRetriever(std::move(commandRetriever)), illegalCommandReporter(std::move(illegalCommandReporter)) {
     applyStandardSetup();
 }
 
 void Game::outputError(std::string const &errorMessage) const {
-    errorReporter->reportIllegalCommand(errorMessage);
+    illegalCommandReporter->reportIllegalCommand(errorMessage);
 }
 
 void Game::incrementTurn() {
@@ -117,8 +117,8 @@ void Game::runGame() {
     notifyObservers();
 
     std::string inputLine;
-    while (input->isCommandAvailable()) {
-        inputLine = input->retrieveCommand();
+    while (commandRetriever->isCommandAvailable()) {
+        inputLine = commandRetriever->retrieveCommand();
 
         // Parse into tokens
         std::istringstream lineStream(inputLine);
