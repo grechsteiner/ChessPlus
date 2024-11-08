@@ -21,14 +21,16 @@ TextObserver::~TextObserver() {
 
 void TextObserver::notifyImpl() {
 
-    GameState gameState = game->getGameState();
+    std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> state = game->getGameState();
+    GameState gameState = std::get<4>(state);
+
+
 
     if (gameState == GameState::MAIN_MENU) {
         out << "+---------+" << std::endl;
         out << "|Main Menu|" << std::endl;
         out << "+---------+" << std::endl;
     } else if (gameState == GameState::SETUP) {
-        std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int> state = game->getSetupState();
 
         const ChessBoard& chessBoard = std::get<0>(state);
 
@@ -55,7 +57,6 @@ void TextObserver::notifyImpl() {
         out << "-----+" << std::endl;
 
     } else {
-        std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> state = game->getActiveGameState();
         
 
         const ChessBoard& chessBoard = std::get<0>(state);

@@ -76,20 +76,8 @@ bool Game::isGameActive() const {
     return gameState == GameState::GAME_ACTIVE;
 }
 
-GameState Game::getGameState() const {
-    return gameState;
-}
-
-const std::tuple<PlayerTuple, PlayerTuple>& Game::getMainMenuState() const {
-    return players;
-}
-
-std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> Game::getSetupState() const {
-    return std::make_tuple(std::ref(*chessBoard), std::cref(players), currentTurn);
-}
-
-std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> Game::getActiveGameState() const {
-    return std::make_tuple(std::ref(*chessBoard), std::cref(players), currentTurn, showingStandardOpenings);
+std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> Game::getGameState() const {
+    return std::make_tuple(std::ref(*chessBoard), std::cref(players), currentTurn, showingStandardOpenings, gameState);
 }
 
 void Game::resetComputerPlayers() {

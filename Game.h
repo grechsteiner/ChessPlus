@@ -64,12 +64,7 @@ public:
     Game& operator=(Game &&other) noexcept;
     
     void runGame();
-
-    // Get state (observer pattern)
-    GameState getGameState() const;
-    const std::tuple<PlayerTuple, PlayerTuple>& getMainMenuState() const;
-    std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int> getSetupState() const;
-    std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool> getActiveGameState() const;
+    std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> getGameState() const;
 };
 
 #endif /* Game_h */
