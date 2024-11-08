@@ -5,9 +5,15 @@
 #include "TextObserver.h"
 #include "Game.h"
 
-TextObserver::TextObserver(std::ostream &out, Game *game) : out(out), game(game) {
+TextObserver::TextObserver(std::ostream &out, Game *game) : Cloneable<Observer, TextObserver>(), out(out), game(game) {
     game->attach(this);
 }
+
+TextObserver::TextObserver(TextObserver const &other) : 
+    Cloneable<Observer, TextObserver>(), out(other.out), game(other.game) {}
+
+TextObserver::TextObserver(TextObserver &&other) noexcept : 
+    Cloneable<Observer, TextObserver>(), out(other.out), game(other.game) {}
 
 TextObserver::~TextObserver() {
     game->detach(this);

@@ -6,10 +6,10 @@
 #include "Observer.h"
 #include "Game.h"
 #include "Window.h"
-
+#include "Cloneable.h"
 #include "ChessBoard.h"
 
-class GraphicObserver : public Observer {
+class GraphicObserver : public Cloneable<Observer, GraphicObserver> {
 private:
     Game *game;
     Xwindow window;
@@ -18,7 +18,11 @@ private:
     void printBoard(const ChessBoard& chessBoard, int turn);
 
 public:
-    GraphicObserver(Game *game);
+    explicit GraphicObserver(Game *game);
+    GraphicObserver(GraphicObserver const &other);
+    GraphicObserver(GraphicObserver &&other) noexcept;
+    GraphicObserver& operator=(GraphicObserver const &other);
+    GraphicObserver& operator=(GraphicObserver &&other) noexcept;
     ~GraphicObserver();
 };
 

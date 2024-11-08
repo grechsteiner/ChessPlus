@@ -16,13 +16,13 @@ private:
     std::vector<std::unique_ptr<Observer>> observers;           // Observers  
 
 public:
-    explicit GameWrapper(std::istream &in, std::ostream &out, std::ostream &errorOut);
+    explicit GameWrapper(std::istream &in, std::ostream &out, std::ostream &illegalCommandOut);
     GameWrapper(GameWrapper const &other);
     GameWrapper(GameWrapper &&other) noexcept;
     GameWrapper& operator=(GameWrapper &other);
     GameWrapper& operator=(GameWrapper &&other) noexcept;
     virtual ~GameWrapper() = default;
-    
+
     void runGame();
 };
 

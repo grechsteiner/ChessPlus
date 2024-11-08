@@ -7,10 +7,11 @@
 
 #include "Observer.h"
 #include "Game.h"
-
 #include "ChessBoard.h"
+#include "Cloneable.h"
 
-class TextObserver : public Observer {
+
+class TextObserver : public Cloneable<Observer, TextObserver> {
 private:
     std::ostream& out;
     Game *game;
@@ -18,7 +19,11 @@ private:
     void printPiece(const std::string& str, Team color);
     void printBoard(ChessBoard const &chessBoard, int turn);
 public:
-    TextObserver(std::ostream &out, Game *game);
+    explicit TextObserver(std::ostream &out, Game *game);
+    TextObserver(TextObserver const &other);
+    TextObserver(TextObserver &&other) noexcept;
+    // Copy assignment not enabled (can't copy streams)
+    // Move assignment not enabled (can't move streams)
     ~TextObserver();
 };
 

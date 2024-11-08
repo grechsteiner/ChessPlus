@@ -20,8 +20,8 @@ private:
 public:
     Xwindow(int width = 600, int height = 600);       
     ~Xwindow();                                   
-    Xwindow(Xwindow const &xwindow) = delete;
-    Xwindow &operator=(Xwindow const &xwindow) = delete;
+    // Xwindow(Xwindow const &xwindow) = delete; // TODO: Does this need to be deleted for some reason
+    // Xwindow &operator=(Xwindow const &xwindow) = delete; // TODO: Does this need to be deleted for some reason
 
     enum {
         White=0, 

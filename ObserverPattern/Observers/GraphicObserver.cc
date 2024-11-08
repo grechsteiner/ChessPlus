@@ -3,9 +3,39 @@
 #include "GraphicObserver.h"
 #include "Game.h"
 
-GraphicObserver::GraphicObserver(Game *game) : game(game), window() {
+// Basic ctor
+GraphicObserver::GraphicObserver(Game *game) : Cloneable<Observer, GraphicObserver>(), game(game), window() {
     game->attach(this);
 }
+
+// Copy ctor
+GraphicObserver::GraphicObserver(GraphicObserver const &other) : 
+    Cloneable<Observer, GraphicObserver>(), game(other.game), window(other.window) {}
+
+// Move ctor
+GraphicObserver::GraphicObserver(GraphicObserver &&other) noexcept : 
+    Cloneable<Observer, GraphicObserver>(), game(other.game), window(std::move(other.window)) {}
+
+// Copy assignment
+GraphicObserver& GraphicObserver::operator=(GraphicObserver const &other) {
+    if (this != &other) {
+        Observer::operator=(other);
+        game = other.game;
+        window = other.window;
+    }
+    return *this;
+}
+
+// Move assignment
+GraphicObserver& GraphicObserver::operator=(GraphicObserver &&other) noexcept {
+    if (this != &other) {
+        Observer::operator=(std::move(other));
+        game = std::move(other.game);
+        window = std::move(other.window);
+    }
+    return *this;
+}
+
 
 GraphicObserver::~GraphicObserver() {
     game->detach(this);

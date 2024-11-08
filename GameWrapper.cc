@@ -12,8 +12,8 @@
 
 
 // Basic ctor
-GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &errorOut) : 
-    game(std::make_unique<ChessBoardImpl>(8, 8), std::make_unique<ConsoleCommandRetriever>(), std::make_unique<ConsoleIllegalCommandReporter>()) {
+GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &illegalCommandOut) : 
+    game(std::make_unique<ChessBoardImpl>(8, 8), std::make_unique<ConsoleCommandRetriever>(in), std::make_unique<ConsoleIllegalCommandReporter>(illegalCommandOut)) {
 
     observers.push_back(std::make_unique<TextObserver>(out, &game));
     // observers.push_back(std::make_unique<GraphicObserver>(&game));
