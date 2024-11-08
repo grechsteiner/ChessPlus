@@ -1,22 +1,22 @@
-// IInvalidCommandReporter.h
+// IllegalCommandReporter.h
 
-#ifndef IInvalidCommandReporter_h
-#define IInvalidCommandReporter_h
+#ifndef IllegalCommandReporter_h
+#define IllegalCommandReporter_h
 
 #include <string>
 
 
 /**
- * InvalidCommandReporter Interface Class
+ * IllegalCommandReporter Interface Class
  */
-class IInvalidCommandReporter {
+class IllegalCommandReporter {
 private:
     virtual void reportErrorImpl(std::string const &errorMessage) = 0;
 public:
     void reportError(std::string const &errorMessage);
 
-    virtual ~IInvalidCommandReporter() = default;
+    virtual ~IllegalCommandReporter() = default;
 };
 
 
-#endif /* IInvalidCommandReporter_h */
+#endif /* IllegalCommandReporter_h */

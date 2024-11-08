@@ -1,19 +1,19 @@
-// ConsoleInputGetter.cc
+// ConsoleCommandRetriever.cc
 
 #include <string>
 #include <iostream>
 
-#include "ConsoleInputGetter.h"
+#include "ConsoleCommandRetriever.h"
 
 
 // Basic ctor
-ConsoleInputGetter::ConsoleInputGetter(std::istream &in) : in(in) {}
+ConsoleCommandRetriever::ConsoleCommandRetriever(std::istream &in) : in(in) {}
 
-bool ConsoleInputGetter::isInputAvailableImpl() const {
+bool ConsoleCommandRetriever::isInputAvailableImpl() const {
     return !in.eof();
 }
 
-std::string ConsoleInputGetter::getInputImpl() const {
+std::string ConsoleCommandRetriever::getInputImpl() const {
     std::string input;
     std::getline(in, input);
     return input;

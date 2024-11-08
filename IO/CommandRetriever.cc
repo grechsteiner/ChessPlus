@@ -1,9 +1,9 @@
-// IInputGetter.cc
+// CommandRetriever.cc
 
 #include <string>
 
-#include "IInputGetter.h"
+#include "CommandRetriever.h"
 
 
-bool IInputGetter::isInputAvailable() const { return isInputAvailableImpl(); }
-std::string IInputGetter::getInput() const { return getInputImpl(); }
+bool CommandRetriever::isInputAvailable() const { return isInputAvailableImpl(); }
+std::string CommandRetriever::getInput() const { return getInputImpl(); }

@@ -1,24 +1,24 @@
-// ConsoleInvalidCommandReporter.h
+// ConsoleIllegalCommandReporter.h
 
-#ifndef ConsoleInvalidCommandReporter_h
-#define ConsoleInvalidCommandReporter_h
+#ifndef ConsoleIllegalCommandReporter_h
+#define ConsoleIllegalCommandReporter_h
 
 #include <iostream>
 #include <string>
 
-#include "IInvalidCommandReporter.h"
+#include "IllegalCommandReporter.h"
 
 
 /**
- * ConsoleInvalidCommandReporter InvalidCommandReporter  Class
+ * ConsoleIllegalCommandReporter InvalidCommandReporter  Class
  */
-class ConsoleInvalidCommandReporter final : public IInvalidCommandReporter {
+class ConsoleIllegalCommandReporter final : public IllegalCommandReporter {
 private:
     std::ostream &out;
     void reportErrorImpl(std::string const &errorMessage) override;
 public:
-    explicit ConsoleInvalidCommandReporter(std::ostream &out);
+    explicit ConsoleIllegalCommandReporter(std::ostream &out);
 };
 
 
-#endif /* ConsoleInvalidCommandReporter_h */
+#endif /* ConsoleIllegalCommandReporter_h */

@@ -1,15 +1,15 @@
-// IInputGetter.h
+// CommandRetriever.h
 
-#ifndef IInputGetter_h
-#define IInputGetter_h
+#ifndef CommandRetriever_h
+#define CommandRetriever_h
 
 #include <string>
 
 
 /**
- * InputGetter Interface Class
+ * CommandRetriever Interface Class
  */
-class IInputGetter {
+class CommandRetriever {
 private:
     virtual bool isInputAvailableImpl() const = 0;
     virtual std::string getInputImpl() const = 0;
@@ -18,7 +18,7 @@ public:
     bool isInputAvailable() const;
     std::string getInput() const;
 
-    virtual ~IInputGetter() = default;
+    virtual ~CommandRetriever() = default;
 };
 
-#endif /* IInputGetter_h */
+#endif /* CommandRetriever_h */

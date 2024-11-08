@@ -1,26 +1,26 @@
-// ConsoleInputGetter.h
+// ConsoleCommandRetriever.h
 
-#ifndef ConsoleInputGetter_h
-#define ConsoleInputGetter_h
+#ifndef ConsoleCommandRetriever_h
+#define ConsoleCommandRetriever_h
 
 #include <string>
 #include <iostream>
 
-#include "IInputGetter.h"
+#include "CommandRetriever.h"
 
 
 /**
- * ConsoleInputGetter Input Class
+ * ConsoleCommandRetriever CommandRetriever Class
  */
-class ConsoleInputGetter final : public IInputGetter {
+class ConsoleCommandRetriever final : public CommandRetriever {
 private:
     std::istream &in;
     bool isInputAvailableImpl() const override;
     std::string getInputImpl() const override;
     
 public:
-    explicit ConsoleInputGetter(std::istream &in);
+    explicit ConsoleCommandRetriever(std::istream &in);
 };
 
 
-#endif /* ConsoleInputGetter_h */
+#endif /* ConsoleCommandRetriever_h */

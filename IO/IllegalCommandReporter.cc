@@ -1,8 +1,8 @@
-// IInvalidCommandReporter.cc
+// IllegalCommandReporter.cc
 
 #include <string>
 
-#include "IInvalidCommandReporter.h"
+#include "IllegalCommandReporter.h"
 
 
-void IInvalidCommandReporter::reportError(std::string const &errorMessage) { reportErrorImpl(errorMessage); }
+void IllegalCommandReporter::reportError(std::string const &errorMessage) { reportErrorImpl(errorMessage); }

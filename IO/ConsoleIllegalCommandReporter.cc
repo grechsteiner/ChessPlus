@@ -1,14 +1,14 @@
-// ConsoleInvalidCommandReporter.cc
+// ConsoleIllegalCommandReporter.cc
 
 #include <iostream>
 #include <string>
 
-#include "ConsoleInvalidCommandReporter.h"
+#include "ConsoleIllegalCommandReporter.h"
 
 
 // Basic ctor
-ConsoleInvalidCommandReporter::ConsoleInvalidCommandReporter(std::ostream &out) : out(out) {}
+ConsoleIllegalCommandReporter::ConsoleIllegalCommandReporter(std::ostream &out) : out(out) {}
 
-void ConsoleInvalidCommandReporter::reportErrorImpl(std::string const &errorMessage) {
+void ConsoleIllegalCommandReporter::reportErrorImpl(std::string const &errorMessage) {
     out << "Error: " << errorMessage << std::endl;
 }
