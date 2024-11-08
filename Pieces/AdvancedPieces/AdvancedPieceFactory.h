@@ -10,7 +10,7 @@ class Piece;
 struct PieceData;
 
 
-class AdvancedPieceFactory {
+class AdvancedPieceFactory final {
 public:
     static std::unique_ptr<Piece> createPiece(PieceData const &pieceData);
 };

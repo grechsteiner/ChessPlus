@@ -10,7 +10,7 @@
 #include "Constants.h"
 
 
-class ComputerPlayerFactory {
+class ComputerPlayerFactory final {
 public:
     static std::unique_ptr<ComputerPlayer> createComputerPlayer(ComputerPlayerLevel computerPlayerLevel, ChessBoard const &chessBoard, Team team);
 };

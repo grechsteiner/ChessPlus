@@ -62,6 +62,7 @@ public:
     Game(Game &&other) noexcept;
     Game& operator=(Game &other);
     Game& operator=(Game &&other) noexcept;
+    virtual ~Game() = default;
     
     void runGame();
     std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> getGameState() const;
