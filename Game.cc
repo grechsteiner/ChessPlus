@@ -117,8 +117,8 @@ void Game::runGame() {
     notifyObservers();
 
     std::string inputLine;
-    while (input->isInputAvailable()) {
-        inputLine = input->getInput();
+    while (input->isCommandAvailable()) {
+        inputLine = input->retrieveCommand();
 
         // Parse into tokens
         std::istringstream lineStream(inputLine);

@@ -9,12 +9,17 @@
 // Basic ctor
 ConsoleCommandRetriever::ConsoleCommandRetriever(std::istream &in) : in(in) {}
 
-bool ConsoleCommandRetriever::isInputAvailableImpl() const {
+// Copy ctor
+ConsoleCommandRetriever::ConsoleCommandRetriever(ConsoleCommandRetriever const &other) : CommandRetriever(), in(other.in) {}
+
+// Move ctor
+ConsoleCommandRetriever::ConsoleCommandRetriever(ConsoleCommandRetriever &&other) noexcept : CommandRetriever(), in(other.in) {}
+
+bool ConsoleCommandRetriever::isCommandAvailableImpl() const {
     return !in.eof();
 }
 
-std::string ConsoleCommandRetriever::getInputImpl() const {
+std::string ConsoleCommandRetriever::retrieveCommandImpl() const {
     std::string input;
-    std::getline(in, input);
-    return input;
+    return std::getline(in, input) ? input : "";
 }

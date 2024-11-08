@@ -19,7 +19,8 @@ protected:
     explicit ComputerPlayer(ChessBoard const &chessBoard, Team team);
     ComputerPlayer(ComputerPlayer const &other) = default;
     ComputerPlayer(ComputerPlayer &&other) noexcept;
-    // Copy and move assignment disabled
+    // Copy assignment disabled
+    // Move assignment disabled
 
     ChessBoard const &chessBoard;
     Team team;
