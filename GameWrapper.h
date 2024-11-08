@@ -8,7 +8,7 @@
 
 #include "Game.h"
 #include "Observer.h"
-#include "ChessBoardImpl.h"
+
 
 class GameWrapper {
 private:
@@ -16,8 +16,15 @@ private:
     std::vector<std::unique_ptr<Observer>> observers;           // Observers  
 
 public:
-    GameWrapper(std::istream &in, std::ostream &out, std::ostream &errorOut);
+    explicit GameWrapper(std::istream &in, std::ostream &out, std::ostream &errorOut);
+    GameWrapper(GameWrapper const &other);
+    GameWrapper(GameWrapper &&other) noexcept;
+    GameWrapper& operator=(GameWrapper &other);
+    GameWrapper& operator=(GameWrapper &&other) noexcept;
+    virtual ~GameWrapper() = default;
+    
     void runGame();
 };
+
 
 #endif /* GameWrapper_h */

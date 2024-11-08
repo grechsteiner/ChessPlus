@@ -58,6 +58,11 @@ private:
 
 public:
     Game(std::unique_ptr<ChessBoard> chessBoard, std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
+    Game(Game const &other);
+    Game(Game &&other) noexcept;
+    Game& operator=(Game &other);
+    Game& operator=(Game &&other) noexcept;
+    
     void runGame();
 
     // Get state (observer pattern)

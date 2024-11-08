@@ -2,6 +2,14 @@
 
 #include "Observer.h"
 
-void Observer::notify() {
-    notifyImpl();
-}
+// Basic ctor
+Observer::Observer() {}
+
+// Move ctor
+Observer::Observer(Observer &&other) noexcept {}
+
+// Move assignment
+Observer& Observer::operator=(Observer &&other) noexcept {}
+
+void Observer::notify() { notifyImpl(); }
+std::unique_ptr<Observer> Observer::clone() const { return cloneImpl(); }

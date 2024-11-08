@@ -34,6 +34,12 @@ Game::Game(std::unique_ptr<ChessBoard> chessBoard, std::unique_ptr<CommandRetrie
     applyStandardSetup();
 }
 
+// TODO
+Game::Game(Game const &other) {}
+Game::Game(Game &&other) noexcept {}
+Game& Game::operator=(Game &other) {}
+Game& Game::operator=(Game &&other) noexcept {}
+
 void Game::outputError(std::string const &errorMessage) const {
     illegalCommandReporter->reportIllegalCommand(errorMessage);
 }
