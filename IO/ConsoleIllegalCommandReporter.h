@@ -15,9 +15,14 @@
 class ConsoleIllegalCommandReporter final : public IllegalCommandReporter {
 private:
     std::ostream &out;
-    void reportErrorImpl(std::string const &errorMessage) override;
+    void reportIllegalCommandImpl(std::string const &illegalCommand) override;
 public:
     explicit ConsoleIllegalCommandReporter(std::ostream &out);
+    ConsoleIllegalCommandReporter(ConsoleIllegalCommandReporter const &other);
+    ConsoleIllegalCommandReporter(ConsoleIllegalCommandReporter &&other) noexcept;
+    // Copy assignment not enabled (can't copy streams)
+    // Move assignment not enabled (can't move streams)
+    virtual ~ConsoleIllegalCommandReporter() = default;
 };
 
 

@@ -35,7 +35,7 @@ Game::Game(std::istream &in, std::ostream &out, std::ostream &errorOut) :
 }
 
 void Game::outputError(std::string const &errorMessage) const {
-    errorReporter->reportError(errorMessage);
+    errorReporter->reportIllegalCommand(errorMessage);
 }
 
 void Game::incrementTurn() {

@@ -11,9 +11,17 @@
  */
 class IllegalCommandReporter {
 private:
-    virtual void reportErrorImpl(std::string const &errorMessage) = 0;
+    virtual void reportIllegalCommandImpl(std::string const &illegalCommand) = 0;
+
+protected:
+    explicit IllegalCommandReporter();
+    IllegalCommandReporter(IllegalCommandReporter const &other) = default;
+    IllegalCommandReporter(IllegalCommandReporter &&other) noexcept;
+    IllegalCommandReporter& operator=(IllegalCommandReporter const &other) = default;
+    IllegalCommandReporter& operator=(IllegalCommandReporter &&other) noexcept;
+
 public:
-    void reportError(std::string const &errorMessage);
+    void reportIllegalCommand(std::string const &illegalCommand);
 
     virtual ~IllegalCommandReporter() = default;
 };
