@@ -32,7 +32,7 @@ protected:
     Bishop& operator=(Bishop &&other) noexcept;
     virtual ~Bishop() = default;
 
-    std::vector<std::unique_ptr<BoardMove>> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<std::unique_ptr<BoardMove>> getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

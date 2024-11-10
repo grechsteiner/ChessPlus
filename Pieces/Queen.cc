@@ -54,14 +54,14 @@ Queen& Queen::operator=(Queen &&other) noexcept {
     return *this;
 }
 
-std::vector<std::unique_ptr<BoardMove>> Queen::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> Queen::getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
-    if (chessBoard.isSquareOnBoard(fromSquare)) {
+    if (chessBoard->isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &queenDirection : queenDirections) {
             BoardSquare toSquare(fromSquare.boardRow + queenDirection.first, fromSquare.boardCol + queenDirection.second);
-            while (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
-                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
-                if (chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
+            while (chessBoard->isSquareEmpty(toSquare) || chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard->getPieceDataAt(toSquare)));
+                if (chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
                 toSquare = BoardSquare(toSquare.boardRow + queenDirection.first, toSquare.boardCol + queenDirection.second);

@@ -24,7 +24,7 @@ class BoardMove;
  */
 class AdvancedQueen final : public ComplicatedCloneable<Piece, Queen, AdvancedQueen> {
 private:
-    std::vector<std::unique_ptr<BoardMove>> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<std::unique_ptr<BoardMove>> getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
     explicit AdvancedQueen(Team team, PieceDirection pieceDirection, bool hasMoved);
     AdvancedQueen(AdvancedQueen const &other);

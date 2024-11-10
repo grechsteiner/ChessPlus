@@ -22,7 +22,7 @@ class BoardMove;
 class King : public Piece {
 private:
     static std::set<std::pair<int, int>> const kingDirections;
-    bool checkCommonCastleInfo(ChessBoard const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const;
+    bool checkCommonCastleInfo(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const;
 
 protected:
     explicit King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
@@ -32,7 +32,7 @@ protected:
     King& operator=(King &&other) noexcept;
     virtual ~King() = default;
 
-    std::vector<std::unique_ptr<BoardMove>> getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<std::unique_ptr<BoardMove>> getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 };
 
 

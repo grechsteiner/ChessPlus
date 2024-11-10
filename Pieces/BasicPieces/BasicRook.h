@@ -24,7 +24,7 @@ class BoardMove;
  */
 class BasicRook final : public ComplicatedCloneable<Piece, Rook, BasicRook> {
 private:
-    std::vector<std::unique_ptr<BoardMove>> getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    std::vector<std::unique_ptr<BoardMove>> getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
 public:
     explicit BasicRook(Team team, PieceDirection pieceDirection, bool hasMoved);
     BasicRook(BasicRook const &other);

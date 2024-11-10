@@ -36,7 +36,7 @@ AdvancedPawn& AdvancedPawn::operator=(AdvancedPawn &&other) noexcept {
     return *this;
 }
 
-std::vector<std::unique_ptr<BoardMove>> AdvancedPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> AdvancedPawn::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     int fromRow = fromSquare.boardRow;
     int fromCol = fromSquare.boardCol;
     std::pair<int, int> pawnDirection = getPawnDirection();
@@ -50,7 +50,7 @@ std::vector<std::unique_ptr<BoardMove>> AdvancedPawn::getMovesImpl(ChessBoard co
         BoardSquare normalMoveToSquare(fromRow + pawnDirection.first, fromCol + pawnDirection.second);
         BoardSquare doubleMoveToSquare(fromRow + 2 * pawnDirection.first, fromCol + 2 * pawnDirection.second);
         BoardSquare tripleMoveToSquare(fromRow + 3 * pawnDirection.first, fromCol + 3 * pawnDirection.second);
-        if (!pieceData.hasMoved && chessBoard.isSquareEmpty(normalMoveToSquare) && chessBoard.isSquareEmpty(doubleMoveToSquare) && chessBoard.isSquareEmpty(tripleMoveToSquare)) {
+        if (!pieceData.hasMoved && chessBoard->isSquareEmpty(normalMoveToSquare) && chessBoard->isSquareEmpty(doubleMoveToSquare) && chessBoard->isSquareEmpty(tripleMoveToSquare)) {
             addMoves(moves, chessBoard, fromSquare, tripleMoveToSquare, tripleMoveToSquare, true);
         }
     }

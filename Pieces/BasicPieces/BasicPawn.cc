@@ -33,6 +33,6 @@ BasicPawn& BasicPawn::operator=(BasicPawn &&other) noexcept {
     return *this;
 }
 
-std::vector<std::unique_ptr<BoardMove>> BasicPawn::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> BasicPawn::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }

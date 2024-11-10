@@ -54,13 +54,13 @@ Knight& Knight::operator=(Knight &&other) noexcept {
     return *this;
 }
 
-std::vector<std::unique_ptr<BoardMove>> Knight::getStandardMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> Knight::getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
-    if (chessBoard.isSquareOnBoard(fromSquare)) {
+    if (chessBoard->isSquareOnBoard(fromSquare)) {
         for (std::pair<int, int> const &knightDirection : knightDirections) {
             BoardSquare toSquare(fromSquare.boardRow + knightDirection.first, fromSquare.boardCol + knightDirection.second);
-            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
-                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
+            if (chessBoard->isSquareEmpty(toSquare) || chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard->getPieceDataAt(toSquare)));
             }
         }
     }

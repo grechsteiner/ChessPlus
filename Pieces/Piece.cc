@@ -28,7 +28,7 @@ Piece& Piece::operator=(Piece &&other) noexcept {
     return *this;
 }
 
-std::vector<std::unique_ptr<BoardMove>> Piece::getMoves(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const { return getMovesImpl(chessBoard, fromSquare, onlyAttackingMoves); }
+std::vector<std::unique_ptr<BoardMove>> Piece::getMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const { return getMovesImpl(chessBoard, fromSquare, onlyAttackingMoves); }
 std::unique_ptr<Piece> Piece::clone() const { return cloneImpl(); }
 
 PieceData const& Piece::getPieceData() const { return pieceData; }

@@ -35,7 +35,7 @@ AdvancedRook& AdvancedRook::operator=(AdvancedRook &&other) noexcept {
     return *this;
 }
 
-std::vector<std::unique_ptr<BoardMove>> AdvancedRook::getMovesImpl(ChessBoard const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
+std::vector<std::unique_ptr<BoardMove>> AdvancedRook::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol + 1),
         BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol - 1),
@@ -44,10 +44,10 @@ std::vector<std::unique_ptr<BoardMove>> AdvancedRook::getMovesImpl(ChessBoard co
     };
 
     std::vector<std::unique_ptr<BoardMove>> moves = getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
-    if (chessBoard.isSquareOnBoard(fromSquare)) {
+    if (chessBoard->isSquareOnBoard(fromSquare)) {
         for (BoardSquare const &toSquare : additionalToSquares) {
-            if (chessBoard.isSquareEmpty(toSquare) || chessBoard.isSquareOtherTeam(toSquare, pieceData.team)) {
-                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard.getPieceDataAt(toSquare)));
+            if (chessBoard->isSquareEmpty(toSquare) || chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
+                moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard->getPieceDataAt(toSquare)));
             }
         }
     }
