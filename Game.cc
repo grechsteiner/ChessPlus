@@ -29,12 +29,18 @@
 #include "ChessBoardImpl.h"
 #include "ChessBoardFactory.h"
 #include "ChessBoardUtilities.h"
+#include "Player.h"
 
 
 Game::Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter) :
+    gameState(GameState::MAIN_MENU),
     chessBoard(ChessBoardFactory::createChessBoard(8, 8)),
-    commandRetriever(std::move(commandRetriever)), illegalCommandReporter(std::move(illegalCommandReporter)) {
-
+    commandRetriever(std::move(commandRetriever)), illegalCommandReporter(std::move(illegalCommandReporter)),
+    players(std::make_pair(
+        Player(Team::TEAM_ONE, nullptr), 
+        Player(Team::TEAM_TWO, nullptr)
+    )),
+    currentTurn(Team::TEAM_ONE) {
     ChessBoardUtilities::applyStandardSetup(chessBoard);
 }
 
@@ -44,7 +50,7 @@ Game::Game(Game &&other) noexcept {}
 Game& Game::operator=(Game &other) {}
 Game& Game::operator=(Game &&other) noexcept {}
 
-void Game::outputError(std::string const &errorMessage) const {
+void Game::reportIllegalCommand(std::string const &errorMessage) const {
     illegalCommandReporter->reportIllegalCommand(errorMessage);
 }
 
@@ -68,15 +74,15 @@ void Game::setGameState(GameState newGameState) {
     gameState = newGameState;
 }
 
-bool Game::isInMainMenu() const {
+bool Game::isInMainMenuGameState() const {
     return gameState == GameState::MAIN_MENU;
 }
 
-bool Game::isInSetupMode() const {
+bool Game::isInSetupGameState() const {
     return gameState == GameState::SETUP;
 }
 
-bool Game::isGameActive() const {
+bool Game::isInActiveGameState() const {
     return gameState == GameState::GAME_ACTIVE;
 }
 
@@ -132,20 +138,20 @@ void Game::runGame() {
 
         std::string firstToken = tokens[0];
         if (firstToken == "game") {
-            if (isGameActive()) {
-                outputError("Can't start a game when a game is already running");
-            } else if (isInSetupMode()) {
-                outputError("Can't start a game from within setup mode");
+            if (isInActiveGameState()) {
+                reportIllegalCommand("Can't start a game when a game is already running");
+            } else if (isInSetupGameState()) {
+                reportIllegalCommand("Can't start a game from within setup mode");
             } else if (tokens.size() < 3) {
-                outputError("Must specify a player type for each player");
+                reportIllegalCommand("Must specify a player type for each player");
             } else if (tokens.size() > 3) {
-                outputError("Too many input tokens on line");            
+                reportIllegalCommand("Too many input tokens on line");            
             } else {
 
                 static std::regex const pattern("^(human|computer[1-5])$");
 
                 if (!std::regex_match(tokens[1], pattern) || !std::regex_match(tokens[2], pattern)) {
-                    outputError("Invalid syntax, expecting (human|computer[1-4])");
+                    reportIllegalCommand("Invalid syntax, expecting (human|computer[1-4])");
                 } else {
                     std::get<2>(std::get<0>(players)) = (tokens[1] == "human") ? nullptr : ComputerPlayerFactory::createComputerPlayer(stringToComputerPlayerLevel(std::string(1, tokens[1].back())), *chessBoard, Team::TEAM_ONE);
                     std::get<2>(std::get<1>(players)) = (tokens[2] == "human") ? nullptr : ComputerPlayerFactory::createComputerPlayer(stringToComputerPlayerLevel(std::string(1, tokens[2].back())), *chessBoard, Team::TEAM_TWO);
@@ -169,12 +175,12 @@ void Game::runGame() {
             }
 
         } else if (firstToken == "setup") {
-            if (isGameActive()) {
-                outputError("Can't enter setup mode from within an active game");
-            } else if (isInSetupMode()) {
-                outputError("Already in setup mode");
+            if (isInActiveGameState()) {
+                reportIllegalCommand("Can't enter setup mode from within an active game");
+            } else if (isInSetupGameState()) {
+                reportIllegalCommand("Already in setup mode");
             } else if (tokens.size() >= 2) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
                 gameState = GameState::SETUP;
                 chessBoard->clearBoard();
@@ -182,21 +188,21 @@ void Game::runGame() {
             }
 
         } else if (firstToken == "move") {
-            if (isInMainMenu()) {
-                outputError("You're on the main menu page, cannot enter a move when game is not active");
-            } else if (isInSetupMode()) {
-                outputError("You're in setup mode, cannot enter a move when game is not active");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("You're on the main menu page, cannot enter a move when game is not active");
+            } else if (isInSetupGameState()) {
+                reportIllegalCommand("You're in setup mode, cannot enter a move when game is not active");
             } else if (tokens.size() == 2) {
-                outputError("You need to specify a square to move to");
+                reportIllegalCommand("You need to specify a square to move to");
             } else if (tokens.size() >= 5) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
 
                 bool moveMade = false;
                 if (tokens.size() == 1) {
                     // Computer move
                     if (std::get<2>(getPlayerWithTurn(currentTurn)) == nullptr) {
-                        outputError("The current player is not a computer, specify move details for human player");
+                        reportIllegalCommand("The current player is not a computer, specify move details for human player");
                     } else {
                         // Gauranteed to get valid move
                         std::unique_ptr<BoardMove> compMove = std::get<2>(getPlayerWithTurn(currentTurn))->generateMove();
@@ -207,7 +213,7 @@ void Game::runGame() {
                 } else {
                     // Player move
                     if (std::get<2>(getPlayerWithTurn(currentTurn)) != nullptr) {
-                        outputError("The current player is not a human, don't specify move details for computer player");
+                        reportIllegalCommand("The current player is not a human, don't specify move details for computer player");
                     } else {
                         std::string fromSquare = tokens[1];
                         std::string toSquare = tokens[2];
@@ -225,11 +231,11 @@ void Game::runGame() {
                                 incrementTurn();
                                 moveMade = true;
                             } else {
-                                outputError("Invalid board move, try again ");
+                                reportIllegalCommand("Invalid board move, try again ");
                             }
                             
                         } else {
-                            outputError("Invalid user move, try again");
+                            reportIllegalCommand("Invalid user move, try again");
                         }
                     }
                 } 
@@ -262,12 +268,12 @@ void Game::runGame() {
             }
             
         } else if (firstToken == "resign") {
-            if (isInMainMenu()) {
-                outputError("No game is running, you are in the main menu");
-            } else if (isInSetupMode()) {
-                outputError("No game is running, you are in setup mode");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("No game is running, you are in the main menu");
+            } else if (isInSetupGameState()) {
+                reportIllegalCommand("No game is running, you are in setup mode");
             } else if (tokens.size() >= 2) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
 
 
@@ -291,12 +297,12 @@ void Game::runGame() {
 
 
         } else if (firstToken == "undo") {
-            if (isInMainMenu()) {
-                outputError("No game is running, you are in the main menu");
-            } else if (isInSetupMode()) {
-                outputError("No game is running, you are in setup mode");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("No game is running, you are in the main menu");
+            } else if (isInSetupGameState()) {
+                reportIllegalCommand("No game is running, you are in setup mode");
             } else if (tokens.size() >= 2) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
                 if (chessBoard->undoMove()) {
                     decrementTurn();
@@ -305,12 +311,12 @@ void Game::runGame() {
             }
 
         } else if (firstToken == "show") {
-            if (isInMainMenu()) {
-                outputError("No game is running, you are in the main menu");
-            } else if (isInSetupMode()) {
-                outputError("No game is running, you are in setup mode");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("No game is running, you are in the main menu");
+            } else if (isInSetupGameState()) {
+                reportIllegalCommand("No game is running, you are in setup mode");
             } else if (tokens.size() != 1) {
-                outputError("Too many input tokens on line, expected show");
+                reportIllegalCommand("Too many input tokens on line, expected show");
             } else {
                 showingStandardOpenings = true;
                 notifyObservers();
@@ -318,22 +324,22 @@ void Game::runGame() {
             }
 
         } else if (firstToken == "+") {
-            if (isInMainMenu()) {
-                outputError("Can't set piece in main menu");
-            } else if (isGameActive()) {
-                outputError("Can't set piece when game is active");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("Can't set piece in main menu");
+            } else if (isInActiveGameState()) {
+                reportIllegalCommand("Can't set piece when game is active");
             } else if (tokens.size() == 1) {
-                outputError("Not enough input tokens on line, must specify piece and square to place piece at");
+                reportIllegalCommand("Not enough input tokens on line, must specify piece and square to place piece at");
             } else if (tokens.size() == 2) {
-                outputError("Not enough input tokens on line, must specify square to place piece at");
+                reportIllegalCommand("Not enough input tokens on line, must specify square to place piece at");
             } else {
                 std::string piece = tokens[1];
                 std::string square = tokens[2];
 
                 if (!isValidPieceType(piece)) {
-                    outputError("Input piece is not valid");
+                    reportIllegalCommand("Input piece is not valid");
                 } else if (!UserSquare::isValidUserSquare(square) || !chessBoard->isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
-                    outputError("Input square is not valid on board");
+                    reportIllegalCommand("Input square is not valid on board");
                 } else {
 
                     PieceType pieceType = stringToPieceType(piece);
@@ -349,43 +355,43 @@ void Game::runGame() {
                             chessBoard->setPosition(boardSquare, PieceData(pieceType, PieceLevel::BASIC, team, stringToPieceDirection(tokens[3]), false));
                             notifyObservers();
                         } else {
-                            outputError("Invalid direction");
+                            reportIllegalCommand("Invalid direction");
                         }
                     } else {
-                        outputError("Too many input tokens on line");
+                        reportIllegalCommand("Too many input tokens on line");
                     }
                 }
             }
             
         } else if (firstToken == "-") {
-            if (isInMainMenu()) {
-                outputError("Can't clear piece in main menu");
-            } else if (isGameActive()) {
-                outputError("Can't clear piece when game is active");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("Can't clear piece in main menu");
+            } else if (isInActiveGameState()) {
+                reportIllegalCommand("Can't clear piece when game is active");
             } else if (tokens.size() == 1) {
-                outputError("Not enough input tokens on line, must specify square to remove piece from");
+                reportIllegalCommand("Not enough input tokens on line, must specify square to remove piece from");
             } else if (tokens.size() > 2) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
                 std::string square = tokens[1];
                 if (!UserSquare::isValidUserSquare(square) || chessBoard->isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
-                    outputError("Input square is not valid on board");
+                    reportIllegalCommand("Input square is not valid on board");
                 } else if (chessBoard->clearPosition(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
                     notifyObservers();
                 }
             }
             
         } else if (firstToken == "=") {
-            if (isInMainMenu()) {
-                outputError("Can't set first turn in main menu");
-            } else if (isGameActive()) {
-                outputError("Can't set first turn when game is active");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("Can't set first turn in main menu");
+            } else if (isInActiveGameState()) {
+                reportIllegalCommand("Can't set first turn when game is active");
             } else if (tokens.size() == 1) {
-                outputError("Not enough input tokens on line, must specify color to go first");
+                reportIllegalCommand("Not enough input tokens on line, must specify color to go first");
             } else if (tokens.size() > 2) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else if (!isValidColor(tokens[1])) {
-                outputError("Must specify color to go first");
+                reportIllegalCommand("Must specify color to go first");
             } else if (stringToColor(tokens[1]) == Team::TEAM_TWO) {
                 currentTurn = 1;
                 notifyObservers();
@@ -395,15 +401,15 @@ void Game::runGame() {
             }
             
         } else if (firstToken == "done") {
-            if (isInMainMenu()) {
-                outputError("Can't leave setup mode in main menu");
-            } else if (isGameActive()) {
-                outputError("Can't leave setup mode when game is active");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("Can't leave setup mode in main menu");
+            } else if (isInActiveGameState()) {
+                reportIllegalCommand("Can't leave setup mode when game is active");
             } else if (tokens.size() >= 2) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
                 if (!ChessBoardUtilities::isBoardInLegalSetupState(chessBoard)) {
-                    outputError("Board is not in valid state, can't leave setup mode");
+                    reportIllegalCommand("Board is not in valid state, can't leave setup mode");
                 } else {
                     gameState = GameState::MAIN_MENU;
                     notifyObservers();
@@ -412,12 +418,12 @@ void Game::runGame() {
 
         } else if (firstToken == "basic") {
 
-            if (isInMainMenu()) {
-                outputError("Can't apply basic setup in main menu");
-            } else if (isGameActive()) {
-                outputError("Can't apply basic setup when game is active");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("Can't apply basic setup in main menu");
+            } else if (isInActiveGameState()) {
+                reportIllegalCommand("Can't apply basic setup when game is active");
             } else if (tokens.size() > 1) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
                 // Reset board for next run through
                 chessBoard = ChessBoardFactory::createChessBoard(8, 8);
@@ -427,19 +433,19 @@ void Game::runGame() {
 
         /*
         } else if (firstToken == "set") {
-            if (isInMainMenu()) {
-                outputError("Can't set board size in main menu");
-            } else if (isGameActive()) {
-                outputError("Can't set board size when game is active");
+            if (isInMainMenuGameState()) {
+                reportIllegalCommand("Can't set board size in main menu");
+            } else if (isInActiveGameState()) {
+                reportIllegalCommand("Can't set board size when game is active");
             } else if (tokens.size() >= 1 && tokens.size() < 3) {
-                outputError("Not enough input tokens on line, expecting set rows cols");
+                reportIllegalCommand("Not enough input tokens on line, expecting set rows cols");
             } else if (tokens.size() > 3) {
-                outputError("Too many input tokens on line");
+                reportIllegalCommand("Too many input tokens on line");
             } else {
                 if (!isInt(tokens[1]) || std::stoi(tokens[1]) < 8 || std::stoi(tokens[1]) > 26) {
-                    outputError("Rows must be between 8 and 26 inclusive");
+                    reportIllegalCommand("Rows must be between 8 and 26 inclusive");
                 } else if (!isInt(tokens[2]) || std::stoi(tokens[2]) < 8 || std::stoi(tokens[2]) > 26) {
-                    outputError("Cols must be between 8 and 26 inclusive");
+                    reportIllegalCommand("Cols must be between 8 and 26 inclusive");
                 } else {
                     board.setBoardSize(std::stoi(tokens[1]), std::stoi(tokens[2]));
                     notifyObservers();
@@ -447,7 +453,7 @@ void Game::runGame() {
             }
         */
         } else if (tokens.size() != 0) {
-            outputError("Invalid command entered");
+            reportIllegalCommand("Invalid command entered");
         }
     }
     

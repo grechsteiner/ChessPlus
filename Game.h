@@ -14,47 +14,41 @@
 #include "CommandRetriever.h"
 #include "IllegalCommandReporter.h"
 #include "ComputerPlayer.h"
+#include "Player.h"
 #include "ChessBoard.h"
 
-// (Color, totalScore, ComputerPlayer)
-using PlayerTuple = std::tuple<Team, double, std::unique_ptr<ComputerPlayer>>;
 
 class Game : public Subject {
 private:
+    GameState gameState;
     std::unique_ptr<ChessBoard> chessBoard;
 
     std::unique_ptr<CommandRetriever> commandRetriever;
     std::unique_ptr<IllegalCommandReporter> illegalCommandReporter;
     
+    std::pair<Player, Player> players;
+    Team currentTurn;
 
-    GameState gameState = GameState::MAIN_MENU;
+
+    void switchTurn();
+    void reportIllegalCommand(std::string const &illegalCommand) const;
     
-    bool showingStandardOpenings = false;
-
-    std::tuple<PlayerTuple, PlayerTuple> players = std::make_tuple(
-        std::make_tuple(Team::TEAM_ONE,  0,  nullptr),
-        std::make_tuple(Team::TEAM_TWO,  0,  nullptr));
-    
-
-    void outputError(std::string const &errorMessage) const;
-    int currentTurn = 0;
-    void incrementTurn();
-    void decrementTurn();
 
     void resetComputerPlayers();
-    void applyStalematePoints();
-    void applyWinPoints(Team team);
 
-    PlayerTuple& getPlayerWithTurn(int i);
+    Player& getCurrentPlayer() const;
 
     void setGameState(GameState newGameState);
-    bool isInMainMenu() const;
-    bool isInSetupMode() const;
-    bool isGameActive() const;
+    bool isInMainMenuGameState() const;
+    bool isInSetupGameState() const;
+    bool isInActiveGameState() const;
+
+
+    bool showingStandardOpenings = false;
 
 
 public:
-    Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
+    explicit Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
     Game(Game const &other);
     Game(Game &&other) noexcept;
     Game& operator=(Game &other);
