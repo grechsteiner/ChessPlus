@@ -10,19 +10,39 @@
 #include "ChessBoard.h"
 
 // Basic ctor
-ComputerPlayer::ComputerPlayer(ChessBoard const &chessBoard, Team team) :
-    chessBoard(chessBoard), team(team) {}
+ComputerPlayer::ComputerPlayer(Team team) :
+    team(team) {}
+
+// Copy ctor
+ComputerPlayer::ComputerPlayer(ComputerPlayer const &other) :
+    team(other.team) {}
 
 // Move ctor
 ComputerPlayer::ComputerPlayer(ComputerPlayer &&other) noexcept :
-    chessBoard(other.chessBoard), team(other.team) {}
+    team(other.team) {}
+
+// Copy assignment
+ComputerPlayer& ComputerPlayer::operator=(ComputerPlayer &other) {
+    if (this != &other) {
+        team = other.team;
+    }
+    return *this;
+}
+
+// Move assignment
+ComputerPlayer& ComputerPlayer::operator=(ComputerPlayer &&other) noexcept {
+    if (this != &other) {
+        team = other.team;
+    }
+    return *this;
+}
 
 void ComputerPlayer::shuffle(std::vector<std::unique_ptr<BoardMove>> &moves) const {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(moves.begin(), moves.end(), std::default_random_engine(seed));
 }
 
-std::unique_ptr<BoardMove> ComputerPlayer::generateMove() const { return generateMoveImpl(); }
+std::unique_ptr<BoardMove> ComputerPlayer::generateMove(std::unique_ptr<ChessBoard> const &chessBoard) const { return generateMoveImpl(chessBoard); }
 std::unique_ptr<ComputerPlayer> ComputerPlayer::clone() const { return cloneImpl(); }
 
 Team ComputerPlayer::getTeam() const { return team; }

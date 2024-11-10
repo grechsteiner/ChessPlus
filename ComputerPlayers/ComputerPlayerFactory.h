@@ -12,7 +12,7 @@
 
 class ComputerPlayerFactory final {
 public:
-    static std::unique_ptr<ComputerPlayer> createComputerPlayer(ComputerPlayerLevel computerPlayerLevel, ChessBoard const &chessBoard, Team team);
+    static std::unique_ptr<ComputerPlayer> createComputerPlayer(ComputerPlayerLevel computerPlayerLevel, Team team);
 };
 
 

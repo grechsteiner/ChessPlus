@@ -12,17 +12,16 @@
 
 class ComputerPlayer {
 private:
-    virtual std::unique_ptr<BoardMove> generateMoveImpl() const = 0;
+    virtual std::unique_ptr<BoardMove> generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const = 0;
     virtual std::unique_ptr<ComputerPlayer> cloneImpl() const = 0;
 
 protected:
-    explicit ComputerPlayer(ChessBoard const &chessBoard, Team team);
-    ComputerPlayer(ComputerPlayer const &other) = default;
+    explicit ComputerPlayer(Team team);
+    ComputerPlayer(ComputerPlayer const &other);
     ComputerPlayer(ComputerPlayer &&other) noexcept;
-    // Copy assignment disabled
-    // Move assignment disabled
+    ComputerPlayer& operator=(ComputerPlayer &other);
+    ComputerPlayer& operator=(ComputerPlayer &&other) noexcept;
 
-    ChessBoard const &chessBoard;
     Team team;
 
     void shuffle(std::vector<std::unique_ptr<BoardMove>> &moves) const;
@@ -30,7 +29,7 @@ protected:
 public:
     virtual ~ComputerPlayer() = default;
    
-    std::unique_ptr<BoardMove> generateMove() const;
+    std::unique_ptr<BoardMove> generateMove(std::unique_ptr<ChessBoard> const &chessBoard) const;
     std::unique_ptr<ComputerPlayer> clone() const;
 
     Team getTeam() const;

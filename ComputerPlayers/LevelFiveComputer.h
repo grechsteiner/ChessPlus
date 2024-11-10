@@ -39,17 +39,18 @@ private:
     };
 
     static int const depth = 4;
-    std::unique_ptr<BoardMove> generateMoveImpl() const override;
+    std::unique_ptr<BoardMove> generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const override;
 
-    ScoredAlphaBetaMove getBestAlphaBetaMove(ChessBoard &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const;
-    int getAlphaBetaBoardScore(ChessBoard const &currentChessBoard, Team currentTeam) const;
-    std::vector<std::unique_ptr<BoardMove>> generateRankedMoves(ChessBoard const &currentChessBoard, Team currentTeam) const;
+    ScoredAlphaBetaMove getBestAlphaBetaMove(std::unique_ptr<ChessBoard> &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const;
+    int getAlphaBetaBoardScore(std::unique_ptr<ChessBoard> const &currentChessBoard, Team currentTeam) const;
+    std::vector<std::unique_ptr<BoardMove>> generateRankedMoves(std::unique_ptr<ChessBoard> const &currentChessBoard, Team currentTeam) const;
 
 public:
-    explicit LevelFiveComputer(ChessBoard const &chessBoard, Team team);
+    explicit LevelFiveComputer(Team team);
     LevelFiveComputer(LevelFiveComputer const &other);
     LevelFiveComputer(LevelFiveComputer &&other) noexcept;
-    // Copy and move assignment disabled
+    LevelFiveComputer& operator=(LevelFiveComputer &other);
+    LevelFiveComputer& operator=(LevelFiveComputer &&other) noexcept;
     virtual ~LevelFiveComputer() = default;
 };
 

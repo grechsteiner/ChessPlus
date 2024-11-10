@@ -12,12 +12,13 @@
 
 class LevelThreeComputer final : public Cloneable<ComputerPlayer, LevelThreeComputer> {
 private:
-    std::unique_ptr<BoardMove> generateMoveImpl() const override;
+    std::unique_ptr<BoardMove> generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const override;
 public:
-    explicit LevelThreeComputer(ChessBoard const &chessBoard, Team team);
+    explicit LevelThreeComputer(Team team);
     LevelThreeComputer(LevelThreeComputer const &other);
     LevelThreeComputer(LevelThreeComputer &&other) noexcept;
-    // Copy and move assignment disabled
+    LevelThreeComputer& operator=(LevelThreeComputer &other);
+    LevelThreeComputer& operator=(LevelThreeComputer &&other) noexcept;
     virtual ~LevelThreeComputer() = default;
 };
 

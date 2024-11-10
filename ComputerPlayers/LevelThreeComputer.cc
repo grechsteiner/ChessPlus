@@ -8,8 +8,8 @@
 
 
 // Basic ctor
-LevelThreeComputer::LevelThreeComputer(ChessBoard const &chessBoard, Team team) : 
-    Cloneable<ComputerPlayer, LevelThreeComputer>(chessBoard, team) {}
+LevelThreeComputer::LevelThreeComputer(Team team) : 
+    Cloneable<ComputerPlayer, LevelThreeComputer>(team) {}
 
 // Copy ctor
 LevelThreeComputer::LevelThreeComputer(LevelThreeComputer const &other) :
@@ -19,15 +19,33 @@ LevelThreeComputer::LevelThreeComputer(LevelThreeComputer const &other) :
 LevelThreeComputer::LevelThreeComputer(LevelThreeComputer &&other) noexcept :
     Cloneable<ComputerPlayer, LevelThreeComputer>(std::move(other)) {}
 
-std::unique_ptr<BoardMove> LevelThreeComputer::generateMoveImpl() const {
-    std::vector<std::unique_ptr<BoardMove>> winningMoves = chessBoard.generateWinningMoves(team);
+// Copy assignment
+LevelThreeComputer& LevelThreeComputer::operator=(LevelThreeComputer &other) {
+    if (this != &other) {
+        // Update if needed
+        return *this;
+    }
+    return *this;
+}
+
+// Move assignment
+LevelThreeComputer& LevelThreeComputer::operator=(LevelThreeComputer &&other) noexcept {
+    if (this != &other) {
+        // Update if needed
+        return *this;
+    }
+    return *this;
+}
+
+std::unique_ptr<BoardMove> LevelThreeComputer::generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const {
+    std::vector<std::unique_ptr<BoardMove>> winningMoves = chessBoard->generateWinningMoves(team);
     if (!winningMoves.empty()) {
         return winningMoves.front()->clone();
     }
 
     std::vector<std::unique_ptr<BoardMove>> capturingAndCaptureAvoidingMoves;
-    std::vector<std::unique_ptr<BoardMove>> capturingMoves = chessBoard.generateCapturingMoves(team);
-    std::vector<std::unique_ptr<BoardMove>> captureAvoidingMoves = chessBoard.generateCaptureAvoidingMoves(team);
+    std::vector<std::unique_ptr<BoardMove>> capturingMoves = chessBoard->generateCapturingMoves(team);
+    std::vector<std::unique_ptr<BoardMove>> captureAvoidingMoves = chessBoard->generateCaptureAvoidingMoves(team);
     for (std::unique_ptr<BoardMove> const &capturingMove : capturingMoves) {
         for (std::unique_ptr<BoardMove> const &captureAvoidingMove : captureAvoidingMoves) {
             if (*capturingMove == *captureAvoidingMove) {
@@ -46,7 +64,7 @@ std::unique_ptr<BoardMove> LevelThreeComputer::generateMoveImpl() const {
         return captureAvoidingMoves.front()->clone();
     }
 
-    std::vector<std::unique_ptr<BoardMove>> allLegalMoves = chessBoard.generateAllLegalMoves(team);
+    std::vector<std::unique_ptr<BoardMove>> allLegalMoves = chessBoard->generateAllLegalMoves(team);
     shuffle(allLegalMoves);
     return allLegalMoves.front()->clone();
 }
