@@ -28,12 +28,14 @@
 
 #include "ChessBoardImpl.h"
 #include "ChessBoardFactory.h"
+#include "ChessBoardUtilities.h"
 
 
 Game::Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter) :
     chessBoard(ChessBoardFactory::createChessBoard(8, 8)),
     commandRetriever(std::move(commandRetriever)), illegalCommandReporter(std::move(illegalCommandReporter)) {
-    applyStandardSetup();
+
+    ChessBoardUtilities::applyStandardSetup(chessBoard);
 }
 
 // TODO
@@ -152,9 +154,10 @@ void Game::runGame() {
                     
                     if (chessBoard->isInStaleMate(Team::TEAM_ONE) || chessBoard->isInStaleMate(Team::TEAM_TWO)) {
                         applyStalematePoints();
-                        chessBoard->clearBoard();
-                        // board.setBoardSize(8, 8);
-                        applyStandardSetup();
+
+                        // Reset board for next run through
+                        chessBoard = ChessBoardFactory::createChessBoard(8, 8);
+                        ChessBoardUtilities::applyStandardSetup(chessBoard);
 
                         // Reset players for next run through
                         resetComputerPlayers();
@@ -245,9 +248,8 @@ void Game::runGame() {
                         }
 
                         // Reset board for next run through
-                        chessBoard->clearBoard();
-                        // board.setBoardSize(8, 8);
-                        applyStandardSetup();
+                        chessBoard = ChessBoardFactory::createChessBoard(8, 8);
+                        ChessBoardUtilities::applyStandardSetup(chessBoard);
 
                         // Reset players for next run through
                         resetComputerPlayers();
@@ -276,9 +278,8 @@ void Game::runGame() {
                 }
 
                 // Reset board for next run through
-                chessBoard->clearBoard();
-                // board.setBoardSize(8, 8);
-                applyStandardSetup();
+                chessBoard = ChessBoardFactory::createChessBoard(8, 8);
+                ChessBoardUtilities::applyStandardSetup(chessBoard);
 
                 // Reset players for next run through
                 resetComputerPlayers();
@@ -401,7 +402,7 @@ void Game::runGame() {
             } else if (tokens.size() >= 2) {
                 outputError("Too many input tokens on line");
             } else {
-                if (!isBoardInProperSetup()) {
+                if (!ChessBoardUtilities::isBoardInLegalSetupState(chessBoard)) {
                     outputError("Board is not in valid state, can't leave setup mode");
                 } else {
                     gameState = GameState::MAIN_MENU;
@@ -418,7 +419,9 @@ void Game::runGame() {
             } else if (tokens.size() > 1) {
                 outputError("Too many input tokens on line");
             } else {
-                applyStandardSetup();
+                // Reset board for next run through
+                chessBoard = ChessBoardFactory::createChessBoard(8, 8);
+                ChessBoardUtilities::applyStandardSetup(chessBoard);
                 notifyObservers();
             }
 
