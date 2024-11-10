@@ -52,12 +52,9 @@ private:
     bool isInSetupMode() const;
     bool isGameActive() const;
 
-    void applyStandardSetup();
-    bool isBoardInProperSetup() const;
-
 
 public:
-    Game(std::unique_ptr<ChessBoard> chessBoard, std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
+    Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
     Game(Game const &other);
     Game(Game &&other) noexcept;
     Game& operator=(Game &other);

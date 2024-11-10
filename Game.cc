@@ -27,10 +27,12 @@
 #include "ChessBoard.h"
 
 #include "ChessBoardImpl.h"
+#include "ChessBoardFactory.h"
 
 
-Game::Game(std::unique_ptr<ChessBoard> chessBoard, std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter) :
-    chessBoard(std::move(chessBoard)), commandRetriever(std::move(commandRetriever)), illegalCommandReporter(std::move(illegalCommandReporter)) {
+Game::Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter) :
+    chessBoard(ChessBoardFactory::createChessBoard(8, 8)),
+    commandRetriever(std::move(commandRetriever)), illegalCommandReporter(std::move(illegalCommandReporter)) {
     applyStandardSetup();
 }
 
@@ -447,112 +449,3 @@ void Game::runGame() {
     }
     
 }
-
-void Game::applyStandardSetup() {
-    chessBoard->clearBoard();
- 
-    int startCol = (chessBoard->getNumCols() - 8) / 2;
-
-    int topRow = 0;                     // Black
-    int bottomRow = chessBoard->getNumRows() - 1;    // White
-    for (int col = startCol; col < startCol + 8; ++col) {
-        
-        // Normal Pieces
-        PieceType pieceType;
-        if (col == startCol || col == startCol + 8 - 1) {
-            // Rook
-            pieceType = PieceType::ROOK;
-        } else if (col == startCol + 1 || col == startCol + 8 - 2) {
-            // Knight
-            pieceType = PieceType::KNIGHT;
-        } else if (col == startCol + 2 || col == startCol + 8 - 3) {
-            // Bishop
-            pieceType = PieceType::BISHOP;
-        } else if (col == startCol + 3) {
-            // Queen
-            pieceType = PieceType::QUEEN;
-        } else if (col == startCol + 4) {
-            // King
-            pieceType = PieceType::KING;
-        }
-        BoardSquare blackPieceSquare(topRow, col);
-        BoardSquare whitePieceSquare(bottomRow, col);
-        chessBoard->setPosition(blackPieceSquare, PieceData(pieceType, PieceLevel::BASIC, Team::TEAM_TWO, PieceDirection::SOUTH, false));               // Black
-        chessBoard->setPosition(whitePieceSquare, PieceData(pieceType, PieceLevel::BASIC, Team::TEAM_ONE, PieceDirection::NORTH, false));            // White
-
-        // Pawns
-        BoardSquare blackPawnSquare(topRow + 1, col);
-        BoardSquare whitePawnSquare(bottomRow - 1, col);
-        chessBoard->setPosition(blackPawnSquare, PieceData(PieceType::PAWN, PieceLevel::BASIC, Team::TEAM_TWO, PieceDirection::SOUTH, false));     // Black
-        chessBoard->setPosition(whitePawnSquare, PieceData(PieceType::PAWN, PieceLevel::BASIC, Team::TEAM_ONE, PieceDirection::NORTH, false));  // Black
-    }
-}
-
-bool Game::isBoardInProperSetup() const {
-    int whiteKingCount = 0;
-    int blackKingCount = 0;
-
-    int topRow = 0;
-    int bottomRow = chessBoard->getNumRows() - 1;
-
-    for (ChessBoard::BoardSquareIterator it = chessBoard->begin(); it != chessBoard->end(); ++it) {
-        std::optional<PieceData> pieceData = chessBoard->getPieceDataAt(*it);
-        if (pieceData.has_value()) {
-            if (pieceData.value().pieceType == PieceType::KING) {
-                Team team = pieceData.value().team;
-                if (chessBoard->isSquareAttacked(*it, team)) {
-                    return false;
-                }
-                if (team == chessBoard->getTeamOne()) {
-                    whiteKingCount++;
-                } else if (team == chessBoard->getTeamTwo()) {
-                    blackKingCount++;
-                }
-            }
-
-            if (pieceData.value().pieceType == PieceType::PAWN && ((*it).boardRow == topRow || (*it).boardRow == bottomRow)) {
-                return false;
-            }
-        }
-        
-    }
-
-    return (whiteKingCount != 1 || blackKingCount != 1) ? false : true;
-}
-
-/*
-bool Board::setBoardSizeImpl(int newNumRows, int newNumCols) { 
-    static int const maxNumRows = 26;
-    static int const maxNumCols = 26;
-    static int const minNumRows = 4;
-    static int const minNumCols = 8;
-    if (newNumRows >= minNumRows && newNumRows <= maxNumRows && newNumCols >= minNumCols && newNumCols <= maxNumCols) {
-        int oldNumRows = getNumRows();
-        int oldNumCols = getNumCols();
-
-        // Create new grid
-        std::vector<std::vector<std::unique_ptr<Piece>>> newGrid(newNumRows);
-        for (int boardRow = 0; boardRow < newNumRows; ++boardRow) {
-            newGrid[boardRow].resize(newNumCols);
-        }
-        initializeBoard(newGrid);
-
-        for (BoardSquare const &boardSquare : allBoardSquares()) {
-            int oldRow = boardSquare.boardRow;
-            int oldCol = boardSquare.boardCol;
-            int newRow = oldRow + (newNumRows - oldNumRows);
-            int newCol = oldCol;
-            if (newRow >= 0 && newRow < newNumRows && newCol >= 0 && newCol < newNumCols) {
-                newGrid[newRow][newCol] = std::move(grid[oldRow][oldCol]);
-            }
-        }
-
-        // Replace the old grid with the new grid
-        grid = std::move(newGrid);
-    
-        return true;
-    } else {
-        return false;
-    }
-}
-*/
