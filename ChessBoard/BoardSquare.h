@@ -3,6 +3,8 @@
 #ifndef BoardSquare_h
 #define BoardSquare_h
 
+#include <optional>
+
 
 /**
  * BoardSquare Class
@@ -20,6 +22,8 @@ struct BoardSquare final {
     ~BoardSquare() = default;
 
     bool operator==(BoardSquare const &other) const;
+
+    static std::optional<BoardSquare> createBoardSquare(std::string const &squareStr, int numRowsOnBoard, int numColsOnBoard);
 };
 
 

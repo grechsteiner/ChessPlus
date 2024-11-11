@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <regex>
 
 struct BoardSquare;
 class BoardMove;
@@ -113,14 +114,6 @@ std::string toUpper(std::string const &str);
 bool isInt(std::string const &str);
 
 int min(int a, int b);
-
-
-
-extern int const base;
-BoardSquare createBoardSquare(UserSquare const &userSquare, int numRowsOnBoard, int numColsOnBoard);
-UserSquare createUserSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard);
-bool areEqual(UserSquare const &userSquare, BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard);
-bool areEqual(UserMove const &userMove, std::unique_ptr<BoardMove> const &boardMove, int numRowsOnBoard, int numColsOnBoard);
 
 
 #endif /* Constants_h */

@@ -8,7 +8,6 @@
 #include "Constants.h"
 #include "BoardSquare.h"
 #include "UserSquare.h"
-#include "UserMove.h"
 #include "BoardMove.h"
 
 
@@ -176,42 +175,4 @@ bool isInt(std::string const &str) {
 
 int min(int a, int b) {
     return (a < b) ? a : b;
-}
-
-
-// static
-int const base = 26;
-
-BoardSquare createBoardSquare(UserSquare const &userSquare, int numRowsOnBoard, int numColsOnBoard) {
-    int boardRow = numRowsOnBoard - userSquare.getUserRow();
-    int boardCol = 0;
-    for (char c : userSquare.getUserCol()) {
-        boardCol = boardCol * base + (c - 'a');
-    }
-    return BoardSquare(boardRow, boardCol);
-}
-
-UserSquare createUserSquare(BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard) {
-    std::string userRow = std::to_string(numRowsOnBoard - boardSquare.boardRow);
-    
-    std::string userCol = "";
-    int n = boardSquare.boardCol;
-    while (n >= 0) {
-        int remainder = n % base;
-        userCol = static_cast<char>('a' + remainder) + userCol;
-        n = n / base - 1;  // Subtract 1 to handle the 0-indexed system properly
-    }
-
-    return UserSquare(userCol + userRow);
-}
-
-bool areEqual(UserSquare const &userSquare, BoardSquare const &boardSquare, int numRowsOnBoard, int numColsOnBoard) {
-    return createBoardSquare(userSquare, numRowsOnBoard, numColsOnBoard) == boardSquare;
-}
-
-bool areEqual(UserMove const &userMove, std::unique_ptr<BoardMove> const &boardMove, int numRowsOnBoard, int numColsOnBoard) {
-    return 
-        createBoardSquare(userMove.getFromSquare(), numRowsOnBoard, numColsOnBoard) == boardMove->getFromSquare() &&
-        createBoardSquare(userMove.getToSquare(), numRowsOnBoard, numColsOnBoard) == boardMove->getToSquare() &&
-        userMove.getPromotionPieceType() == boardMove->getPromotionPieceType();
 }

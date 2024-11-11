@@ -185,9 +185,13 @@ void Game::runGame() {
                             break;
                         }
                         
-                        BoardSquare fromBoardSquare = createBoardSquare(UserSquare(matches[1].str()), chessBoard->getNumRows(), chessBoard->getNumCols());
-                        BoardSquare toBoardSquare = createBoardSquare(UserSquare(matches[2].str()), chessBoard->getNumRows(), chessBoard->getNumCols());
-
+                        std::optional<BoardSquare> fromSquare = BoardSquare::createBoardSquare(matches[1].str(), chessBoard->getNumRows(), chessBoard->getNumCols());
+                        std::optional<BoardSquare> toSquare = BoardSquare::createBoardSquare(matches[2].str(), chessBoard->getNumRows(), chessBoard->getNumCols());
+                        if (!fromSquare.has_value() || !toSquare.has_value() || !chessBoard->isSquareOnBoard(fromSquare.value()) || !chessBoard->isSquareOnBoard(toSquare.value())) {
+                            reportIllegalCommand("Invalid squares");
+                            break;
+                        }
+                        
                         std::string promotionPiece = matches[3].matched ? matches[3].str() : "";
                         if (!isValidPieceType(promotionPiece)) {
                             reportIllegalCommand("Invalid promotion piece");
@@ -195,7 +199,7 @@ void Game::runGame() {
                         }
                         
                         std::optional<PieceType> promotion = promotionPiece == "" ? std::nullopt : std::make_optional(stringToPieceType(promotionPiece));
-                        std::optional<std::unique_ptr<BoardMove>> boardMove = chessBoard->createBoardMove(fromBoardSquare, toBoardSquare, promotion);
+                        std::optional<std::unique_ptr<BoardMove>> boardMove = chessBoard->createBoardMove(fromSquare.value(), toSquare.value(), promotion);
                         if (!boardMove.has_value()) {
                             reportIllegalCommand("Invalid board move, try again ");
                             break;
@@ -270,8 +274,8 @@ void Game::runGame() {
                     reportIllegalCommand("Can't set piece when game is active");
                     break;
                 case GameState::SETUP:
-                    std::string square = matches[1].str();
-                    if (!chessBoard->isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
+                    std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(matches[1].str(), chessBoard->getNumRows(), chessBoard->getNumCols());
+                    if (!boardSquare.has_value() || !chessBoard->isSquareOnBoard(boardSquare.value())) {
                         reportIllegalCommand("Input square is not valid on board");
                         break;
                     }
@@ -282,14 +286,13 @@ void Game::runGame() {
                         break;
                     }
 
-                    BoardSquare boardSquare = createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols());
                     PieceType pieceType = stringToPieceType(piece);
                     PieceLevel pieceLevel = matches[3].matched ? stringToPieceLevel(matches[3].str()) : PieceLevel::BASIC;
                     Team team = std::isupper(piece.front()) ? Team::TEAM_ONE : Team::TEAM_TWO;
                     PieceDirection pieceDirection = matches[4].matched ? stringToPieceDirection(matches[4]) :
                         (team == Team::TEAM_ONE ? PieceDirection::NORTH : PieceDirection::SOUTH);
                     
-                    chessBoard->setPosition(boardSquare, PieceData(pieceType, pieceLevel, team, stringToPieceDirection(tokens[3]), false));
+                    chessBoard->setPosition(boardSquare.value(), PieceData(pieceType, pieceLevel, team, stringToPieceDirection(tokens[3]), false));
                     notifyObservers();
                     break;
             }       
@@ -303,13 +306,13 @@ void Game::runGame() {
                     reportIllegalCommand("Can't clear piece when game is active");
                     break;
                 case GameState::SETUP:
-                    std::string square = matches[1];
-                    if (!chessBoard->isSquareOnBoard(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
+                    std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(matches[1].str(), chessBoard->getNumRows(), chessBoard->getNumCols());
+                    if (!boardSquare.has_value() || !chessBoard->isSquareOnBoard(boardSquare.value())) {
                         reportIllegalCommand("Input square is not valid on board");
                         break;
                     } 
                     
-                    if (chessBoard->clearPosition(createBoardSquare(UserSquare(square), chessBoard->getNumRows(), chessBoard->getNumCols()))) {
+                    if (chessBoard->clearPosition(boardSquare.value())) {
                         notifyObservers();
                     }
                     break;
