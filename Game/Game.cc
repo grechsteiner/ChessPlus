@@ -133,8 +133,8 @@ std::optional<std::string> Game::matchToOptionalString(std::smatch const& matche
         : std::nullopt; 
 }
 
-Game::State Game::getState() const {
-    return std::tie(gameState, chessBoard, players, currentTurn);
+State Game::getState() const {
+    return State(gameState, chessBoard, players, currentTurn);
 }
 
 void Game::runGame() {

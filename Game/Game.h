@@ -18,6 +18,7 @@
 #include "Player.h"
 #include "ChessBoard.h"
 #include "MoveInputDetails.h"
+#include "State.h"
 
 
 class Game : public Subject {
@@ -64,7 +65,6 @@ public:
     
     void runGame();
 
-    using State = std::tuple<GameState, std::unique_ptr<ChessBoard> const&, std::pair<Player, Player> const&, Team>;
     State getState() const;
 };
 
