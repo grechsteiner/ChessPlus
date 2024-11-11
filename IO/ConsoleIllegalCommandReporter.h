@@ -7,15 +7,16 @@
 #include <string>
 
 #include "IllegalCommandReporter.h"
+#include "Cloneable.h"
 
 
 /**
  * ConsoleIllegalCommandReporter InvalidCommandReporter  Class
  */
-class ConsoleIllegalCommandReporter final : public IllegalCommandReporter {
+class ConsoleIllegalCommandReporter final : public Cloneable<IllegalCommandReporter,ConsoleIllegalCommandReporter> {
 private:
     std::ostream &out;
-    void reportIllegalCommandImpl(std::string const &illegalCommand) override;
+    void reportIllegalCommandImpl(std::string const &message) override;
 public:
     explicit ConsoleIllegalCommandReporter(std::ostream &out);
     ConsoleIllegalCommandReporter(ConsoleIllegalCommandReporter const &other);

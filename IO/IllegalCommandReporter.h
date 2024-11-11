@@ -11,7 +11,8 @@
  */
 class IllegalCommandReporter {
 private:
-    virtual void reportIllegalCommandImpl(std::string const &illegalCommand) = 0;
+    virtual void reportIllegalCommandImpl(std::string const &message) = 0;
+    virtual std::unique_ptr<IllegalCommandReporter> cloneImpl() const = 0;
 
 protected:
     explicit IllegalCommandReporter();
@@ -21,7 +22,8 @@ protected:
     IllegalCommandReporter& operator=(IllegalCommandReporter &&other) noexcept;
 
 public:
-    void reportIllegalCommand(std::string const &illegalCommand);
+    void reportIllegalCommand(std::string const &message);
+    std::unique_ptr<IllegalCommandReporter> clone() const;
 
     virtual ~IllegalCommandReporter() = default;
 };

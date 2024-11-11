@@ -7,12 +7,13 @@
 #include <iostream>
 
 #include "CommandRetriever.h"
+#include "Cloneable.h"
 
 
 /**
  * ConsoleCommandRetriever CommandRetriever Class
  */
-class ConsoleCommandRetriever final : public CommandRetriever {
+class ConsoleCommandRetriever final : public Cloneable<CommandRetriever, ConsoleCommandRetriever> {
 private:
     std::istream &in;
     bool isCommandAvailableImpl() const override;

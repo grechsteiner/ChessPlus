@@ -19,4 +19,5 @@ IllegalCommandReporter& IllegalCommandReporter::operator=(IllegalCommandReporter
     return *this;
 }
 
-void IllegalCommandReporter::reportIllegalCommand(std::string const &illegalCommand) { reportIllegalCommandImpl(illegalCommand); }
+void IllegalCommandReporter::reportIllegalCommand(std::string const &message) { reportIllegalCommandImpl(message); }
+std::unique_ptr<IllegalCommandReporter> IllegalCommandReporter::clone() const { return cloneImpl(); }
