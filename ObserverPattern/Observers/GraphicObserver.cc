@@ -43,7 +43,7 @@ GraphicObserver::~GraphicObserver() {
 
 void GraphicObserver::notifyImpl() {
     /*
-    GameState gameState = game->getGameState();
+    GameState gameState = game->getState();
 
     if (gameState == GameState::MAIN_MENU) {
         window.fillRectangle(0, 0, 600, 600, 0); // Clear the window with white color

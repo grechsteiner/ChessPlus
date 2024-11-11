@@ -21,7 +21,7 @@ TextObserver::~TextObserver() {
 
 void TextObserver::notifyImpl() {
 
-    std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> state = game->getGameState();
+    std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> state = game->getState();
     GameState gameState = std::get<4>(state);
 
 

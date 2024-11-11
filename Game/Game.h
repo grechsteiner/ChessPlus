@@ -16,6 +16,7 @@
 #include "ComputerPlayer.h"
 #include "Player.h"
 #include "ChessBoard.h"
+#include "MoveInputDetails.h"
 
 
 class Game : public Subject {
@@ -30,18 +31,27 @@ private:
     std::pair<Player, Player> players;
     Team currentTurn;
 
-    void switchTurn();
     Player const& getPlayer(Team team) const;
+    void switchTurn();
     void resetGame();
-
     void setGameState(GameState newGameState);
-
     void reportIllegalCommand(std::string const &message) const;
 
+    std::optional<std::string> matchToOptionalString(std::smatch const& matches, int index) const;
 
+    void processEnterSetupModeCommand();
+    void processPlacePieceCommand(std::string const &boardSquareStr, std::string const &pieceTypeStr, std::optional<std::string> const &pieceLevelStr, std::optional<std::string> const &pieceDirectionStr);
+    void processRemovePieceCommand(std::string const &boardSquareStr);
+    void processSwapFirstTurnCommand();
+    void processApplyStandardSetupCommand();
+    void processSetBoardSizeCommand(std::string const &numRowsStr, std::string const &numColsStr);
+    void processExitSetupModeCommand();
 
-    bool showingStandardOpenings = false;
-
+    void processStartGameCommand(std::string const &teamOneStr, std::string const &teamTwoStr);
+    void processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails);
+    void processMakeComputerMoveCommand();
+    void processUndoMoveCommand();
+    void processResignGameCommand();
 
 public:
     explicit Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
@@ -54,7 +64,7 @@ public:
     void runGame();
 
     using State = std::tuple<GameState, std::unique_ptr<ChessBoard> const&, std::pair<Player, Player> const&, Team>;
-    State getGameState() const;
+    State getState() const;
 };
 
 #endif /* Game_h */
