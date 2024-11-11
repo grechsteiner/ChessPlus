@@ -14,7 +14,7 @@
 #include "PieceData.h"
 #include "Knight.h"
 
-class ChessBoard;
+#include "ChessBoard.h"
 struct BoardSquare;
 class BoardMove;
 

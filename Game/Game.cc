@@ -102,9 +102,9 @@ Player const& Game::getPlayer(Team team) const {
 
 void Game::switchTurn() {
     if (currentTurn == chessBoard->getTeamOne()) {
-        currentTurn == chessBoard->getTeamTwo();
+        currentTurn = chessBoard->getTeamTwo();
     } else {
-        currentTurn == chessBoard->getTeamOne();
+        currentTurn = chessBoard->getTeamOne();
     }
 }
 
@@ -248,7 +248,7 @@ void Game::processPlacePieceCommand(std::string const &boardSquareStr, std::stri
                     break;
                 }
             } else {
-                pieceLevel == PieceLevel::BASIC;
+                pieceLevel = PieceLevel::BASIC;
             }
 
             PieceDirection pieceDirection;
@@ -497,7 +497,7 @@ void Game::processUndoMoveCommand() {
         case GameState::GAME_ACTIVE:
             if (chessBoard->undoMove()) {
                 switchTurn();
-                notifyObservers;
+                notifyObservers();
             } else {
                 reportIllegalCommand("There are no moves to undo");
             }

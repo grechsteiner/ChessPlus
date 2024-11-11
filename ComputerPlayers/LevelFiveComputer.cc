@@ -113,7 +113,7 @@ LevelFiveComputer& LevelFiveComputer::operator=(LevelFiveComputer &&other) noexc
 
 std::unique_ptr<BoardMove> LevelFiveComputer::generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const {
     std::unique_ptr<ChessBoard> tempChessBoard = chessBoard->clone();
-    return getBestAlphaBetaMove(tempChessBoard, team, depth, -KingScore, KingScore).boardMove.value();
+    return getBestAlphaBetaMove(tempChessBoard, team, depth, -KING_SCORE, KING_SCORE).boardMove.value();
 }
 
 LevelFiveComputer::ScoredAlphaBetaMove LevelFiveComputer::getBestAlphaBetaMove(std::unique_ptr<ChessBoard> &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const {
@@ -216,9 +216,9 @@ int LevelFiveComputer::getAlphaBetaBoardScore(std::unique_ptr<ChessBoard> const 
     // Checkmate
     if (currentChessBoard->isInCheckMate(currentTeam)) {
         if (currentTeam == currentChessBoard->getTeamTwo()) {
-            totalScore += KingScore;
+            totalScore += KING_SCORE;
         } else {
-            totalScore -= KingScore;
+            totalScore -= KING_SCORE;
         }
     }
 

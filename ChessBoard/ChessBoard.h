@@ -10,10 +10,9 @@
 #include "Constants.h"
 #include "BoardSquare.h"
 
-class BoardMove;
-struct PieceInfo;
-struct PieceData;
-
+#include "BoardMove.h"
+#include "PieceData.h"
+#include "PieceInfo.h"
 
 /**
  * ChessBoard Interface Class

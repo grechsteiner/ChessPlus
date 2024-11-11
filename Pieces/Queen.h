@@ -11,7 +11,7 @@
 #include "Piece.h"
 #include "Cloneable.h"
 
-class ChessBoard;
+#include "ChessBoard.h"
 struct BoardSquare;
 class BoardMove;
 

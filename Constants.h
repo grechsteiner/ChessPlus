@@ -3,6 +3,7 @@
 #ifndef Constants_h
 #define Constants_h
 
+static int const KING_SCORE = std::numeric_limits<int>::max();
 
 enum class GameState {
     MAIN_MENU,

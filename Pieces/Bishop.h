@@ -12,7 +12,7 @@
 #include "Cloneable.h"
 #include "PieceData.h"
 
-class ChessBoard;
+#include "ChessBoard.h"
 struct BoardSquare;
 class BoardMove;
 

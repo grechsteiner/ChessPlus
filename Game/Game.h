@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <tuple>
+#include <regex>
 
 #include "Constants.h"
 #include "Subject.h"

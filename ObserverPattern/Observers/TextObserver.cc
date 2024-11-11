@@ -21,6 +21,7 @@ TextObserver::~TextObserver() {
 
 void TextObserver::notifyImpl() {
 
+    /*
     std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> state = game->getState();
     GameState gameState = std::get<4>(state);
 
@@ -105,15 +106,16 @@ void TextObserver::notifyImpl() {
         out << "-----+" << std::endl;
 
 
-        /*
+        
         if (std::get<3>(state) == true) {
             std::vector<std::pair<std::string, std::string>> openings = board.getMatchingOpenings();
             for (size_t i = 0; i < openings.size(); ++i) {
                 out << "Name: " << openings[i].first << std::endl;
             }
         }
-        */
+        
     }
+    */
 }
 
 void TextObserver::printPiece(const std::string& str, Team team) {

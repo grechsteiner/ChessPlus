@@ -9,7 +9,7 @@
 #include "PieceData.h"
 #include "PieceInfo.h"
 
-class ChessBoard;
+#include "ChessBoard.h"
 struct BoardSquare;
 class BoardMove;
 

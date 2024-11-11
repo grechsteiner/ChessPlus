@@ -29,9 +29,10 @@ std::optional<PlayerType> Utilities::stringToPlayerType(std::string const &str) 
         { "COMPUTER", PlayerType::COMPUTER }
     };
 
-    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
-    return mapping.find(str) != mapping.end()
-        ? std::make_optional<PlayerType>(mapping[str])
+    std::string upperStr = str;
+    std::transform(upperStr.begin(), upperStr.end(), upperStr.begin(), ::toupper);
+    return mapping.find(upperStr) != mapping.end()
+        ? std::make_optional<PlayerType>(mapping[upperStr])
         : std::nullopt;
 }
 
@@ -45,9 +46,10 @@ std::optional<PieceType> Utilities::stringToPieceType(std::string const &str) {
         { "K", PieceType::KING }
     };
 
-    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
-    return mapping.find(str) != mapping.end()
-        ? std::make_optional<PieceType>(mapping[str])
+    std::string upperStr = str;
+    std::transform(upperStr.begin(), upperStr.end(), upperStr.begin(), ::toupper);
+    return mapping.find(upperStr) != mapping.end()
+        ? std::make_optional<PieceType>(mapping[upperStr])
         : std::nullopt;
 }
 
@@ -57,9 +59,10 @@ std::optional<PieceLevel> Utilities::stringToPieceLevel(std::string const &str) 
         { "ADVANCED", PieceLevel::ADVANCED }
     };
 
-    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
-    return mapping.find(str) != mapping.end()
-        ? std::make_optional<PieceLevel>(mapping[str])
+    std::string upperStr = str;
+    std::transform(upperStr.begin(), upperStr.end(), upperStr.begin(), ::toupper);
+    return mapping.find(upperStr) != mapping.end()
+        ? std::make_optional<PieceLevel>(mapping[upperStr])
         : std::nullopt;
 }
 
@@ -71,8 +74,9 @@ std::optional<PieceDirection> Utilities::stringToPieceDirection(std::string cons
         { "WEST", PieceDirection::WEST }
     };
 
-    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
-    return mapping.find(str) != mapping.end()
-        ? std::make_optional<PieceDirection>(mapping[str])
+    std::string upperStr = str;
+    std::transform(upperStr.begin(), upperStr.end(), upperStr.begin(), ::toupper);
+    return mapping.find(upperStr) != mapping.end()
+        ? std::make_optional<PieceDirection>(mapping[upperStr])
         : std::nullopt;
 }

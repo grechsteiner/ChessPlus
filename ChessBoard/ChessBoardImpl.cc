@@ -114,7 +114,7 @@ void ChessBoardImpl::clearRedoMoves() {
 
 std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const {
     return isSquareOnBoard(boardSquare) && !isSquareEmpty(boardSquare)
-        ? grid[boardSquare.boardRow][boardSquare.boardCol]->getMoves(std::make_unique<ChessBoardImpl>(*this), boardSquare, onlyAttackingMoves) 
+        ? grid[boardSquare.boardRow][boardSquare.boardCol]->getMoves(*this, boardSquare, onlyAttackingMoves) 
         : std::vector<std::unique_ptr<BoardMove>>();
 }
 
