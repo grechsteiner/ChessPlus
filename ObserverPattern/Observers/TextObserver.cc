@@ -77,23 +77,23 @@ void TextObserver::notifyImpl() {
         
         printBoard(std::get<0>(state), std::get<2>(state));
         
-        
+        Team teamOne = chessBoard.getTeamOne();
+        Team teamTwo = chessBoard.getTeamTwo();
         if (std::get<2>(state) == 0) { 
-
-            if (chessBoard.isInCheckMate(Team::TEAM_ONE)) {
+            if (chessBoard.isInCheckMate(teamOne)) {
                 out << "Checkmate! Black wins!" << std::endl;
-            } else if (chessBoard.isInCheck(Team::TEAM_ONE)) {
+            } else if (chessBoard.isInCheck(teamOne)) {
                 out << "White is in check" << std::endl;
-            } else if (chessBoard.isInStaleMate(Team::TEAM_ONE)) {
+            } else if (chessBoard.isInStaleMate(teamOne)) {
                 out << "Stalemate!" << std::endl;
             }
 
         } else {
-            if (chessBoard.isInCheckMate(Team::TEAM_TWO)) {
+            if (chessBoard.isInCheckMate(teamTwo)) {
                 out << "Checkmate! White wins!" << std::endl;
-            } else if (chessBoard.isInCheck(Team::TEAM_TWO)) {
+            } else if (chessBoard.isInCheck(teamTwo)) {
                 out << "Black is in check" << std::endl;
-            } else if (chessBoard.isInStaleMate(Team::TEAM_TWO)) {
+            } else if (chessBoard.isInStaleMate(teamTwo)) {
                 out << "Stalemate!" << std::endl;
             }
         }

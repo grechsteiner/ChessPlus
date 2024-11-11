@@ -100,21 +100,25 @@ bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessB
         int currentBoardCol = standardBackrowIndex + firstPieceCol;
 
         // Team One
-        chessBoard->setPosition(BoardSquare(bottomRow, currentBoardCol), PieceData(currentPieceType, pieceLevelForStandardSetup, Team::TEAM_ONE, PieceDirection::NORTH, false));
-        chessBoard->setPosition(BoardSquare(bottomRow - 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevelForStandardSetup, Team::TEAM_ONE, PieceDirection::NORTH, false));
+        Team teamOne = chessBoard->getTeamOne();
+        chessBoard->setPosition(BoardSquare(bottomRow, currentBoardCol), PieceData(currentPieceType, pieceLevelForStandardSetup, teamOne, PieceDirection::NORTH, false));
+        chessBoard->setPosition(BoardSquare(bottomRow - 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevelForStandardSetup, teamOne, PieceDirection::NORTH, false));
 
         // Team Two
-        chessBoard->setPosition(BoardSquare(topRow, currentBoardCol), PieceData(currentPieceType, pieceLevelForStandardSetup, Team::TEAM_TWO, PieceDirection::SOUTH, false));
-        chessBoard->setPosition(BoardSquare(topRow + 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevelForStandardSetup, Team::TEAM_TWO, PieceDirection::SOUTH, false));
+        Team teamTwo = chessBoard->getTeamTwo();
+        chessBoard->setPosition(BoardSquare(topRow, currentBoardCol), PieceData(currentPieceType, pieceLevelForStandardSetup, teamTwo, PieceDirection::SOUTH, false));
+        chessBoard->setPosition(BoardSquare(topRow + 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevelForStandardSetup, teamTwo, PieceDirection::SOUTH, false));
     }
     return true;
 }
 
 // Static
 bool ChessBoardUtilities::isGameOver(std::unique_ptr<ChessBoard> const &chessBoard) {
+    Team teamOne = chessBoard->getTeamOne();
+    Team teamTwo = chessBoard->getTeamTwo();
     return 
-        chessBoard->isInCheckMate(Team::TEAM_ONE) || 
-        chessBoard->isInCheckMate(Team::TEAM_TWO) || 
-        chessBoard->isInStaleMate(Team::TEAM_ONE) || 
-        chessBoard->isInStaleMate(Team::TEAM_TWO);
+        chessBoard->isInCheckMate(teamOne) || 
+        chessBoard->isInCheckMate(teamTwo) || 
+        chessBoard->isInStaleMate(teamOne) || 
+        chessBoard->isInStaleMate(teamTwo);
 }

@@ -41,7 +41,7 @@ Game::Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<I
         PlayerFactory::createHumanPlayer(chessBoard->getTeamOne()),
         PlayerFactory::createHumanPlayer(chessBoard->getTeamTwo())
     )),
-    currentTurn(Team::TEAM_ONE) {
+    currentTurn(chessBoard->getTeamOne()) {
     ChessBoardUtilities::applyStandardSetup(chessBoard);
 }
 
@@ -71,8 +71,8 @@ Game& Game::operator=(Game &other) {
         commandRetriever = other.commandRetriever->clone();
         illegalCommandReporter = other.illegalCommandReporter->clone();
         players = std::make_pair(
-            Player(getPlayer(Team::TEAM_ONE)), 
-            Player(getPlayer(Team::TEAM_TWO))
+            Player(getPlayer(chessBoard->getTeamOne())), 
+            Player(getPlayer(chessBoard->getTeamTwo()))
         ),
         currentTurn = other.currentTurn;
     }
@@ -93,15 +93,15 @@ Game& Game::operator=(Game &&other) noexcept {
 }
 
 void Game::switchTurn() {
-    if (currentTurn == Team::TEAM_ONE) {
-        currentTurn == Team::TEAM_TWO;
+    if (currentTurn == chessBoard->getTeamOne()) {
+        currentTurn == chessBoard->getTeamTwo();
     } else {
-        currentTurn == Team::TEAM_ONE;
+        currentTurn == chessBoard->getTeamOne();
     }
 }
 
 Player const& Game::getPlayer(Team team) const {
-    if (team == Team::TEAM_ONE) {
+    if (team == chessBoard->getTeamOne()) {
         return players.first;
     } else {
         return players.second;
@@ -110,7 +110,7 @@ Player const& Game::getPlayer(Team team) const {
 
 void Game::resetGame() {
     setGameState(GameState::MAIN_MENU);
-    currentTurn = Team::TEAM_ONE;
+    currentTurn = chessBoard->getTeamOne();
     chessBoard = ChessBoardFactory::createChessBoard(8, 8);
     ChessBoardUtilities::applyStandardSetup(chessBoard);
     players = std::make_pair(
@@ -302,7 +302,7 @@ void Game::runGame() {
                         break;
                     }
                     
-                    Team team = std::isupper(matches[2].str().front()) ? Team::TEAM_ONE : Team::TEAM_TWO;
+                    Team team = std::isupper(matches[2].str().front()) ? chessBoard->getTeamOne() : chessBoard->getTeamTwo();
 
                     PieceLevel pieceLevel;
                     if (matches[3].matched) {
