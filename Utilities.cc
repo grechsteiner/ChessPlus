@@ -23,6 +23,18 @@ std::optional<ComputerPlayerLevel> Utilities::stringToComputerPlayerLevel(std::s
         : std::nullopt;
 }
 
+std::optional<PlayerType> Utilities::stringToPlayerType(std::string const &str) {
+    static std::unordered_map<std::string, PlayerType> mapping = {
+        { "HUMAN", PlayerType::HUMAN },
+        { "COMPUTER", PlayerType::COMPUTER }
+    };
+
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
+    return mapping.find(str) != mapping.end()
+        ? std::make_optional<PlayerType>(mapping[str])
+        : std::nullopt;
+}
+
 std::optional<PieceType> Utilities::stringToPieceType(std::string const &str) {
     static std::unordered_map<std::string, PieceType> mapping = {
         { "P", PieceType::PAWN },

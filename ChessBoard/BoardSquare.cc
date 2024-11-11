@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <regex>
+#include <cctype>
 
 #include "BoardSquare.h"
 
@@ -18,14 +19,14 @@ bool BoardSquare::operator==(BoardSquare const &other) const {
 
 // Static
 std::optional<BoardSquare> BoardSquare::createBoardSquare(std::string const &squareStr, int numRowsOnBoard, int numColsOnBoard) {
-    static std::regex const boardSquarePattern("^([a-z]+)([1-9][0-9]*)$");
+    static std::regex const boardSquarePattern("^([a-z]+)([1-9][0-9]*)$", std::regex_constants::icase);
     
     std::smatch matches;
     if (std::regex_match(squareStr, matches, boardSquarePattern)) {
         int boardRow = numRowsOnBoard - std::stoi(matches[2].str());
         int boardCol = 0;
         for (char ch : matches[1].str()) {
-            boardCol = boardCol * 26 + (ch - 'a');
+            boardCol = boardCol * 26 + (std::tolower(ch) - 'a');
         }
 
         return std::make_optional<BoardSquare>(boardRow, boardCol);

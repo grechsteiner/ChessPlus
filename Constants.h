@@ -10,6 +10,11 @@ enum class GameState {
     GAME_ACTIVE
 };
 
+enum class PlayerType {
+    HUMAN,
+    COMPUTER
+};
+
 enum class ComputerPlayerLevel {
     ONE,
     TWO,
