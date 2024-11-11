@@ -22,8 +22,7 @@
 #include "ComputerPlayer.h"
 
 #include "BoardMove.h"
-#include "UserMove.h"
-
+#include "UserSquare.h"
 #include "ChessBoard.h"
 
 #include "ChessBoardImpl.h"
