@@ -194,7 +194,7 @@ void Game::runGame() {
 
         // No Matching Commands
         } else {
-            reportIllegalCommand("Invalid command entered");
+            reportIllegalCommand("No valid command entered");
         }
     }
 }
@@ -202,7 +202,7 @@ void Game::runGame() {
 void Game::processEnterSetupModeCommand() {
     switch (gameState) {
         case GameState::GAME_ACTIVE:
-            reportIllegalCommand("Can't enter setup mode from within an active game");
+            reportIllegalCommand("Can't enter setup mode when game is active");
             break;
         case GameState::SETUP:
             reportIllegalCommand("Already in setup mode");
@@ -219,21 +219,21 @@ void Game::processEnterSetupModeCommand() {
 void Game::processPlacePieceCommand(std::string const &boardSquareStr, std::string const &pieceTypeStr, std::optional<std::string> const &pieceLevelStr, std::optional<std::string> const &pieceDirectionStr) {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("Can't set piece in main menu");
+            reportIllegalCommand("Can't place piece in main menu");
             break;
         case GameState::GAME_ACTIVE:
-            reportIllegalCommand("Can't set piece when game is active");
+            reportIllegalCommand("Can't place piece when game is active");
             break;
         case GameState::SETUP:
             std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(boardSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
             if (!boardSquare.has_value() || !chessBoard->isSquareOnBoard(boardSquare.value())) {
-                reportIllegalCommand("Input square is not valid on board");
+                reportIllegalCommand("Input square is not valid");
                 break;
             }
 
             std::optional<PieceType> pieceType = Utilities::stringToPieceType(pieceTypeStr);
             if (!pieceType.has_value()) {
-                reportIllegalCommand("Invalid piece");
+                reportIllegalCommand("Input piece is not valid");
                 break;
             }
             
@@ -244,7 +244,7 @@ void Game::processPlacePieceCommand(std::string const &boardSquareStr, std::stri
                 if (Utilities::stringToPieceLevel(pieceLevelStr.value()).has_value()) {
                     pieceLevel = Utilities::stringToPieceLevel(pieceLevelStr.value()).value();
                 } else {
-                    reportIllegalCommand("Invalid piece level");
+                    reportIllegalCommand("Input piece level is not valid");
                     break;
                 }
             } else {
@@ -256,7 +256,7 @@ void Game::processPlacePieceCommand(std::string const &boardSquareStr, std::stri
                 if (Utilities::stringToPieceDirection(pieceDirectionStr.value()).has_value()) {
                     pieceDirection = Utilities::stringToPieceDirection(pieceDirectionStr.value()).value();
                 } else {
-                    reportIllegalCommand("Invalid piece direction");
+                    reportIllegalCommand("Input piece direction is not valid");
                     break;
                 }
             } else {
@@ -275,15 +275,15 @@ void Game::processPlacePieceCommand(std::string const &boardSquareStr, std::stri
 void Game::processRemovePieceCommand(std::string const &boardSquareStr) {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("Can't clear piece in main menu");
+            reportIllegalCommand("Can't remove piece in main menu");
             break;
         case GameState::GAME_ACTIVE:
-            reportIllegalCommand("Can't clear piece when game is active");
+            reportIllegalCommand("Can't remove piece when game is active");
             break;
         case GameState::SETUP:
             std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(boardSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
             if (!boardSquare.has_value() || !chessBoard->isSquareOnBoard(boardSquare.value())) {
-                reportIllegalCommand("Input square is not valid on board");
+                reportIllegalCommand("Input square is not valid");
                 break;
             } 
             
@@ -298,10 +298,10 @@ void Game::processRemovePieceCommand(std::string const &boardSquareStr) {
 void Game::processSwapFirstTurnCommand() {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("Can't set first turn in main menu");
+            reportIllegalCommand("Can't swap first turn in main menu");
             break;
         case GameState::GAME_ACTIVE:
-            reportIllegalCommand("Can't set first turn when game is active");
+            reportIllegalCommand("Can't swap first turn when game is active");
             break;
         case GameState::SETUP:
             switchTurn();
@@ -344,10 +344,10 @@ void Game::processSetBoardSizeCommand(std::string const &numRowsStr, std::string
             int numCols = std::stoi(numColsStr);
 
             if (numRows < 1 || numRows > 26) {
-                reportIllegalCommand("Rows must be between 1 and 26 inclusive");
+                reportIllegalCommand("Number of rows must be between 1 and 26 inclusive");
                 break;
             } else if (numCols < 8 || numCols > 26) {
-                reportIllegalCommand("Cols must be between 1 and 26 inclusive");
+                reportIllegalCommand("Number of cols must be between 1 and 26 inclusive");
                 break;
             }
 
@@ -361,14 +361,14 @@ void Game::processSetBoardSizeCommand(std::string const &numRowsStr, std::string
 void Game::processExitSetupModeCommand() {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("Can't leave setup mode in main menu");
+            reportIllegalCommand("Can't exit setup mode in main menu");
             break;
         case GameState::GAME_ACTIVE:
-            reportIllegalCommand("Can't leave setup mode when game is active");
+            reportIllegalCommand("Can't exit setup mode when game is active");
             break;
         case GameState::SETUP:
             if (!ChessBoardUtilities::isBoardInLegalSetupState(chessBoard)) {
-                reportIllegalCommand("Board is not in valid state, can't leave setup mode");
+                reportIllegalCommand("Can't exit setup mode when board is not in valid state");
                 break;
             }
 
@@ -382,10 +382,10 @@ void Game::processExitSetupModeCommand() {
 void Game::processStartGameCommand(std::string const &teamOneStr, std::string const &teamTwoStr) {
     switch (gameState) {
         case GameState::GAME_ACTIVE:
-            reportIllegalCommand("Can't start a game when a game is already running");
+            reportIllegalCommand("Can't start game when game is active");
             break;
         case GameState::SETUP:
-            reportIllegalCommand("Can't start a game from within setup mode");
+            reportIllegalCommand("Can't start game in setup mode");
             break;
         case GameState::MAIN_MENU:
             Team teamOne = chessBoard->getTeamOne();
@@ -409,21 +409,21 @@ void Game::processStartGameCommand(std::string const &teamOneStr, std::string co
 void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails) {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("You're on the main menu page, cannot enter a move when game is not active");
+            reportIllegalCommand("Can't make move in main menu");
             break;
         case GameState::SETUP:
-            reportIllegalCommand("You're in setup mode, cannot enter a move when game is not active");
+            reportIllegalCommand("Can't make move in setup mode");
             break;
         case GameState::GAME_ACTIVE:
             if (getPlayer(currentTurn).getPlayerType() == PlayerType::COMPUTER) {
-                reportIllegalCommand("The current player is not a human, don't specify move details for computer player");
+                reportIllegalCommand("The current player is a computer, don't specify move details for computer players");
                 break;
             }
             
             std::optional<BoardSquare> fromSquare = BoardSquare::createBoardSquare(moveInputDetails.fromSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
             std::optional<BoardSquare> toSquare = BoardSquare::createBoardSquare(moveInputDetails.toSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
             if (!fromSquare.has_value() || !toSquare.has_value() || !chessBoard->isSquareOnBoard(fromSquare.value()) || !chessBoard->isSquareOnBoard(toSquare.value())) {
-                reportIllegalCommand("Invalid squares");
+                reportIllegalCommand("Input squares are not valid");
                 break;
             }
 
@@ -432,7 +432,7 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
                 if (Utilities::stringToPieceType(moveInputDetails.promotionPieceTypeStr.value()).has_value()) {
                     promotionPieceType = Utilities::stringToPieceType(moveInputDetails.promotionPieceTypeStr.value()).value();
                 } else {
-                    reportIllegalCommand("Invalid promotion piece");
+                    reportIllegalCommand("Input promotion piece is not valid");
                     break;
                 } 
             } else {
@@ -441,7 +441,7 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
 
             std::optional<std::unique_ptr<BoardMove>> boardMove = chessBoard->createBoardMove(fromSquare.value(), toSquare.value(), promotionPieceType);
             if (!boardMove.has_value()) {
-                reportIllegalCommand("Invalid board move, try again ");
+                reportIllegalCommand("Input move is not valid");
                 break;
             }
             chessBoard->makeMove(boardMove.value());
@@ -460,14 +460,14 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
 void Game::processMakeComputerMoveCommand() {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("You're on the main menu page, cannot enter a move when game is not active");
+            reportIllegalCommand("Can't make move in main menu");
             break;
         case GameState::SETUP:
-            reportIllegalCommand("You're in setup mode, cannot enter a move when game is not active");
+            reportIllegalCommand("Can't make move in setup mode");
             break;
         case GameState::GAME_ACTIVE:
             if (getPlayer(currentTurn).getPlayerType() == PlayerType::HUMAN) {
-                reportIllegalCommand("The current player is not a computer, specify move details for human player");
+                reportIllegalCommand("The current player is a human, you must specify move details for human players");
                 break;
             }
                 
@@ -489,10 +489,10 @@ void Game::processMakeComputerMoveCommand() {
 void Game::processUndoMoveCommand() {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("No game is running, you are in the main menu");
+            reportIllegalCommand("Can't undo a move in main menu");
             break;
         case GameState::SETUP:
-            reportIllegalCommand("No game is running, you are in setup mode");
+            reportIllegalCommand("Can't undo a move in setup mode");
             break;
         case GameState::GAME_ACTIVE:
             if (chessBoard->undoMove()) {
@@ -509,10 +509,10 @@ void Game::processUndoMoveCommand() {
 void Game::processResignGameCommand() {
     switch (gameState) {
         case GameState::MAIN_MENU:
-            reportIllegalCommand("No game is running, you are in the main menu");
+            reportIllegalCommand("Can't resign game in main menu");
             break;
         case GameState::SETUP:
-            reportIllegalCommand("No game is running, you are in setup mode");
+            reportIllegalCommand("Can't resign game in setup mode");
             break;
         case GameState::GAME_ACTIVE:
             resetGame();
