@@ -77,11 +77,4 @@ PieceDirection stringToPieceDirection(std::string const &str);
 std::string pieceDirectionToString(PieceDirection pieceDirection);
 
 
-std::string toLower(std::string const &str);
-std::string toUpper(std::string const &str);
-bool isInt(std::string const &str);
-
-int min(int a, int b);
-
-
 #endif /* Constants_h */

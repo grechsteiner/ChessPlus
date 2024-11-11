@@ -146,32 +146,3 @@ std::string pieceDirectionToString(PieceDirection pieceDirection) {
     return "";
 }
 
-
-#pragma mark - General
-
-std::string toLower(std::string const &str) {
-    std::string lowerStr = str;
-    std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
-    return lowerStr;
-}
-
-std::string toUpper(std::string const &str) {
-    std::string upperStr = str;
-    std::transform(upperStr.begin(), upperStr.end(), upperStr.begin(),
-                   [](unsigned char c) { return std::toupper(c); });
-    return upperStr;
-}
-
-bool isInt(std::string const &str) {
-    for (char ch : str) {
-        if (!std::isdigit(ch)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-int min(int a, int b) {
-    return (a < b) ? a : b;
-}

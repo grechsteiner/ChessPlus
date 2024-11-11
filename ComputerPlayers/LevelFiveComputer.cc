@@ -191,16 +191,16 @@ int LevelFiveComputer::getAlphaBetaBoardScore(std::unique_ptr<ChessBoard> const 
             int advancementBonus = 0;
             switch (currentChessBoard->getPieceDataAt(*it).value().pieceDirection) {
                 case PieceDirection::NORTH:
-                    advancementBonus = min(numBoardRows - 1 - (*it).boardRow, numBoardRows - 4);
+                    advancementBonus = std::min(numBoardRows - 1 - (*it).boardRow, numBoardRows - 4);
                     break;
                 case PieceDirection::SOUTH:
-                    advancementBonus = min(numBoardRows, numBoardRows - 4);
+                    advancementBonus = std::min(numBoardRows, numBoardRows - 4);
                     break;
                 case PieceDirection::EAST:
-                    advancementBonus = min(numBoardCols - 1 - (*it).boardCol, numBoardCols - 4);
+                    advancementBonus = std::min(numBoardCols - 1 - (*it).boardCol, numBoardCols - 4);
                     break;
                 case PieceDirection::WEST:
-                    advancementBonus = min(numBoardCols, numBoardCols - 4);
+                    advancementBonus = std::min(numBoardCols, numBoardCols - 4);
                     break;
                 default:
                     assert(false);
