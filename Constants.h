@@ -11,7 +11,6 @@
 
 struct BoardSquare;
 class BoardMove;
-class UserSquare;
 class UserMove;
 
 

@@ -7,7 +7,6 @@
 
 #include "Constants.h"
 #include "BoardSquare.h"
-#include "UserSquare.h"
 #include "BoardMove.h"
 
 
