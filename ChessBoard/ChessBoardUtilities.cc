@@ -33,6 +33,11 @@ bool ChessBoardUtilities::isBoardInLegalSetupState(std::unique_ptr<ChessBoard> c
     int teamOneKingCount = 0;
     int teamTwoKingCount = 0;
 
+    // Stalemate
+    if (chessBoard->isInStaleMate(chessBoard->getTeamOne()) || chessBoard->isInStaleMate(chessBoard->getTeamTwo())) {
+        return false;
+    }
+
     for (ChessBoard::BoardSquareIterator it = chessBoard->begin(); it != chessBoard->end(); ++it) {
         std::optional<PieceData> pieceData = chessBoard->getPieceDataAt(*it);
         if (pieceData.has_value()) {
@@ -103,4 +108,13 @@ bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessB
         chessBoard->setPosition(BoardSquare(topRow + 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevelForStandardSetup, Team::TEAM_TWO, PieceDirection::SOUTH, false));
     }
     return true;
+}
+
+// Static
+bool ChessBoardUtilities::isGameOver(std::unique_ptr<ChessBoard> const &chessBoard) {
+    return 
+        chessBoard->isInCheckMate(Team::TEAM_ONE) || 
+        chessBoard->isInCheckMate(Team::TEAM_TWO) || 
+        chessBoard->isInStaleMate(Team::TEAM_ONE) || 
+        chessBoard->isInStaleMate(Team::TEAM_TWO);
 }

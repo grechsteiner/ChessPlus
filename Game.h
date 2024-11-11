@@ -20,6 +20,7 @@
 
 class Game : public Subject {
 private:
+
     GameState gameState;
     std::unique_ptr<ChessBoard> chessBoard;
 
@@ -29,19 +30,17 @@ private:
     std::pair<Player, Player> players;
     Team currentTurn;
 
-
     void switchTurn();
-    void reportIllegalCommand(std::string const &illegalCommand) const;
-    
-
-    void resetComputerPlayers();
-
-    Player& getCurrentPlayer() const;
+    Player const& getPlayer(Team team) const;
+    void resetGame();
 
     void setGameState(GameState newGameState);
     bool isInMainMenuGameState() const;
     bool isInSetupGameState() const;
     bool isInActiveGameState() const;
+
+    void reportIllegalCommand(std::string const &message) const;
+
 
 
     bool showingStandardOpenings = false;
@@ -56,7 +55,9 @@ public:
     virtual ~Game() = default;
     
     void runGame();
-    std::tuple<ChessBoard const&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> getGameState() const;
+
+    using State = std::tuple<GameState, std::unique_ptr<ChessBoard> const&, std::pair<Player, Player> const&, Team>;
+    State getGameState() const;
 };
 
 #endif /* Game_h */
