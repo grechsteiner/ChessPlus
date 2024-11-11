@@ -35,9 +35,6 @@ private:
     void resetGame();
 
     void setGameState(GameState newGameState);
-    bool isInMainMenuGameState() const;
-    bool isInSetupGameState() const;
-    bool isInActiveGameState() const;
 
     void reportIllegalCommand(std::string const &message) const;
 
