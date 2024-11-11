@@ -135,7 +135,7 @@ void Game::runGame() {
         std::vector<std::string> tokens;
 
         std::smatch matches;
-        if (std::regex_match(inputLine, matches, commandPatterns[CommandType::START_GAME])) {
+        if (std::regex_match(inputLine, matches, std::regex(R"(\s*game\s*(human|computer[1-5])\s*(human|computer[1-5])\s*)"))) {
             switch (gameState) {
                 case GameState::GAME_ACTIVE:
                     reportIllegalCommand("Can't start a game when a game is already running");
@@ -154,7 +154,7 @@ void Game::runGame() {
                     break;  
             }
 
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::ENTER_SETUP_MODE])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*setup\s*)"))) {
             switch (gameState) {
                 case GameState::GAME_ACTIVE:
                     reportIllegalCommand("Can't enter setup mode from within an active game");
@@ -169,7 +169,7 @@ void Game::runGame() {
                     break;         
             }
 
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::MAKE_MOVE])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*move\s*(?:([a-z]+[1-9][0-9]*)\s*([a-z]+[1-9][0-9]*)\s*([a-z]?)\s*)?)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("You're on the main menu page, cannot enter a move when game is not active");
@@ -232,7 +232,7 @@ void Game::runGame() {
                     break;
             }
 
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::UNDO_MOVE])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*undo\s*)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("No game is running, you are in the main menu");
@@ -250,7 +250,7 @@ void Game::runGame() {
                     break;
             }
 
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::RESIGN_GAME])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*resign\s*)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("No game is running, you are in the main menu");
@@ -264,7 +264,7 @@ void Game::runGame() {
                     break;
             }
 
-       } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::PLACE_PIECE])) {
+       } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*+\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("Can't set piece in main menu");
@@ -296,7 +296,7 @@ void Game::runGame() {
                     break;
             }       
             
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::REMOVE_PIECE])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*-\s*([a-z]+[1-9][0-9]*)\s*)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("Can't clear piece in main menu");
@@ -317,7 +317,7 @@ void Game::runGame() {
                     break;
             }
             
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::SWITCH_TURN])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*switch\s*)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("Can't set first turn in main menu");
@@ -331,7 +331,7 @@ void Game::runGame() {
                     break;
             }
             
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::EXIT_SETUP_MODE])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*done\s*)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("Can't leave setup mode in main menu");
@@ -350,7 +350,7 @@ void Game::runGame() {
                     break;
             }
 
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::APPLY_STANDARD_SETUP])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*standard\s*)"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("Can't apply standard setup in main menu");
@@ -369,7 +369,7 @@ void Game::runGame() {
                     notifyObservers();
             }
                     
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::CREATE_BOARD])) {
+        } else if (std::regex_match(inputLine, matches, std::regex(R"(\s*set\s*([1-9][0-9]*)\s*([1-9][0-9]*))"))) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
                     reportIllegalCommand("Can't set board size in main menu");

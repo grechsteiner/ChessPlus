@@ -7,42 +7,11 @@
 #include <utility>
 #include <vector>
 #include <map>
-#include <regex>
 
 struct BoardSquare;
 class BoardMove;
 class UserMove;
 
-
-
-// TODO
-enum class CommandType {
-    START_GAME,
-    ENTER_SETUP_MODE,
-    EXIT_SETUP_MODE,
-    MAKE_MOVE,
-    UNDO_MOVE,
-    RESIGN_GAME,
-    PLACE_PIECE,
-    REMOVE_PIECE,
-    SWITCH_TURN,
-    APPLY_STANDARD_SETUP,
-    CREATE_BOARD
-};
-
-std::map<CommandType, std::regex> commandPatterns = {
-    { CommandType::START_GAME, std::regex(R"(\s*game\s*(human|computer[1-5])\s*(human|computer[1-5])\s*)") },
-    { CommandType::ENTER_SETUP_MODE, std::regex(R"(\s*setup\s*)") },
-    { CommandType::EXIT_SETUP_MODE, std::regex(R"(\s*done\s*)") },
-    { CommandType::MAKE_MOVE, std::regex(R"(\s*move\s*(?:([a-z]+[1-9][0-9]*)\s*([a-z]+[1-9][0-9]*)\s*([a-z]?)\s*)?)") },
-    { CommandType::UNDO_MOVE, std::regex(R"(\s*undo\s*)") },
-    { CommandType::RESIGN_GAME, std::regex(R"(\s*resign\s*)") },
-    { CommandType::PLACE_PIECE, std::regex(R"(\s*+\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)") },
-    { CommandType::REMOVE_PIECE, std::regex(R"(\s*-\s*([a-z]+[1-9][0-9]*)\s*)") },
-    { CommandType::SWITCH_TURN, std::regex(R"(\s*switch\s*)") },
-    { CommandType::APPLY_STANDARD_SETUP, std::regex(R"(\s*standard\s*)") },
-    { CommandType::CREATE_BOARD, std::regex(R"(\s*set\s*([1-9][0-9]*)\s*([1-9][0-9]*))") }
-};
 
 
 // TODO
