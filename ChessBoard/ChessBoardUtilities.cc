@@ -8,19 +8,6 @@
 #include "Piece.h"
 
 
-// Static
-std::vector<PieceType> const ChessBoardUtilities::standardBackrowSetupOrder = {
-    PieceType::ROOK,
-    PieceType::KNIGHT,
-    PieceType::BISHOP,
-    PieceType::QUEEN,
-    PieceType::KING,
-    PieceType::BISHOP,
-    PieceType::KNIGHT,
-    PieceType::ROOK
-};
-
-// Static
 // 1 king per team
 // Not in checkmate
 // No pawns in places where they should be promoted
@@ -79,12 +66,21 @@ bool ChessBoardUtilities::isBoardInLegalSetupState(std::unique_ptr<ChessBoard> c
     return teamOneKingCount == 1 && teamTwoKingCount == 1;
 }
 
-// Static
 // Standard chess setup
 // False if can't be applied with current board size
 // Centred if more than backrow num col
 bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessBoard) {
     static PieceLevel const pieceLevelForStandardSetup = PieceLevel::BASIC;
+    static std::vector<PieceType> const standardBackrowSetupOrder = {
+        PieceType::ROOK,
+        PieceType::KNIGHT,
+        PieceType::BISHOP,
+        PieceType::QUEEN,
+        PieceType::KING,
+        PieceType::BISHOP,
+        PieceType::KNIGHT,
+        PieceType::ROOK
+    };
 
     if (chessBoard->getNumRows() < 4 || chessBoard->getNumCols() < standardBackrowSetupOrder.size()) {
         return false;
@@ -112,7 +108,6 @@ bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessB
     return true;
 }
 
-// Static
 bool ChessBoardUtilities::isGameOver(std::unique_ptr<ChessBoard> const &chessBoard) {
     Team teamOne = chessBoard->getTeamOne();
     Team teamTwo = chessBoard->getTeamTwo();
