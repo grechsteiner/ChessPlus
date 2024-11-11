@@ -136,19 +136,6 @@ void Game::runGame() {
         std::string inputLine = commandRetriever->retrieveCommand();
         std::vector<std::string> tokens;
 
-        std::string token;
-        std::istringstream lineStream(inputLine);
-        while (lineStream >> token) {
-            tokens.emplace_back(token);
-        }
-
-        if (tokens.empty()) {
-            continue;
-        }
-        std::string firstToken = tokens[0];
-
-        #pragma mark - Commands legal from main menu game state
-
         std::smatch matches;
         if (std::regex_match(inputLine, matches, commandPatterns[CommandType::START_GAME])) {
             switch (gameState) {
@@ -183,8 +170,6 @@ void Game::runGame() {
                     notifyObservers();
                     break;         
             }
-
-        #pragma mark - Commands legal from active game state
 
         } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::MAKE_MOVE])) {
             switch (gameState) {
@@ -276,24 +261,7 @@ void Game::runGame() {
                     resetGame();
                     break;
             }
-           
-        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::SHOW_STANDARD_OPENINGS])) {
-            switch (gameState) {
-                case GameState::MAIN_MENU:
-                    reportIllegalCommand("No game is running, you are in the main menu");
-                    break;
-                case GameState::SETUP:
-                    reportIllegalCommand("No game is running, you are in setup mode");
-                    break;
-                case GameState::GAME_ACTIVE:
-                    showingStandardOpenings = true;
-                    notifyObservers();
-                    showingStandardOpenings = false;
-                    break;
 
-            }
-
-        #pragma mark - Commands legal from setup game state
        } else if (std::regex_match(inputLine, matches, commandPatterns[CommandType::PLACE_PIECE])) {
             switch (gameState) {
                 case GameState::MAIN_MENU:
