@@ -20,12 +20,11 @@ private:
 
     void displayMainMenu();
     void displaySetupMode(std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn);
+    void displayGame(std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn);
 
     std::vector<std::string> buildChessBoard(std::unique_ptr<ChessBoard> const &chessBoard);
     std::vector<std::string> buildSetupText();
     std::vector<std::string> buildBoardDataText(std::unique_ptr<ChessBoard> const &chessBoard, Team currentTurn);
-
-    void printBoard(ChessBoard const &chessBoard, int turn);
 
 public:
     explicit TextObserver(Game *game, std::ostream &out);

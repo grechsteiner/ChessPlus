@@ -36,6 +36,7 @@ void TextObserver::notifyImpl() {
             displaySetupMode(state.chessBoard, state.players, state.currentTurn);
             break;
         case GameState::GAME_ACTIVE:
+            displayGame(state.chessBoard, state.players, state.currentTurn);
             break;
     }
 
@@ -192,6 +193,10 @@ void TextObserver::displaySetupMode(std::unique_ptr<ChessBoard> const &chessBoar
     out << "╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝" << std::endl;
 }
 
+void TextObserver::displayGame(std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn) {
+
+}
+
 std::vector<std::string> TextObserver::buildChessBoard(std::unique_ptr<ChessBoard> const &chessBoard) {
     int numRows = chessBoard->getNumRows();
     int numCols = chessBoard->getNumCols();
@@ -278,58 +283,4 @@ std::vector<std::string> TextObserver::buildBoardDataText(std::unique_ptr<ChessB
         std::move(whiteRemaining),
         std::move(blackRemaining)
     };
-}
-
-void TextObserver::printBoard(ChessBoard const &chessBoard, int turn) {
-    // Top line
-    out << "|  ╔";
-    for (int col = 0; col < chessBoard.getNumCols(); ++col) {
-        out << "═";
-    }
-    out << "╗ |" << std::endl;
-
-    for (int row = 0; row < chessBoard.getNumRows(); ++row) {
-        out << "|" << chessBoard.getNumRows() - row;
-        if (chessBoard.getNumRows() - row < 10) {
-            out << " ";
-        }
-        out << "║";
-        for (int col = 0; col < chessBoard.getNumCols(); ++col) {
-
-            std::optional<PieceInfo> pieceInfo = chessBoard.getPieceInfoAt(BoardSquare(row, col));
-            if (pieceInfo.has_value()) {
-                // printPiece(pieceInfo.value().image, chessBoard.getPieceDataAt(BoardSquare(row, col)).value().team);
-            } else {
-                out << " ";
-            }
-
-        }
-        out << "║ |" << std::endl;
-    }
-
-    // Bottom line
-    out << "|  ╚";
-    for (int col = 0; col < chessBoard.getNumCols(); ++col) {
-        out << "═";
-    }
-    out << "╝ |" << std::endl;
-
-    std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
-    out << "|   ";
-    for (int col = 0; col < chessBoard.getNumCols(); ++col) {
-        out << alphabet[col];
-    }
-    out << "  |" << std::endl;
-
-    if (turn == 0) {
-        out << "|Turn: White";
-
-    } else {
-        out << "|Turn: Black";
-    }
-
-    for (int i = 0; i < (chessBoard.getNumCols() - 7); ++i) {
-        out << " ";
-    }
-    out << " |" << std::endl;
 }
