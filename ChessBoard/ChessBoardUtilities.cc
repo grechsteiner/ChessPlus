@@ -117,3 +117,14 @@ bool ChessBoardUtilities::isGameOver(std::unique_ptr<ChessBoard> const &chessBoa
         chessBoard->isInStaleMate(teamOne) || 
         chessBoard->isInStaleMate(teamTwo);
 }
+
+int ChessBoardUtilities::getNumPiecesOnBoard(std::unique_ptr<ChessBoard> const &chessBoard, Team team) {
+    int numPieces = 0;
+    for (ChessBoard::BoardSquareIterator it = chessBoard->begin(); it != chessBoard->end(); ++it) {
+        std::optional<PieceData> pieceData = chessBoard->getPieceDataAt(*it);
+        if (pieceData.has_value() && pieceData.value().team == team) {
+            numPieces++;
+        }
+    }
+    return numPieces;
+}

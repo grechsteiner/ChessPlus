@@ -5,10 +5,7 @@
 #include <iostream>
 // Basic ctor
 Player::Player(PlayerType playerType, Team team, std::unique_ptr<ComputerPlayer> const &computerPlayer) :
-    playerType(playerType), team(team), computerPlayer(computerPlayer == nullptr ? nullptr : computerPlayer->clone()) {
-
-        std::cout << "here" << std::endl;
-    }
+    playerType(playerType), team(team), computerPlayer(computerPlayer == nullptr ? nullptr : computerPlayer->clone()) {}
 
 // Copy ctor
 Player::Player(Player const &other) :

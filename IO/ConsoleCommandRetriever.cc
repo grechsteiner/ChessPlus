@@ -19,7 +19,11 @@ bool ConsoleCommandRetriever::isCommandAvailableImpl() const {
     return !in.eof();
 }
 
-std::string ConsoleCommandRetriever::retrieveCommandImpl() const {
+std::optional<std::string> ConsoleCommandRetriever::retrieveCommandImpl() const {
     std::string input;
-    return std::getline(in, input) ? input : "";
+    if (std::getline(in, input)) {
+        return std::make_optional<std::string>(input);
+    } else {
+        return std::nullopt;
+    }
 }

@@ -12,7 +12,7 @@
 class CommandRetriever {
 private:
     virtual bool isCommandAvailableImpl() const = 0;
-    virtual std::string retrieveCommandImpl() const = 0;
+    virtual std::optional<std::string> retrieveCommandImpl() const = 0;
     virtual std::unique_ptr<CommandRetriever> cloneImpl() const = 0;
 
 protected:
@@ -24,7 +24,7 @@ protected:
     
 public:
     bool isCommandAvailable() const;
-    std::string retrieveCommand() const;
+    std::optional<std::string> retrieveCommand() const;
     std::unique_ptr<CommandRetriever> clone() const;
 
     virtual ~CommandRetriever() = default;

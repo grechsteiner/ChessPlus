@@ -19,8 +19,12 @@ private:
     void notifyImpl() override;
 
     void displayMainMenu();
+    void displaySetupMode(std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn);
 
-    void printPiece(const std::string& str, Team color);
+    std::vector<std::string> buildChessBoard(std::unique_ptr<ChessBoard> const &chessBoard);
+    std::vector<std::string> buildSetupText();
+    std::vector<std::string> buildBoardDataText(std::unique_ptr<ChessBoard> const &chessBoard, Team currentTurn);
+
     void printBoard(ChessBoard const &chessBoard, int turn);
 
 public:

@@ -15,7 +15,6 @@
 GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &illegalCommandOut) : 
     game(std::make_unique<ConsoleCommandRetriever>(in), std::make_unique<ConsoleIllegalCommandReporter>(illegalCommandOut)) {
 
-        std::cout << "here" << std::endl;
     observers.push_back(std::make_unique<TextObserver>(&game, out));
     // observers.push_back(std::make_unique<GraphicObserver>(&game));
 }

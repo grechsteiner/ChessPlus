@@ -17,7 +17,7 @@ class ConsoleCommandRetriever final : public Cloneable<CommandRetriever, Console
 private:
     std::istream &in;
     bool isCommandAvailableImpl() const override;
-    std::string retrieveCommandImpl() const override;
+    std::optional<std::string> retrieveCommandImpl() const override;
     
 public:
     explicit ConsoleCommandRetriever(std::istream &in);

@@ -21,5 +21,5 @@ CommandRetriever& CommandRetriever::operator=(CommandRetriever &&other) noexcept
 }
 
 bool CommandRetriever::isCommandAvailable() const { return isCommandAvailableImpl(); }
-std::string CommandRetriever::retrieveCommand() const { return retrieveCommandImpl(); }
+std::optional<std::string> CommandRetriever::retrieveCommand() const { return retrieveCommandImpl(); }
 std::unique_ptr<CommandRetriever> CommandRetriever::clone() const { return cloneImpl(); }

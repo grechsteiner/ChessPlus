@@ -143,60 +143,64 @@ void Game::runGame() {
     notifyObservers();
 
     while (commandRetriever->isCommandAvailable()) {
-        std::string input = commandRetriever->retrieveCommand();
-        std::smatch matches;
+        std::optional<std::string> potentialInput = commandRetriever->retrieveCommand();
 
-        // Enter Setup Mode
-        if (std::regex_match(input, matches, std::regex(R"(\s*setup\s*)", std::regex_constants::icase))) {
-            processEnterSetupModeCommand();
+        if (potentialInput.has_value()) {
+            std::string input = potentialInput.value();
+            std::smatch matches;
 
-        // Place Piece
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)", std::regex_constants::icase))) {
-            processPlacePieceCommand(matches[1].str(), matches[2].str(), matchToOptionalString(matches, 3), matchToOptionalString(matches, 4));
+            // Enter Setup Mode
+            if (std::regex_match(input, matches, std::regex(R"(\s*setup\s*)", std::regex_constants::icase))) {
+                processEnterSetupModeCommand();
 
-        // Remove Piece
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*-\s*([a-z]+[1-9][0-9]*)\s*)", std::regex_constants::icase))) {
-            processRemovePieceCommand(matches[1].str());
-            
-        // Swap First Turn
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*swap\s*)", std::regex_constants::icase))) {
-            processSwapFirstTurnCommand();
+            // Place Piece
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)", std::regex_constants::icase))) {
+                processPlacePieceCommand(matches[1].str(), matches[2].str(), matchToOptionalString(matches, 3), matchToOptionalString(matches, 4));
 
-        // Apply Standard Setup
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*standard\s*)", std::regex_constants::icase))) {
-            processApplyStandardSetupCommand();
+            // Remove Piece
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*-\s*([a-z]+[1-9][0-9]*)\s*)", std::regex_constants::icase))) {
+                processRemovePieceCommand(matches[1].str());
+                
+            // Swap First Turn
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*swap\s*)", std::regex_constants::icase))) {
+                processSwapFirstTurnCommand();
 
-        // Set Board Size   
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*set\s*([1-9][0-9]*)\s*([1-9][0-9]*))", std::regex_constants::icase))) {
-            processSetBoardSizeCommand(matches[1].str(), matches[2].str());
+            // Apply Standard Setup
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*standard\s*)", std::regex_constants::icase))) {
+                processApplyStandardSetupCommand();
 
-        // Exit Setup Mode  
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*done\s*)", std::regex_constants::icase))) {
-            processExitSetupModeCommand();
+            // Set Board Size   
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*set\s*([1-9][0-9]*)\s*([1-9][0-9]*))", std::regex_constants::icase))) {
+                processSetBoardSizeCommand(matches[1].str(), matches[2].str());
 
-        // Start Game
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*game\s*(human|computer[1-5])\s*(human|computer[1-5])\s*)", std::regex_constants::icase))) {
-            processStartGameCommand(matches[1].str(), matches[2].str());
+            // Exit Setup Mode  
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*done\s*)", std::regex_constants::icase))) {
+                processExitSetupModeCommand();
 
-        // Make Move
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*move\s*(?:([a-z]+[1-9][0-9]*)\s*([a-z]+[1-9][0-9]*)\s*([a-z]?)\s*)?)", std::regex_constants::icase))) {
-            if (matches[1].matched) {
-                processMakeHumanMoveCommand(MoveInputDetails(matches[1].str(), matches[2].str(), matchToOptionalString(matches, 3)));
+            // Start Game
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*game\s*(human|computer[1-5])\s*(human|computer[1-5])\s*)", std::regex_constants::icase))) {
+                processStartGameCommand(matches[1].str(), matches[2].str());
+
+            // Make Move
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*move\s*(?:([a-z]+[1-9][0-9]*)\s*([a-z]+[1-9][0-9]*)\s*([a-z]?)\s*)?)", std::regex_constants::icase))) {
+                if (matches[1].matched) {
+                    processMakeHumanMoveCommand(MoveInputDetails(matches[1].str(), matches[2].str(), matchToOptionalString(matches, 3)));
+                } else {
+                    processMakeComputerMoveCommand();
+                }
+
+            // Undo Move
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*undo\s*)", std::regex_constants::icase))) {
+                processUndoMoveCommand();
+
+            // Resign Game
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*resign\s*)", std::regex_constants::icase))) {
+                processResignGameCommand();
+
+            // No Matching Commands
             } else {
-                processMakeComputerMoveCommand();
+                reportIllegalCommand("Invalid command entered");
             }
-
-        // Undo Move
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*undo\s*)", std::regex_constants::icase))) {
-            processUndoMoveCommand();
-
-        // Resign Game
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*resign\s*)", std::regex_constants::icase))) {
-            processResignGameCommand();
-
-        // No Matching Commands
-        } else {
-            reportIllegalCommand("No valid command entered");
         }
     }
 }
@@ -345,11 +349,11 @@ void Game::processSetBoardSizeCommand(std::string const &numRowsStr, std::string
             int numRows = std::stoi(numRowsStr);
             int numCols = std::stoi(numColsStr);
 
-            if (numRows < 1 || numRows > 26) {
-                reportIllegalCommand("Number of rows must be between 1 and 26 inclusive");
+            if (numRows < 4 || numRows > 26) {
+                reportIllegalCommand("Number of rows must be between 4 and 26 inclusive");
                 break;
-            } else if (numCols < 8 || numCols > 26) {
-                reportIllegalCommand("Number of cols must be between 1 and 26 inclusive");
+            } else if (numCols < 4 || numCols > 26) {
+                reportIllegalCommand("Number of cols must be between 4 and 26 inclusive");
                 break;
             }
 
