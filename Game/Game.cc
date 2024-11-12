@@ -32,16 +32,18 @@
 #include "PlayerFactory.h"
 
 
-Game::Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter) :
+Game::Game(std::unique_ptr<CommandRetriever> const &commandRetriever, std::unique_ptr<IllegalCommandReporter> const &illegalCommandReporter) :
     gameState(GameState::MAIN_MENU),
     chessBoard(ChessBoardFactory::createChessBoard(8, 8)),
-    commandRetriever(std::move(commandRetriever)), 
-    illegalCommandReporter(std::move(illegalCommandReporter)),
+    commandRetriever(commandRetriever->clone()), 
+    illegalCommandReporter(illegalCommandReporter->clone()),
     players(std::make_pair(
         PlayerFactory::createHumanPlayer(chessBoard->getTeamOne()),
         PlayerFactory::createHumanPlayer(chessBoard->getTeamTwo())
     )),
     currentTurn(chessBoard->getTeamOne()) {
+
+        
     ChessBoardUtilities::applyStandardSetup(chessBoard);
 }
 

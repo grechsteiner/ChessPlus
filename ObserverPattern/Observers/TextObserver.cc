@@ -4,16 +4,22 @@
 
 #include "TextObserver.h"
 #include "Game.h"
+#include "State.h"
 
-TextObserver::TextObserver(std::ostream &out, Game *game) : Cloneable<Observer, TextObserver>(), out(out), game(game) {
+
+TextObserver::TextObserver(Game *game, std::ostream &out) : Cloneable<Observer, TextObserver>(), game(game), out(out) {
     game->attach(this);
 }
 
 TextObserver::TextObserver(TextObserver const &other) : 
-    Cloneable<Observer, TextObserver>(), out(other.out), game(other.game) {}
+    Cloneable<Observer, TextObserver>(), game(other.game), out(other.out) {
+    game->attach(this);       
+}
 
 TextObserver::TextObserver(TextObserver &&other) noexcept : 
-    Cloneable<Observer, TextObserver>(), out(other.out), game(other.game) {}
+    Cloneable<Observer, TextObserver>(), game(other.game), out(other.out) {
+    game->attach(this);
+}
 
 TextObserver::~TextObserver() {
     game->detach(this);
@@ -21,12 +27,14 @@ TextObserver::~TextObserver() {
 
 void TextObserver::notifyImpl() {
 
+    State const &state = game->getState();
+
+    // displayMainMenu();
+    
+    // GameState gameState = std::get<4>(state);
+
+
     /*
-    std::tuple<const ChessBoard&, const std::tuple<PlayerTuple, PlayerTuple>&, int, bool, GameState> state = game->getState();
-    GameState gameState = std::get<4>(state);
-
-
-
     if (gameState == GameState::MAIN_MENU) {
         out << "+---------+" << std::endl;
         out << "|Main Menu|" << std::endl;
@@ -116,6 +124,22 @@ void TextObserver::notifyImpl() {
         
     }
     */
+}
+
+void TextObserver::displayMainMenu() {
+    out << "   ________                       ____  __           " << std::endl;   
+    out << "  / ____/ /_  ___  __________    / __ \\/ /_  _______ " << std::endl;
+    out << " / /   / __ \\/ _ \\/ ___/ ___/   / /_/ / / / / / ___/ " << std::endl;
+    out << "/ /___/ / / /  __(__  |__  )   / ____/ / /_/ (__  )  " << std::endl;
+    out << "\\____/_/ /_/\\___/____/____/   /_/   /_/\\__,_/____/   " << std::endl;
+
+    out << std::endl;
+    out << "     __             ______                                       ____            __         __       _             " << std::endl;   
+    out << "    / /_  __  __   / ____/________ ___  ___________  ____       / __ \\___  _____/ /_  _____/ /____  (_)___  ___  _____ " << std::endl;
+    out << "   / __ \\/ / / /  / / __/ ___/ __ `/ / / / ___/ __ \\/ __ \\     / /_/ / _ \\/ ___/ __ \\/ ___/ __/ _ \\/ / __ \\/ _ \\/ ___/ " << std::endl;
+    out << "  / /_/ / /_/ /  / /_/ / /  / /_/ / /_/ (__  ) /_/ / / / /    / _, _/  __/ /__/ / / (__  ) /_/  __/ / / / /  __/ /     " << std::endl;
+    out << " /_.___/\\__, /   \\____/_/   \\__,_/\\__, /____/\\____/_/ /_/    /_/ |_|\\___/\\___/_/ /_/____/\\__/\\___/_/_/ /_/\\___/_/      " << std::endl;
+    out << "       /____/                    /____/                                                                            " << std::endl;                                               
 }
 
 void TextObserver::printPiece(const std::string& str, Team team) {

@@ -2,13 +2,17 @@
 
 #include "Player.h"
 
+#include <iostream>
 // Basic ctor
 Player::Player(PlayerType playerType, Team team, std::unique_ptr<ComputerPlayer> const &computerPlayer) :
-    playerType(playerType), team(team), computerPlayer(computerPlayer->clone()) {}
+    playerType(playerType), team(team), computerPlayer(computerPlayer == nullptr ? nullptr : computerPlayer->clone()) {
+
+        std::cout << "here" << std::endl;
+    }
 
 // Copy ctor
 Player::Player(Player const &other) :
-    playerType(other.playerType), team(other.team), computerPlayer(other.computerPlayer->clone()) {}
+    playerType(other.playerType), team(other.team), computerPlayer(other.computerPlayer == nullptr ? nullptr : other.computerPlayer->clone()) {}
 
 // Move ctor
 Player::Player(Player &&other) noexcept :

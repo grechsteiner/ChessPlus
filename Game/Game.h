@@ -56,7 +56,7 @@ private:
     void processResignGameCommand();
 
 public:
-    explicit Game(std::unique_ptr<CommandRetriever> commandRetriever, std::unique_ptr<IllegalCommandReporter> illegalCommandReporter);
+    explicit Game(std::unique_ptr<CommandRetriever> const &commandRetriever, std::unique_ptr<IllegalCommandReporter> const &illegalCommandReporter);
     Game(Game const &other);
     Game(Game &&other) noexcept;
     Game& operator=(Game &other);
