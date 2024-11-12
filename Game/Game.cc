@@ -151,7 +151,7 @@ void Game::runGame() {
             processEnterSetupModeCommand();
 
         // Place Piece
-        } else if (std::regex_match(input, matches, std::regex(R"(\s*+\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)", std::regex_constants::icase))) {
+        } else if (std::regex_match(input, matches, std::regex(R"(\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)", std::regex_constants::icase))) {
             processPlacePieceCommand(matches[1].str(), matches[2].str(), matchToOptionalString(matches, 3), matchToOptionalString(matches, 4));
 
         // Remove Piece
