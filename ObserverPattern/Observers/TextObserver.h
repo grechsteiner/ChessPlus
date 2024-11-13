@@ -3,6 +3,8 @@
 #ifndef TextObserver_h
 #define TextObserver_h
 
+#include <boost/locale.hpp>
+
 #include <iostream>
 
 #include "Observer.h"
@@ -26,6 +28,10 @@ private:
     std::vector<std::string> buildSetupText();
     std::vector<std::string> buildBoardDataText(std::unique_ptr<ChessBoard> const &chessBoard, Team currentTurn);
 
+    std::u32string stringToU32(std::string const &str) const;
+    std::string u32ToString(std::u32string const &str) const;
+    void outputLine(std::u32string const &line) const;
+
 public:
     explicit TextObserver(Game *game, std::ostream &out);
     TextObserver(TextObserver const &other);
@@ -34,5 +40,6 @@ public:
     // Move assignment not enabled (can't move streams)
     virtual ~TextObserver();
 };
+
 
 #endif /* TextObserver_h */

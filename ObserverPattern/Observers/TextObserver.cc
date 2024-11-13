@@ -138,25 +138,24 @@ void TextObserver::notifyImpl() {
 }
 
 void TextObserver::displayMainMenu() {
-    out << "╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗" << std::endl;
-    out << "║                                    ________                      ____  __                                           ║" << std::endl;   
-    out << "║                                   / ____/ /_  ___  __________   / __ \\/ /_  _______                                 ║" << std::endl;
-    out << "║                                  / /   / __ \\/ _ \\/ ___/ ___/  / /_/ / / / / / ___/                                 ║" << std::endl;
-    out << "║                                 / /___/ / / /  __(__  |__  )  / ____/ / /_/ (__  )                                  ║" << std::endl;
-    out << "║                                 \\____/_/ /_/\\___/____/____/  /_/   /_/\\__,_/____/                                   ║" << std::endl;
-
-    out << "║                                                                                                                     ║" << std::endl;
-    out << "║     __             ______                                     ____            __         __       _                 ║" << std::endl;   
-    out << "║    / /_  __  __   / ____/________  __  ___________  ____     / __ \\___  _____/ /_  _____/ /____  (_)___  ___  _____ ║" << std::endl;
-    out << "║   / __ \\/ / / /  / / __/ ___/ __ `/ / / / ___/ __ \\/ __ \\   / /_/ / _ \\/ ___/ __ \\/ ___/ __/ _ \\/ / __ \\/ _ \\/ ___/ ║" << std::endl;
-    out << "║  / /_/ / /_/ /  / /_/ / /  / /_/ / /_/ (__  ) /_/ / / / /  / _, _/  __/ /__/ / / (__  ) /_/  __/ / / / /  __/ /     ║" << std::endl;
-    out << "║ /_.___/\\__, /   \\____/_/   \\__,_/\\__, /____/\\____/_/ /_/  /_/ |_|\\___/\\___/_/ /_/____/\\__/\\___/_/_/ /_/\\___/_/      ║" << std::endl;
-    out << "║       /____/                    /____/                                                                              ║" << std::endl;             
-    out << "╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝" << std::endl;                                  
+    outputLine(std::u32string(UR"(╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗)"));
+    outputLine(std::u32string(UR"(║                                    ________                      ____  __                                           ║)"));
+    outputLine(std::u32string(UR"(║                                   / ____/ /_  ___  __________   / __ \/ /_  _______                                 ║)"));
+    outputLine(std::u32string(UR"(║                                  / /   / __ \/ _ \/ ___/ ___/  / /_/ / / / / / ___/                                 ║)"));
+    outputLine(std::u32string(UR"(║                                 / /___/ / / /  __(__  |__  )  / ____/ / /_/ (__  )                                  ║)"));
+    outputLine(std::u32string(UR"(║                                 \____/_/ /_/\___/____/____/  /_/   /_/\__,_/____/                                   ║)"));
+    outputLine(std::u32string(UR"(║                                                                                                                     ║)"));
+    outputLine(std::u32string(UR"(║     __             ______                                     ____            __         __       _                 ║)"));
+    outputLine(std::u32string(UR"(║    / /_  __  __   / ____/________  __  ___________  ____     / __ \___  _____/ /_  _____/ /____  (_)___  ___  _____ ║)"));
+    outputLine(std::u32string(UR"(║   / __ \/ / / /  / / __/ ___/ __ `/ / / / ___/ __ \/ __ \   / /_/ / _ \/ ___/ __ \/ ___/ __/ _ \/ / __ \/ _ \/ ___/ ║)"));
+    outputLine(std::u32string(UR"(║  / /_/ / /_/ /  / /_/ / /  / /_/ / /_/ (__  ) /_/ / / / /  / _, _/  __/ /__/ / / (__  ) /_/  __/ / / / /  __/ /     ║)"));
+    outputLine(std::u32string(UR"(║ /_.___/\__, /   \____/_/   \__,_/\__, /____/\____/_/ /_/  /_/ |_|\___/\___/_/ /_/____/\__/\___/_/_/ /_/\___/_/      ║)"));
+    outputLine(std::u32string(UR"(║       /____/                    /____/                                                                              ║)"));
+    outputLine(std::u32string(UR"(╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝)"));                          
 }
 
 void TextObserver::displaySetupMode(std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn) {
-    out << "╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗" << std::endl;
+    outputLine(std::u32string(UR"(╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗)"));
 
     std::vector<std::string> chessBoardDisplay = buildChessBoard(chessBoard);
     std::vector<std::string> boardDataDisplay = buildBoardDataText(chessBoard, currentTurn);
@@ -283,4 +282,16 @@ std::vector<std::string> TextObserver::buildBoardDataText(std::unique_ptr<ChessB
         std::move(whiteRemaining),
         std::move(blackRemaining)
     };
+}
+
+std::u32string TextObserver::stringToU32(std::string const &str) const {
+    return boost::locale::conv::utf_to_utf<char32_t>(str);
+}
+
+std::string TextObserver::u32ToString(std::u32string const &str) const {
+    return boost::locale::conv::utf_to_utf<char>(str);
+}
+
+void TextObserver::outputLine(std::u32string const &line) const {
+    out << u32ToString(line) << std::endl;
 }
