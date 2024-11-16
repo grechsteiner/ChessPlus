@@ -6,7 +6,6 @@
 #include "GameWrapper.h"
 #include "Game.h"
 #include "TextObserver.h"
-#include "GraphicObserver.h"
 #include "ConsoleCommandRetriever.h"
 #include "ConsoleIllegalCommandReporter.h"
 
@@ -14,9 +13,7 @@
 // Basic ctor
 GameWrapper::GameWrapper(std::istream &in, std::ostream &out, std::ostream &illegalCommandOut) : 
     game(std::make_unique<ConsoleCommandRetriever>(in), std::make_unique<ConsoleIllegalCommandReporter>(illegalCommandOut)) {
-
     observers.push_back(std::make_unique<TextObserver>(&game, out));
-    // observers.push_back(std::make_unique<GraphicObserver>(&game));
 }
 
 // Copy ctor
