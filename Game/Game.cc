@@ -450,7 +450,11 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
                 reportIllegalCommand("Input move is not valid");
                 break;
             }
-            chessBoard->makeMove(boardMove.value());
+            std::cout << boardMove.value()->getPromotionPieceType().has_value() << std::endl;
+            if (!chessBoard->makeMove(boardMove.value())) {
+                reportIllegalCommand("Input move is not valid");
+                break;
+            }
             switchTurn();
 
             notifyObservers();

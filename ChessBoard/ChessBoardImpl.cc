@@ -143,7 +143,7 @@ bool ChessBoardImpl::canMakeMove(Team team) const {
 bool ChessBoardImpl::isMoveValid(std::unique_ptr<BoardMove> const &boardMove) const {
     if (isSquareOnBoard(boardMove->getFromSquare())) {
         std::vector<std::unique_ptr<BoardMove>> pieceBoardMoves = generateAllLegalMovesAtSquare(boardMove->getFromSquare());
-        if (std::find(pieceBoardMoves.begin(), pieceBoardMoves.end(), boardMove) != pieceBoardMoves.end()) {
+        if (std::find_if(pieceBoardMoves.begin(), pieceBoardMoves.end(), [&boardMove](std::unique_ptr<BoardMove> const& pieceBoardMove) { return *pieceBoardMove == *boardMove; }) != pieceBoardMoves.end()) {
             return true;
         }
     }
