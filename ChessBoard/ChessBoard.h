@@ -3,16 +3,16 @@
 #ifndef ChessBoard_h
 #define ChessBoard_h
 
-#include <vector>
-#include <optional>
 #include <memory>
-
-#include "Constants.h"
-#include "BoardSquare.h"
+#include <optional>
+#include <vector>
 
 #include "BoardMove.h"
+#include "BoardSquare.h"
+#include "Constants.h"
 #include "PieceData.h"
 #include "PieceInfo.h"
+
 
 /**
  * ChessBoard Interface Class
@@ -20,34 +20,50 @@
 class ChessBoard {
 
 public:
+    /**
+     * BoardSquare Iterator Class
+     */
     class BoardSquareIterator final {
     private:
-        explicit BoardSquareIterator(int row, int col, int numRows, int numCols);
         BoardSquare boardSquare;
-        int numRows;
-        int numCols;
-
+        int numRowsOnBoard;
+        int numColsOnBoard;
+        
+        explicit BoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard);
         friend class ChessBoard;
 
     public:
+        BoardSquareIterator(BoardSquareIterator const &other);
+        BoardSquareIterator(BoardSquareIterator &&other) noexcept;
+        BoardSquareIterator& operator=(BoardSquareIterator const &other);
+        BoardSquareIterator& operator=(BoardSquareIterator &&other) noexcept;
         virtual ~BoardSquareIterator() = default;
+
         BoardSquare operator*() const;
         BoardSquareIterator& operator++();
         bool operator==(BoardSquareIterator const &other) const;
         bool operator!=(BoardSquareIterator const &other) const;
     };
 
+    /**
+     * ReverseBoardSquare Iterator Class
+     */
     class ReverseBoardSquareIterator final {
     private:
-        explicit ReverseBoardSquareIterator(int row, int col, int numRows, int numCols);
         BoardSquare boardSquare;
-        int numRows;
-        int numCols;
+        int numRowsOnBoard;
+        int numColsOnBoard;
 
+        explicit ReverseBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard);
         friend class ChessBoard;
 
     public:
+        ReverseBoardSquareIterator(ReverseBoardSquareIterator const &other);
+        ReverseBoardSquareIterator(ReverseBoardSquareIterator &&other) noexcept;
+        ReverseBoardSquareIterator& operator=(ReverseBoardSquareIterator const &other);
+        ReverseBoardSquareIterator& operator=(ReverseBoardSquareIterator &&other) noexcept;
         virtual ~ReverseBoardSquareIterator() = default;
+
         BoardSquare operator*() const;
         ReverseBoardSquareIterator& operator++();
         bool operator==(ReverseBoardSquareIterator const &other) const;
@@ -92,8 +108,8 @@ private:
     virtual Team getTeamOneImpl() const = 0;
     virtual Team getTeamTwoImpl() const = 0;
 
-    virtual int getNumRowsImpl() const = 0;
-    virtual int getNumColsImpl() const = 0;
+    virtual int getNumRowsOnBoardImpl() const = 0;
+    virtual int getNumColsOnBoardImpl() const = 0;
 
     virtual BoardSquareIterator beginImpl() = 0;
     virtual BoardSquareIterator beginImpl() const = 0;
@@ -110,8 +126,8 @@ private:
     virtual ReverseBoardSquareIterator crendImpl() const = 0;
 
 protected:
-    BoardSquareIterator createBoardSquareIterator(int row, int col, int numRows, int numCols) const;
-    ReverseBoardSquareIterator createReverseBoardSquareIterator(int row, int col, int numRows, int numCols) const;
+    BoardSquareIterator createBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) const;
+    ReverseBoardSquareIterator createReverseBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) const;
 
 public:
     std::unique_ptr<ChessBoard> clone() const;
@@ -152,8 +168,8 @@ public:
     Team getTeamOne() const;
     Team getTeamTwo() const;
 
-    int getNumRows() const;
-    int getNumCols() const;
+    int getNumRowsOnBoard() const;
+    int getNumColsOnBoard() const;
 
     BoardSquareIterator begin();
     BoardSquareIterator begin() const;

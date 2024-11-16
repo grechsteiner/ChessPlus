@@ -428,11 +428,11 @@ Team ChessBoardImpl::getTeamTwoImpl() const  {
     return teamTwo;
 }
 
-int ChessBoardImpl::getNumRowsImpl() const {
+int ChessBoardImpl::getNumRowsOnBoardImpl() const {
     return numRows;
 }
 
-int ChessBoardImpl::getNumColsImpl() const {
+int ChessBoardImpl::getNumColsOnBoardImpl() const {
     return numCols;
 }
 

@@ -77,7 +77,7 @@ std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(std::unique_ptr<C
                 switch (pieceData.pieceDirection) {
                     case PieceDirection::NORTH:
                     case PieceDirection::SOUTH: {
-                        if (fromRow == 0 || fromRow == chessBoard->getNumRows() - 1) {
+                        if (fromRow == 0 || fromRow == chessBoard->getNumRowsOnBoard() - 1) {
 
                             // Left Castle: Check if have enough room to the left and that the rook travel square is empty
                             if (fromCol >= 4 && chessBoard->isSquareEmpty(BoardSquare(fromRow, fromCol - 3))) {
@@ -90,7 +90,7 @@ std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(std::unique_ptr<C
                             }
 
                             // Right Castle: Check if have enough room to the right
-                            if (fromCol <= chessBoard->getNumCols() - 4) {
+                            if (fromCol <= chessBoard->getNumColsOnBoard() - 4) {
                                 BoardSquare rookFromSquare(fromRow, fromCol + 3);
                                 BoardSquare toSquare(fromRow, fromCol + 2);
                                 BoardSquare rookToSquare(fromRow, fromCol + 1);
@@ -103,7 +103,7 @@ std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(std::unique_ptr<C
                     }
                     case PieceDirection::EAST:
                     case PieceDirection::WEST: {
-                        if (fromCol == 0 || fromCol == chessBoard->getNumCols() - 1) {
+                        if (fromCol == 0 || fromCol == chessBoard->getNumColsOnBoard() - 1) {
 
                             // Up Castle: Check if we have enough room up and that the rook travel square is empty
                             if (fromRow >= 4 && chessBoard->isSquareEmpty(BoardSquare(fromRow - 3, fromCol))) {
@@ -116,7 +116,7 @@ std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(std::unique_ptr<C
                             }
 
                             // Down Castle: Check if have enough room down
-                            if (fromCol <= chessBoard->getNumRows() - 4) {
+                            if (fromCol <= chessBoard->getNumRowsOnBoard() - 4) {
                                 BoardSquare rookFromSquare(fromRow + 3, fromCol);
                                 BoardSquare toSquare(fromRow + 2, fromCol);
                                 BoardSquare rookToSquare(fromRow + 1, fromCol);

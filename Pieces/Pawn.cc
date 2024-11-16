@@ -149,8 +149,8 @@ void Pawn::addMoves(std::vector<std::unique_ptr<BoardMove>> &moves, std::unique_
     PieceDirection pieceDirection = pieceData.pieceDirection;
     bool isPromotionMove = 
         (pieceDirection == PieceDirection::NORTH && toRow == 0) ||
-        (pieceDirection == PieceDirection::SOUTH && toRow == chessBoard->getNumRows() - 1) ||
-        (pieceDirection == PieceDirection::EAST && toCol == chessBoard->getNumCols() - 1) ||
+        (pieceDirection == PieceDirection::SOUTH && toRow == chessBoard->getNumRowsOnBoard() - 1) ||
+        (pieceDirection == PieceDirection::EAST && toCol == chessBoard->getNumColsOnBoard() - 1) ||
         (pieceDirection == PieceDirection::WEST && toCol == 0);
     if (isPromotionMove) {
         static std::set<PieceType> promotionPieceTypes = { PieceType::QUEEN, PieceType::ROOK, PieceType::KNIGHT, PieceType::BISHOP };

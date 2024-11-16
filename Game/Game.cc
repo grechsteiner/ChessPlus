@@ -231,7 +231,7 @@ void Game::processPlacePieceCommand(std::string const &boardSquareStr, std::stri
             reportIllegalCommand("Can't place piece when game is active");
             break;
         case GameState::SETUP:
-            std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(boardSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
+            std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(boardSquareStr, chessBoard->getNumRowsOnBoard(), chessBoard->getNumColsOnBoard());
             if (!boardSquare.has_value() || !chessBoard->isSquareOnBoard(boardSquare.value())) {
                 reportIllegalCommand("Input square is not valid");
                 break;
@@ -287,7 +287,7 @@ void Game::processRemovePieceCommand(std::string const &boardSquareStr) {
             reportIllegalCommand("Can't remove piece when game is active");
             break;
         case GameState::SETUP:
-            std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(boardSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
+            std::optional<BoardSquare> boardSquare = BoardSquare::createBoardSquare(boardSquareStr, chessBoard->getNumRowsOnBoard(), chessBoard->getNumColsOnBoard());
             if (!boardSquare.has_value() || !chessBoard->isSquareOnBoard(boardSquare.value())) {
                 reportIllegalCommand("Input square is not valid");
                 break;
@@ -325,7 +325,7 @@ void Game::processApplyStandardSetupCommand(std::optional<std::string> const &pi
             reportIllegalCommand("Can't apply standard setup when game is active");
             break;
         case GameState::SETUP:
-            std::unique_ptr<ChessBoard> newChessBoard = ChessBoardFactory::createChessBoard(chessBoard->getNumRows(), chessBoard->getNumCols());
+            std::unique_ptr<ChessBoard> newChessBoard = ChessBoardFactory::createChessBoard(chessBoard->getNumRowsOnBoard(), chessBoard->getNumColsOnBoard());
             PieceLevel pieceLevel = pieceLevelStr.has_value()
                 ? Utilities::stringToPieceLevel(pieceLevelStr.value()).value()
                 : PieceLevel::BASIC;
@@ -428,8 +428,8 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
                 break;
             }
             
-            std::optional<BoardSquare> fromSquare = BoardSquare::createBoardSquare(moveInputDetails.fromSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
-            std::optional<BoardSquare> toSquare = BoardSquare::createBoardSquare(moveInputDetails.toSquareStr, chessBoard->getNumRows(), chessBoard->getNumCols());
+            std::optional<BoardSquare> fromSquare = BoardSquare::createBoardSquare(moveInputDetails.fromSquareStr, chessBoard->getNumRowsOnBoard(), chessBoard->getNumColsOnBoard());
+            std::optional<BoardSquare> toSquare = BoardSquare::createBoardSquare(moveInputDetails.toSquareStr, chessBoard->getNumRowsOnBoard(), chessBoard->getNumColsOnBoard());
             if (!fromSquare.has_value() || !toSquare.has_value() || !chessBoard->isSquareOnBoard(fromSquare.value()) || !chessBoard->isSquareOnBoard(toSquare.value())) {
                 reportIllegalCommand("Input squares are not valid");
                 break;

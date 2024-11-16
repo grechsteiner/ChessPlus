@@ -72,10 +72,10 @@ void TextObserver::displaySetupMode(std::unique_ptr<ChessBoard> const &chessBoar
 
         // Need to account for embedded color codes in the board row string, and the row number
         currentLine += chessBoardDisplay[row];
-        followingSpaces -= chessBoard->getNumRows() >= 10 
+        followingSpaces -= chessBoard->getNumRowsOnBoard() >= 10 
             ? 2
             : 1;
-        followingSpaces -= chessBoard->getNumCols();    // Num cols
+        followingSpaces -= chessBoard->getNumColsOnBoard();    // Num cols
         followingSpaces -= 2;                           // Boarder of board
         
         currentLine += std::u32string(UR"( )");
@@ -117,10 +117,10 @@ void TextObserver::displayGame(std::unique_ptr<ChessBoard> const &chessBoard, st
 
         // Need to account for embedded color codes in the board row string, and the row number
         currentLine += chessBoardDisplay[row];
-        followingSpaces -= chessBoard->getNumRows() >= 10 
+        followingSpaces -= chessBoard->getNumRowsOnBoard() >= 10 
             ? 2
             : 1;
-        followingSpaces -= chessBoard->getNumCols();    // Num cols
+        followingSpaces -= chessBoard->getNumColsOnBoard();    // Num cols
         followingSpaces -= 2;                           // Boarder of board
         
         currentLine += std::u32string(UR"( )");
@@ -173,9 +173,9 @@ std::vector<std::u32string> TextObserver::buildGameOnText() {
 }
 
 std::vector<std::u32string> TextObserver::buildChessBoard(std::unique_ptr<ChessBoard> const &chessBoard) {
-    int numRows = chessBoard->getNumRows();
-    int numCols = chessBoard->getNumCols();
-    bool extraSpaceForNumber = chessBoard->getNumRows() >= 10;
+    int numRows = chessBoard->getNumRowsOnBoard();
+    int numCols = chessBoard->getNumColsOnBoard();
+    bool extraSpaceForNumber = chessBoard->getNumRowsOnBoard() >= 10;
 
     std::vector<std::u32string> chessBoardDisplay;
 
@@ -187,7 +187,7 @@ std::vector<std::u32string> TextObserver::buildChessBoard(std::unique_ptr<ChessB
     chessBoardDisplay.emplace_back(std::move(topBoarder));
 
     for (int row = 0; row < numRows; ++row) {
-        std::u32string currentLine = extraSpaceForNumber && chessBoard->getNumRows() - row < 10 
+        std::u32string currentLine = extraSpaceForNumber && chessBoard->getNumRowsOnBoard() - row < 10 
             ? std::u32string(UR"( )") 
             : std::u32string(UR"()");
         currentLine += stringToU32(std::to_string(numRows - row));

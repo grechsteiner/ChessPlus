@@ -1,31 +1,68 @@
 // ChessBoard.cc
 
-#include <vector>
-#include <optional>
-#include <memory>
-
 #include "ChessBoard.h"
-#include "Constants.h"
-#include "BoardSquare.h"
+
+#include <memory>
+#include <optional>
+#include <vector>
+
 #include "BoardMove.h"
-#include "PieceInfo.h"
+#include "BoardSquare.h"
+#include "Constants.h"
 #include "PieceData.h"
+#include "PieceInfo.h"
+
 
 #pragma mark - BoardSquareIterator
 
-ChessBoard::BoardSquareIterator ChessBoard::createBoardSquareIterator(int row, int col, int numRows, int numCols) const {
-    return BoardSquareIterator(row, col, numRows, numCols);
+/*
+ * Creates an instance of a BoardSquareIterator
+ * To be used by concrete ChessBoard implementations
+ */
+ChessBoard::BoardSquareIterator ChessBoard::createBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) const {
+    return BoardSquareIterator(row, col, numRowsOnBoard, numColsOnBoard);
 }
 
-ChessBoard::BoardSquareIterator::BoardSquareIterator(int row, int col, int numRows, int numCols) :
-    boardSquare(BoardSquare(row, col)), numRows(numRows), numCols(numCols) {}
+// Basic ctor
+ChessBoard::BoardSquareIterator::BoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) :
+    boardSquare(BoardSquare(row, col)), numRowsOnBoard(numRowsOnBoard), numColsOnBoard(numColsOnBoard) { }
 
+// Copy ctor
+ChessBoard::BoardSquareIterator::BoardSquareIterator(BoardSquareIterator const &other) :
+    boardSquare(other.boardSquare), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
+
+// Move ctor
+ChessBoard::BoardSquareIterator::BoardSquareIterator(BoardSquareIterator &&other) noexcept :
+    boardSquare(std::move(other.boardSquare)), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
+
+// Copy assignmnet
+ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator=(BoardSquareIterator const &other) {
+    if (this != &other) {
+        boardSquare = other.boardSquare;
+        numRowsOnBoard = other.numRowsOnBoard;
+        numColsOnBoard = other.numColsOnBoard;
+    }
+    return *this;
+}
+
+// Move assignment
+ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator=(BoardSquareIterator &&other) noexcept {
+    if (this != &other) {
+        boardSquare = std::move(other.boardSquare);
+        numRowsOnBoard = other.numRowsOnBoard;
+        numColsOnBoard = other.numColsOnBoard;
+    }
+    return *this;
+}
+
+// Dereference
 BoardSquare ChessBoard::BoardSquareIterator::operator*() const {
     return boardSquare;
 }
 
+// Pre-increment
 ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator++() {
-    if (boardSquare.boardCol + 1 < numCols) {
+    if (boardSquare.boardCol + 1 < numColsOnBoard) {
         ++boardSquare.boardCol;
     } else {
         boardSquare.boardCol = 0;
@@ -34,12 +71,15 @@ ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator++() {
     return *this;
 }
 
+// Equality
 bool ChessBoard::BoardSquareIterator::operator==(BoardSquareIterator const &other) const {
     return 
         boardSquare == other.boardSquare &&
-        numRows == other.numRows &&
-        numCols == other.numCols;
+        numRowsOnBoard == other.numRowsOnBoard &&
+        numColsOnBoard == other.numColsOnBoard;
 }
+
+// Inequality
 bool ChessBoard::BoardSquareIterator::operator!=(BoardSquareIterator const &other) const {
     return !(*this ==other);
 }
@@ -47,33 +87,71 @@ bool ChessBoard::BoardSquareIterator::operator!=(BoardSquareIterator const &othe
 
 #pragma mark - ReverseBoardSquareIterator
 
-ChessBoard::ReverseBoardSquareIterator ChessBoard::createReverseBoardSquareIterator(int row, int col, int numRows, int numCols) const {
-    return ReverseBoardSquareIterator(row, col, numRows, numCols);
+/*
+ * Creates an instance of a ReverseBoardSquareIterator
+ * To be used by concrete ChessBoard implementations
+ */
+ChessBoard::ReverseBoardSquareIterator ChessBoard::createReverseBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) const {
+    return ReverseBoardSquareIterator(row, col, numRowsOnBoard, numColsOnBoard);
 }
 
-ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(int row, int col, int numRows, int numCols) :
-    boardSquare(BoardSquare(row, col)), numRows(numRows), numCols(numCols) {}
+// Basic ctor
+ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) :
+    boardSquare(BoardSquare(row, col)), numRowsOnBoard(numRowsOnBoard), numColsOnBoard(numColsOnBoard) { }
 
+// Copy ctor
+ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(ReverseBoardSquareIterator const &other) :
+    boardSquare(other.boardSquare), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
+
+// Move ctor
+ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(ReverseBoardSquareIterator &&other) noexcept :
+    boardSquare(std::move(other.boardSquare)), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
+
+// Copy assignmnent
+ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::operator=(ReverseBoardSquareIterator const &other) {
+    if (this != &other) {
+        boardSquare = other.boardSquare;
+        numRowsOnBoard = other.numRowsOnBoard;
+        numColsOnBoard = other.numColsOnBoard;
+    }
+    return *this;
+}
+
+// Move assignment
+ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::operator=(ReverseBoardSquareIterator &&other) noexcept {
+    if (this != &other) {
+        boardSquare = std::move(other.boardSquare);
+        numRowsOnBoard = other.numRowsOnBoard;
+        numColsOnBoard = other.numColsOnBoard;
+    }
+    return *this;
+}
+
+// Dereference
 BoardSquare ChessBoard::ReverseBoardSquareIterator::operator*() const {
     return boardSquare;
 }
 
+// Pre-increment
 ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::operator++() {
     if (boardSquare.boardCol > 0) {
         --boardSquare.boardCol;
     } else {
-        boardSquare.boardCol = numCols - 1;
+        boardSquare.boardCol = numColsOnBoard - 1;
         --boardSquare.boardRow;
     }
     return *this;
 }
 
+// Equality
 bool ChessBoard::ReverseBoardSquareIterator::operator==(ReverseBoardSquareIterator const &other) const {
     return 
         boardSquare == other.boardSquare &&
-        numRows == other.numRows &&
-        numCols == other.numCols;
+        numRowsOnBoard == other.numRowsOnBoard &&
+        numColsOnBoard == other.numColsOnBoard;
 }
+
+// Inequality
 bool ChessBoard::ReverseBoardSquareIterator::operator!=(ReverseBoardSquareIterator const &other) const {
     return !(*this ==other);
 }
@@ -118,8 +196,8 @@ std::vector<std::unique_ptr<BoardMove>> const& ChessBoard::getCompletedMoves() c
 Team ChessBoard::getTeamOne() const { return getTeamOneImpl(); }
 Team ChessBoard::getTeamTwo() const { return getTeamTwoImpl(); }
 
-int ChessBoard::getNumRows() const { return getNumRowsImpl(); }
-int ChessBoard::getNumCols() const { return getNumColsImpl(); }
+int ChessBoard::getNumRowsOnBoard() const { return getNumRowsOnBoardImpl(); }
+int ChessBoard::getNumColsOnBoard() const { return getNumColsOnBoardImpl(); }
 
 ChessBoard::BoardSquareIterator ChessBoard::begin() { return beginImpl(); }
 ChessBoard::BoardSquareIterator ChessBoard::begin() const { return beginImpl(); }

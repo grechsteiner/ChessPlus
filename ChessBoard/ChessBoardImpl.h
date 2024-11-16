@@ -89,8 +89,8 @@ private:
     Team getTeamOneImpl() const override;
     Team getTeamTwoImpl() const override;
 
-    int getNumRowsImpl() const override;
-    int getNumColsImpl() const override;
+    int getNumRowsOnBoardImpl() const override;
+    int getNumColsOnBoardImpl() const override;
 
     BoardSquareIterator beginImpl() override;
     BoardSquareIterator beginImpl() const override;

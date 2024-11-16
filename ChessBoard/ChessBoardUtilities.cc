@@ -13,9 +13,9 @@
 // No pawns in places where they should be promoted
 bool ChessBoardUtilities::isBoardInLegalSetupState(std::unique_ptr<ChessBoard> const &chessBoard) {
     int topRow = 0;
-    int bottomRow = chessBoard->getNumRows() - 1;
+    int bottomRow = chessBoard->getNumRowsOnBoard() - 1;
     int leftCol = 0;
-    int rightCol = chessBoard->getNumCols() - 1;
+    int rightCol = chessBoard->getNumColsOnBoard() - 1;
 
     int teamOneKingCount = 0;
     int teamTwoKingCount = 0;
@@ -81,15 +81,15 @@ bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessB
         PieceType::ROOK
     };
 
-    if (chessBoard->getNumRows() < 4 || chessBoard->getNumCols() < standardBackrowSetupOrder.size()) {
+    if (chessBoard->getNumRowsOnBoard() < 4 || chessBoard->getNumColsOnBoard() < standardBackrowSetupOrder.size()) {
         return false;
     }
 
     chessBoard->clearBoard();
  
-    int firstPieceCol = (chessBoard->getNumCols() - 8) / 2;
+    int firstPieceCol = (chessBoard->getNumColsOnBoard() - 8) / 2;
     int topRow = 0;
-    int bottomRow = chessBoard->getNumRows() - 1;
+    int bottomRow = chessBoard->getNumRowsOnBoard() - 1;
     for (int standardBackrowIndex = 0; standardBackrowIndex < standardBackrowSetupOrder.size(); ++standardBackrowIndex) {
         PieceType currentPieceType = standardBackrowSetupOrder[standardBackrowIndex];
         int currentBoardCol = standardBackrowIndex + firstPieceCol;

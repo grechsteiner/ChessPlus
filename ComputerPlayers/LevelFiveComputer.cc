@@ -181,8 +181,8 @@ int LevelFiveComputer::getAlphaBetaBoardScore(std::unique_ptr<ChessBoard> const 
 
     // Standard score
     for (ChessBoard::BoardSquareIterator it = currentChessBoard->begin(); it != currentChessBoard->end(); ++it) {
-        int numBoardRows = currentChessBoard->getNumRows();
-        int numBoardCols = currentChessBoard->getNumCols();
+        int numBoardRows = currentChessBoard->getNumRowsOnBoard();
+        int numBoardCols = currentChessBoard->getNumColsOnBoard();
 
         if (!currentChessBoard->isSquareEmpty(*it)) {
             int pieceScore = currentChessBoard->getPieceInfoAt(*it).value().pieceScore * 10;
