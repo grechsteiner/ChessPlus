@@ -28,8 +28,8 @@ std::set<std::pair<int, int>> const King::kingDirections = {
 };
 
 // Basic ctor
-King::King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) : 
-    Piece(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(KING_SCORE, "♚", "K")) {}
+King::King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) : 
+    Piece(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(KING_SCORE, image)) {}
 
 // Copy ctor
 King::King(King const &other) : 

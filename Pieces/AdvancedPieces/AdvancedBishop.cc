@@ -10,7 +10,7 @@
 
 // Basic ctor
 AdvancedBishop::AdvancedBishop(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Bishop, AdvancedBishop>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, Bishop, AdvancedBishop>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♗')) {}
 
 // Copy ctor
 AdvancedBishop::AdvancedBishop(AdvancedBishop const &other) : 

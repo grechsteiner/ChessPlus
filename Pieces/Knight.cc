@@ -27,8 +27,8 @@ std::set<std::pair<int, int>> const Knight::knightDirections = {
 };
 
 // Basic ctor
-Knight::Knight(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceData(PieceType::KNIGHT, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, "♞", "N")) {}
+Knight::Knight(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
+    Piece(PieceData(PieceType::KNIGHT, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, image)) {}
 
 // Copy ctor
 Knight::Knight(Knight const &other) : 

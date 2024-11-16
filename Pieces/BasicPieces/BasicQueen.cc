@@ -7,7 +7,7 @@
 
 // Basic ctor
 BasicQueen::BasicQueen(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Queen, BasicQueen>(PieceLevel::BASIC, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, Queen, BasicQueen>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♛')) {}
 
 // Copy ctor
 BasicQueen::BasicQueen(BasicQueen const &other) : 

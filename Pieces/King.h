@@ -25,7 +25,7 @@ private:
     bool checkCommonCastleInfo(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const;
 
 protected:
-    explicit King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
+    explicit King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);
     King(King const &other);
     King(King &&other) noexcept;
     King& operator=(King const &other);

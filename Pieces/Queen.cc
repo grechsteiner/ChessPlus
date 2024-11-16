@@ -27,8 +27,8 @@ std::set<std::pair<int, int>> const Queen::queenDirections = {
 };
 
 // Basic ctor
-Queen::Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceData(PieceType::QUEEN, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(9, "♛", "Q")) {}
+Queen::Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
+    Piece(PieceData(PieceType::QUEEN, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(9, image)) {}
 
 // Copy ctor
 Queen::Queen(Queen const &other) : 

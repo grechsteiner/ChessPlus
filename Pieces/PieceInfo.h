@@ -14,10 +14,9 @@
  */
 struct PieceInfo final {
     int pieceScore;
-    std::string image;
-    std::string display;
+    char32_t image;
 
-    explicit PieceInfo(int pieceScore, std::string const &image, std::string const &display);
+    explicit PieceInfo(int pieceScore, char32_t image);
     PieceInfo(PieceInfo const &other) = default;
     PieceInfo(PieceInfo &&other) noexcept;
     PieceInfo& operator=(const PieceInfo& other) = default;

@@ -22,8 +22,8 @@ std::set<std::pair<int, int>> const Bishop::bishopDirections = {
 };
 
 // Basic ctor
-Bishop::Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, "♝", "B")) {}
+Bishop::Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
+    Piece(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, image)) {}
 
 // Copy ctor
 Bishop::Bishop(Bishop const &other) : 

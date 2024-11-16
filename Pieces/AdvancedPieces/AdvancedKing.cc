@@ -9,7 +9,7 @@
 
 // Basic ctor
 AdvancedKing::AdvancedKing(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, King, AdvancedKing>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, King, AdvancedKing>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♔')) {}
 
 // Copy ctor
 AdvancedKing::AdvancedKing(AdvancedKing const &other) : 

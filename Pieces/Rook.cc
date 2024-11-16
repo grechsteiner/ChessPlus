@@ -23,8 +23,8 @@ std::set<std::pair<int, int>> const Rook::rookDirections = {
 };
 
 // Basic ctor
-Rook::Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
-    Piece(PieceData(PieceType::ROOK, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(5, "♜", "R")) {}
+Rook::Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
+    Piece(PieceData(PieceType::ROOK, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(5, image)) {}
 
 // Copy ctor
 Rook::Rook(Rook const &other) : 

@@ -23,7 +23,7 @@ class Rook : public Piece {
 private:
     static std::set<std::pair<int, int>> const rookDirections;
 protected:
-    explicit Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
+    explicit Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);
     Rook(Rook const &other);
     Rook(Rook &&other) noexcept;
     Rook& operator=(Rook const &other);

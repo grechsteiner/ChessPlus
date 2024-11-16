@@ -7,7 +7,7 @@
 
 // Basic ctor
 BasicBishop::BasicBishop(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Bishop, BasicBishop>(PieceLevel::BASIC, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, Bishop, BasicBishop>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♝')) {}
 
 // Copy ctor
 BasicBishop::BasicBishop(BasicBishop const &other) : 

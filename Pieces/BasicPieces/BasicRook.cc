@@ -7,7 +7,7 @@
 
 // Basic ctor
 BasicRook::BasicRook(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Rook, BasicRook>(PieceLevel::BASIC, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, Rook, BasicRook>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♜')) {}
 
 // Copy ctor
 BasicRook::BasicRook(BasicRook const &other) : 

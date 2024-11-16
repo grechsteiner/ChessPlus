@@ -25,7 +25,7 @@ private:
     static std::set<std::pair<int, int>> const bishopDirections;
 
 protected:
-    explicit Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
+    explicit Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);
     Bishop(Bishop const &other);
     Bishop(Bishop &&other) noexcept;
     Bishop& operator=(Bishop const &other);

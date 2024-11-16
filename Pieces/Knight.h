@@ -24,7 +24,7 @@ private:
     static std::set<std::pair<int, int>> const knightDirections;
 
 protected:
-    explicit Knight(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
+    explicit Knight(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);
     Knight(Knight const &other);
     Knight(Knight &&other) noexcept;
     Knight& operator=(Knight const &other);

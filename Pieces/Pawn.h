@@ -20,7 +20,7 @@ class BoardMove;
  */
 class Pawn : public Piece {    
 protected:
-    explicit Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
+    explicit Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);
     Pawn(Pawn const &other);
     Pawn(Pawn &&other) noexcept;
     Pawn& operator=(Pawn const &other);

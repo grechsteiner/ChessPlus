@@ -7,7 +7,7 @@
 
 // Basic ctor
 BasicPawn::BasicPawn(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Pawn, BasicPawn>(PieceLevel::BASIC, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, Pawn, BasicPawn>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♟')) {}
 
 // Copy ctor
 BasicPawn::BasicPawn(BasicPawn const &other) : 

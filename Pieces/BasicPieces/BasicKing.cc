@@ -7,7 +7,7 @@
 
 // Basic ctor
 BasicKing::BasicKing(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, King, BasicKing>(PieceLevel::BASIC, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, King, BasicKing>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♚')) {}
 
 // Copy ctor
 BasicKing::BasicKing(BasicKing const &other) : 

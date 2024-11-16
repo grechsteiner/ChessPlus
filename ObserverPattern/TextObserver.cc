@@ -198,7 +198,7 @@ std::vector<std::u32string> TextObserver::buildChessBoard(std::unique_ptr<ChessB
 
             std::optional<PieceInfo> pieceInfo = chessBoard->getPieceInfoAt(boardSquare);
             if (pieceInfo.has_value()) {
-                std::u32string pieceImage = stringToU32(pieceInfo.value().image);
+                char32_t pieceImage = pieceInfo.value().image;
                 Team team = chessBoard->getPieceDataAt(boardSquare).value().team;
 
                 static std::u32string const white = std::u32string(U"\033[90m");

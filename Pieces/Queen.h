@@ -24,7 +24,7 @@ private:
     static std::set<std::pair<int, int>> const queenDirections;
 
 protected:
-    explicit Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved);
+    explicit Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);
     Queen(Queen const &other);
     Queen(Queen &&other) noexcept;
     Queen& operator=(Queen const &other);

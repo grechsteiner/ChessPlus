@@ -9,7 +9,7 @@
 
 // Basic ctor
 AdvancedRook::AdvancedRook(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Rook, AdvancedRook>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved) {}
+    ComplicatedCloneable<Piece, Rook, AdvancedRook>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♖')) {}
 
 // Copy ctor
 AdvancedRook::AdvancedRook(AdvancedRook const &other) : 
