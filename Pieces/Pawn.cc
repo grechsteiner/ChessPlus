@@ -18,7 +18,7 @@
 
 // Basic ctor
 Pawn::Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
-    Piece(PieceData(PieceType::PAWN, PieceLevel::BASIC, team, pieceDirection, hasMoved), PieceInfo(1, image)) {}
+    Piece(PieceData(PieceType::PAWN, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(1, image)) {}
 
 // Copy ctor
 Pawn::Pawn(Pawn const &other) : 

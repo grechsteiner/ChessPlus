@@ -45,7 +45,7 @@ private:
     void processPlacePieceCommand(std::string const &boardSquareStr, std::string const &pieceTypeStr, std::optional<std::string> const &pieceLevelStr, std::optional<std::string> const &pieceDirectionStr);
     void processRemovePieceCommand(std::string const &boardSquareStr);
     void processSwapFirstTurnCommand();
-    void processApplyStandardSetupCommand();
+    void processApplyStandardSetupCommand(std::optional<std::string> const &pieceLevelStr);
     void processSetBoardSizeCommand(std::string const &numRowsStr, std::string const &numColsStr);
     void processExitSetupModeCommand();
 

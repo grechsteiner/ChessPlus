@@ -44,7 +44,7 @@ Game::Game(std::unique_ptr<CommandRetriever> const &commandRetriever, std::uniqu
     currentTurn(chessBoard->getTeamOne()) {
 
         
-    ChessBoardUtilities::applyStandardSetup(chessBoard);
+    ChessBoardUtilities::applyStandardSetup(chessBoard, PieceLevel::BASIC);
 }
 
 // Copy ctor
@@ -114,7 +114,7 @@ void Game::resetGame() {
     setGameState(GameState::MAIN_MENU);
     currentTurn = chessBoard->getTeamOne();
     chessBoard = ChessBoardFactory::createChessBoard(8, 8);
-    ChessBoardUtilities::applyStandardSetup(chessBoard);
+    ChessBoardUtilities::applyStandardSetup(chessBoard, PieceLevel::BASIC);
     players = std::make_pair(
         PlayerFactory::createHumanPlayer(chessBoard->getTeamOne()),
         PlayerFactory::createHumanPlayer(chessBoard->getTeamTwo())
@@ -166,8 +166,8 @@ void Game::runGame() {
                 processSwapFirstTurnCommand();
 
             // Apply Standard Setup
-            } else if (std::regex_match(input, matches, std::regex(R"(\s*standard\s*)", std::regex_constants::icase))) {
-                processApplyStandardSetupCommand();
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*standard\s*(basic|advanced)?\s*)", std::regex_constants::icase))) {
+                processApplyStandardSetupCommand(matchToOptionalString(matches, 1));
 
             // Set Board Size   
             } else if (std::regex_match(input, matches, std::regex(R"(\s*set\s*([1-9][0-9]*)\s*([1-9][0-9]*))", std::regex_constants::icase))) {
@@ -317,7 +317,7 @@ void Game::processSwapFirstTurnCommand() {
     return;
 }
 
-void Game::processApplyStandardSetupCommand() {
+void Game::processApplyStandardSetupCommand(std::optional<std::string> const &pieceLevelStr) {
     switch (gameState) {
         case GameState::MAIN_MENU:
             reportIllegalCommand("Can't apply standard setup in main menu");
@@ -327,7 +327,10 @@ void Game::processApplyStandardSetupCommand() {
             break;
         case GameState::SETUP:
             std::unique_ptr<ChessBoard> newChessBoard = ChessBoardFactory::createChessBoard(chessBoard->getNumRows(), chessBoard->getNumCols());
-            if (!ChessBoardUtilities::applyStandardSetup(newChessBoard)) {
+            PieceLevel pieceLevel = pieceLevelStr.has_value()
+                ? Utilities::stringToPieceLevel(pieceLevelStr.value()).value()
+                : PieceLevel::BASIC;
+            if (!ChessBoardUtilities::applyStandardSetup(newChessBoard, pieceLevel)) {
                 reportIllegalCommand("Board is too small to apply standard setup");
                 break;
             }
@@ -450,7 +453,7 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
                 reportIllegalCommand("Input move is not valid");
                 break;
             }
-            std::cout << boardMove.value()->getPromotionPieceType().has_value() << std::endl;
+            
             if (!chessBoard->makeMove(boardMove.value())) {
                 reportIllegalCommand("Input move is not valid");
                 break;

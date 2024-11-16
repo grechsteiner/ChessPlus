@@ -69,8 +69,7 @@ bool ChessBoardUtilities::isBoardInLegalSetupState(std::unique_ptr<ChessBoard> c
 // Standard chess setup
 // False if can't be applied with current board size
 // Centred if more than backrow num col
-bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessBoard) {
-    static PieceLevel const pieceLevelForStandardSetup = PieceLevel::BASIC;
+bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessBoard, PieceLevel pieceLevel) {
     static std::vector<PieceType> const standardBackrowSetupOrder = {
         PieceType::ROOK,
         PieceType::KNIGHT,
@@ -97,13 +96,13 @@ bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessB
 
         // Team One
         Team teamOne = chessBoard->getTeamOne();
-        chessBoard->setPosition(BoardSquare(bottomRow, currentBoardCol), PieceData(currentPieceType, pieceLevelForStandardSetup, teamOne, PieceDirection::NORTH, false));
-        chessBoard->setPosition(BoardSquare(bottomRow - 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevelForStandardSetup, teamOne, PieceDirection::NORTH, false));
+        chessBoard->setPosition(BoardSquare(bottomRow, currentBoardCol), PieceData(currentPieceType, pieceLevel, teamOne, PieceDirection::NORTH, false));
+        chessBoard->setPosition(BoardSquare(bottomRow - 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevel, teamOne, PieceDirection::NORTH, false));
 
         // Team Two
         Team teamTwo = chessBoard->getTeamTwo();
-        chessBoard->setPosition(BoardSquare(topRow, currentBoardCol), PieceData(currentPieceType, pieceLevelForStandardSetup, teamTwo, PieceDirection::SOUTH, false));
-        chessBoard->setPosition(BoardSquare(topRow + 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevelForStandardSetup, teamTwo, PieceDirection::SOUTH, false));
+        chessBoard->setPosition(BoardSquare(topRow, currentBoardCol), PieceData(currentPieceType, pieceLevel, teamTwo, PieceDirection::SOUTH, false));
+        chessBoard->setPosition(BoardSquare(topRow + 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevel, teamTwo, PieceDirection::SOUTH, false));
     }
     return true;
 }

@@ -10,7 +10,7 @@
 
 namespace ChessBoardUtilities {
     bool isBoardInLegalSetupState(std::unique_ptr<ChessBoard> const &chessBoard);
-    bool applyStandardSetup(std::unique_ptr<ChessBoard> &chessBoard);
+    bool applyStandardSetup(std::unique_ptr<ChessBoard> &chessBoard, PieceLevel pieceLevel);
     bool isGameOver(std::unique_ptr<ChessBoard> const &chessBoard);
     int getNumPiecesOnBoard(std::unique_ptr<ChessBoard> const &chessBoard, Team team);
 }

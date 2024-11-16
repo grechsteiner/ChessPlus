@@ -9,7 +9,7 @@
 
 // Basic ctor
 AdvancedKnight::AdvancedKnight(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Knight, AdvancedKnight>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♘')) {}
+    ComplicatedCloneable<Piece, Knight, AdvancedKnight>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♘')) {}
 
 // Copy ctor
 AdvancedKnight::AdvancedKnight(AdvancedKnight const &other) : 
