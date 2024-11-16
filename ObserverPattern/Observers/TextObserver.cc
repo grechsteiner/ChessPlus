@@ -151,136 +151,236 @@ void TextObserver::displayMainMenu() {
     outputLine(std::u32string(UR"(║  / /_/ / /_/ /  / /_/ / /  / /_/ / /_/ (__  ) /_/ / / / /  / _, _/  __/ /__/ / / (__  ) /_/  __/ / / / /  __/ /     ║)"));
     outputLine(std::u32string(UR"(║ /_.___/\__, /   \____/_/   \__,_/\__, /____/\____/_/ /_/  /_/ |_|\___/\___/_/ /_/____/\__/\___/_/_/ /_/\___/_/      ║)"));
     outputLine(std::u32string(UR"(║       /____/                    /____/                                                                              ║)"));
-    outputLine(std::u32string(UR"(╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝)"));                          
+    outputLine(std::u32string(UR"(╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝)")); 
 }
 
 void TextObserver::displaySetupMode(std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn) {
     outputLine(std::u32string(UR"(╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗)"));
 
-    std::vector<std::string> chessBoardDisplay = buildChessBoard(chessBoard);
-    std::vector<std::string> boardDataDisplay = buildBoardDataText(chessBoard, currentTurn);
-    std::vector<std::string> setupTextDisplay = buildSetupText();
+    std::vector<std::u32string> chessBoardDisplay = buildChessBoard(chessBoard);
+    std::vector<std::u32string> boardDataDisplay = buildBoardDataText(chessBoard, currentTurn);
+    std::vector<std::u32string> setupTextDisplay = buildSetupText();
 
     for (int row = 0; row < chessBoardDisplay.size(); ++row) {
-        int followingSpaces = 117 - 1 - (chessBoard->getNumRows() >= 10 ? 2 : 1) - 1 - chessBoard->getNumCols() - 1 - 1;
+        std::u32string currentLine = std::u32string(UR"(║ )");
+        int followingSpaces = 119;
+        followingSpaces -= currentLine.length() * 2;
 
-        out << "║ ";
-        out << chessBoardDisplay[row];
-        out << " ";
-
+        // Need to account for embedded color codes in the board row string, and the row number
+        currentLine += chessBoardDisplay[row];
+        followingSpaces -= chessBoard->getNumRows() >= 10 
+            ? 2
+            : 1;
+        followingSpaces -= chessBoard->getNumCols();    // Num cols
+        followingSpaces -= 2;                           // Boarder of board
+        
+        currentLine += std::u32string(UR"( )");
+        followingSpaces -= 1;
         if (row < boardDataDisplay.size()) {
-            followingSpaces -= boardDataDisplay[row].size();
-            if (!boardDataDisplay[row].empty()) {
-                followingSpaces += 2;
-            }
-            out << boardDataDisplay[row];
+            currentLine += boardDataDisplay[row];
+            followingSpaces -= boardDataDisplay[row].length();
         }
 
         if (row < setupTextDisplay.size()) {
-            followingSpaces -= 29;
+            followingSpaces -= setupTextDisplay[row].length();
         }
-
-        out << std::string(followingSpaces, ' ');
+        
+        currentLine += std::u32string(followingSpaces, char32_t(U' '));
 
         if (row < setupTextDisplay.size()) {
-            out << setupTextDisplay[row];
+            currentLine += setupTextDisplay[row];
         }
+        currentLine += std::u32string(UR"( ║)");
 
-        out << "║" << std::endl;
+        outputLine(currentLine);
     }
 
-    out << "╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝" << std::endl;
+    outputLine(std::u32string(UR"(╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝)")); 
 }
 
 void TextObserver::displayGame(std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn) {
+    outputLine(std::u32string(UR"(╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗)"));
 
+    std::vector<std::u32string> chessBoardDisplay = buildChessBoard(chessBoard);
+    std::vector<std::u32string> boardDataDisplay = buildBoardDataText(chessBoard, currentTurn);
+    std::vector<std::u32string> boardStatusDisplay = buildBoardStatusText(chessBoard, currentTurn);
+    std::vector<std::u32string> gameOnTextDisplay = buildGameOnText();
+
+    for (int row = 0; row < chessBoardDisplay.size(); ++row) {
+        std::u32string currentLine = std::u32string(UR"(║ )");
+        int followingSpaces = 119;
+        followingSpaces -= currentLine.length() * 2;
+
+        // Need to account for embedded color codes in the board row string, and the row number
+        currentLine += chessBoardDisplay[row];
+        followingSpaces -= chessBoard->getNumRows() >= 10 
+            ? 2
+            : 1;
+        followingSpaces -= chessBoard->getNumCols();    // Num cols
+        followingSpaces -= 2;                           // Boarder of board
+        
+        currentLine += std::u32string(UR"( )");
+        followingSpaces -= 1;
+        if (row < boardDataDisplay.size()) {
+            currentLine += boardDataDisplay[row];
+            followingSpaces -= boardDataDisplay[row].length();
+        }
+        currentLine += std::u32string(UR"( )");
+        followingSpaces -= 1;
+        if (row < boardStatusDisplay.size()) {
+            currentLine += boardStatusDisplay[row];
+            followingSpaces -= boardStatusDisplay[row].length();
+        }
+
+        if (row < gameOnTextDisplay.size()) {
+            followingSpaces -= gameOnTextDisplay[row].length();
+        }
+        
+        currentLine += std::u32string(followingSpaces, char32_t(U' '));
+
+        if (row < gameOnTextDisplay.size()) {
+            currentLine += gameOnTextDisplay[row];
+        }
+        currentLine += std::u32string(UR"( ║)");
+
+        outputLine(currentLine);
+    }
+
+    outputLine(std::u32string(UR"(╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝)")); 
 }
 
-std::vector<std::string> TextObserver::buildChessBoard(std::unique_ptr<ChessBoard> const &chessBoard) {
+std::vector<std::u32string> TextObserver::buildSetupText() {
+    return std::vector<std::u32string> {
+        std::u32string(UR"(   _____      __            )"),       
+        std::u32string(UR"(  / ___/___  / /___  ______ )"),
+        std::u32string(UR"(  \__ \/ _ \/ __/ / / / __ \)"),
+        std::u32string(UR"( ___/ /  __/ /_/ /_/ / /_/ /)"),
+        std::u32string(UR"(/____/\___/\__/\__,_/ .___/ )"),
+        std::u32string(UR"(                   /_/      )")
+    };
+}
+
+std::vector<std::u32string> TextObserver::buildGameOnText() {
+    return std::vector<std::u32string> {
+        std::u32string(UR"(   ______                         ____        __)"),
+        std::u32string(UR"(  / ____/___  ____ ___  ___      / __ \____  / /)"),
+        std::u32string(UR"( / / __/ __ `/ __ `__ \/ _ \    / / / / __ \/ / )"),
+        std::u32string(UR"(/ /_/ / /_/ / / / / / /  __/   / /_/ / / / /_/  )"),
+        std::u32string(UR"(\____/\__,_/_/ /_/ /_/\___/    \____/_/ /_(_)   )")                                         
+    };
+}
+
+std::vector<std::u32string> TextObserver::buildChessBoard(std::unique_ptr<ChessBoard> const &chessBoard) {
     int numRows = chessBoard->getNumRows();
     int numCols = chessBoard->getNumCols();
-
     bool extraSpaceForNumber = chessBoard->getNumRows() >= 10;
 
-    std::vector<std::string> chessBoardDisplay;
+    std::vector<std::u32string> chessBoardDisplay;
 
-    std::string topBoarder = extraSpaceForNumber ? "  ╔" : " ╔";
-    for (int col = 0; col < numCols; ++col) {
-        topBoarder += "═";
-    }
-    topBoarder += "╗";
-    chessBoardDisplay.emplace_back(topBoarder);
+    std::u32string topBoarder = extraSpaceForNumber 
+        ? std::u32string(UR"(  ╔)") 
+        : std::u32string(UR"( ╔)"); 
+    topBoarder += std::u32string(numCols, char32_t(U'═'));
+    topBoarder += std::u32string(UR"(╗)");
+    chessBoardDisplay.emplace_back(std::move(topBoarder));
 
     for (int row = 0; row < numRows; ++row) {
-        std::string currentLine = extraSpaceForNumber && chessBoard->getNumRows() - row < 10 ? " " : "";
-        currentLine += std::to_string(numRows - row) + "║";
+        std::u32string currentLine = extraSpaceForNumber && chessBoard->getNumRows() - row < 10 
+            ? std::u32string(UR"( )") 
+            : std::u32string(UR"()");
+        currentLine += stringToU32(std::to_string(numRows - row));
+        currentLine += std::u32string(UR"(║)");
 
         for (int col = 0; col < numCols; ++col) {
             BoardSquare boardSquare(row, col);
-            if (chessBoard->getPieceInfoAt(boardSquare)) {
-                std::string pieceImage = chessBoard->getPieceInfoAt(boardSquare).value().image;
+
+            std::optional<PieceInfo> pieceInfo = chessBoard->getPieceInfoAt(boardSquare);
+            if (pieceInfo.has_value()) {
+                std::u32string pieceImage = stringToU32(pieceInfo.value().image);
                 Team team = chessBoard->getPieceDataAt(boardSquare).value().team;
 
-                static std::string const white = "\033[90m";
-                static std::string const black = "\033[30m";
-                static std::string const reset = "\033[0m";
-                std::string stringColor = team == chessBoard->getTeamOne()
+                static std::u32string const white = std::u32string(U"\033[90m");
+                static std::u32string const black = std::u32string(U"\033[30m");
+                static std::u32string const reset = std::u32string(U"\033[0m");
+                
+                currentLine += team == chessBoard->getTeamOne()
                     ? white
                     : black;
-
-                currentLine += (stringColor + pieceImage + reset);
+                currentLine += pieceImage;
+                currentLine += reset;
             } else {
-                currentLine += " ";
+                currentLine += std::u32string(UR"( )");
             }
         }
-        currentLine += "║";
-        chessBoardDisplay.emplace_back(currentLine);
+        currentLine += std::u32string(UR"(║)");;
+        chessBoardDisplay.emplace_back(std::move(currentLine));
     }
-    
-    std::string bottomBoarder = extraSpaceForNumber ? "  ╚" : " ╚";
-    for (int col = 0; col < numCols; ++col) {
-        bottomBoarder += "═";
-    }
-    bottomBoarder += "╝";
-    chessBoardDisplay.emplace_back(bottomBoarder);
 
+    std::u32string bottomBoarder = extraSpaceForNumber 
+        ? std::u32string(UR"(  ╚)") 
+        : std::u32string(UR"( ╚)"); 
+    bottomBoarder += std::u32string(numCols, char32_t(U'═'));
+    bottomBoarder += std::u32string(UR"(╝)");
+    chessBoardDisplay.emplace_back(std::move(bottomBoarder));
 
-    static std::string const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    std::string colLabels = extraSpaceForNumber ? "   " : "  ";
-    colLabels += alphabet.substr(0, numCols) + " ";
-    chessBoardDisplay.emplace_back(colLabels);
+    static std::u32string const alphabet = std::u32string(UR"(abcdefghijklmnopqrstuvwxyz)");
+    std::u32string columnLabels = extraSpaceForNumber ? std::u32string(UR"(   )") : std::u32string(UR"(  )");
+    columnLabels += alphabet.substr(0, numCols);
+    columnLabels += std::u32string(UR"( )");
+    chessBoardDisplay.emplace_back(std::move(columnLabels));
 
     return chessBoardDisplay;
 }
 
-
-std::vector<std::string> TextObserver::buildSetupText() {
-    return std::vector<std::string> {
-        "   _____      __             ",       
-        "  / ___/___  / /___  ______  ",
-        "  \\__ \\/ _ \\/ __/ / / / __ \\ ",
-        " ___/ /  __/ /_/ /_/ / /_/ / ",
-        "/____/\\___/\\__/\\__,_/ .___/  ",
-        "                   /_/       "
-    };
-}
-
-std::vector<std::string> TextObserver::buildBoardDataText(std::unique_ptr<ChessBoard> const &chessBoard, Team currentTurn) {
-    std::string turn = "● Turn: ";
+std::vector<std::u32string> TextObserver::buildBoardDataText(std::unique_ptr<ChessBoard> const &chessBoard, Team currentTurn) {
+    std::u32string turn = std::u32string(UR"(● Turn: )");
     turn += currentTurn == chessBoard->getTeamOne()
-        ? "White"
-        : "Black";
+        ? std::u32string(UR"(White)")
+        : std::u32string(UR"(Black)");
 
-    std::string remaining = "● Pieces:";
-    std::string whiteRemaining = "  ◈ White: " + std::to_string(ChessBoardUtilities::getNumPiecesOnBoard(chessBoard, chessBoard->getTeamOne()));
-    std::string blackRemaining = "  ◈ Black: " + std::to_string(ChessBoardUtilities::getNumPiecesOnBoard(chessBoard, chessBoard->getTeamTwo()));
+    std::u32string remaining = std::u32string(UR"(● Pieces:)");
+    std::u32string whiteRemaining = std::u32string(UR"(  ◈ White: )") + stringToU32(std::to_string(ChessBoardUtilities::getNumPiecesOnBoard(chessBoard, chessBoard->getTeamOne())));
+    std::u32string blackRemaining = std::u32string(UR"(  ◈ Black: )") + stringToU32(std::to_string(ChessBoardUtilities::getNumPiecesOnBoard(chessBoard, chessBoard->getTeamTwo())));
 
-    return std::vector<std::string> {
-        "",
+    return std::vector<std::u32string> {
+        std::u32string(UR"()"),
         std::move(turn),
         std::move(remaining),
         std::move(whiteRemaining),
         std::move(blackRemaining)
+    };
+}
+
+std::vector<std::u32string> TextObserver::buildBoardStatusText(std::unique_ptr<ChessBoard> const &chessBoard, Team currentTurn) {
+    std::u32string statusString;
+    Team teamOne = chessBoard->getTeamOne();
+    Team teamTwo = chessBoard->getTeamTwo();
+    if (currentTurn == teamOne) { 
+        if (chessBoard->isInCheckMate(teamOne)) {
+            std::u32string(UR"(Checkmate! Black wins!)");
+        } else if (chessBoard->isInCheck(teamOne)) {
+            std::u32string(UR"(White is in check)");
+        } else if (chessBoard->isInStaleMate(teamOne)) {
+            std::u32string(UR"(Stalemate!)");
+        } else {
+            statusString = std::u32string(UR"()");
+        }
+
+    } else {
+        if (chessBoard->isInCheckMate(teamTwo)) {
+            std::u32string(UR"(Checkmate! White wins!)");
+        } else if (chessBoard->isInCheck(teamTwo)) {
+            std::u32string(UR"(Black is in check)");
+        } else if (chessBoard->isInStaleMate(teamTwo)) {
+            std::u32string(UR"(Stalemate!)");
+        } else {
+            statusString = std::u32string(UR"()");
+        }
+    }
+
+    return std::vector<std::u32string> {
+        std::u32string(UR"()"),
+        std::move(statusString)
     };
 }
 

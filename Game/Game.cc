@@ -130,7 +130,7 @@ void Game::reportIllegalCommand(std::string const &message) const {
 }
 
 std::optional<std::string> Game::matchToOptionalString(std::smatch const& matches, int index) const {
-    return index < matches.size() && matches[index].matched
+    return index < matches.size() && matches[index].matched && !matches[index].str().empty()
         ? std::make_optional<std::string>(matches[index].str())
         : std::nullopt; 
 }
@@ -154,7 +154,7 @@ void Game::runGame() {
                 processEnterSetupModeCommand();
 
             // Place Piece
-            } else if (std::regex_match(input, matches, std::regex(R"(\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)", std::regex_constants::icase))) {
+            } else if (std::regex_match(input, matches, std::regex(R"(\s*\+\s*([a-z]+[1-9][0-9]*)\s*([a-zA-Z])\s*(basic|advanced)?\s*(north|south|west|east)?\s*)", std::regex_constants::icase))) {
                 processPlacePieceCommand(matches[1].str(), matches[2].str(), matchToOptionalString(matches, 3), matchToOptionalString(matches, 4));
 
             // Remove Piece
@@ -452,6 +452,10 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
             }
             chessBoard->makeMove(boardMove.value());
             switchTurn();
+
+            if (chessBoard->getPieceDataAt(BoardSquare(6, 0))) {
+                std::cout << "Hey" << std::endl;
+            }
 
             notifyObservers();
             if (ChessBoardUtilities::isGameOver(chessBoard)) {
