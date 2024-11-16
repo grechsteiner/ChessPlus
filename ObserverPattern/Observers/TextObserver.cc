@@ -225,8 +225,6 @@ void TextObserver::displayGame(std::unique_ptr<ChessBoard> const &chessBoard, st
             currentLine += boardDataDisplay[row];
             followingSpaces -= boardDataDisplay[row].length();
         }
-        currentLine += std::u32string(UR"( )");
-        followingSpaces -= 1;
         if (row < boardStatusDisplay.size()) {
             currentLine += boardStatusDisplay[row];
             followingSpaces -= boardStatusDisplay[row].length();
@@ -262,11 +260,11 @@ std::vector<std::u32string> TextObserver::buildSetupText() {
 
 std::vector<std::u32string> TextObserver::buildGameOnText() {
     return std::vector<std::u32string> {
-        std::u32string(UR"(   ______                         ____        __)"),
-        std::u32string(UR"(  / ____/___  ____ ___  ___      / __ \____  / /)"),
-        std::u32string(UR"( / / __/ __ `/ __ `__ \/ _ \    / / / / __ \/ / )"),
-        std::u32string(UR"(/ /_/ / /_/ / / / / / /  __/   / /_/ / / / /_/  )"),
-        std::u32string(UR"(\____/\__,_/_/ /_/ /_/\___/    \____/_/ /_(_)   )")                                         
+        std::u32string(UR"(   ______                       ____        __)"),
+        std::u32string(UR"(  / ____/___  ____ ___  ___    / __ \____  / /)"),
+        std::u32string(UR"( / / __/ __ `/ __ `__ \/ _ \  / / / / __ \/ / )"),
+        std::u32string(UR"(/ /_/ / /_/ / / / / / /  __/ / /_/ / / / /_/  )"),
+        std::u32string(UR"(\____/\__,_/_/ /_/ /_/\___/  \____/_/ /_(_)   )")                                         
     };
 }
 
@@ -357,29 +355,28 @@ std::vector<std::u32string> TextObserver::buildBoardStatusText(std::unique_ptr<C
     Team teamTwo = chessBoard->getTeamTwo();
     if (currentTurn == teamOne) { 
         if (chessBoard->isInCheckMate(teamOne)) {
-            std::u32string(UR"(Checkmate! Black wins!)");
+            statusString = std::u32string(UR"(● Checkmate! Black wins!)");
         } else if (chessBoard->isInCheck(teamOne)) {
-            std::u32string(UR"(White is in check)");
+            statusString = std::u32string(UR"(● White is in check)");
         } else if (chessBoard->isInStaleMate(teamOne)) {
-            std::u32string(UR"(Stalemate!)");
+            statusString = std::u32string(UR"(● Stalemate!)");
         } else {
             statusString = std::u32string(UR"()");
         }
 
     } else {
         if (chessBoard->isInCheckMate(teamTwo)) {
-            std::u32string(UR"(Checkmate! White wins!)");
+            statusString = std::u32string(UR"(● Checkmate! White wins!)");
         } else if (chessBoard->isInCheck(teamTwo)) {
-            std::u32string(UR"(Black is in check)");
+            statusString = std::u32string(UR"(● Black is in check)");
         } else if (chessBoard->isInStaleMate(teamTwo)) {
-            std::u32string(UR"(Stalemate!)");
+            statusString = std::u32string(UR"(● Stalemate!)");
         } else {
             statusString = std::u32string(UR"()");
         }
     }
 
     return std::vector<std::u32string> {
-        std::u32string(UR"()"),
         std::move(statusString)
     };
 }
