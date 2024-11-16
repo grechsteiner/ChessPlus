@@ -293,9 +293,8 @@ void Game::processRemovePieceCommand(std::string const &boardSquareStr) {
                 break;
             } 
             
-            if (chessBoard->clearPosition(boardSquare.value())) {
-                notifyObservers();
-            }
+            chessBoard->clearPosition(boardSquare.value());
+            notifyObservers();
             break;
     }
     return;
@@ -453,11 +452,8 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
                 reportIllegalCommand("Input move is not valid");
                 break;
             }
-            
-            if (!chessBoard->makeMove(boardMove.value())) {
-                reportIllegalCommand("Input move is not valid");
-                break;
-            }
+
+            chessBoard->makeMove(boardMove.value());
             switchTurn();
 
             notifyObservers();

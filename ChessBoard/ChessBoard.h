@@ -77,12 +77,13 @@ private:
     virtual std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMovesImpl(Team team) const = 0;
     virtual std::vector<std::unique_ptr<BoardMove>> generateWinningMovesImpl(Team team) const = 0;
 
-    virtual bool setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) = 0;
-    virtual bool clearPositionImpl(BoardSquare const &boardSquare) = 0;
+    virtual void setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) = 0;
+    virtual void clearPositionImpl(BoardSquare const &boardSquare) = 0;
     virtual void clearBoardImpl() = 0;
 
     virtual std::optional<std::unique_ptr<BoardMove>> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const = 0;
-    virtual bool makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) = 0;                    
+    virtual void makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) = 0; 
+    virtual bool isMoveValidImpl(std::unique_ptr<BoardMove> const &boardMove) const = 0;                   
     virtual bool undoMoveImpl() = 0;  
     virtual bool redoMoveImpl() = 0; 
 
@@ -136,12 +137,13 @@ public:
     std::vector<std::unique_ptr<BoardMove>> generateCaptureAvoidingMoves(Team team) const;
     std::vector<std::unique_ptr<BoardMove>> generateWinningMoves(Team team) const;
 
-    bool setPosition(BoardSquare const &boardSquare, PieceData const &pieceData);    
-    bool clearPosition(BoardSquare const &boardSquare);
+    void setPosition(BoardSquare const &boardSquare, PieceData const &pieceData);    
+    void clearPosition(BoardSquare const &boardSquare);
     void clearBoard();
 
     std::optional<std::unique_ptr<BoardMove>> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const;
-    bool makeMove(std::unique_ptr<BoardMove> const &boardMove);
+    void makeMove(std::unique_ptr<BoardMove> const &boardMove);
+    bool isMoveValid(std::unique_ptr<BoardMove> const &boardMove) const;
     bool undoMove();  
     bool redoMove(); 
 

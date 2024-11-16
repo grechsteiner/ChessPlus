@@ -140,41 +140,11 @@ bool ChessBoardImpl::canMakeMove(Team team) const {
     return !generateAllLegalMoves(team).empty();
 }
 
-bool ChessBoardImpl::isMoveValid(std::unique_ptr<BoardMove> const &boardMove) const {
-    if (isSquareOnBoard(boardMove->getFromSquare())) {
-        std::vector<std::unique_ptr<BoardMove>> pieceBoardMoves = generateAllLegalMovesAtSquare(boardMove->getFromSquare());
-        if (std::find_if(pieceBoardMoves.begin(), pieceBoardMoves.end(), [&boardMove](std::unique_ptr<BoardMove> const& pieceBoardMove) { return *pieceBoardMove == *boardMove; }) != pieceBoardMoves.end()) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void ChessBoardImpl::performMove(std::unique_ptr<BoardMove> const &boardMove) {
-    boardMove->makeBoardMove(*this);                                            // Apply the move
-    completedMoves.emplace_back(boardMove->clone());                            // Track it for undoing 
-    clearRedoMoves();                                                           // Clear redo moves (can't redo after making a move)
-}
-
-void ChessBoardImpl::performUndoMove() {
-    std::unique_ptr<BoardMove> lastMove = std::move(completedMoves.back());     // Get the last made move
-    completedMoves.pop_back();                                                  // Pop it off the completed moves stack
-    lastMove->undoBoardMove(*this);                                             // Undo the move
-    redoMoves.emplace_back(std::move(lastMove));                                // Push it to the redo moves stack
-}
-
-void ChessBoardImpl::performRedoMove() {
-    std::unique_ptr<BoardMove> lastUndoneMove = std::move(redoMoves.back());    // Get the last move to be undone
-    redoMoves.pop_back();                                                       // Pop it off the redo moves stack
-    lastUndoneMove->makeBoardMove(*this);                                       // Apply the move
-    completedMoves.emplace_back(std::move(lastUndoneMove));                     // Push it to the completed moves stack
-}
-
 bool ChessBoardImpl::doesMoveApplyCheck(std::unique_ptr<BoardMove> const &boardMove) const {
     std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove->getFromSquare());
     if (movedPieceData.has_value()) {
         ChessBoardImpl temp(*this);
-        temp.performMove(boardMove);
+        temp.makeMove(boardMove);
         return temp.isInCheck(getOtherTeam(movedPieceData.value().team));
     }
     assert(false);
@@ -193,7 +163,7 @@ bool ChessBoardImpl::doesMoveLeavePieceAttacked(std::unique_ptr<BoardMove> const
     std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove->getFromSquare());
     if (movedPieceData.has_value()) {
         ChessBoardImpl temp(*this);
-        temp.performMove(boardMove);
+        temp.makeMove(boardMove);
         return temp.generateCapturingMoves(getOtherTeam(movedPieceData.value().team)).empty();
     } 
     assert(false);
@@ -203,7 +173,7 @@ bool ChessBoardImpl::doesMoveWinGame(std::unique_ptr<BoardMove> const &boardMove
      std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove->getFromSquare());
     if (movedPieceData.has_value()) {
         ChessBoardImpl temp(*this);
-        temp.performMove(boardMove);
+        temp.makeMove(boardMove);
         return temp.isInCheckMate(getOtherTeam(movedPieceData.value().team));
     }
     assert(false);
@@ -213,7 +183,7 @@ bool ChessBoardImpl::doesMoveLeaveTeamInCheck(std::unique_ptr<BoardMove> const &
     std::optional<PieceData> movedPieceData = getPieceDataAt(boardMove->getFromSquare());
     if (movedPieceData.has_value()) {
         ChessBoardImpl temp(*this);
-        temp.performMove(boardMove);
+        temp.makeMove(boardMove);
         return temp.isInCheck(movedPieceData.value().team);
     }
     assert(false);
@@ -368,24 +338,16 @@ std::vector<std::unique_ptr<BoardMove>> ChessBoardImpl::generateWinningMovesImpl
     return winningBoardMoves;
 }
 
-bool ChessBoardImpl::setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) {
-    if (isSquareOnBoard(boardSquare)) {
-        clearCompletedMoves();
-        clearRedoMoves();
-        grid[boardSquare.boardRow][boardSquare.boardCol] = PieceFactory::createPiece(pieceData);
-        return true;
-    }
-    return false;
+void ChessBoardImpl::setPositionImpl(BoardSquare const &boardSquare, PieceData const &pieceData) {
+    clearCompletedMoves();
+    clearRedoMoves();
+    grid[boardSquare.boardRow][boardSquare.boardCol] = PieceFactory::createPiece(pieceData);
 }
 
-bool ChessBoardImpl::clearPositionImpl(BoardSquare const &boardSquare) {
-    if (isSquareOnBoard(boardSquare)) {
-        clearCompletedMoves();
-        clearRedoMoves();
-        grid[boardSquare.boardRow][boardSquare.boardCol] = nullptr;
-        return true;
-    }
-    return false;
+void ChessBoardImpl::clearPositionImpl(BoardSquare const &boardSquare) {
+    clearCompletedMoves();
+    clearRedoMoves();
+    grid[boardSquare.boardRow][boardSquare.boardCol] = nullptr;
 }
 
 void ChessBoardImpl::clearBoardImpl() {
@@ -414,19 +376,30 @@ std::optional<std::unique_ptr<BoardMove>> ChessBoardImpl::createBoardMoveImpl(Bo
     return std::nullopt;
 }
 
-bool ChessBoardImpl::makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) {
-    if (isMoveValid(boardMove)) {
-        performMove(boardMove);
-        return true;
+void ChessBoardImpl::makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) {
+    boardMove->makeBoardMove(*this);                                            // Apply the move
+    completedMoves.emplace_back(boardMove->clone());                            // Track it for undoing 
+    clearRedoMoves();                                                           // Clear redo moves (can't redo after making a move)
+}
+
+bool ChessBoardImpl::isMoveValidImpl(std::unique_ptr<BoardMove> const &boardMove) const {
+    if (isSquareOnBoard(boardMove->getFromSquare())) {
+        std::vector<std::unique_ptr<BoardMove>> pieceBoardMoves = generateAllLegalMovesAtSquare(boardMove->getFromSquare());
+        if (std::find_if(pieceBoardMoves.begin(), pieceBoardMoves.end(), [&boardMove](std::unique_ptr<BoardMove> const& pieceBoardMove) { return *pieceBoardMove == *boardMove; }) != pieceBoardMoves.end()) {
+            return true;
+        }
     }
-    return false;                              
+    return false;
 }
 
 bool ChessBoardImpl::undoMoveImpl() {
     if (completedMoves.empty()) {
         return false;
     } else {
-        performUndoMove();
+        std::unique_ptr<BoardMove> lastMove = std::move(completedMoves.back());     // Get the last made move
+        completedMoves.pop_back();                                                  // Pop it off the completed moves stack
+        lastMove->undoBoardMove(*this);                                             // Undo the move
+        redoMoves.emplace_back(std::move(lastMove));                                // Push it to the redo moves stack
         return true;
     }
 }
@@ -435,7 +408,10 @@ bool ChessBoardImpl::redoMoveImpl() {
     if (redoMoves.empty()) {
         return false;
     } else {
-        performRedoMove();
+        std::unique_ptr<BoardMove> lastUndoneMove = std::move(redoMoves.back());    // Get the last move to be undone
+        redoMoves.pop_back();                                                       // Pop it off the redo moves stack
+        lastUndoneMove->makeBoardMove(*this);                                       // Apply the move
+        completedMoves.emplace_back(std::move(lastUndoneMove));                     // Push it to the completed moves stack
         return true;
     }
 }
