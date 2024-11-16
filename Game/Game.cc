@@ -453,10 +453,6 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
             chessBoard->makeMove(boardMove.value());
             switchTurn();
 
-            if (chessBoard->getPieceDataAt(BoardSquare(6, 0))) {
-                std::cout << "Hey" << std::endl;
-            }
-
             notifyObservers();
             if (ChessBoardUtilities::isGameOver(chessBoard)) {
                 resetGame();
