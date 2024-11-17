@@ -3,28 +3,25 @@
 #ifndef AdvancedPawn_h
 #define AdvancedPawn_h
 
+#include <memory>
 #include <vector>
-#include <utility>
-#include <set>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-#include "ComplicatedCloneable.h"
-#include "PieceData.h"
-#include "Pawn.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "ComplicatedCloneable.h"
+#include "Constants.h"
+#include "Pawn.h"
+#include "Piece.h"
 
 
 /**
- * AdvancedPawn Piece Class
+ * AdvancedPawn Pawn Piece Class
  */
 class AdvancedPawn final : public ComplicatedCloneable<Piece, Pawn, AdvancedPawn> {
 private:
     std::vector<std::unique_ptr<BoardMove>> getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    
 public:
     explicit AdvancedPawn(Team team, PieceDirection pieceDirection, bool hasMoved);
     AdvancedPawn(AdvancedPawn const &other);
