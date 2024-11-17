@@ -1,43 +1,48 @@
 // King.cc
 
-#include <vector>
-#include <utility>
-#include <set>
-#include <cassert>
-
 #include "King.h"
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-#include "ChessBoard.h"
-#include "BoardSquare.h"
+
+#include <cassert>
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "BoardMove.h"
 #include "BoardMoveFactory.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
-// Static
-std::set<std::pair<int, int>> const King::kingDirections = { 
-    {-1, -1}, 
-    {-1, 0}, 
-    {-1, 1}, 
-    {0, -1}, 
-    {0, 1}, 
-    {1, -1}, 
-    {1, 0}, 
-    {1, 1} 
+/*
+ * Static
+ *
+ * The directions a King can move
+ */
+std::vector<MoveDirection> const King::kingMoveDirections = { 
+    { MoveDirection(-1, -1) }, 
+    { MoveDirection(-1, 0) }, 
+    { MoveDirection(-1, 1) }, 
+    { MoveDirection(0, -1) }, 
+    { MoveDirection(0, 1) }, 
+    { MoveDirection(1, -1) }, 
+    { MoveDirection(1, 0) }, 
+    { MoveDirection(1, 1) } 
 };
 
 // Basic ctor
 King::King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) : 
-    Piece(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(KING_SCORE, image)) {}
+    Piece(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(KING_SCORE, image)) { }
 
 // Copy ctor
 King::King(King const &other) : 
-    Piece(other) {}
+    Piece(other) { }
 
 // Move ctor
 King::King(King &&other) noexcept : 
-    Piece(std::move(other)) {}
+    Piece(std::move(other)) { }
 
 // Copy assignment
 King& King::operator=(King const &other) {
@@ -55,6 +60,9 @@ King& King::operator=(King &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal standard moves for a King Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard->isSquareOnBoard(fromSquare)) {
@@ -62,8 +70,8 @@ std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(std::unique_ptr<C
         int fromCol = fromSquare.boardCol;
 
         // Standard Moves
-        for (std::pair<int, int> const &kingDirection : kingDirections) {
-            BoardSquare toSquare(fromRow + kingDirection.first, fromCol + kingDirection.second);
+        for (MoveDirection const &kingMoveDirection : kingMoveDirections) {
+            BoardSquare toSquare(fromRow + kingMoveDirection.rowDirection, fromCol + kingMoveDirection.colDirection);
             if (chessBoard->isSquareEmpty(toSquare) || chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
                 moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard->getPieceDataAt(toSquare)));
             }
@@ -136,6 +144,9 @@ std::vector<std::unique_ptr<BoardMove>> King::getStandardMoves(std::unique_ptr<C
     return moves;
 }
 
+/*
+ * True if a Castle move is legal, false otherwise
+ */
 bool King::checkCommonCastleInfo(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const {
     if (chessBoard->getPieceDataAt(rookFromSquare).has_value()) {
         PieceData potentialRookPieceData = chessBoard->getPieceDataAt(rookFromSquare).value();
@@ -146,7 +157,7 @@ bool King::checkCommonCastleInfo(std::unique_ptr<ChessBoard> const &chessBoard, 
             potentialRookPieceData.hasMoved == false &&
             chessBoard->isSquareEmpty(toSquare) &&
             chessBoard->isSquareEmpty(rookToSquare) && !chessBoard->isSquareAttacked(rookToSquare, pieceData.team);
-    } else {
-        return false;
     }
+
+    return false;
 }

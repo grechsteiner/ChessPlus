@@ -3,17 +3,16 @@
 #ifndef King_h
 #define King_h
 
-#include <vector>
+#include <memory>
 #include <utility>
-#include <set>
+#include <vector>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
 /**
@@ -21,7 +20,7 @@ class BoardMove;
  */
 class King : public Piece {
 private:
-    static std::set<std::pair<int, int>> const kingDirections;
+    static std::vector<MoveDirection> const kingMoveDirections;
     bool checkCommonCastleInfo(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare) const;
 
 protected:
