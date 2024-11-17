@@ -1,20 +1,32 @@
 // CommandRetriever.cc
 
-#include <string>
-
 #include "CommandRetriever.h"
+
+#include <memory>
+#include <optional>
+#include <string>
 
 
 // Basic ctor
-CommandRetriever::CommandRetriever() {}
+CommandRetriever::CommandRetriever() { }
+
+// Copy ctor
+CommandRetriever::CommandRetriever(CommandRetriever const &other) { }
 
 // Move ctor
-CommandRetriever::CommandRetriever(CommandRetriever &&other) noexcept {}
+CommandRetriever::CommandRetriever(CommandRetriever &&other) noexcept { }
+
+// Copy assignment
+CommandRetriever& CommandRetriever::operator=(CommandRetriever const &other) {
+    if (this != &other) {
+        return *this;
+    }
+    return *this;
+}
 
 // Move assignment
 CommandRetriever& CommandRetriever::operator=(CommandRetriever &&other) noexcept {
     if (this != &other) {
-        // Update if needed
         return *this;
     }
     return *this;

@@ -3,6 +3,8 @@
 #ifndef CommandRetriever_h
 #define CommandRetriever_h
 
+#include <memory>
+#include <optional>
 #include <string>
 
 
@@ -17,9 +19,9 @@ private:
 
 protected:
     explicit CommandRetriever();
-    CommandRetriever(CommandRetriever const &other) = default;
+    CommandRetriever(CommandRetriever const &other);
     CommandRetriever(CommandRetriever &&other) noexcept;
-    CommandRetriever& operator=(CommandRetriever const &other) = default;
+    CommandRetriever& operator=(CommandRetriever const &other);
     CommandRetriever& operator=(CommandRetriever &&other) noexcept;
     
 public:
@@ -29,5 +31,6 @@ public:
 
     virtual ~CommandRetriever() = default;
 };
+
 
 #endif /* CommandRetriever_h */
