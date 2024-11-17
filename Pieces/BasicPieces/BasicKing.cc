@@ -14,19 +14,27 @@
 #include "Piece.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 BasicKing::BasicKing(Team team, PieceDirection pieceDirection, bool hasMoved) :
     ComplicatedCloneable<Piece, King, BasicKing>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♚')) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 BasicKing::BasicKing(BasicKing const &other) : 
     ComplicatedCloneable<Piece, King, BasicKing>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 BasicKing::BasicKing(BasicKing &&other) noexcept : 
     ComplicatedCloneable<Piece, King, BasicKing>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 BasicKing& BasicKing::operator=(BasicKing const &other) {
     if (this != &other) {
         King::operator=(other);
@@ -34,7 +42,9 @@ BasicKing& BasicKing::operator=(BasicKing const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 BasicKing& BasicKing::operator=(BasicKing &&other) noexcept {
     if (this != &other) {
         King::operator=(std::move(other));

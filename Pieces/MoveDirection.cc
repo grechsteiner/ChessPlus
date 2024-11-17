@@ -3,19 +3,27 @@
 #include "MoveDirection.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 MoveDirection::MoveDirection(int rowDirection, int colDirection) :
     rowDirection(rowDirection), colDirection(colDirection) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 MoveDirection::MoveDirection(MoveDirection const &other) :
     rowDirection(other.rowDirection), colDirection(other.colDirection) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 MoveDirection::MoveDirection(MoveDirection &&other) noexcept :
     rowDirection(other.rowDirection), colDirection(other.colDirection) { }
 
-// Copy assignmnet
+/*
+ * Copy assignment
+ */
 MoveDirection& MoveDirection::operator=(MoveDirection const &other) {
     if (this != &other) {
         rowDirection = other.rowDirection;
@@ -24,7 +32,9 @@ MoveDirection& MoveDirection::operator=(MoveDirection const &other) {
     return *this;
 }
 
-// Move assignmnet
+/*
+ * Move assignment
+ */
 MoveDirection& MoveDirection::operator=(MoveDirection &&other) noexcept {
     if (this != &other) {
         rowDirection = other.rowDirection;
@@ -33,14 +43,18 @@ MoveDirection& MoveDirection::operator=(MoveDirection &&other) noexcept {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool MoveDirection::operator==(MoveDirection const &other) const {
     return
         rowDirection == other.rowDirection &&
         colDirection == other.colDirection;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool MoveDirection::operator!=(MoveDirection const &other) const {
     return !(*this == other);
 }

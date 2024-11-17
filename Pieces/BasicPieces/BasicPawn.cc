@@ -14,19 +14,27 @@
 #include "Piece.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 BasicPawn::BasicPawn(Team team, PieceDirection pieceDirection, bool hasMoved) :
     ComplicatedCloneable<Piece, Pawn, BasicPawn>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♟')) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 BasicPawn::BasicPawn(BasicPawn const &other) : 
     ComplicatedCloneable<Piece, Pawn, BasicPawn>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 BasicPawn::BasicPawn(BasicPawn &&other) noexcept : 
     ComplicatedCloneable<Piece, Pawn, BasicPawn>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 BasicPawn& BasicPawn::operator=(BasicPawn const &other) {
     if (this != &other) {
         Pawn::operator=(other);
@@ -34,7 +42,9 @@ BasicPawn& BasicPawn::operator=(BasicPawn const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 BasicPawn& BasicPawn::operator=(BasicPawn &&other) noexcept {
     if (this != &other) {
         Pawn::operator=(std::move(other));

@@ -13,19 +13,27 @@
 #include "Constants.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 LevelTwoComputer::LevelTwoComputer(Team team) : 
     Cloneable<ComputerPlayer, LevelTwoComputer>(team) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 LevelTwoComputer::LevelTwoComputer(LevelTwoComputer const &other) :
     Cloneable<ComputerPlayer, LevelTwoComputer>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 LevelTwoComputer::LevelTwoComputer(LevelTwoComputer &&other) noexcept :
     Cloneable<ComputerPlayer, LevelTwoComputer>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 LevelTwoComputer& LevelTwoComputer::operator=(LevelTwoComputer &other) {
     if (this != &other) {
         ComputerPlayer::operator=(other);
@@ -33,7 +41,9 @@ LevelTwoComputer& LevelTwoComputer::operator=(LevelTwoComputer &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 LevelTwoComputer& LevelTwoComputer::operator=(LevelTwoComputer &&other) noexcept {
     if (this != &other) {
         ComputerPlayer::operator=(std::move(other));

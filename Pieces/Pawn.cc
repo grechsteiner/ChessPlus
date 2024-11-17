@@ -16,19 +16,27 @@
 #include "Piece.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Pawn::Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
     Piece(PieceData(PieceType::PAWN, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(1, image)) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Pawn::Pawn(Pawn const &other) : 
     Piece(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Pawn::Pawn(Pawn &&other) noexcept : 
     Piece(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 Pawn& Pawn::operator=(Pawn const &other) {
     if (this != &other) {
         Piece::operator=(other);
@@ -36,7 +44,9 @@ Pawn& Pawn::operator=(Pawn const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Pawn& Pawn::operator=(Pawn &&other) noexcept {
     if (this != &other) {
         Piece::operator=(std::move(other));

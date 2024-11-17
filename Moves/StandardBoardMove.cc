@@ -12,19 +12,27 @@
 #include "PieceData.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 StandardBoardMove::StandardBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData) :
     Cloneable<BoardMove, StandardBoardMove>(fromSquare, toSquare, captureSquare, doesEnableEnpassant, movedPieceData, capturedPieceData) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 StandardBoardMove::StandardBoardMove(StandardBoardMove const &other) : 
     Cloneable<BoardMove, StandardBoardMove>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 StandardBoardMove::StandardBoardMove(StandardBoardMove &&other) noexcept : 
     Cloneable<BoardMove, StandardBoardMove>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 StandardBoardMove& StandardBoardMove::operator=(StandardBoardMove const &other) {
     if (this != &other) {
         BoardMove::operator=(other);
@@ -32,7 +40,9 @@ StandardBoardMove& StandardBoardMove::operator=(StandardBoardMove const &other) 
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 StandardBoardMove& StandardBoardMove::operator=(StandardBoardMove &&other) noexcept {
     if (this != &other) {
         BoardMove::operator=(std::move(other));
@@ -40,7 +50,9 @@ StandardBoardMove& StandardBoardMove::operator=(StandardBoardMove &&other) noexc
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool StandardBoardMove::operator==(StandardBoardMove const &other) const {
     return 
         fromSquare == other.fromSquare &&
@@ -51,7 +63,9 @@ bool StandardBoardMove::operator==(StandardBoardMove const &other) const {
         capturedPieceData == other.capturedPieceData;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool StandardBoardMove::operator!=(StandardBoardMove const &other) const {
     return !(*this == other);
 }

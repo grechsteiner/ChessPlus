@@ -27,19 +27,27 @@ std::vector<MoveDirection> const Rook::rookMoveDirections = {
     { MoveDirection(1, 0) }, 
 };
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Rook::Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
     Piece(PieceData(PieceType::ROOK, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(5, image)) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Rook::Rook(Rook const &other) : 
     Piece(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Rook::Rook(Rook &&other) noexcept : 
     Piece(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 Rook& Rook::operator=(Rook const &other) {
     if (this != &other) {
         Piece::operator=(other);
@@ -47,7 +55,9 @@ Rook& Rook::operator=(Rook const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Rook& Rook::operator=(Rook &&other) noexcept {
     if (this != &other) {
         Piece::operator=(std::move(other));

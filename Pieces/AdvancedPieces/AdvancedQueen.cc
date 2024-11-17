@@ -15,19 +15,27 @@
 #include "Queen.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 AdvancedQueen::AdvancedQueen(Team team, PieceDirection pieceDirection, bool hasMoved) :
     ComplicatedCloneable<Piece, Queen, AdvancedQueen>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♕')) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 AdvancedQueen::AdvancedQueen(AdvancedQueen const &other) : 
     ComplicatedCloneable<Piece, Queen, AdvancedQueen>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 AdvancedQueen::AdvancedQueen(AdvancedQueen &&other) noexcept : 
     ComplicatedCloneable<Piece, Queen, AdvancedQueen>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 AdvancedQueen& AdvancedQueen::operator=(AdvancedQueen const &other) {
     if (this != &other) {
         Queen::operator=(other);
@@ -35,7 +43,9 @@ AdvancedQueen& AdvancedQueen::operator=(AdvancedQueen const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 AdvancedQueen& AdvancedQueen::operator=(AdvancedQueen &&other) noexcept {
     if (this != &other) {
         Queen::operator=(std::move(other));

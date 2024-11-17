@@ -32,19 +32,27 @@ std::vector<MoveDirection> const King::kingMoveDirections = {
     { MoveDirection(1, 1) } 
 };
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 King::King(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) : 
     Piece(PieceData(PieceType::KING, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(KING_SCORE, image)) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 King::King(King const &other) : 
     Piece(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 King::King(King &&other) noexcept : 
     Piece(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 King& King::operator=(King const &other) {
     if (this != &other) {
         Piece::operator=(other);
@@ -52,7 +60,9 @@ King& King::operator=(King const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 King& King::operator=(King &&other) noexcept {
     if (this != &other) {
         Piece::operator=(std::move(other));

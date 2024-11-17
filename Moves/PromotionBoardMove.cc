@@ -12,19 +12,27 @@
 #include "PieceData.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 PromotionBoardMove::PromotionBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, PieceType promotionPieceType, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData) :
     Cloneable<BoardMove, PromotionBoardMove>(fromSquare, toSquare, captureSquare, doesEnableEnpassant, movedPieceData, capturedPieceData), promotionPieceType(promotionPieceType) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 PromotionBoardMove::PromotionBoardMove(PromotionBoardMove const &other) : 
     Cloneable<BoardMove, PromotionBoardMove>(other), promotionPieceType(other.promotionPieceType) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 PromotionBoardMove::PromotionBoardMove(PromotionBoardMove &&other) noexcept : 
     Cloneable<BoardMove, PromotionBoardMove>(std::move(other)), promotionPieceType(std::move(other.promotionPieceType)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 PromotionBoardMove& PromotionBoardMove::operator=(PromotionBoardMove const &other) {
     if (this != &other) {
         BoardMove::operator=(other);
@@ -33,7 +41,9 @@ PromotionBoardMove& PromotionBoardMove::operator=(PromotionBoardMove const &othe
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 PromotionBoardMove& PromotionBoardMove::operator=(PromotionBoardMove &&other) noexcept {
     if (this != &other) {
         BoardMove::operator=(std::move(other));
@@ -42,7 +52,9 @@ PromotionBoardMove& PromotionBoardMove::operator=(PromotionBoardMove &&other) no
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool PromotionBoardMove::operator==(PromotionBoardMove const &other) const {
     return 
         fromSquare == other.fromSquare &&
@@ -54,7 +66,9 @@ bool PromotionBoardMove::operator==(PromotionBoardMove const &other) const {
         promotionPieceType == other.promotionPieceType;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool PromotionBoardMove::operator!=(PromotionBoardMove const &other) const {
     return !(*this == other);
 }

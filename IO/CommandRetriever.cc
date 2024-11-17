@@ -7,16 +7,24 @@
 #include <string>
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 CommandRetriever::CommandRetriever() { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 CommandRetriever::CommandRetriever(CommandRetriever const &other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 CommandRetriever::CommandRetriever(CommandRetriever &&other) noexcept { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 CommandRetriever& CommandRetriever::operator=(CommandRetriever const &other) {
     if (this != &other) {
         return *this;
@@ -24,7 +32,9 @@ CommandRetriever& CommandRetriever::operator=(CommandRetriever const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 CommandRetriever& CommandRetriever::operator=(CommandRetriever &&other) noexcept {
     if (this != &other) {
         return *this;

@@ -9,19 +9,27 @@
 #include <utility>
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 BoardSquare::BoardSquare(int boardRow, int boardCol) : 
     boardRow(boardRow), boardCol(boardCol) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 BoardSquare::BoardSquare(BoardSquare const &other) : 
     boardRow(other.boardRow), boardCol(other.boardCol) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 BoardSquare::BoardSquare(BoardSquare &&other) noexcept :
     boardRow(other.boardRow), boardCol(other.boardCol) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 BoardSquare& BoardSquare::operator=(BoardSquare const &other) {
     if (this != &other) {
         boardRow = other.boardRow;
@@ -30,7 +38,9 @@ BoardSquare& BoardSquare::operator=(BoardSquare const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 BoardSquare& BoardSquare::operator=(BoardSquare &&other) noexcept {
     if (this != &other) {
         boardRow = other.boardRow;
@@ -39,14 +49,18 @@ BoardSquare& BoardSquare::operator=(BoardSquare &&other) noexcept {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool BoardSquare::operator==(BoardSquare const &other) const {
     return 
         boardRow == other.boardRow &&
         boardCol == other.boardCol;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool BoardSquare::operator!=(BoardSquare const &other) const {
     return !(*this == other);
 }

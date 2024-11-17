@@ -11,15 +11,21 @@
 #include "CommandRetriever.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 ConsoleCommandRetriever::ConsoleCommandRetriever(std::istream &in) : 
     Cloneable<CommandRetriever, ConsoleCommandRetriever>(), in(in) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 ConsoleCommandRetriever::ConsoleCommandRetriever(ConsoleCommandRetriever const &other) : 
     Cloneable<CommandRetriever, ConsoleCommandRetriever>(other), in(other.in) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 ConsoleCommandRetriever::ConsoleCommandRetriever(ConsoleCommandRetriever &&other) noexcept : 
     Cloneable<CommandRetriever, ConsoleCommandRetriever>(std::move(other)), in(other.in) { }
 

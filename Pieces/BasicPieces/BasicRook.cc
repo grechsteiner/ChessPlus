@@ -14,19 +14,27 @@
 #include "Rook.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 BasicRook::BasicRook(Team team, PieceDirection pieceDirection, bool hasMoved) :
     ComplicatedCloneable<Piece, Rook, BasicRook>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♜')) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 BasicRook::BasicRook(BasicRook const &other) : 
     ComplicatedCloneable<Piece, Rook, BasicRook>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 BasicRook::BasicRook(BasicRook &&other) noexcept : 
     ComplicatedCloneable<Piece, Rook, BasicRook>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 BasicRook& BasicRook::operator=(BasicRook const &other) {
     if (this != &other) {
         Rook::operator=(other);
@@ -34,7 +42,9 @@ BasicRook& BasicRook::operator=(BasicRook const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 BasicRook& BasicRook::operator=(BasicRook &&other) noexcept {
     if (this != &other) {
         Rook::operator=(std::move(other));

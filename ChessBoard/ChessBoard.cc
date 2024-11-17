@@ -24,19 +24,27 @@ ChessBoard::BoardSquareIterator ChessBoard::createBoardSquareIterator(int row, i
     return BoardSquareIterator(row, col, numRowsOnBoard, numColsOnBoard);
 }
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 ChessBoard::BoardSquareIterator::BoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) :
     boardSquare(BoardSquare(row, col)), numRowsOnBoard(numRowsOnBoard), numColsOnBoard(numColsOnBoard) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 ChessBoard::BoardSquareIterator::BoardSquareIterator(BoardSquareIterator const &other) :
     boardSquare(other.boardSquare), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 ChessBoard::BoardSquareIterator::BoardSquareIterator(BoardSquareIterator &&other) noexcept :
     boardSquare(std::move(other.boardSquare)), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
 
-// Copy assignmnet
+/*
+ * Copy assignment
+ */
 ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator=(BoardSquareIterator const &other) {
     if (this != &other) {
         boardSquare = other.boardSquare;
@@ -46,7 +54,9 @@ ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator=(Boar
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator=(BoardSquareIterator &&other) noexcept {
     if (this != &other) {
         boardSquare = std::move(other.boardSquare);
@@ -56,12 +66,16 @@ ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator=(Boar
     return *this;
 }
 
-// Dereference
+/*
+ * Dereference
+ */
 BoardSquare ChessBoard::BoardSquareIterator::operator*() const {
     return boardSquare;
 }
 
-// Pre-increment
+/*
+ * Pre-increment
+ */
 ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator++() {
     if (boardSquare.boardCol + 1 < numColsOnBoard) {
         ++boardSquare.boardCol;
@@ -72,7 +86,9 @@ ChessBoard::BoardSquareIterator& ChessBoard::BoardSquareIterator::operator++() {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool ChessBoard::BoardSquareIterator::operator==(BoardSquareIterator const &other) const {
     return 
         boardSquare == other.boardSquare &&
@@ -80,7 +96,9 @@ bool ChessBoard::BoardSquareIterator::operator==(BoardSquareIterator const &othe
         numColsOnBoard == other.numColsOnBoard;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool ChessBoard::BoardSquareIterator::operator!=(BoardSquareIterator const &other) const {
     return !(*this ==other);
 }
@@ -96,19 +114,27 @@ ChessBoard::ReverseBoardSquareIterator ChessBoard::createReverseBoardSquareItera
     return ReverseBoardSquareIterator(row, col, numRowsOnBoard, numColsOnBoard);
 }
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) :
     boardSquare(BoardSquare(row, col)), numRowsOnBoard(numRowsOnBoard), numColsOnBoard(numColsOnBoard) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(ReverseBoardSquareIterator const &other) :
     boardSquare(other.boardSquare), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 ChessBoard::ReverseBoardSquareIterator::ReverseBoardSquareIterator(ReverseBoardSquareIterator &&other) noexcept :
     boardSquare(std::move(other.boardSquare)), numRowsOnBoard(other.numRowsOnBoard), numColsOnBoard(other.numColsOnBoard) { }
 
-// Copy assignmnent
+/*
+ * Copy assignment
+ */
 ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::operator=(ReverseBoardSquareIterator const &other) {
     if (this != &other) {
         boardSquare = other.boardSquare;
@@ -118,7 +144,9 @@ ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::operator=(ReverseBoardSquareIterator &&other) noexcept {
     if (this != &other) {
         boardSquare = std::move(other.boardSquare);
@@ -128,12 +156,16 @@ ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::
     return *this;
 }
 
-// Dereference
+/*
+ * Dereference
+ */
 BoardSquare ChessBoard::ReverseBoardSquareIterator::operator*() const {
     return boardSquare;
 }
 
-// Pre-increment
+/*
+ * Pre-increment
+ */
 ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::operator++() {
     if (boardSquare.boardCol > 0) {
         --boardSquare.boardCol;
@@ -144,7 +176,9 @@ ChessBoard::ReverseBoardSquareIterator& ChessBoard::ReverseBoardSquareIterator::
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool ChessBoard::ReverseBoardSquareIterator::operator==(ReverseBoardSquareIterator const &other) const {
     return 
         boardSquare == other.boardSquare &&
@@ -152,7 +186,9 @@ bool ChessBoard::ReverseBoardSquareIterator::operator==(ReverseBoardSquareIterat
         numColsOnBoard == other.numColsOnBoard;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool ChessBoard::ReverseBoardSquareIterator::operator!=(ReverseBoardSquareIterator const &other) const {
     return !(*this ==other);
 }
@@ -160,16 +196,24 @@ bool ChessBoard::ReverseBoardSquareIterator::operator!=(ReverseBoardSquareIterat
 
 #pragma mark - ChessBoard
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 ChessBoard::ChessBoard() { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 ChessBoard::ChessBoard(ChessBoard const &other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 ChessBoard::ChessBoard(ChessBoard &&other) noexcept { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 ChessBoard& ChessBoard::operator=(ChessBoard const &other) {
     if (this != &other) {
         return *this;
@@ -177,7 +221,9 @@ ChessBoard& ChessBoard::operator=(ChessBoard const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 ChessBoard& ChessBoard::operator=(ChessBoard &&other) noexcept {
     if (this != &other) {
         return *this;

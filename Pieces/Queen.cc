@@ -31,19 +31,27 @@ std::vector<MoveDirection> const Queen::queenMoveDirections = {
     { MoveDirection(1, 1) } 
 };
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Queen::Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
     Piece(PieceData(PieceType::QUEEN, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(9, image)) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Queen::Queen(Queen const &other) : 
     Piece(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Queen::Queen(Queen &&other) noexcept : 
     Piece(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 Queen& Queen::operator=(Queen const &other) {
     if (this != &other) {
         Piece::operator=(other);
@@ -51,7 +59,9 @@ Queen& Queen::operator=(Queen const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Queen& Queen::operator=(Queen &&other) noexcept {
     if (this != &other) {
         Piece::operator=(std::move(other));

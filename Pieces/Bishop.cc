@@ -27,19 +27,27 @@ std::vector<MoveDirection> const Bishop::bishopMoveDirections = {
     { MoveDirection(1,  1) } 
 };
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Bishop::Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
     Piece(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, image)) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Bishop::Bishop(Bishop const &other) : 
     Piece(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Bishop::Bishop(Bishop &&other) noexcept : 
     Piece(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 Bishop& Bishop::operator=(Bishop const &other) {
     if (this != &other) {
         Piece::operator=(other);
@@ -47,7 +55,9 @@ Bishop& Bishop::operator=(Bishop const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Bishop& Bishop::operator=(Bishop &&other) noexcept {
     if (this != &other) {
         Piece::operator=(std::move(other));

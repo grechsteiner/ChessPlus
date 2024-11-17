@@ -13,19 +13,27 @@
 #include "BoardMove.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Piece::Piece(PieceData const &pieceData, PieceInfo const &pieceInfo) :
     pieceData(pieceData), pieceInfo(pieceInfo) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Piece::Piece(Piece const &other) :
     pieceData(other.pieceData), pieceInfo(other.pieceInfo) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Piece::Piece(Piece &&other) noexcept :
     pieceData(std::move(other.pieceData)), pieceInfo(std::move(other.pieceInfo)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 Piece& Piece::operator=(Piece const &other) {
     if (this != &other) {
         pieceData = other.pieceData;
@@ -34,7 +42,9 @@ Piece& Piece::operator=(Piece const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Piece& Piece::operator=(Piece &&other) noexcept {
     if (this != &other) {
         pieceData = std::move(other.pieceData);
@@ -43,14 +53,18 @@ Piece& Piece::operator=(Piece &&other) noexcept {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool Piece::operator==(Piece const &other) const {
     return
         pieceData == other.pieceData &&
         pieceInfo == other.pieceInfo;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool Piece::operator!=(Piece const &other) const {
     return !(*this == other);
 }

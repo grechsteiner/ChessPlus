@@ -5,19 +5,27 @@
 #include "Constants.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 PieceData::PieceData(PieceType pieceType, PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved) :
     pieceType(pieceType), pieceLevel(pieceLevel), team(team), pieceDirection(pieceDirection), hasMoved(hasMoved) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 PieceData::PieceData(PieceData const &other) :
     pieceType(other.pieceType), pieceLevel(other.pieceLevel), team(other.team), pieceDirection(other.pieceDirection), hasMoved(other.hasMoved) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 PieceData::PieceData(PieceData &&other) noexcept : 
     pieceType(other.pieceType), pieceLevel(other.pieceLevel), team(other.team), pieceDirection(other.pieceDirection), hasMoved(other.hasMoved) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 PieceData& PieceData::operator=(const PieceData& other) {
     if (this != &other) {
         pieceType = other.pieceType;
@@ -29,7 +37,9 @@ PieceData& PieceData::operator=(const PieceData& other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 PieceData& PieceData::operator=(PieceData&& other) noexcept {
     if (this != &other) {
         pieceType = other.pieceType;
@@ -41,7 +51,9 @@ PieceData& PieceData::operator=(PieceData&& other) noexcept {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool PieceData::operator==(PieceData const &other) const {
     return
         pieceType == other.pieceType &&
@@ -51,7 +63,9 @@ bool PieceData::operator==(PieceData const &other) const {
         hasMoved == other.hasMoved;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool PieceData::operator!=(PieceData const &other) const {
     return !(*this == other);
 }

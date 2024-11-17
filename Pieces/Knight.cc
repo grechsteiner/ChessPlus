@@ -31,19 +31,27 @@ std::vector<MoveDirection> const Knight::knightMoveDirections = {
     { MoveDirection(2, 1) } 
 };
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Knight::Knight(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
     Piece(PieceData(PieceType::KNIGHT, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, image)) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Knight::Knight(Knight const &other) : 
     Piece(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Knight::Knight(Knight &&other) noexcept : 
     Piece(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 Knight& Knight::operator=(Knight const &other) {
     if (this != &other) {
         Piece::operator=(other);
@@ -51,7 +59,9 @@ Knight& Knight::operator=(Knight const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Knight& Knight::operator=(Knight &&other) noexcept {
     if (this != &other) {
         Piece::operator=(std::move(other));

@@ -14,19 +14,27 @@
 #include "Piece.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 BasicBishop::BasicBishop(Team team, PieceDirection pieceDirection, bool hasMoved) :
     ComplicatedCloneable<Piece, Bishop, BasicBishop>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♝')) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 BasicBishop::BasicBishop(BasicBishop const &other) : 
     ComplicatedCloneable<Piece, Bishop, BasicBishop>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 BasicBishop::BasicBishop(BasicBishop &&other) noexcept : 
     ComplicatedCloneable<Piece, Bishop, BasicBishop>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 BasicBishop& BasicBishop::operator=(BasicBishop const &other) {
     if (this != &other) {
         Bishop::operator=(other);
@@ -34,7 +42,9 @@ BasicBishop& BasicBishop::operator=(BasicBishop const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 BasicBishop& BasicBishop::operator=(BasicBishop &&other) noexcept {
     if (this != &other) {
         Bishop::operator=(std::move(other));

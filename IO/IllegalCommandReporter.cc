@@ -6,16 +6,24 @@
 #include <string>
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 IllegalCommandReporter::IllegalCommandReporter() { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 IllegalCommandReporter::IllegalCommandReporter(IllegalCommandReporter const &other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 IllegalCommandReporter::IllegalCommandReporter(IllegalCommandReporter &&other) noexcept { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 IllegalCommandReporter& IllegalCommandReporter::operator=(IllegalCommandReporter const &other) {
     if (this != &other) {
         return *this;
@@ -23,7 +31,9 @@ IllegalCommandReporter& IllegalCommandReporter::operator=(IllegalCommandReporter
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 IllegalCommandReporter& IllegalCommandReporter::operator=(IllegalCommandReporter &&other) noexcept {
     if (this != &other) {
         return *this;

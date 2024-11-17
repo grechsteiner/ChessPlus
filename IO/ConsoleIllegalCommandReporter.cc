@@ -9,15 +9,21 @@
 #include "IllegalCommandReporter.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 ConsoleIllegalCommandReporter::ConsoleIllegalCommandReporter(std::ostream &out) : 
     Cloneable<IllegalCommandReporter,ConsoleIllegalCommandReporter>(), out(out) {}
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 ConsoleIllegalCommandReporter::ConsoleIllegalCommandReporter(ConsoleIllegalCommandReporter const &other) : 
     Cloneable<IllegalCommandReporter,ConsoleIllegalCommandReporter>(other), out(other.out) {}
 
-// Move ctor
+/*
+ * Move ctor
+ */
 ConsoleIllegalCommandReporter::ConsoleIllegalCommandReporter(ConsoleIllegalCommandReporter &&other) noexcept : 
     Cloneable<IllegalCommandReporter,ConsoleIllegalCommandReporter>(std::move(other)), out(other.out) {}
 

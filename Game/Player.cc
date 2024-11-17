@@ -8,19 +8,27 @@
 #include "Constants.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Player::Player(PlayerType playerType, Team team, std::unique_ptr<ComputerPlayer> const &computerPlayer) :
     playerType(playerType), team(team), computerPlayer(computerPlayer == nullptr ? nullptr : computerPlayer->clone()) {}
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Player::Player(Player const &other) :
     playerType(other.playerType), team(other.team), computerPlayer(other.computerPlayer == nullptr ? nullptr : other.computerPlayer->clone()) {}
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Player::Player(Player &&other) noexcept :
     playerType(other.playerType), team(other.team), computerPlayer(std::move(other.computerPlayer)) {}
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 Player& Player::operator=(Player &other) {
     if (this != &other) {
         playerType = other.playerType;
@@ -30,7 +38,9 @@ Player& Player::operator=(Player &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Player& Player::operator=(Player &&other) noexcept {
     if (this != &other) {
         playerType = other.playerType;
@@ -40,10 +50,10 @@ Player& Player::operator=(Player &&other) noexcept {
     return *this;
 }
 
-// Getters
+/* Getters */
 PlayerType Player::getPlayerType() const { return playerType; }
 Team Player::getTeam() const { return team; }
 std::unique_ptr<ComputerPlayer> const& Player::getComputerPlayer() const { return computerPlayer; }
 
-// Setters
+/* Setters */
 void Player::setComputerPlayer(std::unique_ptr<ComputerPlayer> const &computerPlayer) { this->computerPlayer = computerPlayer->clone(); }

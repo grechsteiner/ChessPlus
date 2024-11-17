@@ -12,19 +12,27 @@
 #include "PieceData.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 CastleBoardMove::CastleBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData) :
     Cloneable<BoardMove, CastleBoardMove>(fromSquare, toSquare, captureSquare, doesEnableEnpassant, movedPieceData, capturedPieceData), rookFromSquare(rookFromSquare), rookToSquare(rookToSquare) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 CastleBoardMove::CastleBoardMove(CastleBoardMove const &other) : 
     Cloneable<BoardMove, CastleBoardMove>(other), rookFromSquare(other.rookFromSquare), rookToSquare(other.rookToSquare) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 CastleBoardMove::CastleBoardMove(CastleBoardMove &&other) noexcept : 
     Cloneable<BoardMove, CastleBoardMove>(std::move(other)), rookFromSquare(std::move(other.rookFromSquare)), rookToSquare(std::move(other.rookToSquare)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 CastleBoardMove& CastleBoardMove::operator=(CastleBoardMove const &other) {
     if (this != &other) {
         BoardMove::operator=(other);
@@ -34,7 +42,9 @@ CastleBoardMove& CastleBoardMove::operator=(CastleBoardMove const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 CastleBoardMove& CastleBoardMove::operator=(CastleBoardMove &&other) noexcept {
     if (this != &other) {
         BoardMove::operator=(std::move(other));
@@ -44,7 +54,9 @@ CastleBoardMove& CastleBoardMove::operator=(CastleBoardMove &&other) noexcept {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool CastleBoardMove::operator==(CastleBoardMove const &other) const {
     return 
         fromSquare == other.fromSquare &&
@@ -57,7 +69,9 @@ bool CastleBoardMove::operator==(CastleBoardMove const &other) const {
         rookToSquare == other.rookToSquare;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool CastleBoardMove::operator!=(CastleBoardMove const &other) const {
     return !(*this == other);
 }

@@ -15,19 +15,27 @@
 #include "Piece.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 AdvancedKnight::AdvancedKnight(Team team, PieceDirection pieceDirection, bool hasMoved) :
     ComplicatedCloneable<Piece, Knight, AdvancedKnight>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♘')) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 AdvancedKnight::AdvancedKnight(AdvancedKnight const &other) : 
     ComplicatedCloneable<Piece, Knight, AdvancedKnight>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 AdvancedKnight::AdvancedKnight(AdvancedKnight &&other) noexcept : 
     ComplicatedCloneable<Piece, Knight, AdvancedKnight>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 AdvancedKnight& AdvancedKnight::operator=(AdvancedKnight const &other) {
     if (this != &other) {
         Knight::operator=(other);
@@ -35,7 +43,9 @@ AdvancedKnight& AdvancedKnight::operator=(AdvancedKnight const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 AdvancedKnight& AdvancedKnight::operator=(AdvancedKnight &&other) noexcept {
     if (this != &other) {
         Knight::operator=(std::move(other));

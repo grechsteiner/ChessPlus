@@ -40,8 +40,12 @@ public:
     explicit TextObserver(Game *game, std::ostream &out);
     TextObserver(TextObserver const &other);
     TextObserver(TextObserver &&other) noexcept;
-    // Copy assignment not enabled (can't copy streams)
-    // Move assignment not enabled (can't move streams)
+    /*
+ * Copy assignment
+ */ not enabled (can't copy streams)
+    /*
+ * Move assignment
+ */ not enabled (can't move streams)
     virtual ~TextObserver();
 };
 

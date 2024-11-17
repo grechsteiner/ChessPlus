@@ -12,7 +12,9 @@
 #include "PieceData.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 BoardMove::BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData) :
     fromSquare(fromSquare), 
     toSquare(toSquare), 
@@ -21,7 +23,9 @@ BoardMove::BoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare,
     movedPieceData(movedPieceData), 
     capturedPieceData(capturedPieceData) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 BoardMove::BoardMove(BoardMove const &other) :
     fromSquare(other.fromSquare), 
     toSquare(other.toSquare), 
@@ -30,7 +34,9 @@ BoardMove::BoardMove(BoardMove const &other) :
     movedPieceData(other.movedPieceData), 
     capturedPieceData(other.capturedPieceData) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 BoardMove::BoardMove(BoardMove &&other) noexcept :
     fromSquare(std::move(other.fromSquare)), 
     toSquare(std::move(other.toSquare)), 
@@ -39,7 +45,9 @@ BoardMove::BoardMove(BoardMove &&other) noexcept :
     movedPieceData(std::move(other.movedPieceData)), 
     capturedPieceData(std::move(other.capturedPieceData)) { }
 
-// Copy assignmnet
+/*
+ * Copy assignment
+ */
 BoardMove& BoardMove::operator=(BoardMove const &other) {
     if (this != &other) {
         fromSquare = other.fromSquare;
@@ -52,7 +60,9 @@ BoardMove& BoardMove::operator=(BoardMove const &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 BoardMove& BoardMove::operator=(BoardMove &&other) noexcept {
     if (this != &other) {
         fromSquare = std::move(other.fromSquare);
@@ -65,12 +75,16 @@ BoardMove& BoardMove::operator=(BoardMove &&other) noexcept {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool BoardMove::operator==(BoardMove const &other) const {
     return typeid(*this) == typeid(other) && this->equals(other);
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool BoardMove::operator!=(BoardMove const &other) const {
     return !(*this == other);
 }

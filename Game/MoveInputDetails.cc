@@ -6,19 +6,27 @@
 #include <string>
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 MoveInputDetails::MoveInputDetails(std::string const &fromSquareStr, std::string const &toSquareStr, std::optional<std::string> const &promotionPieceTypeStr) :
     fromSquareStr(fromSquareStr), toSquareStr(toSquareStr), promotionPieceTypeStr(promotionPieceTypeStr) {}
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 MoveInputDetails::MoveInputDetails(MoveInputDetails const &other) :
     fromSquareStr(other.fromSquareStr), toSquareStr(other.toSquareStr), promotionPieceTypeStr(other.promotionPieceTypeStr) {}
 
-// Move ctor
+/*
+ * Move ctor
+ */
 MoveInputDetails::MoveInputDetails(MoveInputDetails &&other) noexcept :
     fromSquareStr(std::move(other.fromSquareStr)), toSquareStr(std::move(other.toSquareStr)), promotionPieceTypeStr(std::move(other.promotionPieceTypeStr)) {}
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 MoveInputDetails& MoveInputDetails::operator=(MoveInputDetails &other) {
     if (this != &other) {
         fromSquareStr = other.fromSquareStr;
@@ -28,7 +36,9 @@ MoveInputDetails& MoveInputDetails::operator=(MoveInputDetails &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 MoveInputDetails& MoveInputDetails::operator=(MoveInputDetails &&other) noexcept {
     if (this != &other) {
         fromSquareStr = std::move(other.fromSquareStr);
@@ -38,7 +48,9 @@ MoveInputDetails& MoveInputDetails::operator=(MoveInputDetails &&other) noexcept
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool MoveInputDetails::operator==(MoveInputDetails const &other) const {
     return
         fromSquareStr == other.fromSquareStr &&
@@ -46,7 +58,9 @@ bool MoveInputDetails::operator==(MoveInputDetails const &other) const {
         promotionPieceTypeStr == other.promotionPieceTypeStr;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool MoveInputDetails::operator!=(MoveInputDetails const &other) const {
     return !(*this == other);
 }

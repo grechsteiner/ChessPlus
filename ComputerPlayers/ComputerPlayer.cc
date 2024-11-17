@@ -13,19 +13,27 @@
 #include "Constants.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 ComputerPlayer::ComputerPlayer(Team team) :
     team(team) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 ComputerPlayer::ComputerPlayer(ComputerPlayer const &other) :
     team(other.team) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 ComputerPlayer::ComputerPlayer(ComputerPlayer &&other) noexcept :
     team(other.team) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 ComputerPlayer& ComputerPlayer::operator=(ComputerPlayer &other) {
     if (this != &other) {
         team = other.team;
@@ -33,7 +41,9 @@ ComputerPlayer& ComputerPlayer::operator=(ComputerPlayer &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 ComputerPlayer& ComputerPlayer::operator=(ComputerPlayer &&other) noexcept {
     if (this != &other) {
         team = other.team;

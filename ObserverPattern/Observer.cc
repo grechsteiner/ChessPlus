@@ -2,13 +2,19 @@
 
 #include "Observer.h"
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Observer::Observer() {}
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Observer::Observer(Observer &&other) noexcept {}
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Observer& Observer::operator=(Observer &&other) noexcept {
     if (this != &other) {
         // Update if needed

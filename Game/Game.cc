@@ -27,7 +27,9 @@
 #include "Utilities.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 Game::Game(std::unique_ptr<CommandRetriever> const &commandRetriever, std::unique_ptr<IllegalCommandReporter> const &illegalCommandReporter) :
     Subject(),
     gameState(GameState::MAIN_MENU),
@@ -43,7 +45,9 @@ Game::Game(std::unique_ptr<CommandRetriever> const &commandRetriever, std::uniqu
     ChessBoardUtilities::applyStandardSetup(chessBoard, PieceLevel::BASIC);
 }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 Game::Game(Game const &other) :
     Subject(other),
     gameState(other.gameState),
@@ -53,7 +57,9 @@ Game::Game(Game const &other) :
     commandRetriever(other.commandRetriever->clone()),
     illegalCommandReporter(other.illegalCommandReporter->clone()) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 Game::Game(Game &&other) noexcept :
     Subject(std::move(other)),
     gameState(other.gameState),
@@ -63,7 +69,9 @@ Game::Game(Game &&other) noexcept :
     commandRetriever(std::move(other.commandRetriever)),
     illegalCommandReporter(std::move(other.illegalCommandReporter)) { }
 
-// Copy assignmnet
+/*
+ * Copy assignment
+ */
 Game& Game::operator=(Game &other) {
     if (this != &other) {
         Subject::operator=(other);
@@ -81,7 +89,9 @@ Game& Game::operator=(Game &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 Game& Game::operator=(Game &&other) noexcept {
     if (this != &other) {
         Subject::operator=(std::move(other));

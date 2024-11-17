@@ -3,19 +3,27 @@
 #include "PieceInfo.h"
 
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 PieceInfo::PieceInfo(int pieceScore, char32_t image) :
     pieceScore(pieceScore), image(image) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 PieceInfo::PieceInfo(PieceInfo const &other) :
     pieceScore(other.pieceScore), image(other.image) { } 
 
-// Move ctor
+/*
+ * Move ctor
+ */
 PieceInfo::PieceInfo(PieceInfo &&other) noexcept : 
     pieceScore(other.pieceScore), image(other.image) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 PieceInfo& PieceInfo::operator=(const PieceInfo& other) {
     if (this != &other) {
         pieceScore = other.pieceScore;
@@ -24,7 +32,9 @@ PieceInfo& PieceInfo::operator=(const PieceInfo& other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 PieceInfo& PieceInfo::operator=(PieceInfo&& other) noexcept {
     if (this != &other) {
         pieceScore = other.pieceScore;
@@ -33,14 +43,18 @@ PieceInfo& PieceInfo::operator=(PieceInfo&& other) noexcept {
     return *this;
 }
 
-// Equality
+/*
+ * Equality
+ */
 bool PieceInfo::operator==(PieceInfo const &other) const {
     return
         pieceScore == other.pieceScore &&
         image == other.image;
 }
 
-// Inequality
+/*
+ * Inequality
+ */
 bool PieceInfo::operator==(PieceInfo const &other) const {
     return !(*this == other);
 }

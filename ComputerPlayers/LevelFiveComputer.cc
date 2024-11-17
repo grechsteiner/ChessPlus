@@ -23,19 +23,27 @@
  */
 const LevelFiveComputer::ScoredAlphaBetaMove LevelFiveComputer::emptyScoredAlphaBetaMove(0, std::nullopt);
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 LevelFiveComputer::ScoredAlphaBetaMove::ScoredAlphaBetaMove(int alphaBetaScore, std::optional<std::unique_ptr<BoardMove>> const &boardMove) :
     alphaBetaScore(alphaBetaScore), boardMove(boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(boardMove.value()->clone()) : std::nullopt) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 LevelFiveComputer::ScoredAlphaBetaMove::ScoredAlphaBetaMove(ScoredAlphaBetaMove const &other) :
     alphaBetaScore(other.alphaBetaScore), boardMove(other.boardMove.has_value() ? std::make_optional<std::unique_ptr<BoardMove>>(other.boardMove.value()->clone()) : std::nullopt) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 LevelFiveComputer::ScoredAlphaBetaMove::ScoredAlphaBetaMove(ScoredAlphaBetaMove &&other) noexcept :
     alphaBetaScore(other.alphaBetaScore), boardMove(std::move(other.boardMove)) {}
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 LevelFiveComputer::ScoredAlphaBetaMove& LevelFiveComputer::ScoredAlphaBetaMove::operator=(ScoredAlphaBetaMove const &other) {
     if (this != &other) {
         alphaBetaScore = other.alphaBetaScore;
@@ -44,7 +52,9 @@ LevelFiveComputer::ScoredAlphaBetaMove& LevelFiveComputer::ScoredAlphaBetaMove::
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 LevelFiveComputer::ScoredAlphaBetaMove& LevelFiveComputer::ScoredAlphaBetaMove::operator=(ScoredAlphaBetaMove &&other) noexcept {
     if (this != &other) {
         alphaBetaScore = other.alphaBetaScore;
@@ -56,19 +66,27 @@ LevelFiveComputer::ScoredAlphaBetaMove& LevelFiveComputer::ScoredAlphaBetaMove::
 
 #pragma mark - ScoredBoardMove
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(int score, std::unique_ptr<BoardMove> const &boardMove) :
     score(score), boardMove(boardMove->clone()) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(ScoredBoardMove const &other) :
     score(other.score), boardMove(other.boardMove->clone()) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 LevelFiveComputer::ScoredBoardMove::ScoredBoardMove(ScoredBoardMove &&other) noexcept :
     score(other.score), boardMove(std::move(other.boardMove)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 LevelFiveComputer::ScoredBoardMove& LevelFiveComputer::ScoredBoardMove::operator=(ScoredBoardMove const &other) {
     if (this != &other) {
         score = other.score;
@@ -77,7 +95,9 @@ LevelFiveComputer::ScoredBoardMove& LevelFiveComputer::ScoredBoardMove::operator
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 LevelFiveComputer::ScoredBoardMove& LevelFiveComputer::ScoredBoardMove::operator=(ScoredBoardMove &&other) noexcept {
     if (this != &other) {
         score = other.score;
@@ -89,19 +109,27 @@ LevelFiveComputer::ScoredBoardMove& LevelFiveComputer::ScoredBoardMove::operator
 
 #pragma mark - LevelFiveComputer
 
-// Basic ctor
+/*
+ * Basic ctor
+ */
 LevelFiveComputer::LevelFiveComputer(Team team) : 
     Cloneable<ComputerPlayer, LevelFiveComputer>(team) { }
 
-// Copy ctor
+/*
+ * Copy ctor
+ */
 LevelFiveComputer::LevelFiveComputer(LevelFiveComputer const &other) :
     Cloneable<ComputerPlayer, LevelFiveComputer>(other) { }
 
-// Move ctor
+/*
+ * Move ctor
+ */
 LevelFiveComputer::LevelFiveComputer(LevelFiveComputer &&other) noexcept :
     Cloneable<ComputerPlayer, LevelFiveComputer>(std::move(other)) { }
 
-// Copy assignment
+/*
+ * Copy assignment
+ */
 LevelFiveComputer& LevelFiveComputer::operator=(LevelFiveComputer &other) {
     if (this != &other) {
         ComputerPlayer::operator=(other);
@@ -109,7 +137,9 @@ LevelFiveComputer& LevelFiveComputer::operator=(LevelFiveComputer &other) {
     return *this;
 }
 
-// Move assignment
+/*
+ * Move assignment
+ */
 LevelFiveComputer& LevelFiveComputer::operator=(LevelFiveComputer &&other) noexcept {
     if (this != &other) {
         ComputerPlayer::operator=(std::move(other));
