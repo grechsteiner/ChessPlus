@@ -3,11 +3,16 @@
 #ifndef PlayerFactory_h
 #define PlayerFactory_h
 
+#include <memory>
+
 #include "Player.h"
-#include "Constants.h"
 #include "ComputerPlayer.h"
+#include "Constants.h"
 
 
+/**
+ * Factory for creating Player instances
+ */
 class PlayerFactory final {
 public:
     static Player createHumanPlayer(Team team);
