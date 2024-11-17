@@ -41,13 +41,13 @@ LevelTwoComputer& LevelTwoComputer::operator=(LevelTwoComputer &&other) noexcept
 
 /* 
  * Generate a move
- * 1) Game winning moves
+ * 1) Game winning move
  * 2) Capturing and check applying move
  * 3) Capturing move
  * 4) Random move
  */
 std::unique_ptr<BoardMove> LevelTwoComputer::generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const {
-    // Check if there are any game winning moves
+    // Game winning moves
     std::vector<std::unique_ptr<BoardMove>> winningMoves = chessBoard->generateWinningMoves(team);
     if (!winningMoves.empty()) {
         return winningMoves.front()->clone();
