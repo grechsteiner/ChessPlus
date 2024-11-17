@@ -3,20 +3,20 @@
 #ifndef Pawn_h
 #define Pawn_h
 
-#include <vector>
+#include <memory>
 #include <utility>
+#include <vector>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
 /**
- * Pawn Piece Class
+ * Abstract Pawn Piece Class
  */
 class Pawn : public Piece {    
 protected:
@@ -28,10 +28,8 @@ protected:
     virtual ~Pawn() = default;
 
     std::vector<std::unique_ptr<BoardMove>> getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
-    std::pair<int, int> getPawnDirection() const;
 
-    // Appends new move to moves
-    // Creates all variants if promotion needed
+    MoveDirection getPawnMoveDirection() const;
     void addMoves(std::vector<std::unique_ptr<BoardMove>> &moves, std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant) const;
 };
 
