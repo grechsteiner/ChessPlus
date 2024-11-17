@@ -457,7 +457,7 @@ void Game::processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails)
             switchTurn();
 
             notifyObservers();
-            if (ChessBoardUtilities::isGameOver(chessBoard)) {
+            if (ChessBoardUtilities::isGameOver(chessBoard, currentTurn)) {
                 resetGame();
                 notifyObservers();
             }
@@ -486,7 +486,7 @@ void Game::processMakeComputerMoveCommand() {
             switchTurn();
 
             notifyObservers();
-            if (ChessBoardUtilities::isGameOver(chessBoard)) {
+            if (ChessBoardUtilities::isGameOver(chessBoard, currentTurn)) {
                 resetGame();
                 notifyObservers();
             }

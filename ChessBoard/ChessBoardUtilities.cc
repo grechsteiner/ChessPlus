@@ -1,16 +1,22 @@
 // ChessBoardUtilities.cc
 
-#include <memory>
-
 #include "ChessBoardUtilities.h"
+
+#include <memory>
+#include <optional>
+
 #include "ChessBoard.h"
+#include "Constants.h"
 #include "PieceData.h"
-#include "Piece.h"
 
 
-// 1 king per team
-// Not in checkmate
-// No pawns in places where they should be promoted
+/*
+ * True if ChessBoard argument is in a legal setup state, false otherwise
+ * Legal setup state:
+ * - 1 King per team
+ * - No team in checkmate or stalemate
+ * - No pawns in a location where they should be promoted
+ */
 bool ChessBoardUtilities::isBoardInLegalSetupState(std::unique_ptr<ChessBoard> const &chessBoard) {
     int topRow = 0;
     int bottomRow = chessBoard->getNumRowsOnBoard() - 1;
@@ -20,19 +26,21 @@ bool ChessBoardUtilities::isBoardInLegalSetupState(std::unique_ptr<ChessBoard> c
     int teamOneKingCount = 0;
     int teamTwoKingCount = 0;
 
-    // Stalemate
+    // Check for stalemate
     if (chessBoard->isInStaleMate(chessBoard->getTeamOne()) || chessBoard->isInStaleMate(chessBoard->getTeamTwo())) {
         return false;
     }
 
+    // Check for checkmate, king count, pawn location
     for (ChessBoard::BoardSquareIterator it = chessBoard->begin(); it != chessBoard->end(); ++it) {
         std::optional<PieceData> pieceData = chessBoard->getPieceDataAt(*it);
+
         if (pieceData.has_value()) {
-
             PieceType pieceType = pieceData.value().pieceType;
-            if (pieceType == PieceType::KING) {
-                Team team = pieceData.value().team;
+            Team team = pieceData.value().team;
+            PieceDirection pieceDirection = pieceData.value().pieceDirection;
 
+            if (pieceType == PieceType::KING) {
                 // Checkmate
                 if (chessBoard->isSquareAttacked(*it, team)) {
                     return false;
@@ -45,30 +53,28 @@ bool ChessBoardUtilities::isBoardInLegalSetupState(std::unique_ptr<ChessBoard> c
                     teamTwoKingCount++;
                 }
             } else if (pieceType == PieceType::PAWN) {
-                PieceDirection pieceDirection = pieceData.value().pieceDirection;
                 int boardRow = (*it).boardRow;
                 int boardCol = (*it).boardCol;
 
-                // Is pawn in position where it should be promoted
-                bool isPawnInPromotionPosition = 
-                    (pieceDirection == PieceDirection::NORTH && boardRow == topRow) ||
+                // Pawn position
+                if ((pieceDirection == PieceDirection::NORTH && boardRow == topRow) ||
                     (pieceDirection == PieceDirection::SOUTH && boardRow == bottomRow) ||
                     (pieceDirection == PieceDirection::EAST && boardCol == leftCol) ||
-                    ((pieceDirection == PieceDirection::WEST && boardCol == rightCol));
-                if (isPawnInPromotionPosition) {
+                    (pieceDirection == PieceDirection::WEST && boardCol == rightCol)) {
+
                     return false;
                 }
             }
         }
-        
     }
 
     return teamOneKingCount == 1 && teamTwoKingCount == 1;
 }
 
-// Standard chess setup
-// False if can't be applied with current board size
-// Centred if more than backrow num col
+/*
+ * Apply the standard setup to the ChessBoard argument
+ * False if ChessBoard argument is too small for the standard setup, true otherwise
+ */
 bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessBoard, PieceLevel pieceLevel) {
     static std::vector<PieceType> const standardBackrowSetupOrder = {
         PieceType::ROOK,
@@ -85,11 +91,10 @@ bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessB
         return false;
     }
 
-    chessBoard->clearBoard();
- 
-    int firstPieceCol = (chessBoard->getNumColsOnBoard() - 8) / 2;
     int topRow = 0;
     int bottomRow = chessBoard->getNumRowsOnBoard() - 1;
+    int firstPieceCol = (chessBoard->getNumColsOnBoard() - 8) / 2;
+    chessBoard->clearBoard();
     for (int standardBackrowIndex = 0; standardBackrowIndex < standardBackrowSetupOrder.size(); ++standardBackrowIndex) {
         PieceType currentPieceType = standardBackrowSetupOrder[standardBackrowIndex];
         int currentBoardCol = standardBackrowIndex + firstPieceCol;
@@ -104,19 +109,22 @@ bool ChessBoardUtilities::applyStandardSetup(std::unique_ptr<ChessBoard> &chessB
         chessBoard->setPosition(BoardSquare(topRow, currentBoardCol), PieceData(currentPieceType, pieceLevel, teamTwo, PieceDirection::SOUTH, false));
         chessBoard->setPosition(BoardSquare(topRow + 1, currentBoardCol), PieceData(PieceType::PAWN, pieceLevel, teamTwo, PieceDirection::SOUTH, false));
     }
+
     return true;
 }
 
-bool ChessBoardUtilities::isGameOver(std::unique_ptr<ChessBoard> const &chessBoard) {
-    Team teamOne = chessBoard->getTeamOne();
-    Team teamTwo = chessBoard->getTeamTwo();
+/*
+ * True if the game is over when it is the Team arguments turn
+ */
+bool ChessBoardUtilities::isGameOver(std::unique_ptr<ChessBoard> const &chessBoard, Team currentTurn) {
     return 
-        chessBoard->isInCheckMate(teamOne) || 
-        chessBoard->isInCheckMate(teamTwo) || 
-        chessBoard->isInStaleMate(teamOne) || 
-        chessBoard->isInStaleMate(teamTwo);
+        chessBoard->isInCheckMate(currentTurn) || 
+        chessBoard->isInStaleMate(currentTurn);
 }
 
+/*
+ * Return the number of Pieces that are on the Team arguments team
+ */
 int ChessBoardUtilities::getNumPiecesOnBoard(std::unique_ptr<ChessBoard> const &chessBoard, Team team) {
     int numPieces = 0;
     for (ChessBoard::BoardSquareIterator it = chessBoard->begin(); it != chessBoard->end(); ++it) {
