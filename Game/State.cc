@@ -2,6 +2,13 @@
 
 #include "State.h"
 
+#include <memory>
+#include <utility>
+
+#include "Constants.h"
+#include "ChessBoard.h"
+#include "Player.h"
+
 
 // Basic ctor
 State::State(GameState gameState, std::unique_ptr<ChessBoard> const &chessBoard, std::pair<Player, Player> const &players, Team currentTurn) :

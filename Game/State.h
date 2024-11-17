@@ -4,13 +4,17 @@
 #define State_h
 
 #include <memory>
+#include <utility>
 
 #include "Constants.h"
 #include "ChessBoard.h"
 #include "Player.h"
 
 
-
+/**
+ * State Struct
+ * The data to be passed to observers
+ */
 struct State final {
 public:
     GameState gameState;
