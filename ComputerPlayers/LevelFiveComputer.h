@@ -19,6 +19,11 @@
  */
 class LevelFiveComputer final : public Cloneable<ComputerPlayer, LevelFiveComputer> {
 private:
+
+    /**
+     * ScoredAlphaBetaMove Struct
+     * Used by alpha-beta algorithm when determining best possible move
+     */
     struct ScoredAlphaBetaMove final {
         int alphaBetaScore;
         std::optional<std::unique_ptr<BoardMove>> boardMove;
@@ -32,6 +37,10 @@ private:
     };
     static ScoredAlphaBetaMove const emptyScoredAlphaBetaMove;
 
+    /**
+     * ScoredBoardMove Struct
+     * Used when ranking BoardMoves as part of alpha-beta algorithm
+     */
     struct ScoredBoardMove final {
         int score;
         std::unique_ptr<BoardMove> boardMove;
