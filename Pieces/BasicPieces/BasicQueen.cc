@@ -17,15 +17,15 @@
 
 // Basic ctor
 BasicQueen::BasicQueen(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Queen, BasicQueen>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♛')) {}
+    ComplicatedCloneable<Piece, Queen, BasicQueen>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♛')) { }
 
 // Copy ctor
 BasicQueen::BasicQueen(BasicQueen const &other) : 
-    ComplicatedCloneable<Piece, Queen, BasicQueen>(other) {}
+    ComplicatedCloneable<Piece, Queen, BasicQueen>(other) { }
 
 // Move ctor
 BasicQueen::BasicQueen(BasicQueen &&other) noexcept : 
-    ComplicatedCloneable<Piece, Queen, BasicQueen>(std::move(other)) {}
+    ComplicatedCloneable<Piece, Queen, BasicQueen>(std::move(other)) { }
 
 // Copy assignment
 BasicQueen& BasicQueen::operator=(BasicQueen const &other) {
