@@ -1,10 +1,14 @@
 // LevelOneComputer.cc
 
-#include <vector>
-#include <cassert>
-
-#include "Constants.h"
 #include "LevelOneComputer.h"
+
+#include <memory>
+#include <vector>
+
+#include "BoardMove.h"
+#include "Cloneable.h"
+#include "ComputerPlayer.h"
+#include "Constants.h"
 
 
 // Basic ctor
@@ -22,8 +26,7 @@ LevelOneComputer::LevelOneComputer(LevelOneComputer &&other) noexcept :
 // Copy assignment
 LevelOneComputer& LevelOneComputer::operator=(LevelOneComputer &other) {
     if (this != &other) {
-        // Update if needed
-        return *this;
+        ComputerPlayer::operator=(other);
     }
     return *this;
 }
@@ -31,12 +34,14 @@ LevelOneComputer& LevelOneComputer::operator=(LevelOneComputer &other) {
 // Move assignment
 LevelOneComputer& LevelOneComputer::operator=(LevelOneComputer &&other) noexcept {
     if (this != &other) {
-        // Update if needed
-        return *this;
+        ComputerPlayer::operator=(std::move(other));
     }
     return *this;
 }
 
+/* 
+ * Generate a move
+ */
 std::unique_ptr<BoardMove> LevelOneComputer::generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const {
     std::vector<std::unique_ptr<BoardMove>> allLegalMoves = chessBoard->generateAllLegalMoves(team);
     shuffle(allLegalMoves);

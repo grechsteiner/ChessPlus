@@ -41,11 +41,15 @@ ComputerPlayer& ComputerPlayer::operator=(ComputerPlayer &&other) noexcept {
     return *this;
 }
 
+/*
+ * Shuffle the BoardMoves
+ */
 void ComputerPlayer::shuffle(std::vector<std::unique_ptr<BoardMove>> &moves) const {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(moves.begin(), moves.end(), std::default_random_engine(seed));
 }
 
+/* Virtual methods */
 std::unique_ptr<BoardMove> ComputerPlayer::generateMove(std::unique_ptr<ChessBoard> const &chessBoard) const { return generateMoveImpl(chessBoard); }
 std::unique_ptr<ComputerPlayer> ComputerPlayer::clone() const { return cloneImpl(); }
 
