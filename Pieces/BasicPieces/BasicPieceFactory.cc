@@ -1,11 +1,9 @@
 // BasicPieceFactory.cc
 
-#include <memory>
-#include <cassert>
-
 #include "BasicPieceFactory.h"
-#include "Piece.h"
-#include "Constants.h"
+
+#include <cassert>
+#include <memory>
 
 #include "BasicKing.h"
 #include "BasicQueen.h"
@@ -13,8 +11,15 @@
 #include "BasicBishop.h"
 #include "BasicKnight.h"
 #include "BasicPawn.h"
+#include "Piece.h"
+#include "PieceData.h"
 
-// Static
+
+/*
+ * Static
+ *
+ * Returns a Basic Piece instance
+ */
 std::unique_ptr<Piece> BasicPieceFactory::createPiece(PieceData const &pieceData) {
     switch (pieceData.pieceType) {
         case PieceType::KING:
@@ -33,4 +38,3 @@ std::unique_ptr<Piece> BasicPieceFactory::createPiece(PieceData const &pieceData
             assert(false);
     }
 }
-

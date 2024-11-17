@@ -4,12 +4,14 @@
 #define BasicPieceFactory_h
 
 #include <memory>
-#include <optional>
 
-class Piece;
-struct PieceData;
+#include "Piece.h"
+#include "PieceData.h"
 
 
+/**
+ * Factory for creating Basic Piece instances
+ */
 class BasicPieceFactory final {
 public:
     static std::unique_ptr<Piece> createPiece(PieceData const &pieceData);
