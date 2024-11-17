@@ -1,9 +1,19 @@
 // BasicQueen.cc
 
+#include "BasicQueen.h"
+
+#include <memory>
+#include <utility>
 #include <vector>
 
-#include "BasicQueen.h"
+#include "Bishop.h"
 #include "BoardMove.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "Constants.h"
+#include "Piece.h"
+#include "Queen.h"
+
 
 // Basic ctor
 BasicQueen::BasicQueen(Team team, PieceDirection pieceDirection, bool hasMoved) :
@@ -33,6 +43,9 @@ BasicQueen& BasicQueen::operator=(BasicQueen &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal moves for a BasicBishop Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> BasicQueen::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }
