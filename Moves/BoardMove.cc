@@ -75,7 +75,7 @@ bool BoardMove::operator!=(BoardMove const &other) const {
     return !(*this == other);
 }
 
-/* Virtual methods */
+/* Public Virtual Methods */
 std::unique_ptr<BoardMove> BoardMove::clone() const { return cloneImpl(); }
 void BoardMove::makeBoardMove(ChessBoard &chessBoard) const { return makeBoardMoveImpl(chessBoard); }
 void BoardMove::undoBoardMove(ChessBoard &chessBoard) const { return undoBoardMoveImpl(chessBoard); }

@@ -31,6 +31,6 @@ IllegalCommandReporter& IllegalCommandReporter::operator=(IllegalCommandReporter
     return *this;
 }
 
-/* Virtual methods */
+/* Public Virtual Methods */
 void IllegalCommandReporter::reportIllegalCommand(std::string const &message) { reportIllegalCommandImpl(message); }
 std::unique_ptr<IllegalCommandReporter> IllegalCommandReporter::clone() const { return cloneImpl(); }

@@ -49,7 +49,7 @@ void ComputerPlayer::shuffle(std::vector<std::unique_ptr<BoardMove>> &moves) con
     std::shuffle(moves.begin(), moves.end(), std::default_random_engine(seed));
 }
 
-/* Virtual methods */
+/* Public Virtual Methods */
 std::unique_ptr<BoardMove> ComputerPlayer::generateMove(std::unique_ptr<ChessBoard> const &chessBoard) const { return generateMoveImpl(chessBoard); }
 std::unique_ptr<ComputerPlayer> ComputerPlayer::clone() const { return cloneImpl(); }
 

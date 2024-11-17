@@ -185,7 +185,7 @@ ChessBoard& ChessBoard::operator=(ChessBoard &&other) noexcept {
     return *this;
 }
 
-/* Virtual methods */
+/* Public Virtual Methods */
 std::unique_ptr<ChessBoard> ChessBoard::clone() const { return cloneImpl(); }
 
 std::optional<PieceData> ChessBoard::getPieceDataAt(BoardSquare const &boardSquare) const { return getPieceDataAtImpl(boardSquare); }
