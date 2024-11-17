@@ -16,7 +16,7 @@
 
 
 /**
- * Basic King Piece Class
+ * BasicKing King Piece Class
  */
 class BasicKing final : public ComplicatedCloneable<Piece, King, BasicKing> {
 private:

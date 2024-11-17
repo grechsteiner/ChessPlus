@@ -3,28 +3,25 @@
 #ifndef BasicKnight_h
 #define BasicKnight_h
 
+#include <memory>
 #include <vector>
-#include <utility>
-#include <set>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-#include "ComplicatedCloneable.h"
-#include "PieceData.h"
-#include "Knight.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "ComplicatedCloneable.h"
+#include "Constants.h"
+#include "Knight.h"
+#include "Piece.h"
 
 
 /**
- * BasicKnight Piece Class
+ * BasicKnight Knight Piece Class
  */
 class BasicKnight final : public ComplicatedCloneable<Piece, Knight, BasicKnight> {
 private:
     std::vector<std::unique_ptr<BoardMove>> getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    
 public:
     explicit BasicKnight(Team team, PieceDirection pieceDirection, bool hasMoved);
     BasicKnight(BasicKnight const &other);
