@@ -8,9 +8,12 @@
 #include "ChessBoard.h"
 
 
+/**
+ * Factory for creating ChessBoard instances
+ */
 class ChessBoardFactory final {
 public:
-    static std::unique_ptr<ChessBoard> createChessBoard(int numRows, int numCols);  
+    static std::unique_ptr<ChessBoard> createChessBoard(int numRowsOnBoard, int numColsOnBoard);  
 };
 
 
