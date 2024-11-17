@@ -3,11 +3,12 @@
 #ifndef ConsoleCommandRetriever_h
 #define ConsoleCommandRetriever_h
 
-#include <string>
 #include <iostream>
+#include <optional>
+#include <string>
 
-#include "CommandRetriever.h"
 #include "Cloneable.h"
+#include "CommandRetriever.h"
 
 
 /**
@@ -16,6 +17,7 @@
 class ConsoleCommandRetriever final : public Cloneable<CommandRetriever, ConsoleCommandRetriever> {
 private:
     std::istream &in;
+
     bool isCommandAvailableImpl() const override;
     std::optional<std::string> retrieveCommandImpl() const override;
     
@@ -23,8 +25,8 @@ public:
     explicit ConsoleCommandRetriever(std::istream &in);
     ConsoleCommandRetriever(ConsoleCommandRetriever const &other);
     ConsoleCommandRetriever(ConsoleCommandRetriever &&other) noexcept;
-    // Copy assignment not enabled (can't copy streams)
-    // Move assignment not enabled (can't move streams)
+    ConsoleCommandRetriever& operator=(ConsoleCommandRetriever const &other) = delete;
+    ConsoleCommandRetriever& operator=(ConsoleCommandRetriever &&other) = delete;
     virtual ~ConsoleCommandRetriever() = default;
 };
 
