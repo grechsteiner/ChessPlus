@@ -1,37 +1,43 @@
 // Bishop.cc
 
-#include <vector>
-#include <utility>
-#include <set>
-
 #include "Bishop.h"
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-#include "ChessBoard.h"
-#include "BoardSquare.h"
+
+#include <memory>
+#include <set>
+#include <utility>
+#include <vector>
+
 #include "BoardMove.h"
 #include "BoardMoveFactory.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "Constants.h"
+#include "Piece.h"
 
-// Static
+
+/*
+ * Static
+ *
+ * The directions a bishop can move
+ */
 std::set<std::pair<int, int>> const Bishop::bishopDirections = { 
-    {-1, -1},  
-    {-1, 1}, 
-    {1, -1}, 
-    {1, 1} 
+    { -1, -1 },  
+    { -1,  1 }, 
+    {  1, -1 }, 
+    {  1,  1 } 
 };
 
 // Basic ctor
 Bishop::Bishop(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
-    Piece(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, image)) {}
+    Piece(PieceData(PieceType::BISHOP, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(3, image)) { }
 
 // Copy ctor
 Bishop::Bishop(Bishop const &other) : 
-    Piece(other) {}
+    Piece(other) { }
 
 // Move ctor
 Bishop::Bishop(Bishop &&other) noexcept : 
-    Piece(std::move(other)) {}
+    Piece(std::move(other)) { }
 
 // Copy assignment
 Bishop& Bishop::operator=(Bishop const &other) {
@@ -49,6 +55,9 @@ Bishop& Bishop::operator=(Bishop &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal standard moves for a Bishop Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> Bishop::getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard->isSquareOnBoard(fromSquare)) {
@@ -59,7 +68,8 @@ std::vector<std::unique_ptr<BoardMove>> Bishop::getStandardMoves(std::unique_ptr
                 if (chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
-                toSquare = BoardSquare(toSquare.boardRow + bishopDirection.first, toSquare.boardCol + bishopDirection.second);
+                toSquare.boardRow += bishopDirection.first;
+                toSquare.boardCol += bishopDirection.second;
             }
         }
     }

@@ -3,18 +3,16 @@
 #ifndef Bishop_h
 #define Bishop_h
 
-#include <vector>
-#include <utility>
+#include <memory>
 #include <set>
+#include <utility>
+#include <vector>
 
+#include "BoardMove.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
 #include "Constants.h"
 #include "Piece.h"
-#include "Cloneable.h"
-#include "PieceData.h"
-
-#include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
 
 
 /**
