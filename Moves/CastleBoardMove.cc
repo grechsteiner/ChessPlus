@@ -1,21 +1,28 @@
 // CastleBoardMove.cc
 
-#include <vector>
-
 #include "CastleBoardMove.h"
-#include "ChessBoard.h"
+
+#include <optional>
+#include <utility>
+
+#include "BoardMove.h"
+#include "BoardSquare.h"
+#include "Cloneable.h"
+#include "Constants.h"
+#include "PieceData.h"
+
 
 // Basic ctor
 CastleBoardMove::CastleBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, BoardSquare const &rookFromSquare, BoardSquare const &rookToSquare, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData) :
-    Cloneable<BoardMove, CastleBoardMove>(fromSquare, toSquare, captureSquare, doesEnableEnpassant, movedPieceData, capturedPieceData), rookFromSquare(rookFromSquare), rookToSquare(rookToSquare) {}
+    Cloneable<BoardMove, CastleBoardMove>(fromSquare, toSquare, captureSquare, doesEnableEnpassant, movedPieceData, capturedPieceData), rookFromSquare(rookFromSquare), rookToSquare(rookToSquare) { }
 
 // Copy ctor
 CastleBoardMove::CastleBoardMove(CastleBoardMove const &other) : 
-    Cloneable<BoardMove, CastleBoardMove>(other), rookFromSquare(other.rookFromSquare), rookToSquare(other.rookToSquare) {}
+    Cloneable<BoardMove, CastleBoardMove>(other), rookFromSquare(other.rookFromSquare), rookToSquare(other.rookToSquare) { }
 
 // Move ctor
 CastleBoardMove::CastleBoardMove(CastleBoardMove &&other) noexcept : 
-    Cloneable<BoardMove, CastleBoardMove>(std::move(other)), rookFromSquare(std::move(other.rookFromSquare)), rookToSquare(std::move(other.rookToSquare)) {}
+    Cloneable<BoardMove, CastleBoardMove>(std::move(other)), rookFromSquare(std::move(other.rookFromSquare)), rookToSquare(std::move(other.rookToSquare)) { }
 
 // Copy assignment
 CastleBoardMove& CastleBoardMove::operator=(CastleBoardMove const &other) {
@@ -37,19 +44,35 @@ CastleBoardMove& CastleBoardMove::operator=(CastleBoardMove &&other) noexcept {
     return *this;
 }
 
-bool CastleBoardMove::equals(BoardMove const &other) const {
-    CastleBoardMove const &derivedOther = static_cast<CastleBoardMove const&>(other);
+// Equality
+bool CastleBoardMove::operator==(CastleBoardMove const &other) const {
     return 
-        fromSquare == derivedOther.fromSquare &&
-        toSquare == derivedOther.toSquare &&
-        captureSquare == derivedOther.captureSquare &&
-        doesEnableEnpassant == derivedOther.doesEnableEnpassant &&
-        movedPieceData == derivedOther.movedPieceData &&
-        capturedPieceData == derivedOther.capturedPieceData &&
-        rookFromSquare == derivedOther.rookFromSquare &&
-        rookToSquare == derivedOther.rookToSquare;
+        fromSquare == other.fromSquare &&
+        toSquare == other.toSquare &&
+        captureSquare == other.captureSquare &&
+        doesEnableEnpassant == other.doesEnableEnpassant &&
+        movedPieceData == other.movedPieceData &&
+        capturedPieceData == other.capturedPieceData &&
+        rookFromSquare == other.rookFromSquare &&
+        rookToSquare == other.rookToSquare;
 }
 
+// Inequality
+bool CastleBoardMove::operator!=(CastleBoardMove const &other) const {
+    return !(*this == other);
+}
+
+/*
+ * Polymorphic equality
+ */
+bool CastleBoardMove::equals(BoardMove const &other) const {
+    CastleBoardMove const &derivedOther = static_cast<CastleBoardMove const&>(other);
+    return *this == derivedOther;
+}
+
+/*
+ * Apply itself to ChessBoard argument
+ */
 void CastleBoardMove::makeBoardMoveImpl(ChessBoard &chessBoard) const {
     chessBoard.clearPosition(captureSquare);
     chessBoard.setPosition(toSquare, PieceData(movedPieceData.pieceType, movedPieceData.pieceLevel, movedPieceData.team, movedPieceData.pieceDirection, true));
@@ -58,11 +81,15 @@ void CastleBoardMove::makeBoardMoveImpl(ChessBoard &chessBoard) const {
     // Apply Castle (rook part)
     performRookCastle(chessBoard, false);
 }
+
+/*
+ * Un-apply itself to ChessBoard argument
+ */
 void CastleBoardMove::undoBoardMoveImpl(ChessBoard &chessBoard) const {
     chessBoard.setPosition(fromSquare, movedPieceData);
     chessBoard.clearPosition(toSquare);
 
-    // Place Captured Piece Back
+    // Place captured Piece back
     if (capturedPieceData.has_value()) {
         chessBoard.setPosition(captureSquare, capturedPieceData.value());    
     } else {
@@ -73,23 +100,19 @@ void CastleBoardMove::undoBoardMoveImpl(ChessBoard &chessBoard) const {
     performRookCastle(chessBoard, true);
 }
 
-void CastleBoardMove::performRookCastle(ChessBoard &chessBoard, bool isUndo) const {
-    std::optional<PieceData> potentialRookPieceData = isUndo 
-        ? chessBoard.getPieceDataAt(rookToSquare) 
-        : chessBoard.getPieceDataAt(rookFromSquare);
-    if (potentialRookPieceData.has_value()) {
-        bool hasRookMoved = isUndo ? false : true;
-        PieceData rookPieceData = potentialRookPieceData.value();
-        if (isUndo) {
-            chessBoard.setPosition(rookFromSquare, PieceData(rookPieceData.pieceType, rookPieceData.pieceLevel, rookPieceData.team, rookPieceData.pieceDirection, hasRookMoved));
-            chessBoard.clearPosition(rookToSquare);
-        } else {
-            chessBoard.setPosition(rookToSquare, PieceData(rookPieceData.pieceType, rookPieceData.pieceLevel, rookPieceData.team, rookPieceData.pieceDirection, hasRookMoved));
-            chessBoard.clearPosition(rookFromSquare);
-        }
-    }
-    
-}
+/*
+ * Utility method for performing the rook logic of a CastleBoardMove
+ */
+void CastleBoardMove::performRookCastle(ChessBoard &chessBoard, bool undoingMove) const {
+    PieceData rookPieceData = undoingMove 
+        ? chessBoard.getPieceDataAt(rookToSquare).value() 
+        : chessBoard.getPieceDataAt(rookFromSquare).value();
 
-BoardSquare const& CastleBoardMove::getRookFromSquare() const { return rookFromSquare; }
-BoardSquare const& CastleBoardMove::getRookToSquare() const { return rookToSquare; }
+    if (undoingMove) {
+        chessBoard.setPosition(rookFromSquare, PieceData(rookPieceData.pieceType, rookPieceData.pieceLevel, rookPieceData.team, rookPieceData.pieceDirection, false));
+        chessBoard.clearPosition(rookToSquare);
+    } else {
+        chessBoard.setPosition(rookToSquare, PieceData(rookPieceData.pieceType, rookPieceData.pieceLevel, rookPieceData.team, rookPieceData.pieceDirection, true));
+        chessBoard.clearPosition(rookFromSquare);
+    }
+}
