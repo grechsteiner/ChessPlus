@@ -1,13 +1,17 @@
 // ComputerPlayer.cc
 
-#include <algorithm>
-#include <random>
-#include <chrono>
-
-#include "Constants.h"
 #include "ComputerPlayer.h"
+
+#include <algorithm>
+#include <chrono>
+#include <memory>
+#include <random>
+#include <vector>
+
 #include "BoardMove.h"
 #include "ChessBoard.h"
+#include "Constants.h"
+
 
 // Basic ctor
 ComputerPlayer::ComputerPlayer(Team team) :
@@ -45,4 +49,5 @@ void ComputerPlayer::shuffle(std::vector<std::unique_ptr<BoardMove>> &moves) con
 std::unique_ptr<BoardMove> ComputerPlayer::generateMove(std::unique_ptr<ChessBoard> const &chessBoard) const { return generateMoveImpl(chessBoard); }
 std::unique_ptr<ComputerPlayer> ComputerPlayer::clone() const { return cloneImpl(); }
 
+/* Getters */
 Team ComputerPlayer::getTeam() const { return team; }
