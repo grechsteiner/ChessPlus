@@ -1,25 +1,30 @@
 // Rook.cc
 
-#include <vector>
-#include <utility>
-#include <set>
-
 #include "Rook.h"
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-#include "ChessBoard.h"
-#include "BoardSquare.h"
+
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "BoardMove.h"
 #include "BoardMoveFactory.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
-// Static
-std::set<std::pair<int, int>> const Rook::rookDirections = { 
-    {-1, 0}, 
-    {0, -1}, 
-    {0, 1}, 
-    {1, 0}, 
+/*
+ * Static
+ *
+ * The directions a Bishop Piece can move
+ */
+std::vector<MoveDirection> const Rook::rookMoveDirections = { 
+    { MoveDirection(-1, 0) }, 
+    { MoveDirection(0, -1) }, 
+    { MoveDirection(0, 1) }, 
+    { MoveDirection(1, 0) }, 
 };
 
 // Basic ctor
@@ -50,17 +55,21 @@ Rook& Rook::operator=(Rook &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal standard moves for a Bishop Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> Rook::getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard->isSquareOnBoard(fromSquare)) {
-        for (std::pair<int, int> const &rookDirection : rookDirections) {
-            BoardSquare toSquare(fromSquare.boardRow + rookDirection.first, fromSquare.boardCol + rookDirection.second);
+        for (MoveDirection const &rookMoveDirection : rookMoveDirections) {
+            BoardSquare toSquare(fromSquare.boardRow + rookMoveDirection.rowDirection, fromSquare.boardCol + rookMoveDirection.colDirection);
             while (chessBoard->isSquareEmpty(toSquare) || chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
                 moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard->getPieceDataAt(toSquare)));
                 if (chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
-                toSquare = BoardSquare(toSquare.boardRow + rookDirection.first, toSquare.boardCol + rookDirection.second);
+                toSquare.boardRow += rookMoveDirection.rowDirection;
+                toSquare.boardCol += rookMoveDirection.colDirection;
             }
         }
     }

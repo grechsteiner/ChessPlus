@@ -3,25 +3,24 @@
 #ifndef Rook_h
 #define Rook_h
 
-#include <vector>
+#include <memory>
 #include <utility>
-#include <set>
+#include <vector>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
 /**
- * Rook Piece Class
+ * AbstractRook Piece Class
  */
 class Rook : public Piece {
 private:
-    static std::set<std::pair<int, int>> const rookDirections;
+    static std::vector<MoveDirection> const rookMoveDirections;
 protected:
     explicit Rook(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);
     Rook(Rook const &other);
