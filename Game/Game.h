@@ -3,36 +3,38 @@
 #ifndef Game_h
 #define Game_h
 
-#include <iostream>
 #include <memory>
-#include <utility>
-#include <tuple>
+#include <optional>
 #include <regex>
+#include <string>
+#include <utility>
 
-#include "Constants.h"
-#include "Subject.h"
-#include "ChessBoardImpl.h"
-#include "CommandRetriever.h"
-#include "IllegalCommandReporter.h"
-#include "ComputerPlayer.h"
-#include "Player.h"
 #include "ChessBoard.h"
+#include "CommandRetriever.h"
+#include "Constants.h"
+#include "IllegalCommandReporter.h"
 #include "MoveInputDetails.h"
+#include "Player.h"
 #include "State.h"
+#include "Subject.h"
 
 
-class Game : public Subject {
+/**
+ * Game Subject Class
+ * Represents the game logic itself
+ */
+class Game final : public Subject {
 private:
-
     GameState gameState;
+    Team currentTurn;
+
+    std::pair<Player, Player> players;
+
     std::unique_ptr<ChessBoard> chessBoard;
 
     std::unique_ptr<CommandRetriever> commandRetriever;
     std::unique_ptr<IllegalCommandReporter> illegalCommandReporter;
     
-    std::pair<Player, Player> players;
-    Team currentTurn;
-
     Player const& getPlayer(Team team) const;
     void switchTurn();
     void resetGame();
@@ -53,6 +55,7 @@ private:
     void processMakeHumanMoveCommand(MoveInputDetails const &moveInputDetails);
     void processMakeComputerMoveCommand();
     void processUndoMoveCommand();
+    void processRedoMoveCommand();
     void processResignGameCommand();
 
 public:
@@ -67,5 +70,6 @@ public:
 
     State getState() const;
 };
+
 
 #endif /* Game_h */
