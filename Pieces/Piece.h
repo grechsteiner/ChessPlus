@@ -8,15 +8,13 @@
 
 #include "PieceData.h"
 #include "PieceInfo.h"
-
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
-
+#include "BoardSquare.h"
+#include "BoardMove.h"
 
 /**
  * Abstract Piece Class
- * Represents a piece on a chessboard
+ * Represents a Piece on a ChessBoard
  */
 class Piece {
 

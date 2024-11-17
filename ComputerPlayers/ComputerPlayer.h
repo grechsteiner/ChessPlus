@@ -12,7 +12,7 @@
 
 
 /**
- * ComputerPlayer Interface Class
+ * Abstract ComputerPlayer Class
  */
 class ComputerPlayer {
 private:

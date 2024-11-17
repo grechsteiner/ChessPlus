@@ -13,7 +13,7 @@
 
 
 /**
- * BoardMove Interface Class
+ * Abstract BoardMove Class
  */
 class BoardMove {
 private:

@@ -8,7 +8,7 @@
 
 
 /**
- * IllegalCommandReporter Interface Class
+ * Abstract IllegalCommandReporter Class
  */
 class IllegalCommandReporter {
 private:

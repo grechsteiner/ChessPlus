@@ -15,7 +15,7 @@
 
 
 /**
- * ChessBoard Interface Class
+ * Abstract ChessBoard Class
  */
 class ChessBoard {
 

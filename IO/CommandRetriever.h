@@ -9,7 +9,7 @@
 
 
 /**
- * CommandRetriever Interface Class
+ * Abstract CommandRetriever Class
  */
 class CommandRetriever {
 private:
