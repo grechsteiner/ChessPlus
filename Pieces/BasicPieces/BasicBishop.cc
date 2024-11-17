@@ -16,15 +16,15 @@
 
 // Basic ctor
 BasicBishop::BasicBishop(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Bishop, BasicBishop>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♝')) {}
+    ComplicatedCloneable<Piece, Bishop, BasicBishop>(PieceLevel::BASIC, team, pieceDirection, hasMoved, char32_t(U'♝')) { }
 
 // Copy ctor
 BasicBishop::BasicBishop(BasicBishop const &other) : 
-    ComplicatedCloneable<Piece, Bishop, BasicBishop>(other) {}
+    ComplicatedCloneable<Piece, Bishop, BasicBishop>(other) { }
 
 // Move ctor
 BasicBishop::BasicBishop(BasicBishop &&other) noexcept : 
-    ComplicatedCloneable<Piece, Bishop, BasicBishop>(std::move(other)) {}
+    ComplicatedCloneable<Piece, Bishop, BasicBishop>(std::move(other)) { }
 
 // Copy assignment
 BasicBishop& BasicBishop::operator=(BasicBishop const &other) {
