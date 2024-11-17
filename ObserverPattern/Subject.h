@@ -5,18 +5,28 @@
 
 #include <vector>
 
+#include "Observer.h"
 
-// Forward Declaration
-class Observer;
 
+/**
+ * Abstract Subject Class (Observer Pattern)
+ */
 class Subject {
 private:
     std::vector<Observer*> observers;
+    
 public:
+    explicit Subject();
+    Subject(Subject const &other);
+    Subject(Subject &&other) noexcept;
+    Subject& operator=(Subject const &other);
+    Subject& operator=(Subject &&other) noexcept;
+    virtual ~Subject() = 0;
+
     void attach(Observer *observer);
     void detach(Observer *observer);
     void notifyObservers();
-    virtual ~Subject() = 0;
 };
+
 
 #endif /* Subject_h */
