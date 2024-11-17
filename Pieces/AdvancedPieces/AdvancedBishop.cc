@@ -44,7 +44,7 @@ AdvancedBishop& AdvancedBishop::operator=(AdvancedBishop &&other) noexcept {
 }
 
 /*
- * Returns all pseudo legal moves for an AdvancedBishop Piece
+ * Returns all pseudo legal moves for an AdvancedBishop Bishop Piece
  */
 std::vector<std::unique_ptr<BoardMove>> AdvancedBishop::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 

@@ -43,7 +43,7 @@ BasicKnight& BasicKnight::operator=(BasicKnight &&other) noexcept {
 }
 
 /*
- * Returns all pseudo legal moves for a BasicBishop Piece
+ * Returns all pseudo legal moves for a BasicKnight Knight Piece
  */
 std::vector<std::unique_ptr<BoardMove>> BasicKnight::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
