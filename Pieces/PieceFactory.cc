@@ -1,17 +1,21 @@
 // PieceFactory.cc
 
-#include <memory>
-#include <cassert>
-
 #include "PieceFactory.h"
-#include "Piece.h"
-#include "Constants.h"
 
-#include "BasicPieceFactory.h"
+#include <cassert>
+#include <memory>
+
 #include "AdvancedPieceFactory.h"
+#include "BasicPieceFactory.h"
+#include "Piece.h"
+#include "PieceData.h"
 
 
-// Static
+/*
+ * Static
+ *
+ * Returns a Piece instance
+ */
 std::unique_ptr<Piece> PieceFactory::createPiece(PieceData const &pieceData) {
     switch (pieceData.pieceLevel) {
         case PieceLevel::BASIC:
