@@ -1,9 +1,18 @@
 // BasicBishop.cc
 
+#include "BasicBishop.h"
+
+#include <memory>
+#include <utility>
 #include <vector>
 
-#include "BasicBishop.h"
+#include "Bishop.h"
 #include "BoardMove.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "Constants.h"
+#include "Piece.h"
+
 
 // Basic ctor
 BasicBishop::BasicBishop(Team team, PieceDirection pieceDirection, bool hasMoved) :
@@ -33,6 +42,9 @@ BasicBishop& BasicBishop::operator=(BasicBishop &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal moves for a BasicBishop Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> BasicBishop::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     return getStandardMoves(chessBoard, fromSquare, onlyAttackingMoves);
 }
