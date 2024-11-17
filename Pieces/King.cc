@@ -19,7 +19,7 @@
 /*
  * Static
  *
- * The directions a King can move
+ * The directions a King Piece can move
  */
 std::vector<MoveDirection> const King::kingMoveDirections = { 
     { MoveDirection(-1, -1) }, 

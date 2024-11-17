@@ -3,25 +3,24 @@
 #ifndef Knight_h
 #define Knight_h
 
-#include <vector>
+#include <memory>
 #include <utility>
-#include <set>
+#include <vector>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
 /**
- * Knight Piece Class
+ * Abstract Knight Piece Class
  */
 class Knight : public Piece {
 private:
-    static std::set<std::pair<int, int>> const knightDirections;
+    static std::vector<MoveDirection> const knightMoveDirections;
 
 protected:
     explicit Knight(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);

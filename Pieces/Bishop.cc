@@ -18,7 +18,7 @@
 /*
  * Static
  *
- * The directions a bishop can move
+ * The directions a Bishop Piece can move
  */
 std::vector<MoveDirection> const Bishop::bishopMoveDirections = { 
     { MoveDirection(-1, -1) },  
