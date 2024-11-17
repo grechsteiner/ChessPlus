@@ -50,7 +50,7 @@ bool BoardSquare::operator==(BoardSquare const &other) const {
  *
  * Create Optional BoardSquare
  * - value if valid string representation
- * - nullopt if in-valid string representation
+ * - nullopt otherwise
  */
 std::optional<BoardSquare> BoardSquare::createBoardSquare(std::string const &squareStr, int numRowsOnBoard, int numColsOnBoard) {
     static std::regex const boardSquarePattern("^([a-z]+)([1-9][0-9]*)$", std::regex_constants::icase);

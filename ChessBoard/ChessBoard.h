@@ -98,8 +98,8 @@ private:
     virtual void clearBoardImpl() = 0;
 
     virtual std::optional<std::unique_ptr<BoardMove>> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const = 0;
-    virtual void makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) = 0; 
-    virtual bool isMoveValidImpl(std::unique_ptr<BoardMove> const &boardMove) const = 0;                   
+    virtual bool isMoveLegalImpl(std::unique_ptr<BoardMove> const &boardMove) const = 0;        
+    virtual void makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) = 0;           
     virtual bool undoMoveImpl() = 0;  
     virtual bool redoMoveImpl() = 0; 
 
@@ -158,8 +158,8 @@ public:
     void clearBoard();
 
     std::optional<std::unique_ptr<BoardMove>> createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const;
+    bool isMoveLegal(std::unique_ptr<BoardMove> const &boardMove) const;
     void makeMove(std::unique_ptr<BoardMove> const &boardMove);
-    bool isMoveValid(std::unique_ptr<BoardMove> const &boardMove) const;
     bool undoMove();  
     bool redoMove(); 
 

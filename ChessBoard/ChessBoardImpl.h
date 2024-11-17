@@ -3,18 +3,18 @@
 #ifndef ChessBoardImpl_h
 #define ChessBoardImpl_h
 
-#include <vector>
-#include <optional>
 #include <memory>
+#include <optional>
+#include <vector>
 
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
 #include "Cloneable.h"
 #include "Constants.h"
 #include "Piece.h"
-
-struct BoardSquare;
-struct PieceInfo;
-struct PieceData;
+#include "PieceData.h"
+#include "PieceInfo.h"
 
 
 /**
@@ -23,27 +23,22 @@ struct PieceData;
 class ChessBoardImpl final : public Cloneable<ChessBoard, ChessBoardImpl> {
 
 private:
-    int numRows;    // Initialize at construction time to avoid constantly getting size of vector
-    int numCols;    // Initialize at construction time to avoid constantly getting size of vector
-
     Team teamOne = Team::TEAM_ONE;
     Team teamTwo = Team::TEAM_TWO;
+
+    std::vector<std::vector<std::unique_ptr<Piece>>> grid;
 
     std::vector<std::unique_ptr<BoardMove>> completedMoves;
     std::vector<std::unique_ptr<BoardMove>> redoMoves;
 
-    std::vector<std::vector<std::unique_ptr<Piece>>> grid;
 
-
-    /* Specific To Board Class */
+    /* Specific To ChessBoardImpl */
     Team getOtherTeam(Team team) const;
-
-    void clearCompletedMoves();
-    void clearRedoMoves();
 
     std::vector<std::unique_ptr<BoardMove>> generateAllPseudoLegalMovesAtSquare(BoardSquare const &boardSquare, bool onlyAttackingMoves) const;
     std::vector<std::unique_ptr<BoardMove>> generateAllPseudoLegalMoves(Team team, bool onlyAttackingMoves) const;   
 
+    void clearRedoMoves();
     bool canMakeMove(Team team) const;
 
     bool doesMoveApplyCheck(std::unique_ptr<BoardMove> const &boardMove) const;
@@ -53,7 +48,7 @@ private:
     bool doesMoveLeaveTeamInCheck(std::unique_ptr<BoardMove> const &boardMove) const;   
 
 
-    /* ChessBoard Interface */
+    /* ChessBoard Interface Implementation */
     std::optional<PieceData> getPieceDataAtImpl(BoardSquare const &boardSquare) const override;
     std::optional<PieceInfo> getPieceInfoAtImpl(BoardSquare const &boardSquare) const override;
 
@@ -79,8 +74,8 @@ private:
     void clearBoardImpl() override;
 
     std::optional<std::unique_ptr<BoardMove>> createBoardMoveImpl(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType = std::nullopt) const override;
+    bool isMoveLegalImpl(std::unique_ptr<BoardMove> const &boardMove) const override;
     void makeMoveImpl(std::unique_ptr<BoardMove> const &boardMove) override;    
-    bool isMoveValidImpl(std::unique_ptr<BoardMove> const &boardMove) const override;
     bool undoMoveImpl() override;                               // True if move is available to be undone (only performs undo if move available to be undone)
     bool redoMoveImpl() override;                               // True if move is available to be redone (only performs redo if move available to be redone)
 
@@ -106,9 +101,8 @@ private:
     ReverseBoardSquareIterator rendImpl() const override;
     ReverseBoardSquareIterator crendImpl() const override;
 
-
 public:
-    explicit ChessBoardImpl(int numRows, int numCols);     // Behaviour undefined if either are negative
+    explicit ChessBoardImpl(int numRowsOnBoard, int numColsOnBoard);
     ChessBoardImpl(ChessBoardImpl const &other);
     ChessBoardImpl(ChessBoardImpl &&other) noexcept;
     ChessBoardImpl& operator=(ChessBoardImpl const &other);

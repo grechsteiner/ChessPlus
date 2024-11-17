@@ -187,7 +187,7 @@ void ChessBoard::clearBoard() { clearBoardImpl(); }
 
 std::optional<std::unique_ptr<BoardMove>> ChessBoard::createBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, std::optional<PieceType> promotionPieceType) const { return createBoardMoveImpl(fromSquare, toSquare, promotionPieceType); }
 void ChessBoard::makeMove(std::unique_ptr<BoardMove> const &boardMove) { return makeMoveImpl(boardMove); }
-bool ChessBoard::isMoveValid(std::unique_ptr<BoardMove> const &boardMove) const { return isMoveValidImpl(boardMove); }
+bool ChessBoard::isMoveLegal(std::unique_ptr<BoardMove> const &boardMove) const { return isMoveLegalImpl(boardMove); }
 bool ChessBoard::undoMove() { return undoMoveImpl(); }
 bool ChessBoard::redoMove() { return redoMoveImpl(); }
 
