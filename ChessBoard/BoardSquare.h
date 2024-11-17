@@ -24,6 +24,7 @@ struct BoardSquare final {
     ~BoardSquare() = default;
 
     bool operator==(BoardSquare const &other) const;
+    bool operator!=(BoardSquare const &other) const;
 
     static std::optional<BoardSquare> createBoardSquare(std::string const &squareStr, int numRowsOnBoard, int numColsOnBoard);
 };

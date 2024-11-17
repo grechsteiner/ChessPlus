@@ -46,6 +46,11 @@ bool BoardSquare::operator==(BoardSquare const &other) const {
         boardCol == other.boardCol;
 }
 
+// Inequality
+bool BoardSquare::operator!=(BoardSquare const &other) const {
+    return !(*this == other);
+}
+
 /*
  * Static
  *
