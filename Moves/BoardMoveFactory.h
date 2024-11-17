@@ -6,13 +6,15 @@
 #include <memory>
 #include <optional>
 
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "Constants.h"
 #include "PieceData.h"
 
-class BoardMove;
-struct BoardSquare;
 
-
+/**
+ * Factory for creating BoardMove instances
+ */
 class BoardMoveFactory {
 public:
     static std::unique_ptr<BoardMove> createStandardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData = std::nullopt);

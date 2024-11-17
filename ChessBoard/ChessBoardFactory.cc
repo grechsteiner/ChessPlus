@@ -11,7 +11,7 @@
 /*
  * Static
  *
- * Return a ChessBoard instance
+ * Returns a ChessBoard instance
  */
 std::unique_ptr<ChessBoard> ChessBoardFactory::createChessBoard(int numRowsOnBoard, int numColsOnBoard) {
     return std::make_unique<ChessBoardImpl>(numRowsOnBoard, numColsOnBoard);

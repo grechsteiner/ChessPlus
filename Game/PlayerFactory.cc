@@ -12,7 +12,7 @@
 /*
  * Static
  *
- * Return an instance of Player with type Human
+ * Returns an instance of Player with type Human
  */
 Player PlayerFactory::createHumanPlayer(Team team) {
     return Player(PlayerType::HUMAN, team, nullptr);
@@ -21,7 +21,7 @@ Player PlayerFactory::createHumanPlayer(Team team) {
 /*
  * Static
  *
- * Return an instance of a Player with type Computer
+ * Returns an instance of a Player with type Computer
  */
 Player PlayerFactory::createComputerPlayer(Team team, std::unique_ptr<ComputerPlayer> const &computerPlayer) {
     return Player(PlayerType::COMPUTER, team, computerPlayer);

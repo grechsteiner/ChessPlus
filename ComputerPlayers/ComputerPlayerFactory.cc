@@ -17,7 +17,7 @@
 /*
  * Static
  *
- * Return a ComputerPlayer instance
+ * Returns a ComputerPlayer instance
  */
 std::unique_ptr<ComputerPlayer> ComputerPlayerFactory::createComputerPlayer(ComputerPlayerLevel computerPlayerLevel, Team team) {
     switch (computerPlayerLevel) {
