@@ -4,7 +4,6 @@
 #define Queen_h
 
 #include <memory>
-#include <utility>
 #include <vector>
 
 #include "BoardMove.h"

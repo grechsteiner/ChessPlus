@@ -4,7 +4,6 @@
 #define Knight_h
 
 #include <memory>
-#include <utility>
 #include <vector>
 
 #include "BoardMove.h"
