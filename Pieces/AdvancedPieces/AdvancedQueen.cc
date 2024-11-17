@@ -1,24 +1,31 @@
 // AdvancedQueen.cc
 
+#include "AdvancedQueen.h"
+
+#include <memory>
+#include <utility>
 #include <vector>
 
-#include "AdvancedQueen.h"
 #include "BoardMove.h"
 #include "BoardMoveFactory.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
+#include "Constants.h"
+#include "Piece.h"
+#include "Queen.h"
 
 
 // Basic ctor
 AdvancedQueen::AdvancedQueen(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Queen, AdvancedQueen>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♕')) {}
+    ComplicatedCloneable<Piece, Queen, AdvancedQueen>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♕')) { }
 
 // Copy ctor
 AdvancedQueen::AdvancedQueen(AdvancedQueen const &other) : 
-    ComplicatedCloneable<Piece, Queen, AdvancedQueen>(other) {}
+    ComplicatedCloneable<Piece, Queen, AdvancedQueen>(other) { }
 
 // Move ctor
 AdvancedQueen::AdvancedQueen(AdvancedQueen &&other) noexcept : 
-    ComplicatedCloneable<Piece, Queen, AdvancedQueen>(std::move(other)) {}
+    ComplicatedCloneable<Piece, Queen, AdvancedQueen>(std::move(other)) { }
 
 // Copy assignment
 AdvancedQueen& AdvancedQueen::operator=(AdvancedQueen const &other) {
@@ -36,6 +43,9 @@ AdvancedQueen& AdvancedQueen::operator=(AdvancedQueen &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal moves for an AdvancedQueen Queen Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> AdvancedQueen::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol + 2),

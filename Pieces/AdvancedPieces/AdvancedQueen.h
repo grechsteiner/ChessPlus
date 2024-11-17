@@ -3,28 +3,25 @@
 #ifndef AdvancedQueen_h
 #define AdvancedQueen_h
 
+#include <memory>
 #include <vector>
-#include <utility>
-#include <set>
 
+#include "BoardMove.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "ComplicatedCloneable.h"
 #include "Constants.h"
 #include "Piece.h"
-#include "Cloneable.h"
-#include "ComplicatedCloneable.h"
-#include "PieceData.h"
 #include "Queen.h"
-
-#include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
 
 
 /**
- * AdvancedQueen Piece Class
+ * AdvancedQueen Queen Piece Class
  */
 class AdvancedQueen final : public ComplicatedCloneable<Piece, Queen, AdvancedQueen> {
 private:
     std::vector<std::unique_ptr<BoardMove>> getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+    
 public:
     explicit AdvancedQueen(Team team, PieceDirection pieceDirection, bool hasMoved);
     AdvancedQueen(AdvancedQueen const &other);
