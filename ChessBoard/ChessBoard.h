@@ -126,6 +126,12 @@ private:
     virtual ReverseBoardSquareIterator crendImpl() const = 0;
 
 protected:
+    explicit ChessBoard();
+    ChessBoard(ChessBoard const &other);
+    ChessBoard(ChessBoard &&other) noexcept;
+    ChessBoard& operator=(ChessBoard const &other);
+    ChessBoard& operator=(ChessBoard &&other) noexcept;
+
     BoardSquareIterator createBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) const;
     ReverseBoardSquareIterator createReverseBoardSquareIterator(int row, int col, int numRowsOnBoard, int numColsOnBoard) const;
 

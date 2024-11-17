@@ -159,6 +159,31 @@ bool ChessBoard::ReverseBoardSquareIterator::operator!=(ReverseBoardSquareIterat
 
 #pragma mark - ChessBoard
 
+// Basic ctor
+ChessBoard::ChessBoard() { }
+
+// Copy ctor
+ChessBoard::ChessBoard(ChessBoard const &other) { }
+
+// Move ctor
+ChessBoard::ChessBoard(ChessBoard &&other) noexcept { }
+
+// Copy assignment
+ChessBoard& ChessBoard::operator=(ChessBoard const &other) {
+    if (this != &other) {
+        return *this;
+    }
+    return *this;
+}
+
+// Move assignment
+ChessBoard& ChessBoard::operator=(ChessBoard &&other) noexcept {
+    if (this != &other) {
+        return *this;
+    }
+    return *this;
+}
+
 std::unique_ptr<ChessBoard> ChessBoard::clone() const { return cloneImpl(); }
 
 std::optional<PieceData> ChessBoard::getPieceDataAt(BoardSquare const &boardSquare) const { return getPieceDataAtImpl(boardSquare); }

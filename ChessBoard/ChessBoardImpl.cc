@@ -30,7 +30,7 @@ ChessBoardImpl::ChessBoardImpl(int numRows, int numCols) : Cloneable<ChessBoard,
 }
 
 // Copy ctor
-ChessBoardImpl::ChessBoardImpl(ChessBoardImpl const &other) : Cloneable<ChessBoard, ChessBoardImpl>() {
+ChessBoardImpl::ChessBoardImpl(ChessBoardImpl const &other) : Cloneable<ChessBoard, ChessBoardImpl>(other) {
     // Copy grid
     grid.resize(other.getNumRowsOnBoard());
     for (int row = 0; row < other.getNumRowsOnBoard(); ++row) {
@@ -54,12 +54,14 @@ ChessBoardImpl::ChessBoardImpl(ChessBoardImpl const &other) : Cloneable<ChessBoa
 }
 
 // Move ctor
-ChessBoardImpl::ChessBoardImpl(ChessBoardImpl &&other) noexcept : 
+ChessBoardImpl::ChessBoardImpl(ChessBoardImpl &&other) noexcept : Cloneable<ChessBoard, ChessBoardImpl>(std::move(other)),
     grid(std::move(other.grid)), completedMoves(std::move(other.completedMoves)), redoMoves(std::move(other.redoMoves)) { }
 
 // Copy assignment
 ChessBoardImpl& ChessBoardImpl::operator=(ChessBoardImpl const &other) {
     if (this != &other) {
+        ChessBoard::operator=(other);
+
         // Copy grid
         grid.resize(other.getNumRowsOnBoard());
         for (int row = 0; row < other.getNumRowsOnBoard(); ++row) {
@@ -87,6 +89,8 @@ ChessBoardImpl& ChessBoardImpl::operator=(ChessBoardImpl const &other) {
 // Move assignment
 ChessBoardImpl& ChessBoardImpl::operator=(ChessBoardImpl &&other) noexcept {
     if (this != &other) {
+        ChessBoard::operator=(std::move(other));
+
         grid = std::move(other.grid);
         completedMoves = std::move(other.completedMoves);
         redoMoves = std::move(other.redoMoves);
