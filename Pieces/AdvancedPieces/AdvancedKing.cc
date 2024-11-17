@@ -1,11 +1,19 @@
 // AdvancedKing.cc
 
+#include "AdvancedKing.h"
+
+#include <memory>
+#include <utility>
 #include <vector>
 
-#include "AdvancedKing.h"
 #include "BoardMove.h"
 #include "BoardMoveFactory.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
+#include "Constants.h"
+#include "King.h"
+#include "Piece.h"
+
 
 // Basic ctor
 AdvancedKing::AdvancedKing(Team team, PieceDirection pieceDirection, bool hasMoved) :
@@ -35,6 +43,9 @@ AdvancedKing& AdvancedKing::operator=(AdvancedKing &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal moves for an AdvancedKing King Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> AdvancedKing::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.boardRow + 2, fromSquare.boardCol + 2),

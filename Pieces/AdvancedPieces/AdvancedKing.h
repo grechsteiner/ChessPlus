@@ -3,28 +3,25 @@
 #ifndef AdvancedKing_h
 #define AdvancedKing_h
 
+#include <memory>
 #include <vector>
-#include <utility>
-#include <set>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-#include "ComplicatedCloneable.h"
-#include "PieceData.h"
-#include "King.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "ComplicatedCloneable.h"
+#include "Constants.h"
+#include "King.h"
+#include "Piece.h"
 
 
 /**
- * Advanced King Piece Class
+ * AdvancedKing King Piece Class
  */
 class AdvancedKing final : public ComplicatedCloneable<Piece, King, AdvancedKing> {
 private:
     std::vector<std::unique_ptr<BoardMove>> getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+
 public:
     explicit AdvancedKing(Team team, PieceDirection pieceDirection, bool hasMoved);
     AdvancedKing(AdvancedKing const &other);
@@ -33,5 +30,6 @@ public:
     AdvancedKing& operator=(AdvancedKing &&other) noexcept;
     virtual ~AdvancedKing() = default;
 };
+
 
 #endif /* AdvancedKing_h */
