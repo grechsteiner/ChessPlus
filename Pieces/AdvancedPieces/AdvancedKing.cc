@@ -17,15 +17,15 @@
 
 // Basic ctor
 AdvancedKing::AdvancedKing(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, King, AdvancedKing>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♔')) {}
+    ComplicatedCloneable<Piece, King, AdvancedKing>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♔')) { }
 
 // Copy ctor
 AdvancedKing::AdvancedKing(AdvancedKing const &other) : 
-    ComplicatedCloneable<Piece, King, AdvancedKing>(other) {}
+    ComplicatedCloneable<Piece, King, AdvancedKing>(other) { }
 
 // Move ctor
 AdvancedKing::AdvancedKing(AdvancedKing &&other) noexcept : 
-    ComplicatedCloneable<Piece, King, AdvancedKing>(std::move(other)) {}
+    ComplicatedCloneable<Piece, King, AdvancedKing>(std::move(other)) { }
 
 // Copy assignment
 AdvancedKing& AdvancedKing::operator=(AdvancedKing const &other) {
