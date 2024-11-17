@@ -21,7 +21,6 @@ ConsoleIllegalCommandReporter::ConsoleIllegalCommandReporter(ConsoleIllegalComma
 ConsoleIllegalCommandReporter::ConsoleIllegalCommandReporter(ConsoleIllegalCommandReporter &&other) noexcept : 
     Cloneable<IllegalCommandReporter,ConsoleIllegalCommandReporter>(std::move(other)), out(other.out) {}
 
-
 /*
  * Output the illegal command report
  */
