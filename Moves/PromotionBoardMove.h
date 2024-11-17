@@ -3,13 +3,13 @@
 #ifndef PromotionBoardMove_h
 #define PromotionBoardMove_h
 
-#include <vector>
-#include <utility>
-#include <set>
+#include <optional>
 
-#include "Constants.h"
-#include "Cloneable.h"
 #include "BoardMove.h"
+#include "BoardSquare.h"
+#include "Cloneable.h"
+#include "Constants.h"
+#include "PieceData.h"
 
 
 /**
@@ -17,11 +17,14 @@
  */
 class PromotionBoardMove final : public Cloneable<BoardMove, PromotionBoardMove> {
 private:
+    PieceType promotionPieceType;
+
     bool equals(BoardMove const &other) const override;
+
     void makeBoardMoveImpl(ChessBoard &chessBoard) const override;
     void undoBoardMoveImpl(ChessBoard &chessBoard) const override;
-
-    PieceType promotionPieceType;
+    std::optional<PieceType> getPromotionPieceTypeImpl() const override { return promotionPieceType; }
+    
 public:
     explicit PromotionBoardMove(BoardSquare const &fromSquare, BoardSquare const &toSquare, BoardSquare const &captureSquare, PieceType promotionPieceType, bool doesEnableEnpassant, PieceData const &movedPieceData, std::optional<PieceData> const &capturedPieceData = std::nullopt);
     PromotionBoardMove(PromotionBoardMove const &other);
@@ -30,7 +33,8 @@ public:
     PromotionBoardMove& operator=(PromotionBoardMove &&other) noexcept;
     virtual ~PromotionBoardMove() = default;
 
-    std::optional<PieceType> getPromotionPieceTypeImpl() const override { return promotionPieceType; }
+    bool operator==(PromotionBoardMove const &other) const;
+    bool operator!=(PromotionBoardMove const &other) const;
 };
 
 
