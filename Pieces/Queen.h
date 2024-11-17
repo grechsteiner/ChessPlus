@@ -3,25 +3,24 @@
 #ifndef Queen_h
 #define Queen_h
 
-#include <vector>
+#include <memory>
 #include <utility>
-#include <set>
+#include <vector>
 
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-
+#include "BoardMove.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
 /**
- * Queen Piece Class
+ * Abstract Queen Piece Class
  */
 class Queen : public Piece {
 private:
-    static std::set<std::pair<int, int>> const queenDirections;
+    static std::vector<MoveDirection> const queenMoveDirections;
 
 protected:
     explicit Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image);

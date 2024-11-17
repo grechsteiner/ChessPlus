@@ -1,29 +1,34 @@
 // Queen.cc
 
-#include <vector>
-#include <utility>
-#include <set>
-
 #include "Queen.h"
-#include "Constants.h"
-#include "Piece.h"
-#include "Cloneable.h"
-#include "ChessBoard.h"
-#include "BoardSquare.h"
+
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "BoardMove.h"
 #include "BoardMoveFactory.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "Constants.h"
+#include "MoveDirection.h"
+#include "Piece.h"
 
 
-// Static
-std::set<std::pair<int, int>> const Queen::queenDirections = { 
-    {-1, -1}, 
-    {-1, 0}, 
-    {-1, 1}, 
-    {0, -1}, 
-    {0, 1}, 
-    {1, -1}, 
-    {1, 0}, 
-    {1, 1} 
+/*
+ * Static
+ *
+ * The directions a Queen Piece can move
+ */
+std::vector<MoveDirection> const Queen::queenMoveDirections = { 
+    { MoveDirection(-1, -1) }, 
+    { MoveDirection(-1, 0) }, 
+    { MoveDirection(-1, 1) }, 
+    { MoveDirection(0, -1) }, 
+    { MoveDirection(0, 1) }, 
+    { MoveDirection(1, -1) }, 
+    { MoveDirection(1, 0) }, 
+    { MoveDirection(1, 1) } 
 };
 
 // Basic ctor
@@ -54,17 +59,21 @@ Queen& Queen::operator=(Queen &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal standard moves for a Queen Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> Queen::getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<std::unique_ptr<BoardMove>> moves;
     if (chessBoard->isSquareOnBoard(fromSquare)) {
-        for (std::pair<int, int> const &queenDirection : queenDirections) {
-            BoardSquare toSquare(fromSquare.boardRow + queenDirection.first, fromSquare.boardCol + queenDirection.second);
+        for (MoveDirection const &queenMoveDirection : queenMoveDirections) {
+            BoardSquare toSquare(fromSquare.boardRow + queenMoveDirection.rowDirection, fromSquare.boardCol + queenMoveDirection.colDirection);
             while (chessBoard->isSquareEmpty(toSquare) || chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
                 moves.emplace_back(BoardMoveFactory::createStandardMove(fromSquare, toSquare, toSquare, false, pieceData, chessBoard->getPieceDataAt(toSquare)));
                 if (chessBoard->isSquareOtherTeam(toSquare, pieceData.team)) {
                     break;
                 }
-                toSquare = BoardSquare(toSquare.boardRow + queenDirection.first, toSquare.boardCol + queenDirection.second);
+                toSquare.boardRow += queenMoveDirection.rowDirection;
+                toSquare.boardCol += queenMoveDirection.colDirection;
             }
         }
     }
