@@ -15,15 +15,15 @@
 
 // Basic ctor
 ComputerPlayer::ComputerPlayer(Team team) :
-    team(team) {}
+    team(team) { }
 
 // Copy ctor
 ComputerPlayer::ComputerPlayer(ComputerPlayer const &other) :
-    team(other.team) {}
+    team(other.team) { }
 
 // Move ctor
 ComputerPlayer::ComputerPlayer(ComputerPlayer &&other) noexcept :
-    team(other.team) {}
+    team(other.team) { }
 
 // Copy assignment
 ComputerPlayer& ComputerPlayer::operator=(ComputerPlayer &other) {

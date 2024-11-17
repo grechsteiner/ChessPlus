@@ -1,29 +1,32 @@
 // LevelTwoComputer.cc
 
-#include <vector>
-#include <cassert>
-
-#include "Constants.h"
 #include "LevelTwoComputer.h"
+
+#include <memory>
+#include <vector>
+
+#include "BoardMove.h"
+#include "Cloneable.h"
+#include "ComputerPlayer.h"
+#include "Constants.h"
 
 
 // Basic ctor
 LevelTwoComputer::LevelTwoComputer(Team team) : 
-    Cloneable<ComputerPlayer, LevelTwoComputer>(team) {}
+    Cloneable<ComputerPlayer, LevelTwoComputer>(team) { }
 
 // Copy ctor
 LevelTwoComputer::LevelTwoComputer(LevelTwoComputer const &other) :
-    Cloneable<ComputerPlayer, LevelTwoComputer>(other) {}
+    Cloneable<ComputerPlayer, LevelTwoComputer>(other) { }
 
 // Move ctor
 LevelTwoComputer::LevelTwoComputer(LevelTwoComputer &&other) noexcept :
-    Cloneable<ComputerPlayer, LevelTwoComputer>(std::move(other)) {}
+    Cloneable<ComputerPlayer, LevelTwoComputer>(std::move(other)) { }
 
 // Copy assignment
 LevelTwoComputer& LevelTwoComputer::operator=(LevelTwoComputer &other) {
     if (this != &other) {
-        // Update if needed
-        return *this;
+        ComputerPlayer::operator=(other);
     }
     return *this;
 }
@@ -31,18 +34,26 @@ LevelTwoComputer& LevelTwoComputer::operator=(LevelTwoComputer &other) {
 // Move assignment
 LevelTwoComputer& LevelTwoComputer::operator=(LevelTwoComputer &&other) noexcept {
     if (this != &other) {
-        // Update if needed
-        return *this;
+        ComputerPlayer::operator=(std::move(other));
     }
     return *this;
 }
 
+/* 
+ * Generate a move
+ * 1) Game winning moves
+ * 2) Capturing and check applying move
+ * 3) Capturing move
+ * 4) Random move
+ */
 std::unique_ptr<BoardMove> LevelTwoComputer::generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const {
+    // Check if there are any game winning moves
     std::vector<std::unique_ptr<BoardMove>> winningMoves = chessBoard->generateWinningMoves(team);
     if (!winningMoves.empty()) {
         return winningMoves.front()->clone();
     }
 
+    // Capturing and check applying moves
     std::vector<std::unique_ptr<BoardMove>> capturingAndCheckApplyingMoves;
     std::vector<std::unique_ptr<BoardMove>> capturingMoves = chessBoard->generateCapturingMoves(team);
     std::vector<std::unique_ptr<BoardMove>> checkApplyingMoves = chessBoard->generateCheckApplyingMoves(team);
@@ -59,12 +70,15 @@ std::unique_ptr<BoardMove> LevelTwoComputer::generateMoveImpl(std::unique_ptr<Ch
         return capturingAndCheckApplyingMoves.front()->clone();
     }
 
+    // Capturing moves
     if (!capturingMoves.empty()) {
         shuffle(capturingMoves);
         return capturingMoves.front()->clone();
     }
 
+    // All moves
     std::vector<std::unique_ptr<BoardMove>> allLegalMoves = chessBoard->generateAllLegalMoves(team);
     shuffle(allLegalMoves);
+
     return allLegalMoves.front()->clone();
 }
