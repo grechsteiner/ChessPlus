@@ -5,16 +5,19 @@
 
 #include <memory>
 
-
-#include "Constants.h"
 #include "ComputerPlayer.h"
+#include "Constants.h"
 
 
+/**
+ * Player Class
+ */
 struct Player final {
 private:
     PlayerType playerType;
     Team team;
     std::unique_ptr<ComputerPlayer> computerPlayer;
+
 public:
     Player(PlayerType playerType, Team team, std::unique_ptr<ComputerPlayer> const &computerPlayer);
     Player(Player const &other);
@@ -26,6 +29,7 @@ public:
     PlayerType getPlayerType() const;
     Team getTeam() const;
     std::unique_ptr<ComputerPlayer> const& getComputerPlayer() const;
+
     void setComputerPlayer(std::unique_ptr<ComputerPlayer> const &computerPlayer);
 };
 
