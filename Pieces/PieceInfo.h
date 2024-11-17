@@ -3,10 +3,6 @@
 #ifndef PieceInfo_h
 #define PieceInfo_h
 
-#include <string>
-
-#include "Constants.h"
-
 
 /**
  * PieceInfo Struct
@@ -17,13 +13,14 @@ struct PieceInfo final {
     char32_t image;
 
     explicit PieceInfo(int pieceScore, char32_t image);
-    PieceInfo(PieceInfo const &other) = default;
+    PieceInfo(PieceInfo const &other);
     PieceInfo(PieceInfo &&other) noexcept;
-    PieceInfo& operator=(const PieceInfo& other) = default;
+    PieceInfo& operator=(const PieceInfo& other);
     PieceInfo& operator=(PieceInfo&& other) noexcept;
     ~PieceInfo() = default;
 
     bool operator==(PieceInfo const &other) const;
+    bool operator!=(PieceInfo const &other) const;
 };
 
 
