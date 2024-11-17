@@ -32,13 +32,13 @@ Game::Game(std::unique_ptr<CommandRetriever> const &commandRetriever, std::uniqu
     Subject(),
     gameState(GameState::MAIN_MENU),
     chessBoard(ChessBoardFactory::createChessBoard(8, 8)),
-    commandRetriever(commandRetriever->clone()), 
-    illegalCommandReporter(illegalCommandReporter->clone()),
     players(std::make_pair(
         PlayerFactory::createHumanPlayer(chessBoard->getTeamOne()),
         PlayerFactory::createHumanPlayer(chessBoard->getTeamTwo())
     )),
-    currentTurn(chessBoard->getTeamOne()) {
+    currentTurn(chessBoard->getTeamOne()),
+    commandRetriever(commandRetriever->clone()), 
+    illegalCommandReporter(illegalCommandReporter->clone()) {
         
     ChessBoardUtilities::applyStandardSetup(chessBoard, PieceLevel::BASIC);
 }
@@ -48,20 +48,20 @@ Game::Game(Game const &other) :
     Subject(other),
     gameState(other.gameState),
     chessBoard(other.chessBoard->clone()),
-    commandRetriever(other.commandRetriever->clone()),
-    illegalCommandReporter(other.illegalCommandReporter->clone()),
     players(other.players),
-    currentTurn(other.currentTurn) { }
+    currentTurn(other.currentTurn),
+    commandRetriever(other.commandRetriever->clone()),
+    illegalCommandReporter(other.illegalCommandReporter->clone()) { }
 
 // Move ctor
 Game::Game(Game &&other) noexcept :
     Subject(std::move(other)),
     gameState(other.gameState),
     chessBoard(std::move(other.chessBoard)),
-    commandRetriever(std::move(other.commandRetriever)),
-    illegalCommandReporter(std::move(other.illegalCommandReporter)),
     players(std::move(other.players)),
-    currentTurn(other.currentTurn) { }
+    currentTurn(other.currentTurn),
+    commandRetriever(std::move(other.commandRetriever)),
+    illegalCommandReporter(std::move(other.illegalCommandReporter)) { }
 
 // Copy assignmnet
 Game& Game::operator=(Game &other) {
@@ -70,13 +70,13 @@ Game& Game::operator=(Game &other) {
 
         gameState = other.gameState;
         chessBoard = other.chessBoard->clone();
-        commandRetriever = other.commandRetriever->clone();
-        illegalCommandReporter = other.illegalCommandReporter->clone();
         players = std::make_pair(
             Player(getPlayer(chessBoard->getTeamOne())), 
             Player(getPlayer(chessBoard->getTeamTwo()))
-        ),
+        );
         currentTurn = other.currentTurn;
+        commandRetriever = other.commandRetriever->clone();
+        illegalCommandReporter = other.illegalCommandReporter->clone();
     }
     return *this;
 }
@@ -88,10 +88,10 @@ Game& Game::operator=(Game &&other) noexcept {
         
         gameState = other.gameState;
         chessBoard = std::move(other.chessBoard);
-        commandRetriever = std::move(other.commandRetriever);
-        illegalCommandReporter = std::move(other.illegalCommandReporter);
         players = std::move(other.players);
         currentTurn = other.currentTurn;
+        commandRetriever = std::move(other.commandRetriever);
+        illegalCommandReporter = std::move(other.illegalCommandReporter);  
     }
     return *this;
 }

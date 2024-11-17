@@ -26,11 +26,10 @@
 class Game final : public Subject {
 private:
     GameState gameState;
-    Team currentTurn;
-
-    std::pair<Player, Player> players;
 
     std::unique_ptr<ChessBoard> chessBoard;
+    std::pair<Player, Player> players;
+    Team currentTurn;
 
     std::unique_ptr<CommandRetriever> commandRetriever;
     std::unique_ptr<IllegalCommandReporter> illegalCommandReporter;
