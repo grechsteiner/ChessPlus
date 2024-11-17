@@ -1,19 +1,31 @@
 // IllegalCommandReporter.cc
 
-#include <string>
-
 #include "IllegalCommandReporter.h"
 
+#include <memory>
+#include <string>
+
+
 // Basic ctor
-IllegalCommandReporter::IllegalCommandReporter() {}
+IllegalCommandReporter::IllegalCommandReporter() { }
+
+// Copy ctor
+IllegalCommandReporter::IllegalCommandReporter(IllegalCommandReporter const &other) { }
 
 // Move ctor
-IllegalCommandReporter::IllegalCommandReporter(IllegalCommandReporter &&other) noexcept {}
+IllegalCommandReporter::IllegalCommandReporter(IllegalCommandReporter &&other) noexcept { }
+
+// Copy assignment
+IllegalCommandReporter& IllegalCommandReporter::operator=(IllegalCommandReporter const &other) {
+    if (this != &other) {
+        return *this;
+    }
+    return *this;
+}
 
 // Move assignment
 IllegalCommandReporter& IllegalCommandReporter::operator=(IllegalCommandReporter &&other) noexcept {
     if (this != &other) {
-        // Update if needed
         return *this;
     }
     return *this;

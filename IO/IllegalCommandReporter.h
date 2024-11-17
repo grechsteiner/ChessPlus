@@ -3,6 +3,7 @@
 #ifndef IllegalCommandReporter_h
 #define IllegalCommandReporter_h
 
+#include <memory>
 #include <string>
 
 
@@ -16,9 +17,9 @@ private:
 
 protected:
     explicit IllegalCommandReporter();
-    IllegalCommandReporter(IllegalCommandReporter const &other) = default;
+    IllegalCommandReporter(IllegalCommandReporter const &other);
     IllegalCommandReporter(IllegalCommandReporter &&other) noexcept;
-    IllegalCommandReporter& operator=(IllegalCommandReporter const &other) = default;
+    IllegalCommandReporter& operator=(IllegalCommandReporter const &other);
     IllegalCommandReporter& operator=(IllegalCommandReporter &&other) noexcept;
 
 public:
