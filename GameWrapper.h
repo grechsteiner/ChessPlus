@@ -5,15 +5,20 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include "Game.h"
 #include "Observer.h"
 
 
-class GameWrapper {
+/**
+ * Game Wrapper Class
+ * Entry point to the program
+ */
+class GameWrapper final {
 private:
-    Game game;                                                  // Subject    
-    std::vector<std::unique_ptr<Observer>> observers;           // Observers  
+    Game game;                                          // Subject    
+    std::vector<std::unique_ptr<Observer>> observers;   // Observers  
 
 public:
     explicit GameWrapper(std::istream &in, std::ostream &out, std::ostream &illegalCommandOut);
