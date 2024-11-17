@@ -16,7 +16,6 @@
  * The data to be passed to observers
  */
 struct State final {
-public:
     GameState gameState;
     std::unique_ptr<ChessBoard> const &chessBoard;
     std::pair<Player, Player> const &players;

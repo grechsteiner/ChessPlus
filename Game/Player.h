@@ -13,7 +13,7 @@
  * Player Class
  * Represents a Player in the game
  */
-struct Player final {
+class Player final {
 private:
     PlayerType playerType;
     Team team;

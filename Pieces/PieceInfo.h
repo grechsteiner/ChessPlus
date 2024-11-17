@@ -10,7 +10,7 @@
 
 /**
  * PieceInfo Struct
- * Represents all the info pertaining to a piece
+ * Represents all the data pertaining to a Piece that is not modifiable at construction time
  */
 struct PieceInfo final {
     int pieceScore;

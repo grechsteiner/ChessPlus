@@ -12,7 +12,6 @@
  * Represents the data inputted by a Human to make a move
  */
 struct MoveInputDetails final {
-public:
     std::string fromSquareStr;
     std::string toSquareStr;
     std::optional<std::string> promotionPieceTypeStr;
