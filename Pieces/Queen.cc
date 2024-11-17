@@ -33,15 +33,15 @@ std::vector<MoveDirection> const Queen::queenMoveDirections = {
 
 // Basic ctor
 Queen::Queen(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
-    Piece(PieceData(PieceType::QUEEN, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(9, image)) {}
+    Piece(PieceData(PieceType::QUEEN, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(9, image)) { }
 
 // Copy ctor
 Queen::Queen(Queen const &other) : 
-    Piece(other) {}
+    Piece(other) { }
 
 // Move ctor
 Queen::Queen(Queen &&other) noexcept : 
-    Piece(std::move(other)) {}
+    Piece(std::move(other)) { }
 
 // Copy assignment
 Queen& Queen::operator=(Queen const &other) {

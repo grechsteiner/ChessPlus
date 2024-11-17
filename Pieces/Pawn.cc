@@ -18,15 +18,15 @@
 
 // Basic ctor
 Pawn::Pawn(PieceLevel pieceLevel, Team team, PieceDirection pieceDirection, bool hasMoved, char32_t image) :
-    Piece(PieceData(PieceType::PAWN, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(1, image)) {}
+    Piece(PieceData(PieceType::PAWN, pieceLevel, team, pieceDirection, hasMoved), PieceInfo(1, image)) { }
 
 // Copy ctor
 Pawn::Pawn(Pawn const &other) : 
-    Piece(other) {}
+    Piece(other) { }
 
 // Move ctor
 Pawn::Pawn(Pawn &&other) noexcept : 
-    Piece(std::move(other)) {}
+    Piece(std::move(other)) { }
 
 // Copy assignment
 Pawn& Pawn::operator=(Pawn const &other) {
