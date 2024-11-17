@@ -7,6 +7,10 @@
 #include <string>
 
 
+/**
+ * MoveInputDetails Struct
+ * Represents the data inputted by a Human to make a move
+ */
 struct MoveInputDetails final {
 public:
     std::string fromSquareStr;
@@ -19,6 +23,9 @@ public:
     MoveInputDetails& operator=(MoveInputDetails &other);
     MoveInputDetails& operator=(MoveInputDetails &&other) noexcept;
     virtual ~MoveInputDetails() = default;
+
+    bool operator==(MoveInputDetails const &other) const;
+    bool operator!=(MoveInputDetails const &other) const;
 };
 
 

@@ -37,3 +37,16 @@ MoveInputDetails& MoveInputDetails::operator=(MoveInputDetails &&other) noexcept
     }
     return *this;
 }
+
+// Equality
+bool MoveInputDetails::operator==(MoveInputDetails const &other) const {
+    return
+        fromSquareStr == other.fromSquareStr &&
+        toSquareStr == other.toSquareStr &&
+        promotionPieceTypeStr == other.promotionPieceTypeStr;
+}
+
+// Inequality
+bool MoveInputDetails::operator!=(MoveInputDetails const &other) const {
+    return !(*this == other);
+}
