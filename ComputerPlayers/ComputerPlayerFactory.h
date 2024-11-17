@@ -6,10 +6,12 @@
 #include <memory>
 
 #include "ComputerPlayer.h"
-#include "ChessBoard.h"
 #include "Constants.h"
 
 
+/**
+ * Factory for creating ComputerPlayer instances
+ */
 class ComputerPlayerFactory final {
 public:
     static std::unique_ptr<ComputerPlayer> createComputerPlayer(ComputerPlayerLevel computerPlayerLevel, Team team);

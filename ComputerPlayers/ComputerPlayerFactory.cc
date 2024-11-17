@@ -1,17 +1,24 @@
 // ComputerPlayerFactory.cc
 
-#include <memory>
-#include <cassert>
-
 #include "ComputerPlayerFactory.h"
+
+#include <cassert>
+#include <memory>
+
 #include "ComputerPlayer.h"
+#include "Constants.h"
 #include "LevelOneComputer.h"
 #include "LevelTwoComputer.h"
 #include "LevelThreeComputer.h"
 #include "LevelFourComputer.h"
 #include "LevelFiveComputer.h"
 
-// Static
+
+/*
+ * Static
+ *
+ * Return a ComputerPlayer instance
+ */
 std::unique_ptr<ComputerPlayer> ComputerPlayerFactory::createComputerPlayer(ComputerPlayerLevel computerPlayerLevel, Team team) {
     switch (computerPlayerLevel) {
         case ComputerPlayerLevel::ONE:
