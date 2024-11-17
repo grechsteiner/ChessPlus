@@ -3,6 +3,7 @@
 #ifndef MoveDirection_h
 #define MoveDirection_h
 
+
 /**
  * MoveDirection Struct
  * Represents a direction a Piece can move as part of a BoardMove
