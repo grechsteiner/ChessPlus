@@ -1,11 +1,9 @@
 // AdvancedPieceFactory.cc
 
-#include <memory>
-#include <cassert>
-
 #include "AdvancedPieceFactory.h"
-#include "Piece.h"
-#include "Constants.h"
+
+#include <cassert>
+#include <memory>
 
 #include "AdvancedKing.h"
 #include "AdvancedQueen.h"
@@ -13,8 +11,15 @@
 #include "AdvancedBishop.h"
 #include "AdvancedKnight.h"
 #include "AdvancedPawn.h"
+#include "Piece.h"
+#include "PieceData.h"
 
-// Static
+
+/*
+ * Static
+ *
+ * Returns an Advanced Piece instance
+ */
 std::unique_ptr<Piece> AdvancedPieceFactory::createPiece(PieceData const &pieceData) {
     switch (pieceData.pieceType) {
         case PieceType::KING:
@@ -33,4 +38,3 @@ std::unique_ptr<Piece> AdvancedPieceFactory::createPiece(PieceData const &pieceD
             assert(false);
     }
 }
-
