@@ -1,23 +1,31 @@
 // AdvancedRook.cc
 
+#include "AdvancedRook.h"
+
+#include <memory>
+#include <utility>
 #include <vector>
 
-#include "AdvancedRook.h"
 #include "BoardMove.h"
 #include "BoardMoveFactory.h"
+#include "BoardSquare.h"
 #include "ChessBoard.h"
+#include "Constants.h"
+#include "Piece.h"
+#include "Rook.h"
+
 
 // Basic ctor
 AdvancedRook::AdvancedRook(Team team, PieceDirection pieceDirection, bool hasMoved) :
-    ComplicatedCloneable<Piece, Rook, AdvancedRook>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♖')) {}
+    ComplicatedCloneable<Piece, Rook, AdvancedRook>(PieceLevel::ADVANCED, team, pieceDirection, hasMoved, char32_t(U'♖')) { }
 
 // Copy ctor
 AdvancedRook::AdvancedRook(AdvancedRook const &other) : 
-    ComplicatedCloneable<Piece, Rook, AdvancedRook>(other) {}
+    ComplicatedCloneable<Piece, Rook, AdvancedRook>(other) { }
 
 // Move ctor
 AdvancedRook::AdvancedRook(AdvancedRook &&other) noexcept : 
-    ComplicatedCloneable<Piece, Rook, AdvancedRook>(std::move(other)) {}
+    ComplicatedCloneable<Piece, Rook, AdvancedRook>(std::move(other)) { }
 
 // Copy assignment
 AdvancedRook& AdvancedRook::operator=(AdvancedRook const &other) {
@@ -35,6 +43,9 @@ AdvancedRook& AdvancedRook::operator=(AdvancedRook &&other) noexcept {
     return *this;
 }
 
+/*
+ * Returns all pseudo legal moves for an AdvancedRook Rook Piece
+ */
 std::vector<std::unique_ptr<BoardMove>> AdvancedRook::getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const {
     std::vector<BoardSquare> const additionalToSquares = { 
         BoardSquare(fromSquare.boardRow + 1, fromSquare.boardCol + 1),

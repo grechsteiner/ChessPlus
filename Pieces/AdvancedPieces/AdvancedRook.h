@@ -3,28 +3,25 @@
 #ifndef AdvancedRook_h
 #define AdvancedRook_h
 
+#include <memory>
 #include <vector>
-#include <utility>
-#include <set>
 
+#include "BoardMove.h"
+#include "BoardSquare.h"
+#include "ChessBoard.h"
+#include "ComplicatedCloneable.h"
 #include "Constants.h"
 #include "Piece.h"
-#include "Cloneable.h"
-#include "ComplicatedCloneable.h"
-#include "PieceData.h"
 #include "Rook.h"
-
-#include "ChessBoard.h"
-struct BoardSquare;
-class BoardMove;
 
 
 /**
- * AdvancedRook Piece Class
+ * AdvancedRook Rook Piece Class
  */
 class AdvancedRook final : public ComplicatedCloneable<Piece, Rook, AdvancedRook> {
 private:
     std::vector<std::unique_ptr<BoardMove>> getMovesImpl(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const override;
+
 public:
     explicit AdvancedRook(Team team, PieceDirection pieceDirection, bool hasMoved);
     AdvancedRook(AdvancedRook const &other);
