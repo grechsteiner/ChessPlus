@@ -25,14 +25,14 @@ private:
     virtual std::unique_ptr<Piece> cloneImpl() const = 0;
     
 protected:
+    PieceData pieceData;
+    PieceInfo pieceInfo;
+
     explicit Piece(PieceData const &pieceData, PieceInfo const &pieceInfo);
     Piece(Piece const &other) = default;
     Piece(Piece &&other) noexcept;
     Piece& operator=(Piece const &other) = default;
     Piece& operator=(Piece &&other) noexcept;
-
-    PieceData pieceData;
-    PieceInfo pieceInfo;
 
     virtual std::vector<std::unique_ptr<BoardMove>> getStandardMoves(std::unique_ptr<ChessBoard> const &chessBoard, BoardSquare const &fromSquare, bool onlyAttackingMoves) const = 0;
 
