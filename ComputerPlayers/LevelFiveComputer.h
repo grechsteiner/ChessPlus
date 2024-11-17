@@ -3,14 +3,20 @@
 #ifndef LevelFiveComputer_h
 #define LevelFiveComputer_h
 
-#include <utility>
+#include <memory>
 #include <optional>
+#include <utility>
+#include <vector>
 
 #include "BoardMove.h"
-#include "ComputerPlayer.h"
 #include "Cloneable.h"
+#include "ComputerPlayer.h"
+#include "Constants.h"
 
 
+/**
+ * LevelFiveComputer ComputerPlayer Class
+ */
 class LevelFiveComputer final : public Cloneable<ComputerPlayer, LevelFiveComputer> {
 private:
     struct ScoredAlphaBetaMove final {

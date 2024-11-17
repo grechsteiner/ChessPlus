@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "BoardMove.h"
+#include "ChessBoard.h"
 #include "Cloneable.h"
 #include "ComputerPlayer.h"
 #include "Constants.h"
@@ -18,7 +19,7 @@
 class LevelFourComputer final : public Cloneable<ComputerPlayer, LevelFourComputer> {
 private:
     std::unique_ptr<BoardMove> generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const override;
-    
+
 public:
     explicit LevelFourComputer(Team team);
     LevelFourComputer(LevelFourComputer const &other);

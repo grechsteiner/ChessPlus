@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "BoardMove.h"
+#include "ChessBoard.h"
 #include "Cloneable.h"
 #include "ComputerPlayer.h"
 #include "Constants.h"

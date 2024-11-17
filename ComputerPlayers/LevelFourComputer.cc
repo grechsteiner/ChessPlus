@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "BoardMove.h"
+#include "ChessBoard.h"
 #include "Cloneable.h"
 #include "ComputerPlayer.h"
 #include "Constants.h"
@@ -113,6 +114,6 @@ std::unique_ptr<BoardMove> LevelFourComputer::generateMoveImpl(std::unique_ptr<C
     // All moves
     std::vector<std::unique_ptr<BoardMove>> allLegalMoves = chessBoard->generateAllLegalMoves(team);
     shuffle(allLegalMoves);
-    
+
     return allLegalMoves.front()->clone();
 }
