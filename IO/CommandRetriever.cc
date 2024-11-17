@@ -32,6 +32,7 @@ CommandRetriever& CommandRetriever::operator=(CommandRetriever &&other) noexcept
     return *this;
 }
 
+/* Virtual methods */
 bool CommandRetriever::isCommandAvailable() const { return isCommandAvailableImpl(); }
 std::optional<std::string> CommandRetriever::retrieveCommand() const { return retrieveCommandImpl(); }
 std::unique_ptr<CommandRetriever> CommandRetriever::clone() const { return cloneImpl(); }
