@@ -22,10 +22,10 @@ private:
 
 public:
     explicit GameWrapper(std::istream &in, std::ostream &out, std::ostream &illegalCommandOut);
-    GameWrapper(GameWrapper const &other);
-    GameWrapper(GameWrapper &&other) noexcept;
-    GameWrapper& operator=(GameWrapper &other);
-    GameWrapper& operator=(GameWrapper &&other) noexcept;
+    GameWrapper(GameWrapper const &other) = delete;
+    GameWrapper(GameWrapper &&other) = delete;
+    GameWrapper& operator=(GameWrapper &other) = delete;
+    GameWrapper& operator=(GameWrapper &&other) = delete;
     virtual ~GameWrapper() = default;
 
     void runGame();

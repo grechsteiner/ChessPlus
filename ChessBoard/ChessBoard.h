@@ -7,11 +7,13 @@
 #include <optional>
 #include <vector>
 
-#include "BoardMove.h"
 #include "BoardSquare.h"
 #include "Constants.h"
 #include "PieceData.h"
 #include "PieceInfo.h"
+
+// Foward declaration to avoid circular dependency among abstract classes
+class BoardMove;   
 
 
 /**

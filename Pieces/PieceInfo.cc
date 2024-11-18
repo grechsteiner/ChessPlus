@@ -55,6 +55,6 @@ bool PieceInfo::operator==(PieceInfo const &other) const {
 /*
  * Inequality
  */
-bool PieceInfo::operator==(PieceInfo const &other) const {
+bool PieceInfo::operator!=(PieceInfo const &other) const {
     return !(*this == other);
 }
