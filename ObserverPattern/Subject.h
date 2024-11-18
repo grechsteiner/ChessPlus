@@ -14,13 +14,15 @@
 class Subject {
 private:
     std::vector<Observer*> observers;
-    
-public:
+
+protected:
     explicit Subject();
     Subject(Subject const &other);
     Subject(Subject &&other) noexcept;
     Subject& operator=(Subject const &other);
     Subject& operator=(Subject &&other) noexcept;
+
+public:
     virtual ~Subject() = 0;
 
     void attach(Observer *observer);
