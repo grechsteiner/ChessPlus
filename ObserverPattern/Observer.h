@@ -3,25 +3,25 @@
 #ifndef Observer_h
 #define Observer_h
 
-#include <memory>
 
-
+/**
+ * Abstract Observer Class (Observer Pattern)
+ */
 class Observer {
 private:
     virtual void notifyImpl() = 0;
-    virtual std::unique_ptr<Observer> cloneImpl() const = 0;
+
 protected:
     explicit Observer();
-    Observer(Observer const &other) = default;
+    Observer(Observer const &other);
     Observer(Observer &&other) noexcept;
-    Observer& operator=(Observer const &other) = default;
+    Observer& operator=(Observer const &other);
     Observer& operator=(Observer &&other) noexcept;
 
 public:
-    void notify();
-    std::unique_ptr<Observer> clone() const;
-
     virtual ~Observer() = default;
+
+    void notify();
 };
 
 
