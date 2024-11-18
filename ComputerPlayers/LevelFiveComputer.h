@@ -53,7 +53,7 @@ private:
         virtual ~ScoredBoardMove() = default;
     };
 
-    static int const depth = 4;
+    static int const depth = 3;
     std::unique_ptr<BoardMove> generateMoveImpl(std::unique_ptr<ChessBoard> const &chessBoard) const override;
 
     ScoredAlphaBetaMove getBestAlphaBetaMove(std::unique_ptr<ChessBoard> &tempChessBoard, Team currentTeam, int currentDepth, int alpha, int beta) const;

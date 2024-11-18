@@ -470,16 +470,22 @@ void Game::processStartGameCommand(std::string const &teamOneStr, std::string co
             reportIllegalCommand("Can't start game in setup mode");
             break;
         case GameState::MAIN_MENU:
+            
+            // Team One
             Team teamOne = chessBoard->getTeamOne();
-            Team teamTwo = chessBoard->getTeamTwo();
-
-            Player playerOne = Utilities::stringToPlayerType(teamOneStr).value() == PlayerType::HUMAN 
+            std::optional<PlayerType> playerOneType = Utilities::stringToPlayerType(teamOneStr);
+            Player playerOne = playerOneType.has_value() && playerOneType.value() == PlayerType::HUMAN 
                 ? PlayerFactory::createHumanPlayer(teamOne)
                 : PlayerFactory::createComputerPlayer(teamOne, ComputerPlayerFactory::createComputerPlayer(Utilities::stringToComputerPlayerLevel(std::string(1, teamOneStr.back())).value(), teamOne));
-            Player playerTwo = Utilities::stringToPlayerType(teamTwoStr).value() == PlayerType::HUMAN 
+
+            // Team Two
+            Team teamTwo = chessBoard->getTeamTwo();
+            std::optional<PlayerType> playerTwoType = Utilities::stringToPlayerType(teamTwoStr);
+            Player playerTwo = playerTwoType.has_value() && playerTwoType.value() == PlayerType::HUMAN 
                 ? PlayerFactory::createHumanPlayer(teamTwo)
                 : PlayerFactory::createComputerPlayer(teamTwo, ComputerPlayerFactory::createComputerPlayer(Utilities::stringToComputerPlayerLevel(std::string(1, teamTwoStr.back())).value(), teamTwo));
 
+            // Setup
             players = std::make_pair(std::move(playerOne), std::move(playerTwo));
             setGameState(GameState::GAME_ACTIVE);
             notifyObservers();
