@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "ChessBoard.h"
+#include "ChessBoardUtilities.h"
 #include "Constants.h"
 #include "Game.h"
 #include "Observer.h"
