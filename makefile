@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-std=c++17 -Wall -g -MMD -I/opt/homebrew/include $(shell find . -name '*.h' -exec dirname {} \; | sort -u | sed 's/^/-I/')
-LDFLAGS=-L/opt/homebrew/lib -lX11 -lboost_system
+LDFLAGS=-L/opt/homebrew/lib -lboost_system
 EXEC=chess
 
 # Specify output directories
