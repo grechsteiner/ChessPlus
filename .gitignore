@@ -36,3 +36,6 @@
 
 # macOS metadata files
 .DS_Store
+
+# VSCode
+.vscode/
