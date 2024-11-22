@@ -31,4 +31,8 @@
 *.out
 *.app
 
+# Ignore all executables (no file extension)
+*
+
+# macOS metadata files
 .DS_Store
