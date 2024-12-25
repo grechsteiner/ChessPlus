@@ -12,6 +12,8 @@
 
 Not just your average chess program, but something much much more...
 
+View the UML diagram [here](https://github.com/grechsteiner/chess_plus/blob/main/ChessPlusUML.pdf)
+
 All the stanard behaviour you'd expect from a chess program, along with the following special features:
 - Play on any size board you'd like, try playing on a 10 by 14 board!
 - Advanced pieces, specify `advanced` when placing a piece during setup mode to add additional moves to your favourite piece
