@@ -10,16 +10,16 @@
 
 ## Overview
 
-Not just your average chess program, but something much much more...
+Not just your average chess program, but something much much more... consisting of over 8,000 lines of code.
 
-View the UML diagram [here](https://github.com/grechsteiner/chess_plus/blob/main/ChessPlusUML.pdf)
+View the UML diagram [here](https://github.com/grechsteiner/chess_plus/blob/main/ChessPlusUML.pdf).
 
 All the stanard behaviour you'd expect from a chess program, along with the following special features:
-- Play on any size board you'd like, try playing on a 10 by 14 board!
-- Advanced pieces, specify `advanced` when placing a piece during setup mode to add additional moves to your favourite piece
+- Play on any size board you'd like - try playing on a 10 by 14 board!
+- Advanced Pieces: specify `advanced` when placing a piece during setup mode to add additional moves to your favourite piece
 - Set pieces to advance in any direction:
   - Pawns moving left/right
-  - Castling up/down instead of left/right
+  - Castling up/down instead of left/right (when primary advancement direction of Rook & King are set to left or right)
   - etc
 - Undo and redo an unlimited number of moves
 
@@ -37,7 +37,7 @@ The primary goal of this project was to experiment with using various design pat
 
 ## Usage
 
-This project was created with C++17, and utilizes a few standard unicode method from the boost library. 
+This project was created with C++17, and utilizes a few standard unicode functions from the boost library for display purposes. 
 
 There are 3 separate screens/states the program can be in, namely `Main Menu`, `Setup`, and `Active Game`. Each state has it's own set of valid commands, which are listed below:
 ```
@@ -45,27 +45,27 @@ Commands:
 ┏━━━━
 ┃ Main Menu
 ┗━┓
-  ┠─> `game [playerOne] [playerTwo]`  ━━━  Starts a fresh game
+  ┠─> `game [PlayerOne:PlayerType] [PlayerTwo:PlayerType]`  ━━━  Starts a fresh game with the specified PlayerTypes
   ┃
   ┠─> `setup`  ━━━  Enters setup mode
 ┏━┛
 ┃ Setup
 ┗━┓
-  ┠─> `+ [square] [pieceType] [pieceLevel]? [pieceDirection]?`  ━━━  Places the indicated piece on the board at the indicated square
+  ┠─> `+ [Square] [PieceType] [PieceLevel]? [PieceDirection]?`  ━━━  Places the specified piece on the board at the indicated square
   ┃
-  ┠─> `- [square]`  ━━━  Removes the piece at the indicated square
+  ┠─> `- [Square]`  ━━━  Removes the piece at the indicated square
   ┃
   ┠─> `swap`  ━━━  Swaps which team will have the first move
   ┃
-  ┠─> `standard [pieceLevel]?`  ━━━  Applies the standard chess setup to the board
+  ┠─> `standard [PieceLevel]?`  ━━━  Applies the standard chess setup to the board
   ┃
-  ┠─> `set [numRows] [numCols]`  ━━━  Errases all pieces from the board, and set's the board dimensions to the indicated size
+  ┠─> `set [rows:Num] [cols:Num]`  ━━━  Errases all pieces from the board, and set's the board dimensions to the indicated size
   ┃
   ┠─> `done`  ━━━  Exits setup mode
 ┏━┛
 ┃ Active Game
 ┗━┓
-  ┠─> `move [fromSquare] [toSquare] [promotionPieceType]`  ━━━  Makes the indicated move, if it's a computer players turn just enter `move`
+  ┠─> `move [fromSquare:Square] [toSquare:Square] [promotionPieceType:PieceType]`  ━━━  Makes the indicated move, if it's a computer players turn just enter `move`
   ┃
   ┠─> `undo`  ━━━  Undoes the last made move
   ┃
@@ -76,17 +76,17 @@ Commands:
 
 Key:
 ┏━━━━
-┠─> player  ━━━  human|computer[1-5]
+┠─> PlayerType  ━━━  human|computer[1-5]
 ┃
-┠─> square  ━━━  [a-z]+[1-9][0-9]*
+┠─> Square  ━━━  [a-z]+[1-9][0-9]*
 ┃
-┠─> pieceType  ━━━  [a-z] (black piece), [A-Z] (white piece)
+┠─> PieceType  ━━━  [a-z] (black piece), [A-Z] (white piece)
 ┃
-┠─> pieceLevel  ━━━  basic|advanced
+┠─> PieceLevel  ━━━  basic|advanced
 ┃
-┠─> pieceDirection  ━━━  north|south|west|east
+┠─> PieceDirection  ━━━  north|south|west|east
 ┃
-┠─> numRows/numCols  ━━━  [1-9][0-9]*
+┠─> Num  ━━━  [1-9][0-9]*
 ┗━━━━
 ```
 
@@ -94,7 +94,7 @@ Key:
 
 This project utilizes a modified MVC (Model-View-Controller) architecture, paired with an observer pattern setup. There is a single Observer Type (TextObserver) which is responsible for rendering the View, which obtains it's data from the Subject/Controller (Game), whose data source is the chess board itself (ChessBoard).
 
-The ChessBoard itself stores various pieces, which are broken down in the following manor: The virtual base piece class, which holds all the general data that all pieces posesses. From there, there are virtual base classes for each type of piece such as King, Bishop, and Rook. These classes hold the logic for computing the standard set of legal moves associated with each of these resepective pieces. Finally, there are concrete Advanced and Basic classes for each piece type (ex: AdvancedBishop and BasicBishop). This is where the set of legal moves for different piece levels is distinguished. 
+The ChessBoard itself stores various pieces, which are broken down in the following manner: The virtual base piece class, which holds all the general data that all pieces posesses. From there, there are virtual base classes for each type of piece such as King, Bishop, and Rook. These classes hold the logic for computing the standard set of legal moves associated with each of these resepective pieces. Finally, there are concrete Advanced and Basic classes for each piece type (ex: AdvancedBishop and BasicBishop). This is where the set of legal moves for different piece levels is distinguished. 
 
 The Game class processes the general logic of a game: parsing commands, supplying moves to the ChessBoard, obtaining a move from one of the ComputerPlayer classes, etc. 
 
