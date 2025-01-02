@@ -34,6 +34,8 @@ The primary goal of this project was to experiment with using various design pat
 - Factory Pattern
 - Command Pattern
 - Iterator Pattern
+- Bridge Pattern
+- Dependency Injection
 
 ## Usage
 
