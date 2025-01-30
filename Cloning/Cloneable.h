@@ -9,7 +9,7 @@
 /**
  * Cloneable Class
  * - CRTP Cloning
- * - Abstract --> ComplicatedCloneable --> Concrete
+ * - Abstract --> Cloneable --> Concrete
  */
 template <typename Base, typename Derived>
 class Cloneable : public Base {
